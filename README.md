@@ -30,8 +30,6 @@ Por otro lado, la venta al minoreo ofrece una experiencia más personalizada, pe
 
 ──────────────────────────────────────────────────
 
-Lenguajes de programación
-
 1) JavaScript 
    
 Es un lenguaje de programación interpretado, liviano y versátil, utilizado principalmente para el desarrollo web. Se ejecuta en el navegador del usuario y permite crear sitios interactivos, dinámicos y funcionales. Además, con la llegada de tecnologías como Node.js, JavaScript también se puede ejecutar del lado del servidor, lo que lo convierte en una herramienta completa para desarrollo full stack. En este proyecto, JavaScript se usará como base tanto en la app móvil (mediante React Native) como en la versión web administrativa (mediante el stack MERN). Parámetros mínimos recomendados para trabajar con JavaScript: Sistema operativo: Windows 7/8/10/11, macOS o Linux, editor de código: Visual Studio Code o similar, Node.js instalado, 4 GB de RAM (8 GB recomendados para mejor rendimiento).
@@ -62,7 +60,7 @@ Es un editor de código fuente ligero, multiplataforma y gratuito, desarrollado 
 
 Es una base de datos NoSQL orientada a documentos, que almacena la información en formato JSON (o BSON), permitiendo una estructura más flexible y escalable en comparación con las bases de datos relacionales tradicionales. Es ideal para proyectos modernos, ya que facilita el manejo de grandes volúmenes de datos y permite cambios rápidos en la estructura de los mismos sin afectar el funcionamiento general. En este proyecto, MongoDB será parte esencial del stack MERN, encargándose de guardar los datos relacionados con usuarios, productos, pedidos y configuraciones de la plataforma web y móvil. Parámetros mínimos recomendados para el uso de MongoDB (en entorno local): Sistema operativo: Windows 10/11, macOS o Linux, procesador Intel Core i3 o superior, memoria RAM de mínimo 4 GB (se recomienda 8 GB para desarrollo fluido),  l menos 10 GB disponibles en el espacio en disco, instalación de MongoDB Community Server o uso de MongoDB Atlas (versión en la nube) y conexión a internet para MongoDB Atlas y descarga de herramientas.
 
-6) Github
+5) Github
 
 GitHub es una plataforma en línea que permite almacenar, compartir y colaborar en proyectos de programación utilizando el sistema de control de versiones llamado Git. No es un lenguaje de programación ni un IDE, sino una herramienta web para desarrolladores que facilita el trabajo en equipo, el seguimiento de cambios en el código y la gestión de versiones. Los proyectos pueden alojarse en repositorios públicos o privados, y los usuarios pueden contribuir, dejar comentarios, revisar código y gestionar errores. En este proyecto, GitHub se utilizará para organizar el código fuente de la app y del sitio web, permitiendo que todo el equipo trabaje en conjunto sin perder información ni avances. Además, GitHub puede conectarse fácilmente con editores como Visual Studio Code para actualizar los archivos directamente desde el entorno de desarrollo. Requisitos básicos para usar GitHub: Navegador web actualizado, conexión a internet, cuenta gratuita en github.com..
 
