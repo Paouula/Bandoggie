@@ -1,0 +1,105 @@
+.logo {
+    max-width: 130px;
+    height: auto;
+  }
+  
+  .navbar {
+    background-color: #FEF0F6;
+    padding: 0.5rem 1rem;
+  }
+  
+  /* Estilos generales para navbar-collapse */
+  .navbar-collapse {
+    display: flex;
+    justify-content: space-between; /* Logo a izquierda, nav + search a derecha */
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap; /* Permite bajar en mobile */
+  }
+  
+  /* Navegación */
+  .navbar-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .nav-link {
+    color: #1B1B1B;
+    font-weight: 500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-link:hover {
+    color: #CB8E45;
+  }
+  
+  /* Formulario de búsqueda */
+  .search-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .search-input {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 150px;
+  }
+  
+  .search-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #1B1B1B;
+    font-size: 1.1rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 991.98px) {
+    .navbar-collapse {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    @media (max-width: 991.98px) {
+        .navbar-collapse {
+          flex-direction: column;
+          align-items: center;
+        }
+      
+        .navbar-nav {
+          flex-direction: column;
+          align-items: center;      
+          gap: 0.75rem;
+          width: 100%;
+          text-align: center;
+          margin-bottom: 1rem;
+        }
+      
+        .nav-link {
+          width: 100%;
+          padding: 0.5rem 0;
+          border-bottom: 1px solid #eee;
+        }
+      
+        .nav-link:last-child {
+          border-bottom: none;
+        }
+      
+        .search-form {
+          width: 100%;
+          justify-content: center;
+        }
+      
+        .search-input {
+          width: 90%;
+          max-width: 300px;
+        }
+      }
+    }
+      
+  
