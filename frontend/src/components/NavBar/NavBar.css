@@ -1,8 +1,56 @@
+
+/* Barra azul de ariba*/
+.top-top-bar {
+  background-color: #B3CCEA; 
+  text-align: center;
+  padding: -0.8rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+}
+
+.top-space {
+  color: #B3CCEA;
+}
+
+/* Barra inicio de sesión y registro*/
+.top-bar {
+  background-color: #ffffff;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+}
+
+.top-link {
+  color: #CB8E45;
+  text-decoration: none;
+}
+
+.top-link:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  margin: 0 0.3rem;
+  color: #CB8E45;
+}
+
+.linea-separadora {
+  height: 1.5px;
+  background-color: #FDC6DD;
+  width: 100%;
+}
+
+
+/* Logo navbar*/
 .logo {
     max-width: 130px;
     height: auto;
   }
   
+  /* Configuracion general navbar*/
   .navbar {
     background-color: #FEF0F6;
     padding: 0.5rem 1rem;
@@ -11,10 +59,10 @@
   /* Estilos generales para navbar-collapse */
   .navbar-collapse {
     display: flex;
-    justify-content: space-between; /* Logo a izquierda, nav + search a derecha */
+    justify-content: space-between; 
     align-items: center;
     width: 100%;
-    flex-wrap: wrap; /* Permite bajar en mobile */
+    flex-wrap: wrap;
   }
   
   /* Navegación */
@@ -24,6 +72,7 @@
     gap: 1rem;
   }
   
+  /* Texto en el navbar*/
   .nav-link {
     color: #1B1B1B;
     font-weight: 500;
@@ -36,13 +85,14 @@
     color: #CB8E45;
   }
   
-  /* Formulario de búsqueda */
+  /* Formulario de búsqueda: general*/
   .search-form {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
   
+    /* Formulario de búsqueda: Barra o container*/
   .search-input {
     padding: 0.3rem 0.5rem;
     border: 1px solid #ccc;
@@ -50,6 +100,7 @@
     min-width: 150px;
   }
   
+    /* Formulario de búsqueda: botón para buscar*/
   .search-button {
     background-color: transparent;
     border: none;
@@ -58,6 +109,23 @@
     font-size: 1.1rem;
   }
   
+  /* Iconos de cuenta y carrito*/
+.iconos-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: 1rem;
+}
+
+.icono-header {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+
+
+
   /* Responsive */
   @media (max-width: 991.98px) {
     .navbar-collapse {
