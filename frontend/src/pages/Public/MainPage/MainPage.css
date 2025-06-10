@@ -72,7 +72,19 @@
 }
 
 .Icon-Img{
-  
+  display: flex;
+  justify-content: center;
 }
 
-/**Prueba XD/
+.Icon-Img img{
+  height: 60px;
+  max-width: auto;
+
+  margin: 2%;
+}
+
+.card{
+  height: auto;
+  width: 70%;
+  text-align: center;
+}

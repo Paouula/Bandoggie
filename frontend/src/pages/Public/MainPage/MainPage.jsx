@@ -34,7 +34,7 @@ function MainPage() {
             </div>
           </div>
         </div>
-        <div className="col-sm-3">
+        <div className="col-sm-3 mb-3 mb-sm-0">
           <div className="card">
           <div className="Icon-Img">
               <img src={Shipped} alt="Messaging" />
@@ -46,7 +46,7 @@ function MainPage() {
             </div>
           </div>
         </div>
-        <div className="col-sm-3">
+        <div className="col-sm-3 mb-3 mb-sm-0">
           <div className="card">
           <div className="Icon-Img">
               <img src={Card} alt="Messaging" />
