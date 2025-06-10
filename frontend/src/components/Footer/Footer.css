@@ -55,8 +55,10 @@ footer .p-3 {
 
 /* Collar */
 .collar-footer {
-  height: 295px;
+  height: 235px;
   margin-top: -20px;
+  padding: 3px;
+  margin: 5px;
 }
 
 /* Logo */
@@ -82,13 +84,11 @@ footer .row > div {
 }
 
 /* Ajustes puntuales entre columnas */
-.col-contact {
+.col-contact,
+.col-siguenos {
   margin-left: -20px;
 }
 
-.col-siguenos {
-  margin-right: -20px;
-}
 
 /* Responsive  */
 @media (max-width: 992px) {
