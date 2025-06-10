@@ -14,14 +14,15 @@ footer {
 
 footer h5 {
   font-weight: bold;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.70rem;
+  font-size: 1.1rem;
 }
 
 footer p {
   line-height: 1.4;
   margin: 0;
-  font-size: 0.95rem;
-  margin-left: 0;
+  font-size: 0.9rem;
+  margin-left: -40px;
   margin-right: 30px;
 }
 
@@ -54,16 +55,19 @@ footer .p-3 {
 
 /* Collar */
 .collar-footer {
-  height: 295px;
+  height: 235px;
   margin-top: -20px;
+  padding: 3px;
+  margin: 5px;
 }
 
 /* Logo */
 .icono-footer {
-  max-width: 150px;
+  max-width: 240px;
   height: auto;
   display: block;
   margin-bottom: 0.75rem;
+  margin-left: -50px;
 }
 
 /* Distribución general de columnas */
@@ -80,13 +84,11 @@ footer .row > div {
 }
 
 /* Ajustes puntuales entre columnas */
-.col-contact {
+.col-contact,
+.col-siguenos {
   margin-left: -20px;
 }
 
-.col-siguenos {
-  margin-right: -20px;
-}
 
 /* Responsive  */
 @media (max-width: 992px) {
