@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import MainPage from "../pages/MainPage/MainPage";
-import AboutUS from "../pages/AboutUs/AboutUs";
+import MainPage from "../pages/Public/MainPage/MainPage";
+import AboutUS from "../pages/Public/AboutUs/AboutUs";
 
 function Navegation() {
   return (
