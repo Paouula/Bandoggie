@@ -1,4 +1,3 @@
-import './App.css';
 import { BrowserRouter as Router } from "react-router-dom";
 import NavBar from '../src/components/NavBar/NavBar';
 import Footer from './components/Footer/Footer';
