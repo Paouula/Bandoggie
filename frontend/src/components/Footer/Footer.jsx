@@ -1,69 +1,66 @@
 import React from 'react';
-import './Footer.css'; 
+import './Footer.css';
+import LogoFooter from '../../img/Footer/LogoFooter.png';
+import CollarFooter from '../../img/Footer/CollarFooter.png';
 
 function Footer() {
-    return ( 
-      <>
-
-<footer className="bg-primary text-white text-center text-lg-start">
+  return (
+<footer className="text-white text-center text-lg-start">
   <div className="container p-4">
     <div className="row">
-      <div className="col-lg-6 col-md-12 mb-4 mb-md-0">
-        <h5 className="text-uppercase">Footer Content</h5>
 
+      {/* Columna de texto con logo */}
+      <div className="col-lg-2 col-md-6 mb-4 mb-md-0">
+        <h5 className="title">
+          <img src={LogoFooter} alt="BANDOGGIE Logo" className="icono-footer" />
+        </h5>
         <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste atque ea quis
-          molestias. Fugiat pariatur maxime quis culpa corporis vitae repudiandae aliquam
-          voluptatem veniam, est atque cumque eum delectus sint!
+          Somos una tienda pensada en la realización y venta de accesorios (¡especialmente bandanas!) 
+          para el estilo y confort de tus mejores amigos peludos.
         </p>
       </div>
 
-      <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
-        <h5 className="text-uppercase">Links</h5>
-
-        <ul className="list-unstyled mb-0">
-          <li>
-            <a href="#!" className="text-white">Link 1</a>
-          </li>
-          <li>
-            <a href="#!" className="text-white">Link 2</a>
-          </li>
-          <li>
-            <a href="#!" className="text-white">Link 3</a>
-          </li>
-          <li>
-            <a href="#!" classn="text-white">Link 4</a>
-          </li>
-        </ul>
-      </div>
-      <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
-        <h5 className="text-uppercase mb-0">Links</h5>
-
+      {/* Columnas de links */}
+      <div className="col-lg-2 col-6">
+        <h5 className="title">Sobre BANDOGGIE</h5>
         <ul className="list-unstyled">
-          <li>
-            <a href="#!" className="text-white">Link 1</a>
-          </li>
-          <li>
-            <a href="#!" className="text-white">Link 2</a>
-          </li>
-          <li>
-            <a href="#!" className="text-white">Link 3</a>
-          </li>
-          <li>
-            <a href="#!" className="text-white">Link 4</a>
-          </li>
+          <li><a href="/AboutUs" className="text-white">Sobre nosotros</a></li>
+          <li><a href="/AboutUs" className="text-white">Misión</a></li>
+          <li><a href="/AboutUs" className="text-white">Visión</a></li>
+          <li><a href="/AboutUs" className="text-white">FQA</a></li>
         </ul>
       </div>
+
+      <div className="col-lg-2 col-6 col-siguenos">
+        <h5 className="title">Síguenos</h5>
+        <ul className="list-unstyled">
+          <li><a href="#!" className="text-white">Instagram</a></li>
+          <li><a href="#!" className="text-white">Facebook</a></li>
+        </ul>
+      </div>
+
+      <div className="col-lg-2 col-6 col-contact">
+        <h5 className="title">Contacto</h5>
+        <ul className="list-unstyled">
+          <li><a href="#!" className="text-white">CHAT</a></li>
+          <li><a className="text-white">bandoggie@gmail.com</a></li>
+        </ul>
+      </div>
+
+      {/* Imagen de collar */}
+      <div className="col-lg-2 col-6 d-flex justify-content-center">
+        <img src={CollarFooter} alt="Collar" className="collar-footer" />
+      </div>
+
+
     </div>
   </div>
-  <div className="text-center p-3" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-  © 2020 Copyright:
-  <a className="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-</div>
 
+  <div className="text-left p-3">
+    Bandoggie (2025). Todos los derechos reservados.
+  </div>
 </footer>
-</>
-);
+  );
 }
 
 export default Footer;
