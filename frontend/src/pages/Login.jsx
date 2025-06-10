@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import useFetchLogin from "../hooks/Login/UseFetchLogin";
-import "../assets/style/style.css";
+import logo from "../img/NavBar/LogoBandoggie.png";
+import "../assets/styles/Login.css";
 import InputComponent from "../components/Input";
 import ButtonComponent from "../components/Button";
 
@@ -29,8 +30,7 @@ const Login = () => {
     <div className="login-container">
       <div className="login-box">
         <div className="logo">
-          <img src="https://i.imgur.com/1Xi0X2z.png" alt="HUELLITAS Logo" />
-          <p>pet - shop</p>
+          <img src={logo} alt="HUELLITAS Logo" />
         </div>
         <hr />
         <h2>Iniciar Sesión</h2>
@@ -59,7 +59,7 @@ const Login = () => {
           <ButtonComponent type="submit">Confirmar</ButtonComponent>
         </form>
       </div>
-      <div class="decoration-container"></div>
+      <div className="decoration-container"></div>
     </div>
   );
 };

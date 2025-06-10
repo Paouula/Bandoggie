@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 const InputComponent = ({ type, id, placeholder, register, icon }) => {
     return (
         <div className="input-group">
