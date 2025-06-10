@@ -1,10 +1,10 @@
 import React from 'react';
 import './MainPage.css';
-import BannerMainPage from '../../img/MainPage/BannerMainPage.png';
+import BannerMainPage from '../../../img/MainPage/BannerMainPage.png';
 //Iconos Cards
-import Messaging from '../../img/MainPage/Messaging.png';
-import Shipped from '../../img/MainPage/Shipped.png';
-import Card from '../../img/MainPage/Magnetic-Card.png';
+import Messaging from '../../../img/MainPage/Messaging.png';
+import Shipped from '../../../img/MainPage/Shipped.png';
+import Card from '../../../img/MainPage/Magnetic-Card.png';
 
 
 function MainPage() {
