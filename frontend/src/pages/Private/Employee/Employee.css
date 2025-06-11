@@ -1,6 +1,6 @@
 
 .empleados-section {
-    min-height: 100vh;
+    min-height: 60vh;
     background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
     position: relative;
     display: flex;
@@ -32,49 +32,26 @@
     flex-direction: column;
     gap: 1.5rem;
     z-index: 2;
-}
-
-.paw-circle {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border-width: 5;
-    border-color: #885740;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    cursor: pointer;
+    margin-left: 0%;
 }
 
 .paw-circle:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
-}
-
-.paw-circle.yellow {
-    border-color: #ffd54f;
-    color: #ffd54f;
-    background-color: #ffd54f;
-}
-
-.paw-circle.pink {
-    border-color: #f48fb1;
-    color: #f48fb1;
-    background: #f48fb1;
-}
-
-.paw-circle.blue {
-    border-color: #81c784;
-    color: #81c784;
-    background-color: #81c784;
+    border-radius: 50%;
 }
 
 .paw-icon {
-    width: 35px;
-    height: 35px;
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    border-width: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .main-image {
@@ -108,10 +85,11 @@
     font-size: 4.5rem;
     font-family: 'Baloo Bhaijaan 2', sans-serif !important;
     font-weight: 900;
-    color: #2c3e50;
+    color: #1B1B1B;
     margin-bottom: 2rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     letter-spacing: -2px;
+    margin-left: -15%;
 }
 
 .decorative-shapes {

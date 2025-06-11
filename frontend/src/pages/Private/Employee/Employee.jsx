@@ -1,6 +1,8 @@
 import React from 'react';
 import './Employee.css';
-import PawEmp from '../../../img/Empleados/PawEmp.png'
+import PawYellow from '../../../img/Empleados/PawYellow.png'
+import PawPink from '../../../img/Empleados/PawPink.png'
+import PawBlue from '../../../img/Empleados/PawBlue.png'
 import EquipoEmp from '../../../img/Empleados/EquipoEmp.png'
 
 function Employee() {
@@ -11,13 +13,13 @@ function Employee() {
             <div class="left-side">
                 <div class="paw-icons">
                     <div class="paw-circle yellow">
-                        <img src={PawEmp} alt="Paw Icon" class="paw-icon" />
+                        <img src={PawYellow} alt="Paw Icon" class="paw-icon" />
                     </div>
                     <div class="paw-circle pink">
-                        <img src={PawEmp} alt="Paw Icon" class="paw-icon" />
+                        <img src={PawPink} alt="Paw Icon" class="paw-icon" />
                     </div>
                     <div class="paw-circle blue">
-                        <img src={PawEmp} alt="Paw Icon" class="paw-icon" />
+                        <img src={PawBlue} alt="Paw Icon" class="paw-icon" />
                     </div>
                 </div>
                 <div class="main-image">
@@ -26,11 +28,7 @@ function Employee() {
             </div>
             
             <div class="right-side">
-                <h1 class="title">Empleados</h1>
-                <div class="decorative-shapes">
-                    <div class="shape-1"></div>
-                    <div class="shape-2"></div>
-                </div>
+                <h1 class="title-emp">Empleados</h1>
             </div>
         </div>
     </section>
