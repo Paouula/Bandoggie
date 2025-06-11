@@ -4,6 +4,8 @@ import PawYellow from '../../../img/Empleados/PawYellow.png'
 import PawPink from '../../../img/Empleados/PawPink.png'
 import PawBlue from '../../../img/Empleados/PawBlue.png'
 import EquipoEmp from '../../../img/Empleados/EquipoEmp.png'
+import LineaDivisora from '../../../components/LineaDivisora.jsx'; 
+
 
 function Employee() {
     return ( 
@@ -31,6 +33,7 @@ function Employee() {
                 <h1 class="title-emp">Empleados</h1>
             </div>
         </div>
+        <LineaDivisora />
     </section>
           </>
   )
