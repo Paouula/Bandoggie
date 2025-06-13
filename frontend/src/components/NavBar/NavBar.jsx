@@ -47,7 +47,7 @@ function NavBar() {
           <div className="navbar-nav">
             <a className="nav-item nav-link" href="/">Inicio</a>
             <a className="nav-item nav-link" href="/AboutUs">Bandanas</a>
-            <a className="nav-item nav-link" href="">Collares</a>
+            <a className="nav-item nav-link" href="/Empleado">Collares</a>
             <a className="nav-item nav-link" href="#">Accesorios</a>
             <a className="nav-item nav-link" href="#">Festividades</a>
           </div>

@@ -5,7 +5,7 @@ function LineaDivisora() {
         <hr
           style={{
             border: 'none',
-            borderTop: '1.5px solid #222222',
+            borderTop: '1.5px solidrgb(0, 0, 0)',
             margin: '13px 0 17px',
           }}
         />

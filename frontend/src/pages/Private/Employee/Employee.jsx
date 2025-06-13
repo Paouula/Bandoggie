@@ -4,39 +4,46 @@ import PawYellow from '../../../img/Empleados/PawYellow.png'
 import PawPink from '../../../img/Empleados/PawPink.png'
 import PawBlue from '../../../img/Empleados/PawBlue.png'
 import EquipoEmp from '../../../img/Empleados/EquipoEmp.png'
-import LineaDivisora from '../../../components/LineaDivisora.jsx'; 
+import LineaDivisora from '../../../components/LineaDivisora.jsx';
+import { Search, Plus, Edit, Trash2 } from 'lucide-react';
 
 
 function Employee() {
-    return ( 
-      <>
-      <section class="empleados-section">
-        <div class="container">
-            <div class="left-side">
-                <div class="paw-icons">
-                    <div class="paw-circle yellow">
-                        <img src={PawYellow} alt="Paw Icon" class="paw-icon" />
+    return (
+        <>
+            <section className="employees-section">
+                  <div class="floating-circle-1"></div>
+                    <div class="floating-circle-2"></div>
+                    <div class="floating-circle-3"></div>
+                    <div class="floating-circle-4"></div>
+                    <div class="floating-circle-5"></div>
+                <div className="container-emp">
+                    <div className="left-side">
+                        <div className="paw-icons">
+                            <div className="paw-circle yellow">
+                                <img src={PawYellow} alt="Paw Icon" className="paw-icon" />
+                            </div>
+                            <div className="paw-circle pink">
+                                <img src={PawPink} alt="Paw Icon" className="paw-icon" />
+                            </div>
+                            <div className="paw-circle blue">
+                                <img src={PawBlue} alt="Paw Icon" className="paw-icon" />
+                            </div>
+                        </div>
+                        <div className="main-image">
+                            <img src={EquipoEmp} alt="Equipo trabajando" />
+                        </div>
                     </div>
-                    <div class="paw-circle pink">
-                        <img src={PawPink} alt="Paw Icon" class="paw-icon" />
-                    </div>
-                    <div class="paw-circle blue">
-                        <img src={PawBlue} alt="Paw Icon" class="paw-icon" />
+                    
+                    <div className="right-side">
+                        <h1 className="title-emp">Empleados</h1>
+                        <p className="header-emp">¿Qué deseas hacer hoy?</p>
                     </div>
                 </div>
-                <div class="main-image">
-                    <img src={EquipoEmp} alt="Equipo trabajando" />
-                </div>
-            </div>
-            
-            <div class="right-side">
-                <h1 class="title-emp">Empleados</h1>
-            </div>
-        </div>
-        <LineaDivisora />
-    </section>
-          </>
-  )
+            </section>
+            <LineaDivisora />
+        </>
+    )
 }
 
 export default Employee;
