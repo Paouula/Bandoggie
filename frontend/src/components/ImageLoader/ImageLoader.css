@@ -1,0 +1,60 @@
+.image-upload-container {
+  border: 2px dashed var(--border-color);
+  border-radius: 4px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: border-color 0.2s;
+  background-color: var(--darker-background);
+}
+
+.image-upload-container:hover {
+  border-color: var(--zgas-blue-light);
+}
+
+.select-image-button {
+  background-color: rgba(14, 133, 209, 0.1);
+  color: var(--zgas-blue-light);
+  border: none;
+  border-radius: 4px;
+  padding: 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.select-image-button:hover {
+  background-color: rgba(14, 133, 209, 0.2);
+}
+
+.image-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+}
+
+.change-image-button {
+  background-color: rgba(14, 133, 209, 0.1);
+  color: var(--zgas-blue-light);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.change-image-button:hover {
+  background-color: rgba(14, 133, 209, 0.2);
+}

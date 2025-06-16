@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const InputComponent = ({ type, id, placeholder, register, icon }) => {
+const InputComponent = ({ type, id, placeholder, register }) => {
     return (
         <div className="input-group">
             <input
@@ -10,7 +10,6 @@ const InputComponent = ({ type, id, placeholder, register, icon }) => {
                 placeholder={placeholder}
                 {...register}
             />
-            <span className="icon">{icon}</span>
         </div>
     );
 };

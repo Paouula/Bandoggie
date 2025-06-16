@@ -1,5 +1,5 @@
 import React from 'react';
-
+import "../assets/styles/Login.css";
 
 const ButtonComponent = ({ type, children }) => {
     return (

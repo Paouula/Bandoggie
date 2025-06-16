@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import './App.css';
 import Login from './pages/Login.jsx';
 import Nav from './components/NavBar/NavBar.jsx';
+import Register from './pages/Register.jsx'; 
 
 
 function AppContent() {
@@ -22,7 +23,9 @@ function AppContent() {
       <div className="container">
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
+        
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
     </>
