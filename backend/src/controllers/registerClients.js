@@ -1,16 +1,19 @@
-import jsonwebtoken from "jsonwebtoken";
-import bcryptjs from "bcryptjs";
-import crypto from "crypto";
-import clientsModel from "../models/Clients.js";
-import { config } from "../config.js";
-import sendVerificationEmail from "../utils/verificationCode.js";
+import cookieParser from 'cookie-parser'; // Asegúrate de tener esto en tu app principal
+import jsonwebtoken from 'jsonwebtoken';
+import crypto from 'crypto';
+import bcryptjs from 'bcryptjs';
+import clientsModel from '../models/Clients.js';
+import {config} from '../config.js';
+import cloudinary from 'cloudinary';
+import sendVerificationEmail from '../utils/verificationCode.js';
+
 const registerController = {};
 
 cloudinary.config({
     cloud_name: config.cloudinary.cloudinary_name,
     api_key: config.cloudinary.cloudinary_api_key,
     api_secret: config.cloudinary.cloudinary_api_secret,
-  });
+});
 
 registerController.register = async (req, res) => {
     const { name, email, phone, birthday, password } = req.body;
@@ -18,7 +21,7 @@ registerController.register = async (req, res) => {
     try {
         const existingClient = await clientsModel.findOne({ email });
         if (existingClient) {
-            return res.status(400).json({ message: "El correo ya está registrado" });
+            return res.status(400).json({ message: "El correo ya está registrado." });
         }
 
         const passwordHash = await bcryptjs.hash(password, 10);
@@ -39,8 +42,7 @@ registerController.register = async (req, res) => {
         });
         await newClient.save();
 
-        const verificationCode = crypto.randomBytes(5).toString('hex').toUpperCase();
-        console.log(verificationCode)
+        const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
 
         const token = jsonwebtoken.sign(
             { email, verificationCode },
@@ -48,7 +50,13 @@ registerController.register = async (req, res) => {
             { expiresIn: '2h' }
         );
 
-        res.cookie('VerificationToken', token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
+        // Asegúrate de que la cookie se envía correctamente
+        res.cookie('VerificationToken', token, {
+            maxAge: 2 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: 'lax', // o 'none' si usas https y frontend en otro dominio
+            // secure: true, // solo en producción con https
+        });
 
         await sendVerificationEmail(email, verificationCode);
 
@@ -56,33 +64,29 @@ registerController.register = async (req, res) => {
 
     } catch (error) {
         console.log('Error: ' + error);
-        res.status(500).json({ message: 'Hubo un error en el registro: ' + error.message });
+        res.status(500).json({ message: "Error en el registro", error });
     }
-}
+};
 
 registerController.verifyEmail = async (req, res) => {
     const { verificationCode } = req.body;
     const token = req.cookies.VerificationToken;
 
     if (!token) {
-        return res.status(401).json({ message: "No se encontró el token de verificación" });
+        return res.status(401).json({ message: "Token no encontrado" });
     }
 
     try {
-        console.log("JWT Secret:", config.JWT.secret);
         const decoded = jsonwebtoken.verify(token, config.JWT.secret);
         if (decoded.verificationCode !== verificationCode) {
             return res.status(400).json({ message: "Código de verificación incorrecto" });
         }
-
-        await clientsModel.updateOne({ email: decoded.email }, { verified: true });
-
+        // Aquí puedes actualizar el estado del usuario a verificado si lo deseas
         res.clearCookie('VerificationToken');
-        res.status(200).json({ message: "Correo verificado exitosamente" });
+        res.status(200).json({ message: "Correo verificado correctamente" });
     } catch (error) {
-        console.log('Error: ' + error);
-        res.status(500).json({ message: 'Error al verificar el correo: ' + error.message });
+        res.status(400).json({ message: "Token inválido o expirado", error });
     }
-}
+};
 
 export default registerController;

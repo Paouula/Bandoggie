@@ -1,4 +1,8 @@
 {
+  "name": "bandoggie",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.1",
