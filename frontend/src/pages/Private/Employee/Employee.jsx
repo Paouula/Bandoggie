@@ -1,9 +1,6 @@
 // src/pages/EmployeesInterface.jsx
 import React from 'react';
 import './Employee.css';
-import PawYellow from '../../../img/Empleados/PawYellow.png';
-import PawPink from '../../../img/Empleados/PawPink.png';
-import PawBlue from '../../../img/Empleados/PawBlue.png';
 import EquipoEmp from '../../../img/Empleados/EquipoEmp.png';
 import LineaDivisora from '../../../components/LineaDivisora.jsx';
 import Tooltip from '@mui/material/Tooltip';
@@ -56,7 +53,7 @@ const EmployeesInterface = () => {
         {/*El banner principal de la página*/}
     <BannerPrivate
         title="Empleados"
-        subtitle="¿Qué deseas hacer hoy?"
+        subtitle="Listado de los empleados registrados"
         mainImage={EquipoEmp}
       />
 
@@ -78,7 +75,7 @@ const EmployeesInterface = () => {
           <span className="pagination-separator">/</span>
           <a href="#" className="pagination-link">Siguiente</a>
         </div>
-        
+
       </div>
     </>
   );
