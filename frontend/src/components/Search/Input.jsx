@@ -15,7 +15,7 @@ const Input = ({ onChangeCallback }) => {
       type="text"
       value={value}
       onChange={handleChange}
-      placeholder='Type to search'
+      placeholder='Buscar...'
     />
   )
 }

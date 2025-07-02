@@ -4,6 +4,7 @@ import Input from './Input.jsx';
 import { useGetUsers } from '../../hooks/useGetUsers.jsx';
 //import './search.css'; // Importar el CSS
 
+
 function App() {
   const {users, loading, error} = useGetUsers()
   const [filteredUsers, setFilteredUsers] = useState([])
