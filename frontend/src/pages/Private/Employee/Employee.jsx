@@ -5,7 +5,7 @@ import PawPink from '../../../img/Empleados/PawPink.png'
 import PawBlue from '../../../img/Empleados/PawBlue.png'
 import EquipoEmp from '../../../img/Empleados/EquipoEmp.png'
 import LineaDivisora from '../../../components/LineaDivisora.jsx';
-import SearchC from '../../../components/Search.jsx';
+import SearchC from '../../../components/Search/Search.jsx';
 
 
 
