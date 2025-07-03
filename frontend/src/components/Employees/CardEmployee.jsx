@@ -4,6 +4,8 @@ import './CardEmployee.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
+import EditButton from '../../components/EditButton.jsx';
+import DeleteButton from '../../components/DeleteButton.jsx';
 
 const CardEmployee = ({ employee }) => (
   <div className="employee-card">
@@ -49,16 +51,8 @@ const CardEmployee = ({ employee }) => (
       </div>
     </div>
     <div className="employee-actions">
-      <button className="action-btn edit-btn">
-        <Tooltip title="Editar datos del empleado" placement="right">
-          <EditIcon size={16} />
-        </Tooltip>
-      </button>
-      <button className="action-btn delete-btn">
-        <Tooltip title="Eliminar empleado" placement="right">
-          <DeleteIcon size={16} />
-        </Tooltip>
-      </button>
+      <EditButton title="Editar datos del empleado" />
+      <DeleteButton title="Eliminar el registro del empleado" />
     </div>
   </div>
 );

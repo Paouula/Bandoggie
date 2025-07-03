@@ -7,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
 import ListEmployees from '../../../components/Employees/ListEmployees';
 import BannerPrivate from '../../../components/BannerPrivate/BannerPrivate.jsx';
+import Paginacion from '../../../components/Paginacion.jsx';
 
 const EmployeesInterface = () => {
   const employees = [
@@ -61,20 +62,12 @@ const EmployeesInterface = () => {
 
         {/*Busqueda y botón de agregar*/}
       <div className="employees-container">
-        <Tooltip title="Añadir un nuevo empleado" placement="bottom">
-          <button className='addEmp'>
-            <AddIcon style={{ marginRight: '5px' }} /> Agregar
-          </button>
-        </Tooltip>
+        <AgregarButton/>
 
         {/* Aquí se muestra la lista de empleados */}
         <ListEmployees employees={employees} />
 
-        <div className="pagination">
-          <a href="#" className="pagination-link">Anterior</a>
-          <span className="pagination-separator">/</span>
-          <a href="#" className="pagination-link">Siguiente</a>
-        </div>
+       <Paginacion/>
 
       </div>
     </>
