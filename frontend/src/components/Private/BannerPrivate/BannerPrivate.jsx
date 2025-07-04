@@ -1,8 +1,8 @@
 import React from "react";
 import "./BannerPrivate.css";
-import PawYellow from "../../img/Empleados/PawYellow.png";
-import PawPink from "../../img/Empleados/PawPink.png";
-import PawBlue from "../../img/Empleados/PawBlue.png";
+import PawYellow from "../../../img/BannerPrivate/PawYellow.png";
+import PawPink from "../../../img/BannerPrivate/PawPink.png";
+import PawBlue from "../../../img/BannerPrivate/PawBlue.png";
 
 const BannerPrivate = ({ title, subtitle, mainImage }) => {
   return (

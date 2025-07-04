@@ -27,7 +27,7 @@ const CardProduct = ({ product }) => {
         </div>
       </div>
 
-      {/* Parte inferior: descripción */}
+      {/* Parte inferior: descripción y datos*/}
       <div className="product-bottom-section">
         <div className="product-info">
           <div className="info-column">

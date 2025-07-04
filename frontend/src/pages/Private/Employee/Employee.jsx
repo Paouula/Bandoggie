@@ -3,10 +3,8 @@ import React from 'react';
 import './Employee.css';
 import EquipoEmp from '../../../img/Empleados/EquipoEmp.png';
 import LineaDivisora from '../../../components/LineaDivisora.jsx';
-import Tooltip from '@mui/material/Tooltip';
-import AddIcon from '@mui/icons-material/Add';
-import ListEmployees from '../../../components/Employees/ListEmployees';
-import BannerPrivate from '../../../components/BannerPrivate/BannerPrivate.jsx';
+import ListEmployees from '../../../components/Private/Employees/ListEmployees';
+import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
 import Paginacion from '../../../components/Paginacion.jsx';
 
 const EmployeesInterface = () => {

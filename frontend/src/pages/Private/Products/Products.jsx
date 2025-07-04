@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './Products.css';
 import BannerProduct from '../../../img/Products/ProductBanner.png';
-import BannerPrivate from '../../../components/BannerPrivate/BannerPrivate.jsx';
-import AgregarButton from '../../../components/AgregarButton.jsx';
+import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
+import AgregarButton from '../../../components/Private/AgregarButton.jsx';
 import SearchIcon from '@mui/icons-material/Search';
 import Paginacion from '../../../components/Paginacion.jsx';
-import ListProducts from '../../../components/Products/ListProducts.jsx';
+import ListProducts from '../../../components/Private/Products/ListProducts.jsx';
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
