@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import './ImageLoader.css';
+import images from  '../../../public/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg'
 
 const ImageLoader = ({ onImageChange }) => {
     const [image, setImage] = useState(null);
@@ -23,35 +24,27 @@ const ImageLoader = ({ onImageChange }) => {
 
     return (
         <div className="image-upload-container">
-            {!image ? (
-                <>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        ref={fileInputRef}
-                        onChange={handleImageChange}
-                    />
-                    <button
-                        className="select-image-button"
-                        type="button"
-                        onClick={handleButtonClick}
-                    >
-                        Seleccionar imagen
-                    </button>
-                </>
-            ) : (
-                <div className="image-preview">
-                    <img src={image} alt="Preview" />
-                    <button
-                        className="change-image-button"
-                        type="button"
-                        onClick={handleButtonClick}
-                    >
-                        Cambiar imagen
-                    </button>
-                </div>
-            )}
+            <input
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                ref={fileInputRef}
+                onChange={handleImageChange}
+            />
+            <div className="profile-pic-container">
+                <img
+                    src={image || images}
+                    alt="Profile"
+                    className="profile-pic"
+                />
+                <button
+                    className="upload-button"
+                    type="button"
+                    onClick={handleButtonClick}
+                >
+                    <span className="camera-icon"></span>
+                </button>
+            </div>
         </div>
     );
 };

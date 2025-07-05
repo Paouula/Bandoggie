@@ -12,7 +12,7 @@ body {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 350px;
+  width: 450px;
   padding: 20px 30px;
   text-align: center;
   position: relative;
@@ -43,6 +43,8 @@ body {
 }
  
 h2 {
+  font-family: 'Baloo Bhaijaan 2';
+  font-weight: bold;
   color: #365A7D;
   margin-top: 10px;
 }
@@ -51,6 +53,13 @@ h2 {
   color: #ff9900;
   font-size: 12px;
   margin-bottom: 20px;
+  transition: 800ms;
+}
+
+a:hover {
+  transition:800ms;
+  text-decoration: none;
+  color: #365A7D;
 }
  
 form {
@@ -64,6 +73,7 @@ label {
   text-align: left;
   font-weight: bold;
   font-size: 14px;
+  color: #365A7D;
   margin: 10px 0 5px;
 }
  
@@ -73,11 +83,26 @@ label {
  
 input {
   width: 100%;
-  padding: 10px 35px 10px 10px;
+  padding: 10px 45px 10px 14px;
   border: 1px solid #b4ceec;
   border-radius: 8px;
+  font-family: 'Baloo Bhaijaan 2', Arial, sans-serif;
+  font-size: 1.1rem;
+  color: #365A7D;
+  background: #fafdff;
+  transition: border 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
  
+input:focus {
+  outline: none;
+  border: 2px solid #ff9900;
+  box-shadow: 0 0 0 2px #ffe0b2;
+  background-color: #fffdfa;
+  transition: border 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+
+
 .icon {
   position: absolute;
   right: 10px;

@@ -11,7 +11,7 @@ import loginRoutes from './src/routes/login.js';
 import logoutRoutes from './src/routes/logout.js';
 
 const corsOptions = {
-    origin: 'http://localhost:4000',
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, 

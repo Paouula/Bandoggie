@@ -1,0 +1,54 @@
+.vc-container {
+  text-align: center;
+}
+
+.vc-title {
+  font-weight: bold;
+  font-size: 24px;
+  color: #789;
+  margin-bottom: 40px;
+}
+
+.vc-inputs {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.vc-box {
+  background: #e3f0ff;
+  border-radius: 10px;
+  width: 48px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #b3c6e0;
+  box-shadow: 0 2px 8px #b3c6e022;
+  position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.vc-input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: #222;
+  caret-color: #ffb300;
+  font-size: 32px;
+  text-align: center;
+  border: none;
+  outline: none;
+  z-index: 2;
+  cursor: pointer;
+  padding: 0;           /* <-- Asegúrate de que no haya padding */
+  box-sizing: border-box; /* <-- Esto ayuda a que el tamaño sea exacto */
+}
+
+/* Cambia solo el color del borde, no el grosor */
+.vc-box:hover,
+.vc-input:focus {
+  border-color: #ffb300;
+  box-shadow: 0 4px 12px #ffb30022;
+} 

@@ -1,5 +1,7 @@
+import { toast } from 'react-hot-toast';
+
 const useFetchLogin = () => {
-    const ApiUrl = 'http://localhost:5000/api/login';
+    const ApiUrl = 'http://localhost:4000/api/login';
 
     const handleLogin = async (email, password) => {
         try {
@@ -8,19 +10,22 @@ const useFetchLogin = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include', // Include cookies in the request
+                credentials: 'include', 
                 body: JSON.stringify({ email, password }),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error('Login failed');
+                toast.error(data.message || 'Login failed');
+                throw new Error(data.message || 'Login failed');
             }
 
-            const data = await response.json();
-            return data; // Return the response data
+            toast.success('Sesión iniciada correctamente');
+            return data;
         } catch (error) {
-            console.error('Error during login:', error);
-            throw error; // Propagate the error
+            toast.error(error.message || 'Error during login');
+            throw error;
         }
     }
     return { handleLogin };

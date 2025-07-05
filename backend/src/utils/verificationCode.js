@@ -13,23 +13,24 @@ const sendVerificationEmail = async (email, verificationCode) => {
     const mailOptions = {
         from: config.email.email_user,
         to: email,
-        subject: "Verificación de correo - Hospital Nacional Zacamil",
+        subject: "Verificación de correo - Bandoggie",
         html: `
-            <div style="max-width: 600px; margin: 20px auto; background-color: #f9f9f9; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; border: 2px solid #004e89; font-family: Arial, sans-serif;">
-                <div style="background-color: #004e89; color: #ffffff; text-align: center; padding: 20px; font-size: 24px; font-weight: bold;">
-                    🏥 Verificación de Correo - Hospital Nacional Zacamil
+            <div style="max-width: 480px; margin: 32px auto; background: #fffdfa; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); border: 2px solid #ffb300; font-family: 'Baloo Bhaijaan 2', Arial, sans-serif; overflow: hidden;">
+                <div style="background: linear-gradient(90deg, #ffb300 0%, #ff9800 100%); color: #222; text-align: center; padding: 24px 0 12px 0; font-size: 28px; font-weight: bold; letter-spacing: 1px;">
+                    🐾 Bandoggie - Verifica tu correo
                 </div>
-                <div style="padding: 20px; color: #333333; line-height: 1.6;">
-                    <p>Estimado/a,</p>
-                    <p>Gracias por registrarte en nuestro sistema. Para completar tu verificación, por favor utiliza el siguiente código:</p>
-                    <div style="display: block; margin: 20px auto; padding: 12px 24px; background-color: #006bb6; color: #ffffff; font-size: 22px; font-weight: bold; text-align: center; border-radius: 8px; width: fit-content;">
+                <div style="padding: 28px 32px 16px 32px; color: #333; font-size: 17px;">
+                    <p style="margin-bottom: 18px;">¡Hola!</p>
+                    <p style="margin-bottom: 18px;">Gracias por registrarte en <b>Bandoggie</b>. Para completar tu registro, ingresa el siguiente código de verificación:</p>
+                    <div style="margin: 24px auto 24px auto; padding: 16px 0; background: #fff3cd; color: #ff9800; font-size: 32px; font-weight: bold; text-align: center; border-radius: 10px; border: 1.5px dashed #ffb300; width: 220px;">
                         ${verificationCode}
                     </div>
-                    <p>Este código expirará en <strong>2 horas</strong>. Si no solicitaste este correo, por favor ignóralo.</p>
-                    <p>Si necesitas asistencia, puedes comunicarte con nuestro equipo de soporte.</p>
+                    <p style="margin-bottom: 18px;">Este código expirará en <b>2 horas</b>.</p>
+                    <a href="#" style="display: inline-block; margin: 18px 0 0 0; padding: 10px 28px; background: #ffb300; color: #fff; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 2px 8px rgba(255,179,0,0.10); letter-spacing: 1px;">Ir a Bandoggie</a>
+                    <p style="margin-top: 28px; color: #888; font-size: 14px;">Si no solicitaste este correo, puedes ignorarlo.</p>
                 </div>
-                <div style="background-color: #004e89; text-align: center; padding: 12px; font-size: 14px; color: #ffffff;">
-                    🏥 Hospital Nacional Zacamil - Comprometidos con tu salud 🏥
+                <div style="background: #ffb300; text-align: center; padding: 10px; font-size: 15px; color: #fff; border-top: 1px solid #ffe082;">
+                    🐶 Bandoggie - ¡Cuidamos a tus mejores amigos!
                 </div>
             </div>
         `
