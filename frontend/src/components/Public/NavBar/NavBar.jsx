@@ -1,9 +1,9 @@
 import React from 'react';
 import './Navbar.css'; 
 import { Link } from 'react-router-dom'; 
-import IC_cuenta from '../../img/NavBar/user.png';
-import IC_carrito from '../../img/NavBar/ShoppingCart.png';
-import LogoBandoggie from '../../img/NavBar/LogoBandoggie.png';
+import IC_cuenta from '../../../img/NavBar/user.png';
+import IC_carrito from '../../../img/NavBar/ShoppingCart.png';
+import LogoBandoggie from '../../../img/NavBar/LogoBandoggie.png';
 
 function NavBar() {
   return ( 
@@ -46,7 +46,7 @@ function NavBar() {
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav">
             <a className="nav-item nav-link" href="/">Inicio</a>
-            <a className="nav-item nav-link" href="/AboutUs">Bandanas</a>
+            <a className="nav-item nav-link" href="#">Bandanas</a>
             <a className="nav-item nav-link" href="#">Collares</a>
             <a className="nav-item nav-link" href="#">Accesorios</a>
             <a className="nav-item nav-link" href="#">Festividades</a>
