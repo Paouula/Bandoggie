@@ -46,10 +46,11 @@ function NavBar() {
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav">
             <a className="nav-item nav-link" href="/">Inicio</a>
-            <a className="nav-item nav-link" href="/AboutUs">Bandanas</a>
+            <a className="nav-item nav-link" href="">Bandanas</a>
             <a className="nav-item nav-link" href="#">Collares</a>
             <a className="nav-item nav-link" href="#">Accesorios</a>
-            <a className="nav-item nav-link" href="#">Festividades</a>
+            <a className="nav-item nav-link" href="/Holiday">Festividades</a>
+            <a className="nav-item nav-link" href="/AboutUs">Sobre Nosotros</a>
           </div>
 
           {/* Busqueda */}
