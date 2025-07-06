@@ -1,8 +1,7 @@
-.product-listing {
-  /* Ya no necesita fondo ni padding extra */
+.reviews-listing {
   min-height: 100vh;
   font-family: 'Arial', sans-serif;
-  padding: 0; /* <- Evita margen blanco en los bordes */
+  padding: 0;
 }
 
 .banner-private-wrapper {
@@ -10,7 +9,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* 👇 Este es el espacio blanco entre banner y sección rosada */
   margin-bottom: 30px;
 }
 
@@ -91,193 +89,6 @@
   box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
 }
 
-.search-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  cursor: pointer;
-}
-
-.products-grid {
-  background-color: #FEE3EE; /* Fondo solo en esta sección */
-  border-radius: 15px;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.product-card {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  min-height: 280px;
-}
-
-.product-card.expanded {
-  grid-column: 1 / -1;
-  max-width: none;
-  min-height: auto;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-}
-
-.product-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #ff6b9d, #ffa726);
-}
-
-.product-header {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
-}
-
-.product-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
-  object-fit: cover;
-  border: 3px solid #f0f0f0;
-}
-
-.product-info {
-  flex: 1;
-}
-
-.product-name {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin: 0 0 5px 0;
-}
-
-.product-price {
-  font-size: 16px;
-  color: #ff6b9d;
-  font-weight: bold;
-}
-
-.product-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.action-btn {
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.delete-btn {
-  background: #ff6b9d;
-  color: white;
-}
-
-.delete-btn:hover {
-  background: #ff5588;
-  transform: scale(1.1);
-}
-
-.check-btn {
-  background: #4a90a4;
-  color: white;
-}
-
-.check-btn:hover {
-  background: #357a8a;
-  transform: scale(1.1);
-}
-
-.check-btn.selected {
-  background: #2e6b7a;
-  box-shadow: 0 0 0 3px rgba(78, 144, 164, 0.3);
-}
-
-.product-content {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.product-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-bottom: 15px;
-}
-
-.detail-item {
-  font-size: 13px;
-}
-
-.detail-label {
-  font-weight: bold;
-  color: #666;
-  margin-bottom: 3px;
-}
-
-.detail-value {
-  color: #333;
-}
-
-.rating {
-  display: flex;
-  gap: 2px;
-}
-
-.star {
-  color: #ddd;
-  font-size: 14px;
-  transition: color 0.3s ease;
-}
-
-.star.filled {
-  color: #ffa726;
-}
-
-.comment-section {
-  margin-top: 15px;
-}
-
-.comment {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.4;
-  background: #f8f9fa;
-  padding: 10px;
-  border-radius: 8px;
-  border-left: 4px solid #ff6b9d;
-  position: relative;
-}
-
-.comment.expanded {
-  max-height: none;
-}
-
 .expand-indicator {
   position: absolute;
   right: 10px;
@@ -294,21 +105,9 @@
   font-weight: bold;
 }
 
-.no-reviews {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px 20px;
-  color: #666;
-  font-size: 16px;
-}
-
-.no-reviews-icon {
-  font-size: 48px;
-  margin-bottom: 15px;
-}
 
 @media (max-width: 1200px) {
-  .products-grid {
+  .reviews-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -323,20 +122,20 @@
     flex-wrap: wrap;
   }
 
-  .products-grid {
+  .reviews-grid {
     grid-template-columns: 1fr;
   }
 
-  .product-content {
+  .review-content {
     flex-direction: column;
     gap: 15px;
   }
 
-  .product-details {
+  .review-details {
     min-width: auto;
   }
 
-  .product-card.expanded {
+  .review-card.expanded {
     grid-column: 1;
   }
 }
