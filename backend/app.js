@@ -3,12 +3,16 @@ import express from 'express';
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 
+
 //Rutas Importadas
 
 import clientsRoutes from './src/routes/clients.js';
 import registerRoutes from './src/routes/register.js';
+import registerVetRoutes from './src/routes/registerVet.js'
 import loginRoutes from './src/routes/login.js';
 import logoutRoutes from './src/routes/logout.js';
+import passwordRecovery from './src/routes/passwordRecovery.js';
+
 
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -25,5 +29,7 @@ app.use('/api/clients', clientsRoutes)
 app.use('/api/register', registerRoutes)
 app.use('/api/login', loginRoutes)
 app.use('/api/logout', logoutRoutes)
+app.use('/api/passwordRecovery', passwordRecovery)
+app.use('/api/registerVet', registerVetRoutes)
 
 export default app;

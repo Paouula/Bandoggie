@@ -1,4 +1,4 @@
-import cookieParser from 'cookie-parser'; // Asegúrate de tener esto en tu app principal
+ // Asegúrate de tener esto en tu app principal
 import jsonwebtoken from 'jsonwebtoken';
 import crypto from 'crypto';
 import bcryptjs from 'bcryptjs';
