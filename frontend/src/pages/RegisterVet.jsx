@@ -92,9 +92,11 @@ const RegisterVet = () => {
             id="password"
             placeholder="Ingresa tu contraseña"
             register={register("password", { required: "La contraseña es obligatoria" })}
-            error={errors.password}
           />
+          {errors.password && <span style={{ color: "red" }}>{errors.password.message}</span>}
         </div>
+        
+    
 
         <div className="register-input-group">
           <label htmlFor="locationVet">Ubicación</label>
