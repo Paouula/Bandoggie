@@ -75,7 +75,7 @@ const Register = () => {
       </div>
       <hr />
       <h2 className="register-title">REGISTRO</h2>
-      <Link to="/login">¿Ya tiene una cuenta? Inicie sesión</Link>
+      <Link to="/login">¿Ya tiene una cuenta? Inicia sesión</Link>
       <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
         <div className="register-profile-image-container">
           <ImageLoader id="image" onImageChange={setProfileImage} />

@@ -85,7 +85,7 @@ registerController.verifyEmail = async (req, res) => {
         res.clearCookie('VerificationToken');
         res.status(200).json({ message: "Correo verificado correctamente" });
     } catch (error) {
-        res.status(400).json({ message: "Token inválido o expirado", error });
+        res.status(500).json({ message: "Token inválido o expirado", error });
     }
 };
 

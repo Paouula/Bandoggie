@@ -4,13 +4,16 @@ import './App.css';
 import Login from './pages/Login.jsx';
 import Nav from './components/NavBar/NavBar.jsx';
 import Register from './pages/Register.jsx'; 
+import RegisterVet from './pages/RegisterVet.jsx';
 import VerificationCode from './pages/VerificationCode.jsx';
+import ChooseAccountType from './pages/ChooseAccount.jsx';
+
 
 
 function AppContent() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(true);
-  const authRoutes = ['/login', '/register', '/verification-code'];
+  const authRoutes = ['/login', '/register', '/register-vet', '/verification-code', '/choose-account'];
 
   useEffect(() => {
     const currentPath = location.pathname.toLowerCase().replace(/\/$/, '');
@@ -28,6 +31,8 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verification-code" element={<VerificationCode />} />
+          <Route path="/register-vet" element={<RegisterVet />} />
+          <Route path="/choose-account" element={<ChooseAccountType />} />
         </Routes>
       </div>
     </>

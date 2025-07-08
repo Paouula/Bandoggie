@@ -90,7 +90,7 @@ passwordRecovery.verifyCode = async (req, res) => {
     return res.status(200).json({ message: 'Código verificado con éxito' });
   } catch (error) {
     console.error('Error: ' + error);
-    return res.status(400).json({ message: 'Token inválido o expirado', error });
+    return res.status(500).json({ message: 'Token inválido o expirado', error });
   }
 };
 

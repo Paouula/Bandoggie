@@ -52,7 +52,7 @@ const Login = () => {
         </div>
         <hr />
         <h2>Iniciar Sesión</h2>
-        <Link className="small-link" to="/register">¿No tienes una cuenta aún? Regístrate</Link>
+        <Link className="small-link" to="/choose-account">¿No tienes una cuenta aún? Regístrate</Link>
         <form onSubmit={handleSubmit(onSubmit)}>
           <label htmlFor="email">Correo Electrónico</label>
           <InputComponent
