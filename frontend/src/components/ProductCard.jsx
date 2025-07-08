@@ -4,190 +4,115 @@ const ProductCard = ({ product }) => {
   return (
     <>
       <style>{`
-        /* Grid contenedor */
-        .product-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 8px;
-          padding: 8px;
-          max-width: 1280px;
-          margin: 0 auto;
-          width: 100%;
-        }
+       /* Grid contenedor */
+       .product-grid {
+         display: grid;
+         grid-template-columns: repeat(2, 1fr);
+         gap: 16px;
+         padding: 16px;
+         max-width: 1280px;
+         margin: 0 auto;
+       }
 
-        /* Mobile First - Muy pequeño */
-        @media (max-width: 320px) {
-          .product-grid {
-            padding: 4px;
-            gap: 4px;
-          }
-        }
+       @media (max-width: 480px) {
+         .product-grid {
+           padding: 8px 12px;
+           gap: 12px;
+         }
+       }
 
-        /* Mobile - Pequeño */
-        @media (min-width: 321px) and (max-width: 480px) {
-          .product-grid {
-            padding: 6px;
-            gap: 6px;
-          }
-        }
+       @media (min-width: 1024px) {
+         .product-grid {
+           grid-template-columns: repeat(4, 1fr);
+         }
+       }
 
-        /* Mobile - Mediano */
-        @media (min-width: 481px) and (max-width: 640px) {
-          .product-grid {
-            padding: 8px;
-            gap: 8px;
-          }
-        }
+       /* Tarjeta de producto */
+       .product-card {
+         border: 1px solid #e5e7eb;
+         border-radius: 12px;
+         background-color: white;
+         overflow: hidden;
+         transition: transform 0.2s ease;
+         padding: 16px;
+         width: 100%;
+         box-sizing: border-box;
+       }
 
-        /* Tablet - Pequeño */
-        @media (min-width: 641px) and (max-width: 768px) {
-          .product-grid {
-            grid-template-columns: repeat(3, 1fr);
-            padding: 12px;
-            gap: 10px;
-          }
-        }
+       .product-card:hover {
+         transform: scale(1.01);
+       }
 
-        /* Tablet - Mediano */
-        @media (min-width: 769px) and (max-width: 1024px) {
-          .product-grid {
-            grid-template-columns: repeat(3, 1fr);
-            padding: 16px;
-            gap: 12px;
-          }
-        }
+       .product-image {
+         width: 100%;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         margin-bottom: 16px;
+       }
 
-        /* Desktop - Pequeño */
-        @media (min-width: 1025px) and (max-width: 1280px) {
-          .product-grid {
-            grid-template-columns: repeat(4, 1fr);
-            padding: 20px;
-            gap: 16px;
-          }
-        }
+       .product-image img {
+         width: 100%;
+         max-width: 200px;
+         height: 200px;
+         object-fit: cover;
+         border-radius: 8px;
+         display: block;
+       }
 
-        /* Desktop - Grande */
-        @media (min-width: 1281px) {
-          .product-grid {
-            grid-template-columns: repeat(5, 1fr);
-            padding: 24px;
-            gap: 20px;
-          }
-        }
+       /* Responsive para móviles */
+       @media (max-width: 480px) {
+         .product-card {
+           padding: 12px;
+         }
+         
+         .product-image img {
+           max-width: 140px;
+           height: 140px;
+         }
+         
+         .product-image {
+           margin-bottom: 12px;
+         }
+       }
 
-        /* Tarjeta de producto */
-        .product-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          background-color: white;
-          overflow: hidden;
-          transition: transform 0.2s ease;
-          padding: 8px;
-          width: 100%;
-          min-width: 0;
-        }
+       /* Responsive para tablets */
+       @media (max-width: 768px) and (min-width: 481px) {
+         .product-image img {
+           max-width: 180px;
+           height: 180px;
+         }
+       }
 
-        .product-card:hover {
-          transform: scale(1.01);
-        }
+       .product-info {
+         padding: 0;
+         text-align: left;
+       }
 
-        /* Responsive para padding de las tarjetas */
-        @media (min-width: 481px) {
-          .product-card {
-            padding: 12px;
-            border-radius: 10px;
-          }
-        }
+       .product-name {
+         font-size: 1rem;
+         font-weight: 500;
+         color: #111827;
+         margin-bottom: 6px;
+         line-height: 1.4;
+       }
 
-        @media (min-width: 769px) {
-          .product-card {
-            padding: 16px;
-            border-radius: 12px;
-          }
-        }
+       .product-price {
+         font-size: 1.125rem;
+         font-weight: 700;
+         color: #111827;
+       }
 
-        .product-image img {
-          width: 100%;
-          height: 200px;
-          object-fit: cover;
-          border-radius: 8px;
-        }
-
-        /* Responsive para las imágenes */
-        @media (max-width: 480px) {
-          .product-image img {
-            height: 120px;
-          }
-        }
-
-        @media (min-width: 481px) and (max-width: 767px) {
-          .product-image img {
-            height: 150px;
-          }
-        }
-
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .product-image img {
-            height: 180px;
-          }
-        }
-
-        .product-info {
-          padding: 4px 0;
-          text-align: left;
-        }
-
-        @media (min-width: 481px) {
-          .product-info {
-            padding: 8px 0;
-          }
-        }
-
-        @media (min-width: 769px) {
-          .product-info {
-            padding: 12px 0;
-          }
-        }
-
-        .product-name {
-          font-size: 0.75rem;
-          font-weight: 500;
-          color: #111827;
-          margin-bottom: 4px;
-          line-height: 1.3;
-        }
-
-        @media (min-width: 481px) {
-          .product-name {
-            font-size: 0.875rem;
-            margin-bottom: 6px;
-          }
-        }
-
-        @media (min-width: 769px) {
-          .product-name {
-            font-size: 1rem;
-            line-height: 1.4;
-          }
-        }
-
-        .product-price {
-          font-size: 0.875rem;
-          font-weight: 700;
-          color: #111827;
-        }
-
-        @media (min-width: 481px) {
-          .product-price {
-            font-size: 1rem;
-          }
-        }
-
-        @media (min-width: 769px) {
-          .product-price {
-            font-size: 1.125rem;
-          }
-        }
+       /* Responsive para textos en móviles */
+       @media (max-width: 480px) {
+         .product-name {
+           font-size: 0.875rem;
+         }
+         
+         .product-price {
+           font-size: 1rem;
+         }
+       }
       `}</style>
 
       <div className="product-card">
@@ -200,57 +125,9 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
     </>
+
+    
   );
 };
 
-// Componente de ejemplo para mostrar el grid completo
-const ProductGrid = () => {
-  const sampleProducts = [
-    {
-      id: 1,
-      name: "Blusa Y2K de Manga Campanada",
-      price: "$8.59",
-      image: "/api/placeholder/200/200"
-    },
-    {
-      id: 2,
-      name: "Camiseta casual de cuadros Y2K",
-      price: "$7.52",
-      image: "/api/placeholder/200/200"
-    },
-    {
-      id: 3,
-      name: "Bandolera de Mujer en Marrón",
-      price: "$14.39",
-      image: "/api/placeholder/200/200"
-    },
-    {
-      id: 4,
-      name: "Top de protección solar casual",
-      price: "$10.42",
-      image: "/api/placeholder/200/200"
-    },
-    {
-      id: 5,
-      name: "Pantalones amplios casuales",
-      price: "$15.99",
-      image: "/api/placeholder/200/200"
-    },
-    {
-      id: 6,
-      name: "Zapatillas deportivas verdes",
-      price: "$24.99",
-      image: "/api/placeholder/200/200"
-    }
-  ];
-
-  return (
-    <div className="product-grid">
-      {sampleProducts.map(product => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-    </div>
-  );
-};
-
-export default ProductGrid;
+export default ProductCard;
