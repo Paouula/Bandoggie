@@ -119,6 +119,7 @@ hr {
 .register-button {
   background-color: #365A7D;
   color: white;
+  font-family: 'Raleway';
   border: none;
   padding: 12px;
   border-radius: 10px;
@@ -162,6 +163,7 @@ hr {
 
   .register-button {
     font-size: 1rem;
+    font-family: 'Raleway';
     padding: 10px;
   }
 }

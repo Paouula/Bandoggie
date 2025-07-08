@@ -71,7 +71,8 @@ const Login = () => {
             register={register("password", { required: true })}
           />
           {errors.password && <span style={{ color: "red" }}>Este campo es obligatorio</span>}
-          <p className="forgot">¿Olvidaste tu contraseña?</p>
+          {/*<p className="forgot">¿Olvidaste tu contraseña?</p>*/}
+          <Link className="small-link" to="/request-code">¿Olvidaste tu contraseña?</Link>
           <ButtonComponent type="submit">Confirmar</ButtonComponent>
         </form>
       </div>
