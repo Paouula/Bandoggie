@@ -42,7 +42,7 @@ const HolidayCarousel = () => {
       image: DogAñonuevo
     },
     { 
-      name: 'Pascuas', 
+      name: 'Cumpleaños', 
       bgColor: 'bg-orange-400',
       image: DogPascuas
     }

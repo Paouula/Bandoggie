@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
-import { ChevronRight, Filter, ChevronLeft } from 'lucide-react';
-import './ChristmasHoliday.css'; // Importar el archivo CSS
+import NavigationHoliday from '../../../components/NavegationHoliday';
+import BannerHoliday from '../../../components/BannerHoliday.jsx';
+import ProductFilters from '../../../components/Filter.jsx';
+import ProductGrid from '../../../components/ProductGrid.jsx';
+import './ChristmasHoliday.css';
+
+// Imágenes Products
+import ProductsCH from '../../../img/ChristmasHoliday/ProductsCH.png';
+import ProductsCH2 from '../../../img/ChristmasHoliday/ProductCH2.png';
+import ProductsCH3 from '../../../img/ChristmasHoliday/ProductCH3.png';
+import ProductsCH4 from '../../../img/ChristmasHoliday/ProductCH4.png';
+import ProductsCH5 from '../../../img/ChristmasHoliday/ProductCH5.png';
+import ProductsCH6 from '../../../img/ChristmasHoliday/ProductCH6.png';
+import ProductsCH7 from '../../../img/ChristmasHoliday/ProductCH7.png';
+import ProductsCH8 from '../../../img/ChristmasHoliday/ProductCH8.png';
 
 const ChristmasPetStore = () => {
   const [selectedFilter, setSelectedFilter] = useState('Por defecto');
@@ -11,181 +24,109 @@ const ChristmasPetStore = () => {
       id: 1,
       name: 'Bandanas navideñas con texto incluido',
       price: 'Desde $7.50',
-      image: '/api/placeholder/150/150',
+      image: ProductsCH,
       category: 'bandanas'
     },
     {
       id: 2,
       name: 'Bandanas inspirada en Santa Claus',
       price: 'Desde $8.00',
-      image: '/api/placeholder/150/150',
+      image: ProductsCH2,
       category: 'bandanas'
     },
     {
       id: 3,
       name: 'Bandanas navideña de crochet',
       price: 'Desde $11.00',
-      image: '/api/placeholder/150/150',
+      image: ProductsCH3,
       category: 'bandanas'
     },
     {
       id: 4,
       name: 'Bandanas inspirado en un gorro navideño',
       price: 'Desde $9.99',
-      image: '/api/placeholder/150/150',
+      image: ProductsCH4,
       category: 'bandanas'
     },
     {
       id: 5,
       name: 'Bandanas inspiradas en Santa',
       price: 'Desde $7.00',
-      image: '/api/placeholder/150/150',
+      image: ProductsCH5,
       category: 'bandanas'
     },
     {
       id: 6,
       name: 'Bandanas navideñas con estampado',
       price: 'Desde $8.00',
-      image: '/api/placeholder/150/150',
+      image: ProductsCH6,
       category: 'bandanas'
     },
     {
       id: 7,
       name: 'Bandanas navideñas con diseño elaborado',
       price: 'Desde $12.50',
-      image: '/api/placeholder/150/150',
+      image: ProductsCH7,
       category: 'bandanas'
     },
     {
       id: 8,
       name: 'Bandanas navideñas con bordado',
       price: 'Desde $6.00',
-      image: '/api/placeholder/150/150',
+      image: ProductsCH8,
       category: 'bandanas'
     }
   ];
 
-  const breadcrumbs = ['Navidad', 'Halloween', 'San Valentín', 'Patria'];
+  const breadcrumbs = ['Navidad', 'Halloween', 'San Valentín', 'Días Patrios', 'Año Nuevo', 'Cumpleaños'];
+
+  // 🔥 FUNCIÓN DE NAVEGACIÓN - Conecta con tu sistema de rutas
+  const handleNavigate = (item, index) => {
+    const pageRoutes = {
+      'Navidad': '/christmas-holiday',
+      'Halloween': '/halloween-holiday', 
+      'San Valentín': '/valentines-holiday',
+      'Días Patrios': '/patriotic-holiday',
+      'Año Nuevo': '/new-year-holiday',
+      'Cumpleaños': '/birthday-holiday'
+    };
+
+    const route = pageRoutes[item];
+    console.log(`Navegando a: ${item} - Ruta: ${route}`);
+    
+    // 🔥 DESCOMENTA LA OPCIÓN QUE USES:
+    
+    // Opción 1 - Navegación directa:
+    // window.location.href = route;
+    
+    // Opción 2 - React Router (useNavigate):
+    // navigate(route);
+    
+    // Opción 3 - Next.js Router:
+    // router.push(route);
+  };
 
   return (
     <div className="christmas-store">
-      {/* Header/Breadcrumbs */}
-      <div className="header">
-        <div className="breadcrumbs">
-          {breadcrumbs.map((item, index) => (
-            <React.Fragment key={item}>
-              <span className={`breadcrumb-item ${index === 0 ? 'active' : ''}`}>
-                {item}
-              </span>
-              {index < breadcrumbs.length - 1 && (
-                <span className="breadcrumb-separator">▸</span>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      {/* Hero Section */}
-      <div className="hero">
-        {/* Decorative elements */}
-        <div className="hero-decorations">
-          <div className="hero-decoration decoration-1"></div>
-          <div className="hero-decoration decoration-2"></div>
-          <div className="hero-decoration decoration-3"></div>
-          <div className="hero-decoration decoration-4"></div>
-        </div>
-        
-        {/* Navigation arrows */}
-        <button className="hero-nav-button prev">
-          <ChevronLeft size={24} />
-        </button>
-        <button className="hero-nav-button next">
-          <ChevronRight size={24} />
-        </button>
-
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">Navidad</h1>
-            <p className="hero-description">
-              Lindas y personalizables bandanas para<br />
-              tus peluditos con temática navideña
-            </p>
-            <button className="hero-button">
-              Comprar
-            </button>
-          </div>
-          
-          {/* Dog image placeholder */}
-          <div className="hero-image">
-            <div className="hero-image-container">
-              <div className="hero-image-inner">
-                <span>🐕</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
+      {/* 🔥 COMPONENTE DE NAVEGACIÓN CON PROPS CORRECTAS */}
+      <NavigationHoliday 
+        breadcrumbs={breadcrumbs}
+        currentPage="Navidad"
+        onNavigate={handleNavigate}
+      />
+      
+      {/* 🔥 TUS COMPONENTES EXISTENTES */}
+      <BannerHoliday />
+      
       <div className="main-content">
-        {/* Filters */}
-        <div className="filters">
-          <div className="filter-controls">
-            <button 
-              onClick={() => setShowFilters(!showFilters)}
-              className="filter-button"
-            >
-              <Filter size={16} />
-              Filtrar
-            </button>
-            
-            <div className="sort-controls">
-              <span>Ordenar por:</span>
-              <select 
-                value={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
-                className="sort-select"
-              >
-                <option>Por defecto</option>
-                <option>Precio: menor a mayor</option>
-                <option>Precio: mayor a menor</option>
-                <option>Más populares</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Product Grid */}
-        <div className="product-grid">
-          {products.map((product) => (
-            <div key={product.id} className="product-card">
-              <div className="product-image">
-                <span>🎄</span>
-              </div>
-              <div className="product-info">
-                <h3 className="product-name">
-                  {product.name}
-                </h3>
-                <p className="product-price">
-                  {product.price}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Pagination */}
-        <div className="pagination">
-          <div className="pagination-controls">
-            <button className="pagination-button">
-              Anterior
-            </button>
-            <span className="pagination-separator">|</span>
-            <button className="pagination-button">
-              Siguiente
-            </button>
-          </div>
-        </div>
+        <ProductFilters 
+          selectedFilter={selectedFilter}
+          setSelectedFilter={setSelectedFilter}
+          showFilters={showFilters}
+          setShowFilters={setShowFilters}
+        />
+        
+        <ProductGrid products={products} />
       </div>
     </div>
   );
