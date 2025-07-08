@@ -3,80 +3,80 @@ import Navigation from '../../../components/NavegationHoliday.jsx';
 import Banner from '../../../components/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
 import ProductGrid from '../../../components/ProductGrid.jsx';
-import './HalloweenHoliday.css';
+import './ValentineHoliday.css';
 
-// Imágenes Products
-import ProductHH from '../../../img/HalloweenHoliday/ProductHH.jpg';
-import ProductHH2 from '../../../img/HalloweenHoliday/ProductHH2.jpg';
-import ProductHH3 from '../../../img/HalloweenHoliday/ProductHH3.jpg';
-import ProductHH4 from '../../../img/HalloweenHoliday/ProductHH4.jpg';
-import ProductHH5 from '../../../img/HalloweenHoliday/ProductHH5.jpg';
-import ProductHH6 from '../../../img/HalloweenHoliday/ProductHH6.jpg';
-import ProductHH7 from '../../../img/HalloweenHoliday/ProductHH7.jpg';
-import ProductHH8 from '../../../img/HalloweenHoliday/ProductHH8.jpg';
+// Imágenes de productos
+import ProductVH from '../../../img/ValentineHoliday/ProductVH.jpg';
+import ProductVH2 from '../../../img/ValentineHoliday/ProductVH2.jpg';
+import ProductVH3 from '../../../img/ValentineHoliday/ProductVH3.jpg';
+import ProductVH4 from '../../../img/ValentineHoliday/ProductVH4.jpg';
+import ProductVH5 from '../../../img/ValentineHoliday/ProductVH5.jpg';
+import ProductVH6 from '../../../img/ValentineHoliday/ProductVH6.jpg';
+import ProductVH7 from '../../../img/ValentineHoliday/ProductVH7.jpg';
+import ProductVH8 from '../../../img/ValentineHoliday/ProductVH8.jpg';
 
-// Img Banner
-import DogHalloween from '../../../img/HalloweenHoliday/DogHalloween.png';
+// Imagen del banner
+import DogValentine from '../../../img/ValentineHoliday/DogValentine.png';
 
-const HalloweenPetStore = () => {
+const ValentinePetStore = () => {
   const [selectedFilter, setSelectedFilter] = useState('Por defecto');
   const [showFilters, setShowFilters] = useState(false);
 
   const products = [
     {
       id: 1,
-      name: 'Bandana con calabazas y fantasmas',
+      name: 'Bandana con corazones rojos',
       price: 'Desde $7.50',
-      image: ProductHH,
+      image: ProductVH,
       category: 'bandanas'
     },
     {
       id: 2,
-      name: 'Bandana estilo murciélago',
+      name: 'Bandana "Be My Valentine"',
       price: 'Desde $8.00',
-      image: ProductHH2,
+      image: ProductVH2,
       category: 'bandanas'
     },
     {
       id: 3,
-      name: 'Bandana de telaraña morada',
+      name: 'Bandana rosa con encaje',
       price: 'Desde $11.00',
-      image: ProductHH3,
+      image: ProductVH3,
       category: 'bandanas'
     },
     {
       id: 4,
-      name: 'Bandana con gorro de bruja',
+      name: 'Bandana con estampado de amor',
       price: 'Desde $9.99',
-      image: ProductHH4,
+      image: ProductVH4,
       category: 'bandanas'
     },
     {
       id: 5,
-      name: 'Bandana "Truco o Trato"',
+      name: 'Bandana con mensaje romántico',
       price: 'Desde $7.00',
-      image: ProductHH5,
+      image: ProductVH5,
       category: 'bandanas'
     },
     {
       id: 6,
-      name: 'Bandana con estampado de esqueletos',
+      name: 'Bandana rosada con huellitas',
       price: 'Desde $8.00',
-      image: ProductHH6,
+      image: ProductVH6,
       category: 'bandanas'
     },
     {
       id: 7,
-      name: 'Bandana de calaveras y rosas negras',
+      name: 'Bandana estilo carta de amor',
       price: 'Desde $12.50',
-      image: ProductHH7,
+      image: ProductVH7,
       category: 'bandanas'
     },
     {
       id: 8,
-      name: 'Bandana con bordado de gato negro',
+      name: 'Bandana con ositos y corazones',
       price: 'Desde $6.00',
-      image: ProductHH8,
+      image: ProductVH8,
       category: 'bandanas'
     }
   ];
@@ -84,17 +84,17 @@ const HalloweenPetStore = () => {
   const breadcrumbs = ['Navidad', 'Halloween', 'San Valentín', 'Patria', 'Año Nuevo', 'Cumpleaños'];
 
   return (
-    <div className="halloween-store">
+    <div className="valentine-store">
       <Navigation breadcrumbs={breadcrumbs} />
       
       <Banner 
-        title="Halloween"
-        description="¡Dale un toque aterrador y adorable a tu peludo con nuestras bandanas de Halloween!"
+        title="San Valentín"
+        description="Celebra el amor con nuestras adorables bandanas temáticas para tu peludo. "
         buttonText="Comprar"
-        dogImage={DogHalloween}
-        backgroundColor="#D371D8"
-        textColor="#f5f5f5"
-        titleColor="#f5f5f5"
+        dogImage={DogValentine}
+        backgroundColor="#ff4d88"
+        textColor="#fff0f5"
+        titleColor="#ffffff"
         buttonTextColor="#000000"
       />
       
@@ -112,4 +112,4 @@ const HalloweenPetStore = () => {
   );
 };
 
-export default HalloweenPetStore;
+export default ValentinePetStore;

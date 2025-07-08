@@ -3,80 +3,80 @@ import Navigation from '../../../components/NavegationHoliday.jsx';
 import Banner from '../../../components/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
 import ProductGrid from '../../../components/ProductGrid.jsx';
-import './HalloweenHoliday.css';
+import './NewYearHoliday.css';
 
-// Imágenes Products
-import ProductHH from '../../../img/HalloweenHoliday/ProductHH.jpg';
-import ProductHH2 from '../../../img/HalloweenHoliday/ProductHH2.jpg';
-import ProductHH3 from '../../../img/HalloweenHoliday/ProductHH3.jpg';
-import ProductHH4 from '../../../img/HalloweenHoliday/ProductHH4.jpg';
-import ProductHH5 from '../../../img/HalloweenHoliday/ProductHH5.jpg';
-import ProductHH6 from '../../../img/HalloweenHoliday/ProductHH6.jpg';
-import ProductHH7 from '../../../img/HalloweenHoliday/ProductHH7.jpg';
-import ProductHH8 from '../../../img/HalloweenHoliday/ProductHH8.jpg';
+// Imágenes de productos de Año Nuevo
+import ProductNY1 from '../../../img/NewYearHoliday/ProductNY1.jpg';
+import ProductNY2 from '../../../img/NewYearHoliday/ProductNY2.jpg';
+import ProductNY3 from '../../../img/NewYearHoliday/ProductNY3.jpg';
+import ProductNY4 from '../../../img/NewYearHoliday/ProductNY4.jpg';
+import ProductNY5 from '../../../img/NewYearHoliday/ProductNY5.jpg';
+import ProductNY6 from '../../../img/NewYearHoliday/ProductNY6.jpg';
+import ProductNY7 from '../../../img/NewYearHoliday/ProductNY7.jpg';
+import ProductNY8 from '../../../img/NewYearHoliday/ProductNY8.jpg';
 
-// Img Banner
-import DogHalloween from '../../../img/HalloweenHoliday/DogHalloween.png';
+// Imagen del banner
+import DogNewYear from '../../../img/NewYearHoliday/DogNewYear.png';
 
-const HalloweenPetStore = () => {
+const NewYearPetStore = () => {
   const [selectedFilter, setSelectedFilter] = useState('Por defecto');
   const [showFilters, setShowFilters] = useState(false);
 
   const products = [
     {
       id: 1,
-      name: 'Bandana con calabazas y fantasmas',
+      name: 'Bandana con fuegos artificiales',
       price: 'Desde $7.50',
-      image: ProductHH,
+      image: ProductNY1,
       category: 'bandanas'
     },
     {
       id: 2,
-      name: 'Bandana estilo murciélago',
+      name: 'Bandana dorada festiva',
       price: 'Desde $8.00',
-      image: ProductHH2,
+      image: ProductNY2,
       category: 'bandanas'
     },
     {
       id: 3,
-      name: 'Bandana de telaraña morada',
+      name: 'Bandana Feliz Año Nuevo',
       price: 'Desde $11.00',
-      image: ProductHH3,
+      image: ProductNY3,
       category: 'bandanas'
     },
     {
       id: 4,
-      name: 'Bandana con gorro de bruja',
+      name: 'Bandana con copas y burbujas',
       price: 'Desde $9.99',
-      image: ProductHH4,
+      image: ProductNY4,
       category: 'bandanas'
     },
     {
       id: 5,
-      name: 'Bandana "Truco o Trato"',
+      name: 'Bandana negra con dorado',
       price: 'Desde $7.00',
-      image: ProductHH5,
+      image: ProductNY5,
       category: 'bandanas'
     },
     {
       id: 6,
-      name: 'Bandana con estampado de esqueletos',
+      name: 'Bandana con reloj de medianoche',
       price: 'Desde $8.00',
-      image: ProductHH6,
+      image: ProductNY6,
       category: 'bandanas'
     },
     {
       id: 7,
-      name: 'Bandana de calaveras y rosas negras',
+      name: 'Bandana brillante edición especial',
       price: 'Desde $12.50',
-      image: ProductHH7,
+      image: ProductNY7,
       category: 'bandanas'
     },
     {
       id: 8,
-      name: 'Bandana con bordado de gato negro',
+      name: 'Bandana con estrellas doradas',
       price: 'Desde $6.00',
-      image: ProductHH8,
+      image: ProductNY8,
       category: 'bandanas'
     }
   ];
@@ -84,17 +84,17 @@ const HalloweenPetStore = () => {
   const breadcrumbs = ['Navidad', 'Halloween', 'San Valentín', 'Patria', 'Año Nuevo', 'Cumpleaños'];
 
   return (
-    <div className="halloween-store">
+    <div className="newyear-store">
       <Navigation breadcrumbs={breadcrumbs} />
       
       <Banner 
-        title="Halloween"
-        description="¡Dale un toque aterrador y adorable a tu peludo con nuestras bandanas de Halloween!"
+        title="Año Nuevo"
+        description="¡Recibe el nuevo año con estilo! Descubre nuestras bandanas brillantes y festivas para tu mascota."
         buttonText="Comprar"
-        dogImage={DogHalloween}
-        backgroundColor="#D371D8"
-        textColor="#f5f5f5"
-        titleColor="#f5f5f5"
+        dogImage={DogNewYear}
+        backgroundColor="#0B132B"
+        textColor="#ffffff"
+        titleColor="#FFD700"
         buttonTextColor="#000000"
       />
       
@@ -112,4 +112,4 @@ const HalloweenPetStore = () => {
   );
 };
 
-export default HalloweenPetStore;
+export default NewYearPetStore;

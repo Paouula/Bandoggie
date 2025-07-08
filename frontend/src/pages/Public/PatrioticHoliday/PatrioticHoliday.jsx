@@ -3,77 +3,74 @@ import Navigation from '../../../components/NavegationHoliday.jsx';
 import Banner from '../../../components/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
 import ProductGrid from '../../../components/ProductGrid.jsx';
-import './ChristmasHoliday.css';
+import './PatrioticHoliday.css';
 
-// Imágenes Products
-import ProductHH from '../../../img/HalloweenHoliday/ProductHH.png';
-import ProductHH2 from '../../../img/HalloweenHoliday/ProductHH2.png';
-import ProductHH3 from '../../../img/HalloweenHoliday/ProductHH3.png';
-import ProductHH4 from '../../../img/HalloweenHoliday/ProductHH4.png';
-import ProductHH5 from '../../../img/HalloweenHoliday/ProductHH5.png';
-import ProductHH6 from '../../../img/HalloweenHoliday/ProductHH6.png';
-import ProductHH7 from '../../../img/HalloweenHoliday/ProductHH7.png';
-import ProductHH8 from '../../../img/HalloweenHoliday/ProductHH8.png';
+// Imágenes de productos 
+import ProductPH from '../../../img/PatrioticHoliday/ProductPH.png';
 
-const ChristmasPetStore = () => {
+
+// Imagen del banner
+import DogPatriotic from '../../../img/PatrioticHoliday/DogPatriotic.png';
+
+const PatrioticPetStore = () => {
   const [selectedFilter, setSelectedFilter] = useState('Por defecto');
   const [showFilters, setShowFilters] = useState(false);
 
   const products = [
     {
       id: 1,
-      name: 'Bandanas navideñas con texto incluido',
+      name: 'Bandana con bandera salvadoreña',
       price: 'Desde $7.50',
-      image: ProductHH,
+      image: ProductPH,
       category: 'bandanas'
     },
     {
       id: 2,
-      name: 'Bandanas inspirada en Santa Claus',
+      name: 'Bandana azul con escudo nacional',
       price: 'Desde $8.00',
-      image: ProductHH2,
+      image: ProductPH,
       category: 'bandanas'
     },
     {
       id: 3,
-      name: 'Bandanas navideña de crochet',
+      name: 'Bandana patriótica bordada',
       price: 'Desde $11.00',
-      image: ProductHH3,
+      image: ProductPH,
       category: 'bandanas'
     },
     {
       id: 4,
-      name: 'Bandanas inspirado en un gorro navideño',
+      name: 'Bandana con frases patrióticas',
       price: 'Desde $9.99',
-      image: ProductHH4,
+      image: ProductPH,
       category: 'bandanas'
     },
     {
       id: 5,
-      name: 'Bandanas inspiradas en Santa',
+      name: 'Bandana con rayas azul y blanco',
       price: 'Desde $7.00',
-      image: ProductHH5,
+      image: ProductPH,
       category: 'bandanas'
     },
     {
       id: 6,
-      name: 'Bandanas navideñas con estampado',
+      name: 'Bandana de independencia',
       price: 'Desde $8.00',
-      image: ProductHH6,
+      image: ProductPH,
       category: 'bandanas'
     },
     {
       id: 7,
-      name: 'Bandanas navideñas con diseño elaborado',
+      name: 'Bandana con símbolos patrios',
       price: 'Desde $12.50',
-      image: ProductHH7,
+      image: ProductPH,
       category: 'bandanas'
     },
     {
       id: 8,
-      name: 'Bandanas navideñas con bordado',
+      name: 'Bandana azul cielo edición especial',
       price: 'Desde $6.00',
-      image: ProductHH8,
+      image: ProductPH,
       category: 'bandanas'
     }
   ];
@@ -81,10 +78,18 @@ const ChristmasPetStore = () => {
   const breadcrumbs = ['Navidad', 'Halloween', 'San Valentín', 'Patria', 'Año Nuevo', 'Cumpleaños'];
 
   return (
-    <div className="christmas-store">
+    <div className="patriotic-store">
       <Navigation breadcrumbs={breadcrumbs} />
       
-      <Banner />
+      <Banner 
+        title="Días Patrios"
+        description="Celebra el orgullo salvadoreño con nuestras bandanas patrióticas para tu mejor amigo"
+        buttonText="Comprar"
+        dogImage={DogPatriotic}
+        textColor="#f5f5f5"
+        titleColor="#f5f5f5"
+        buttonTextColor="#000000"
+      />
       
       <div className="main-content">
         <ProductFilters 
@@ -100,4 +105,4 @@ const ChristmasPetStore = () => {
   );
 };
 
-export default ChristmasPetStore;
+export default PatrioticPetStore;
