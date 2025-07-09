@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import useFetchRegister from "../hooks/Register/UseFetchRegister.js";
-import InputComponent from "../components/Input";
-import Button from "../components/Button";
+import InputComponent from "../components/Input/Input.jsx";
+import Button from "../components/Button/Button.jsx";
 import ImageLoader from "../components/ImageLoader/ImageLoader";
 import logo from "../img/NavBar/LogoBandoggie.png";
 import "../assets/styles/Register.css";
@@ -177,12 +177,16 @@ const Register = () => {
             placeholder="Ingresa tu contraseña"
             register={register("password", {
               required: "La contraseña es obligatoria",
+              minLength: {
+                value: 8,
+                message: "Debe tener al menos 8 caracteres",
+              },
             })}
             error={errors.password}
           />
         </div>
         <div className="register-forgot">
-          <a href="#">¿Olvidaste tu contraseña?</a>
+          <Link to="/request-code">¿Olvidaste tu contraseña?</Link>
         </div>
         <Button type="submit" className="register-button" disabled={isSubmitting}>
           {isSubmitting ? "Enviando..." : "Siguiente"}

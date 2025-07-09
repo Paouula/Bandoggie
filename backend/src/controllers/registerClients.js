@@ -2,6 +2,7 @@
 import jsonwebtoken from 'jsonwebtoken';
 import crypto from 'crypto';
 import bcryptjs from 'bcryptjs';
+import vetModel from '../models/Vets.js';
 import clientsModel from '../models/Clients.js';
 import {config} from '../config.js';
 import cloudinary from 'cloudinary';
@@ -20,7 +21,8 @@ registerController.register = async (req, res) => {
     let imgUrl = "";
     try {
         const existingClient = await clientsModel.findOne({ email });
-        if (existingClient) {
+        const existingEmail = await vetModel.findOne({ email })
+        if (existingClient || existingEmail) {
             return res.status(400).json({ message: "El correo ya está registrado." });
         }
 

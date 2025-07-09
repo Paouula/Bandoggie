@@ -98,10 +98,12 @@ passwordRecovery.newPassword = async (req, res) => {
   const { newPassword } = req.body;
 
   try {
+
     const token = req.cookies.tokenRecoveryCode;
     if (!token) {
       return res.status(401).json({ message: 'Token no encontrado' });
     }
+
 
     const decoded = jsonwebtoken.verify(token, config.JWT.secret);
     if (!decoded.verified) {
@@ -123,10 +125,19 @@ passwordRecovery.newPassword = async (req, res) => {
 
     const hashPassword = await bcryptjs.hash(newPassword, 10);
 
-    if (userType === 'client') {
-      await clientsModel.findByIdAndUpdate(user._id, { password: hashPassword }, { new: true });
-    } else {
-      await vetModel.findByIdAndUpdate(user._id, { password: hashPassword }, { new: true });
+    const isSamePassword = await bcryptjs.compare(newPassword, user.password);
+
+    if (isSamePassword) {
+      return res.status(400).json({
+        message: "La nueva contraseña no puede ser igual a la anterior",
+      });
+    }
+    else {
+      if (userType === 'client') {
+        await clientsModel.findByIdAndUpdate(user._id, { password: hashPassword }, { new: true });
+      } else {
+        await vetModel.findByIdAndUpdate(user._id, { password: hashPassword }, { new: true });
+      }
     }
 
     res.clearCookie('tokenRecoveryCode');

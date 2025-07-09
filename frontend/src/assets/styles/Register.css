@@ -8,10 +8,11 @@ body {
   padding-bottom: 40px;
   padding-top: 40px;
 }
+
 a {
   color: #ff9900;
-    font-size: 13px;
-    margin-bottom: 20px;
+  font-size: 13px;
+  margin-bottom: 20px;
   text-decoration: none;
   transition: 800ms;
 }
@@ -24,12 +25,13 @@ p {
 }
 
 a:hover {
-  transition:800ms;
+  transition: 800ms;
   text-decoration: none;
   color: #365A7D;
 }
 
-.register-container {
+.register-container,
+.recovery-container {
   margin-bottom: 30px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
@@ -52,10 +54,11 @@ a:hover {
   height: 50px;
 }
 
-.register-title {
+.register-title,
+.recovery-container h2 {
   color: #365A7D;
   margin: 10px 0;
-  font-family: 'Baloo Bhaijaan 2';
+  font-family: 'Baloo Bhaijaan 2', sans-serif;
   font-weight: bold;
   font-size: 24px;
 }
@@ -80,31 +83,11 @@ a:hover {
   cursor: pointer;
 }
 
-.register-form {
+.register-form,
+.recovery-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-bottom: 20px;
-}
-
-.register-input-group {
-  position: relative;
-}
-
-.register-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #b4ceec;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.register-forgot {
-  text-align: right;
-  font-size: 12px;
-  color: #888;
-  text-decoration: none;
-  margin-top: -10px;
   margin-bottom: 20px;
 }
 
@@ -114,22 +97,6 @@ hr {
   background-color: #b4ceec;
   border: none;
   margin: 10px -30px;
-}
-
-.register-button {
-  background-color: #365A7D;
-  color: white;
-  font-family: 'Raleway';
-  border: none;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.register-button:hover {
-  background-color: #24496b;
 }
 
 .register-decoration {
@@ -144,26 +111,24 @@ hr {
   border-bottom-right-radius: 20px;
 }
 
-/* Responsive */
+.form-error {
+  font-size: 12px;
+  color: red;
+  margin-top: 5px;
+  display: block;
+}
+
 @media (max-width: 600px) {
-  .register-container {
+  .register-container,
+  .recovery-container {
     width: 100vw;
     padding: 20px;
     border-radius: 0;
     box-shadow: none;
   }
 
-  .register-title {
+  .register-title,
+  .recovery-container h2 {
     font-size: 20px;
-  }
-
-  .register-logo img {
-    height: 40px;
-  }
-
-  .register-button {
-    font-size: 1rem;
-    font-family: 'Raleway';
-    padding: 10px;
   }
 }

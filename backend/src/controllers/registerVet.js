@@ -1,4 +1,5 @@
 import vetModel from '../models/Vets.js';
+import clientsModel from '../models/Clients.js'
 import { config } from '../config.js';
 import jsonwebtoken from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
@@ -11,8 +12,9 @@ registerVetController.register = async (req, res) => {
     const { nameVet, email, password, locationVet, nitVet } = req.body;
 
     try {
-        const existingVet = await vetModel.findOne({ email })
-        if (existingVet) {
+        const existingVet = await vetModel.findOne({ email }) 
+        const existingEmail = await clientsModel.findOne({ email })
+        if (existingVet || existingEmail) {
             return res.status(400).json({ message: "El correo ya está registrado." });
         }
 

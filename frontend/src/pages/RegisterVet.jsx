@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import useFetchRegisterVet from "../hooks/Register/useFetchRegisterVet";
-import InputComponent from "../components/Input";
-import Button from "../components/Button";
+import InputComponent from "../components/Input/Input.jsx";
+import Button from "../components/Button/Button.jsx";
 import ImageLoader from "../components/ImageLoader/ImageLoader";
 import logo from "../img/NavBar/LogoBandoggie.png";
 import "../assets/styles/Register.css";
@@ -91,7 +91,12 @@ const RegisterVet = () => {
           <PasswordInput
             id="password"
             placeholder="Ingresa tu contraseña"
-            register={register("password", { required: "La contraseña es obligatoria" })}
+            register={register("password", { required: "La contraseña es obligatoria",
+              minLength: {
+                value: 8,
+                message: "Debe tener al menos 8 caracteres",
+              },
+            })}
           />
           {errors.password && <span style={{ color: "red" }}>{errors.password.message}</span>}
         </div>
@@ -121,7 +126,9 @@ const RegisterVet = () => {
           />
           {errors.nitVet && <span style={{ color: "red" }}>{errors.nitVet.message}</span>}
         </div>
-
+        <div className="register-forgot">
+          <Link to="/request-code">¿Olvidaste tu contraseña?</Link>
+        </div>
         <Button type="submit" className="register-button" disabled={isSubmitting}>
           {isSubmitting ? "Enviando..." : "Registrarse"}
         </Button>

@@ -18,7 +18,6 @@ const useFetchRegisterVet = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                toast.error(data.message || 'Login failed');
                 throw new Error(data.message || 'Login failed');
             }
 
@@ -26,7 +25,6 @@ const useFetchRegisterVet = () => {
             return data;
 
         } catch (error) {
-            toast.error(error.message || 'Error during login');
             throw error;
         }
     }

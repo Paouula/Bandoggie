@@ -6,8 +6,8 @@ import { toast, Toaster } from "react-hot-toast";
 import useFetchLogin from "../hooks/Login/UseFetchLogin.js";
 import logo from "../img/NavBar/LogoBandoggie.png";
 import "../assets/styles/Login.css";
-import InputComponent from "../components/Input";
-import ButtonComponent from "../components/Button";
+import InputComponent from "../components/Input/Input.jsx";
+import ButtonComponent from "../components/Button/Button.jsx";
 import PasswordInput from "../components/InputPassword/InputPassword.jsx";
 
 const Login = () => {

@@ -25,7 +25,6 @@ const useFetchPasswordRecovery = () => {
             return data;
 
         } catch (error) {
-            toast.error(error.message || 'Error during el envio');
             throw error;
         }
     }
@@ -68,13 +67,13 @@ const useFetchPasswordRecovery = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Email verification failed');
+                throw new Error(data.message || 'Error al actualizar la contraseña');
             }
 
             return data;
 
         } catch (error) {
-            toast.error(error.message || 'Error during email verification');        
+            toast.error(error.message || 'Error al actualizar la contraseña');        
         }
     }
     return { handleRequest, handleVerify, handleNewPass }

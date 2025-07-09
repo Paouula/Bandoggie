@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import useFetchPasswordRecovery from "../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
 import VerificationCodeInput from "../../components/VerificationCodeInput/VerificationCodeInput";
 import logo from "../../img/NavBar/LogoBandoggie.png";
-import Button from "../../components/Button";
+import Button from "../../components/Button/Button.jsx";
 import "../../assets/styles/Register.css"; 
 
 const VerificationCode = () => {
@@ -28,10 +28,10 @@ const VerificationCode = () => {
       if (result) {
         toast.success("Código verificado correctamente");
         reset();
-        navigate("/reset-password"); // o donde quieras llevar al usuario
+        navigate("/new-password"); // o donde quieras llevar al usuario
       }
     } catch (error) {
-      // el toast.error ya se maneja en el hook
+      console.error("Error al cambiar la contraseña:", error);
     } finally {
       setIsSubmitting(false);
     }

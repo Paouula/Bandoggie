@@ -15,6 +15,7 @@ import VerificationCode from "./pages/VerificationCode.jsx";
 import ChooseAccountType from "./pages/ChooseAccount.jsx";
 import RequestCode from "./pages/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "./pages/PasswordRecovery/verifyCode.jsx";
+import NewPassword from "./pages/PasswordRecovery/newPassword.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -26,7 +27,8 @@ function AppContent() {
     "/verification-code",
     "/choose-account",
     "/request-code",
-    "/verify-code"
+    "/verify-code",
+    "/new-password"
   ];
 
   useEffect(() => {
@@ -51,6 +53,9 @@ function AppContent() {
           <Route path="/choose-account" element={<ChooseAccountType />} />
           <Route path="/request-code" element={<RequestCode />} />
           <Route path="/verify-code" element={<VerifyCode />} />
+          <Route path="/new-password" element={<NewPassword />} />
+
+
         </Routes>
       </div>
     </>
