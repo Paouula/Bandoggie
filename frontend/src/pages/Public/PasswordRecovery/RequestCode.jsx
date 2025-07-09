@@ -64,6 +64,7 @@ const RequestCode = () => {
           {isSending ? "Enviando código..." : "Enviar código"}
         </ButtonComponent>
       </form>
+      <div className="recovery-decoration"></div>
     </div>
   );
 };

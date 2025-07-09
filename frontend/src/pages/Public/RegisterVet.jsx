@@ -60,6 +60,10 @@ const RegisterVet = () => {
           <InputComponent
             type="text"
             id="nameVet"
+            onChange={(e) => {
+              const onlyLyrics = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+              e.target.value = onlyLyrics;
+            }} 
             placeholder="Nombre"
             register={register("nameVet", { required: "El nombre es obligatorio" })}
             className="register-input"
@@ -97,7 +101,7 @@ const RegisterVet = () => {
               },
               maxLength: {
                 value: 30,
-                message: "Debe tener menos de 30 caracteres",
+                message: "Debe tener un máximo de 30 caracteres",
               }
             })}
           />

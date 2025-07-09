@@ -4,7 +4,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 import InputPassword from "../../../components/InputPassword/InputPassword.jsx";
-import Button from "../../../components/Button/Button.jsx"; 
+import Button from "../../../components/Button/Button.jsx";
 import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
 
 const ChangePassword = () => {
@@ -24,7 +24,7 @@ const ChangePassword = () => {
       const result = await handleNewPass(data.newPassword);
       if (result) {
         toast.success("¡Contraseña actualizada con éxito!");
-        navigate('/login');
+        navigate("/login");
       }
     } catch (error) {
       console.error("Error al cambiar la contraseña:", error);
@@ -51,8 +51,8 @@ const ChangePassword = () => {
               },
               maxLength: {
                 value: 30,
-                message: "Debe tener menos de 30 caracteres",
-              }
+                message: "Debe tener un máximo de 30 caracteres",
+              },
             })}
             className="input-recovery"
           />
@@ -68,7 +68,7 @@ const ChangePassword = () => {
             placeholder="Repite la contraseña"
             register={register("confirmPassword", {
               required: "Confirma tu contraseña",
-              validate: value =>
+              validate: (value) =>
                 value === newPasswordValue || "Las contraseñas no coinciden",
             })}
             className="input-recovery"
@@ -82,6 +82,7 @@ const ChangePassword = () => {
           Cambiar contraseña
         </Button>
       </form>
+      <div className="recovery-decoration"></div>
     </div>
   );
 };

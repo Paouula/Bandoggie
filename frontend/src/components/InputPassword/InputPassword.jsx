@@ -5,11 +5,18 @@ import "./InputPassword.css";
 const PasswordInput = ({ register, error, className = "", ...props }) => {
   const [show, setShow] = useState(false);
 
+  const handleLimit = (e, idx) => {
+    const max = e.target.value.slice(0, 30)
+
+    e.target.value = max;
+  }
+
   return (
     <div className="input-group">
       <div className="input-pass-group">
         <input
           type={show ? "text" : "password"}
+          onInput={handleLimit}
           className={`custom-input input-login ${className}`}
           {...register}
           {...props}
