@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import useFetchRegister from "../hooks/Register/UseFetchRegister.js";
-import Button from "../components/Button/Button.jsx";
-import logo from "../img/NavBar/LogoBandoggie.png";
-import "../assets/styles/Register.css";
-import VerificationCodeInput from "../components/VerificationCodeInput/VerificationCodeInput.jsx";
+import useFetchRegister from "../../hooks/Register/UseFetchRegister.js";
+import Button from "../../components/Button/Button.jsx";
+import logo from "../../img/NavBar/LogoBandoggie.png";
+import "../../assets/styles/Register.css";
+import VerificationCodeInput from "../../components/VerificationCodeInput/VerificationCodeInput.jsx";
 
 const VerificationCode = () => {
     const navigate = useNavigate();

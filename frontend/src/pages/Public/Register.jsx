@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import useFetchRegister from "../hooks/Register/UseFetchRegister.js";
-import InputComponent from "../components/Input/Input.jsx";
-import Button from "../components/Button/Button.jsx";
-import ImageLoader from "../components/ImageLoader/ImageLoader";
-import logo from "../img/NavBar/LogoBandoggie.png";
-import "../assets/styles/Register.css";
-import PasswordInput from "../components/InputPassword/InputPassword.jsx";
+import useFetchRegister from "../../hooks/Register/UseFetchRegister.js";
+import InputComponent from "../../components/Input/Input.jsx";
+import Button from "../../components/Button/Button.jsx";
+import ImageLoader from "../../components/ImageLoader/ImageLoader";
+import logo from "../../img/NavBar/LogoBandoggie.png";
+import "../../assets/styles/Register.css";
+import PasswordInput from "../../components/InputPassword/InputPassword.jsx";
 
 const Register = () => {
   const navigate = useNavigate();

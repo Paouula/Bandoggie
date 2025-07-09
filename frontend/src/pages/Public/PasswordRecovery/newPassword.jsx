@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-import InputPassword from "../../components/InputPassword/InputPassword.jsx";
-import Button from "../../components/Button/Button.jsx"; 
-import useFetchPasswordRecovery from "../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
+import InputPassword from "../../../components/InputPassword/InputPassword.jsx";
+import Button from "../../../components/Button/Button.jsx"; 
+import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
 
 const ChangePassword = () => {
   const navigate = useNavigate();

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import useFetchPasswordRecovery from "../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
-import "../../assets/styles/PasswordRecovery.css"; 
+import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
+import "../../../assets/styles/PasswordRecovery.css"; 
 
-import InputComponent from "../../components/Input/Input.jsx";  
-import ButtonComponent from "../../components/Button/Button.jsx"; 
+import InputComponent from "../../../components/Input/Input.jsx";  
+import ButtonComponent from "../../../components/Button/Button.jsx"; 
 
 const RequestCode = () => {
   const navigate = useNavigate();

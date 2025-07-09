@@ -7,15 +7,15 @@ import {
   useLocation,
 } from "react-router-dom";
 import "./App.css";
-import Login from "./pages/Login.jsx";
+import Login from "./pages/Public/Login.jsx";
 import Nav from "./components/NavBar/NavBar.jsx";
-import Register from "./pages/Register.jsx";
-import RegisterVet from "./pages/RegisterVet.jsx";
-import VerificationCode from "./pages/VerificationCode.jsx";
-import ChooseAccountType from "./pages/ChooseAccount.jsx";
-import RequestCode from "./pages/PasswordRecovery/RequestCode.jsx";
-import VerifyCode from "./pages/PasswordRecovery/verifyCode.jsx";
-import NewPassword from "./pages/PasswordRecovery/newPassword.jsx";
+import Register from "./pages/Public/Register.jsx";
+import RegisterVet from "./pages/Public/RegisterVet.jsx";
+import VerificationCode from "./pages/Public/VerificationCode.jsx";
+import ChooseAccountType from "./pages/Public/ChooseAccount.jsx";
+import RequestCode from "./pages/Public/PasswordRecovery/RequestCode.jsx";
+import VerifyCode from "./pages/Public/PasswordRecovery/verifyCode.jsx";
+import NewPassword from "./pages/Public/PasswordRecovery/newPassword.jsx";
 
 function AppContent() {
   const location = useLocation();

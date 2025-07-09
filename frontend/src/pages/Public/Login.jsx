@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
-import useFetchLogin from "../hooks/Login/UseFetchLogin.js";
-import logo from "../img/NavBar/LogoBandoggie.png";
-import "../assets/styles/Login.css";
-import InputComponent from "../components/Input/Input.jsx";
-import ButtonComponent from "../components/Button/Button.jsx";
-import PasswordInput from "../components/InputPassword/InputPassword.jsx";
+import useFetchLogin from "../../hooks/Login/UseFetchLogin.js";
+import logo from "../../img/NavBar/LogoBandoggie.png";
+import "../../assets/styles/Login.css";
+import InputComponent from "../../components/Input/Input.jsx";
+import ButtonComponent from "../../components/Button/Button.jsx";
+import PasswordInput from "../../components/InputPassword/InputPassword.jsx";
 
 const Login = () => {
   const navigate = useNavigate();
