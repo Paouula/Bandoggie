@@ -7,9 +7,8 @@ import {
   useLocation,
 } from "react-router-dom";
 import "./App.css";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import Nav from "./components/NavBar/NavBar.jsx";
+
+import Nav from "./components/Public/NavBar/NavBar.jsx";
 import Login from "./pages/Public/Login.jsx";
 import Register from "./pages/Public/Register.jsx";
 import RegisterVet from "./pages/Public/RegisterVet.jsx";
@@ -49,13 +48,13 @@ function AppContent() {
       <div className="container" style={{ textAlign: "center" }}>
         <div>
           {/* Logos opcionales */}
-          <img src={reactLogo} alt="React Logo" width="80" />
-          <img src={viteLogo} alt="Vite Logo" width="80" />
+          {/*<img src={reactLogo} alt="React Logo" width="80" />
+          <img src={viteLogo} alt="Vite Logo" width="80" />*/}
         </div>
         {/* Contador simple */}
-        <button onClick={() => setCount(count + 1)} style={{ margin: "10px" }}>
+        {/*<button onClick={() => setCount(count + 1)} style={{ margin: "10px" }}>
           Contador: {count}
-        </button>
+        </button>*/}
 
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
