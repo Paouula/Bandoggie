@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
+import logo from "../../../img/NavBar/LogoBandoggie.png";
 import InputPassword from "../../../components/InputPassword/InputPassword.jsx";
 import Button from "../../../components/Button/Button.jsx";
 import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
@@ -34,6 +34,10 @@ const ChangePassword = () => {
   return (
     <div className="recovery-container">
       <Toaster position="top-right" reverseOrder={false} />
+      <div className="recovery-logo" style={{ marginBottom: 10 }}>
+        <img src={logo} alt="Huellitas" />
+      </div>
+       <hr />
       <h2>Cambiar Contraseña</h2>
       <p>Ingresa tu nueva contraseña</p>
 

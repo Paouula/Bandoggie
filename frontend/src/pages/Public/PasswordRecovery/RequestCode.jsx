@@ -3,14 +3,19 @@ import { useForm } from "react-hook-form";
 import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
-import "../../../assets/styles/PasswordRecovery.css"; 
+import "../../../assets/styles/PasswordRecovery.css";
+import logo from "../../../img/NavBar/LogoBandoggie.png";
 
-import InputComponent from "../../../components/Input/Input.jsx";  
-import ButtonComponent from "../../../components/Button/Button.jsx"; 
+import InputComponent from "../../../components/Input/Input.jsx";
+import ButtonComponent from "../../../components/Button/Button.jsx";
 
 const RequestCode = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const { handleRequest } = useFetchPasswordRecovery();
 
   const [isSending, setIsSending] = useState(false); // 👈 Estado de carga
@@ -20,7 +25,7 @@ const RequestCode = () => {
     setIsSending(true); // ⏳ bloquear al hacer submit
     try {
       await handleRequest(data.email);
-      navigate('/verify-code');
+      navigate("/verify-code");
     } catch (error) {
       console.error("Error al enviar el código de verificación:", error);
     } finally {
@@ -31,8 +36,14 @@ const RequestCode = () => {
   return (
     <div className="recovery-container">
       <Toaster position="top-right" reverseOrder={false} />
+      <div className="recovery-logo" style={{ marginBottom: 10 }}>
+        <img src={logo} alt="Huellitas" />
+      </div>
+      <hr />
       <h2>Recuperar Contraseña</h2>
-      <p>Ingresa tu correo electrónico para recibir un código de verificación</p>
+      <p>
+        Ingresa tu correo electrónico para recibir un código de verificación
+      </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="recovery-form">
         <div className="form-group">
