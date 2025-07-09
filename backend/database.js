@@ -1,10 +1,10 @@
 // importar la libreria moongoose
-import mongoose, { mongo } from "mongoose";
+import mongoose, { connect } from "mongoose";
 // Importo mi archivo config con todas las variables
 import { config } from "./src/config.js";
 
 // 2- Conecto la base de datos
-mongoose.connect(config.MONGO_URI);
+mongoose.connect(config.db.URI);
 
 // -------------- Comprobar que todo funcione --------------
 
