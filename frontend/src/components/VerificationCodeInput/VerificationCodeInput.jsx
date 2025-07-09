@@ -7,7 +7,7 @@ const VerificationCodeInput = ({ length = 6, onChange }) => {
 
   const handleInput = (e, idx) => {
     const raw = e.target.value;
-    const clean = raw.replace(/[^a-zA-Z0-9]/g, "").slice(0, 1); // solo el primer carácter válido
+    const clean = raw.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 1); // solo el primer carácter válido
 
     const newValues = [...values];
     newValues[idx] = clean;
@@ -37,6 +37,7 @@ const VerificationCodeInput = ({ length = 6, onChange }) => {
     const paste = e.clipboardData
       .getData("text")
       .replace(/[^a-zA-Z0-9]/g, "")
+      .toUpperCase()
       .slice(0, length);
 
     if (paste) {
@@ -72,6 +73,7 @@ const VerificationCodeInput = ({ length = 6, onChange }) => {
               onPaste={handlePaste}
               autoFocus={idx === 0}
               tabIndex={0}
+              
             />
           </div>
         ))}

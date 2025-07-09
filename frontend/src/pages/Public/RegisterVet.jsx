@@ -95,6 +95,10 @@ const RegisterVet = () => {
                 value: 8,
                 message: "Debe tener al menos 8 caracteres",
               },
+              maxLength: {
+                value: 30,
+                message: "Debe tener menos de 30 caracteres",
+              }
             })}
           />
           {errors.password && <span style={{ color: "red" }}>{errors.password.message}</span>}

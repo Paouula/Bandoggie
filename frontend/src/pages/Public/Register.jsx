@@ -181,9 +181,15 @@ const Register = () => {
                 value: 8,
                 message: "Debe tener al menos 8 caracteres",
               },
+              maxLength: {
+                value: 30,
+                message: "Debe tener menos de 30 caracteres",
+              }
             })}
-            error={errors.password}
           />
+          {errors.password && (
+              <span className="form-error">{errors.password.message}</span>
+            )}
         </div>
         <div className="register-forgot">
           <Link to="/request-code">¿Olvidaste tu contraseña?</Link>

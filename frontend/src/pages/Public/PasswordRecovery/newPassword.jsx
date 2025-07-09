@@ -49,6 +49,10 @@ const ChangePassword = () => {
                 value: 8,
                 message: "Debe tener al menos 8 caracteres",
               },
+              maxLength: {
+                value: 30,
+                message: "Debe tener menos de 30 caracteres",
+              }
             })}
             className="input-recovery"
           />

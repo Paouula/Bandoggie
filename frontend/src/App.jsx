@@ -21,7 +21,7 @@ import NewPassword from "./pages/Public/PasswordRecovery/newPassword.jsx";
 function AppContent() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(true);
-  const [count, setCount] = useState(0); // <-- contador agregado
+  //const [count, setCount] = useState(0); // <-- contador agregado
 
   const authRoutes = [
     "/login",
