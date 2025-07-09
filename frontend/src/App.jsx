@@ -7,8 +7,10 @@ import {
   useLocation,
 } from "react-router-dom";
 import "./App.css";
-import Login from "./pages/Public/Login.jsx";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
 import Nav from "./components/NavBar/NavBar.jsx";
+import Login from "./pages/Public/Login.jsx";
 import Register from "./pages/Public/Register.jsx";
 import RegisterVet from "./pages/Public/RegisterVet.jsx";
 import VerificationCode from "./pages/Public/VerificationCode.jsx";
@@ -20,6 +22,8 @@ import NewPassword from "./pages/Public/PasswordRecovery/newPassword.jsx";
 function AppContent() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(true);
+  const [count, setCount] = useState(0); // <-- contador agregado
+
   const authRoutes = [
     "/login",
     "/register",
@@ -28,7 +32,7 @@ function AppContent() {
     "/choose-account",
     "/request-code",
     "/verify-code",
-    "/new-password"
+    "/new-password",
   ];
 
   useEffect(() => {
@@ -42,10 +46,19 @@ function AppContent() {
   return (
     <>
       {isOpen && <Nav />}
-      <div className="container">
+      <div className="container" style={{ textAlign: "center" }}>
+        <div>
+          {/* Logos opcionales */}
+          <img src={reactLogo} alt="React Logo" width="80" />
+          <img src={viteLogo} alt="Vite Logo" width="80" />
+        </div>
+        {/* Contador simple */}
+        <button onClick={() => setCount(count + 1)} style={{ margin: "10px" }}>
+          Contador: {count}
+        </button>
+
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
-
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verification-code" element={<VerificationCode />} />
@@ -54,24 +67,16 @@ function AppContent() {
           <Route path="/request-code" element={<RequestCode />} />
           <Route path="/verify-code" element={<VerifyCode />} />
           <Route path="/new-password" element={<NewPassword />} />
-
-
         </Routes>
       </div>
     </>
   );
 }
 
-function App() {
-  const [count, setCount] = useState(0);
-
+export default function App() {
   return (
-    <>
-      <Router>
-        <AppContent />
-      </Router>
-    </>
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
-
-export default App;

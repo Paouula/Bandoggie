@@ -1,9 +1,9 @@
 import React from 'react';
 import './Navbar.css'; 
 import { Link } from 'react-router-dom'; 
-import IC_cuenta from '../../img/NavBar/user.png';
-import IC_carrito from '../../img/NavBar/ShoppingCart.png';
-import LogoBandoggie from '../../img/NavBar/LogoBandoggie.png';
+import IC_cuenta from '../../../img/NavBar/user.png';
+import IC_carrito from '../../../img/NavBar/ShoppingCart.png';
+import LogoBandoggie from '../../../img/NavBar/LogoBandoggie.png';
 
 function NavBar() {
   return ( 

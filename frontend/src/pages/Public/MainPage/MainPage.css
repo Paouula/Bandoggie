@@ -1,0 +1,78 @@
+.conteiner-banner {  
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5%;
+    background-color: #D9E9FB;
+    gap: 20px;
+  }
+  
+  .banner-text {
+    flex: 1;
+    min-width: 250px;
+    margin-left: 10%;
+  }
+  
+  .banner-image {
+    width: 550px;
+    height: 550px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    margin-right: 10%;
+  }
+  
+  .conteiner-banner h1 {
+    font-family: 'Baloo Bhaijaan 2', sans-serif;
+    font-size: 8rem;
+    font-weight: 700;
+    color: #365A7D;
+  }
+  
+  .conteiner-banner p {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.2rem;
+    margin-left: 1%;
+  }
+  
+  /* Responsive para móviles */
+  @media (max-width: 768px) {
+    .conteiner-banner {
+      flex-direction: column;
+      text-align: center;
+      padding: 10% 5%;
+    }
+  
+    .banner-image {
+      width: 300px;     /* Ajuste para móvil */
+      height: 300px;
+      margin: 20px auto 0;
+    }
+  
+    .banner-text {
+      margin-left: 0;
+    }
+  
+    .conteiner-banner h1 {
+      font-size: 4rem;  /* Reducido para móviles */
+    }
+  
+    .conteiner-banner p {
+      font-size: 1rem;
+      margin-left: 0;
+    }
+  }
+  
+
+/*Sección de Cards*/
+
+.row{
+  justify-content: center;
+}
+
+.Icon-Img{
+  
+}
+
+/**Prueba XD/
