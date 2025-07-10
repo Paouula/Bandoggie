@@ -1,20 +1,21 @@
 import React from 'react';
-import './Navbar.css'; 
-import { Link } from 'react-router-dom'; 
+import './Navbar.css';
+import { useNavigate, Link } from 'react-router-dom';
 import IC_cuenta from '../../img/NavBar/user.png';
 import IC_carrito from '../../img/NavBar/ShoppingCart.png';
 import LogoBandoggie from '../../img/NavBar/LogoBandoggie.png';
 
 function NavBar() {
-  return ( 
-    <>
+  const navigate = useNavigate(); // ← CORRECTO
 
-    {/*Barra azul*/}
-    <div className="top-top-bar">
+  return (
+    <>
+      {/* Barra azul */}
+      <div className="top-top-bar">
         <a className="top-space"> - </a>
       </div>
 
-      {/* Bloque de registro e incio de sesión */}
+      {/* Bloque de registro e inicio de sesión */}
       <div className="top-bar">
         <a href="/login" className="top-link">Iniciar sesión</a>
         <span className="divider">/</span>
@@ -69,7 +70,16 @@ function NavBar() {
 
             {/* Iconos de cuenta y carrito */}
             <div className="iconos-header">
-              <img src={IC_cuenta} alt="Cuenta" className="icono-header" />
+              <div>
+                <img
+                  src={IC_cuenta}
+                  alt="Profile"
+                  className="icono-header"
+                  onClick={() => navigate('/Profile')}
+                  style={{ cursor: 'pointer' }}
+                />
+              </div>
+
               <img src={IC_carrito} alt="Carrito" className="icono-header" />
             </div>
           </div>
@@ -78,6 +88,5 @@ function NavBar() {
     </>
   );
 }
-
 
 export default NavBar;

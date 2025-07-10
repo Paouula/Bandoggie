@@ -7,7 +7,8 @@ import HalloweenHoliday from '../../../frontend/src/pages/Public/HalloweenHolida
 import ValentineHoliday from '../../../frontend/src/pages/Public/ValentineHoliday/ValentineHoliday';     
 import PatrioticHoliday from '../../../frontend/src/pages/Public/PatrioticHoliday/PatrioticHoliday';     
 import NewYearHoliday from '../../../frontend/src/pages/Public/NewYearHoliday/NewYearHoliday'; 
-import BirthdayHoliday from '../../../frontend/src/pages/Public/BirthdayHoliday/BirthdayHoliday';       
+import BirthdayHoliday from '../../../frontend/src/pages/Public/BirthdayHoliday/BirthdayHoliday';  
+import Profile from '../../../frontend/src/pages/Public/Profile/Profile';        
 
 function Navegation() {
   return (
@@ -21,6 +22,7 @@ function Navegation() {
       <Route path="/PatrioticHoliday" element={<PatrioticHoliday />} /> 
       <Route path="/NewYearHoliday" element={<NewYearHoliday />} /> 
       <Route path="/BirthdayHoliday" element={<BirthdayHoliday />} /> 
+      <Route path="/Profile" element={<Profile />} /> 
     </Routes>
   );
 }
