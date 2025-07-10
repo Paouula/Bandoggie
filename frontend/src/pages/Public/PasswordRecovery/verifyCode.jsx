@@ -4,7 +4,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
 import VerificationCodeInput from "../../../components/VerificationCodeInput/VerificationCodeInput";
-import logo from "../../../img/NavBar/LogoBandoggie.png";
+import logo from "../../../img/LogoBandoggie.png";
 import Button from "../../../components/Button/Button.jsx";
 import "../../../assets/styles/Register.css"; 
 

@@ -4,8 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPasswordRecov.js";
 import "../../../assets/styles/PasswordRecovery.css";
-import logo from "../../../img/NavBar/LogoBandoggie.png";
-
+import logo from "../../../img/LogoBandoggie.png";
 import InputComponent from "../../../components/Input/Input.jsx";
 import ButtonComponent from "../../../components/Button/Button.jsx";
 

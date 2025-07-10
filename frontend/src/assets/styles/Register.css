@@ -30,7 +30,18 @@ a:hover {
   color: #365A7D;
 }
 
-.register-container,
+.register-container{
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 550px;
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
 .recovery-container {
   margin-bottom: 30px;
   background: rgba(255, 255, 255, 0.95);

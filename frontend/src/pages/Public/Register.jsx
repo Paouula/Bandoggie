@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import useFetchRegister from "../../hooks/Register/UseFetchRegister.js";
 import InputComponent from "../../components/Input/Input.jsx";
 import Button from "../../components/Button/Button.jsx";
 import ImageLoader from "../../components/ImageLoader/ImageLoader";
-import logo from "../../img/NavBar/LogoBandoggie.png";
+import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Register.css";
+import InputDataPicker from "../../components/InputDataPicker/InputDataPicker.jsx";
 import PasswordInput from "../../components/InputPassword/InputPassword.jsx";
 
 const Register = () => {
@@ -18,6 +19,7 @@ const Register = () => {
     reset,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm();
   const [profileImage, setProfileImage] = useState(null);
@@ -86,9 +88,12 @@ const Register = () => {
             type="text"
             id="name"
             onChange={(e) => {
-              const onlyLyrics = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+              const onlyLyrics = e.target.value.replace(
+                /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
+                ""
+              );
               e.target.value = onlyLyrics;
-            }} 
+            }}
             placeholder="Nombre"
             register={register("name", {
               required: "El nombre es obligatorio",
@@ -122,29 +127,37 @@ const Register = () => {
         <div style={{ display: "flex", gap: "10px" }}>
           <div className="register-input-group" style={{ flex: 1 }}>
             <label htmlFor="birthday">Fecha de nacimiento</label>
-            <InputComponent
-              type="date"
-              id="birthday"
-              placeholder="Fecha de nacimiento"
-              register={register("birthday", {
+
+            <Controller
+              name="birthday"
+              control={control} // agregamos control de useForm
+              rules={{
                 required: "La fecha de nacimiento es obligatoria",
                 validate: (value) => {
                   if (!value) return "La fecha de nacimiento es obligatoria";
                   const today = new Date();
                   const birthDate = new Date(value);
-                  const age = today.getFullYear() - birthDate.getFullYear();
+                  let age = today.getFullYear() - birthDate.getFullYear();
                   const m = today.getMonth() - birthDate.getMonth();
                   if (
                     m < 0 ||
                     (m === 0 && today.getDate() < birthDate.getDate())
                   ) {
-                    return age - 1 >= 18 ? true : "Debes ser mayor de edad";
+                    age--;
                   }
                   return age >= 18 ? true : "Debes ser mayor de edad";
                 },
-              })}
-              className="register-input"
+              }}
+              render={({ field, fieldState }) => (
+                <InputDataPicker
+                  {...field}
+                  label="Fecha de nacimiento"
+                  error={fieldState.error}
+                  id="birthday"
+                />
+              )}
             />
+
             {errors.birthday && (
               <span style={{ color: "red" }}>{errors.birthday.message}</span>
             )}
@@ -188,17 +201,21 @@ const Register = () => {
               maxLength: {
                 value: 30,
                 message: "Debe tener un máximo de 30 caracteres",
-              }
+              },
             })}
           />
           {errors.password && (
-              <span className="form-error">{errors.password.message}</span>
-            )}
+            <span className="form-error">{errors.password.message}</span>
+          )}
         </div>
         <div className="register-forgot">
           <Link to="/request-code">¿Olvidaste tu contraseña?</Link>
         </div>
-        <Button type="submit" className="register-button" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="register-button"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Enviando..." : "Siguiente"}
         </Button>
       </form>

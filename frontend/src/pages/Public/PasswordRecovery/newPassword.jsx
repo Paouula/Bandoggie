@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import logo from "../../../img/NavBar/LogoBandoggie.png";
+import logo from "../../../img/LogoBandoggie.png";
 import InputPassword from "../../../components/InputPassword/InputPassword.jsx";
 import Button from "../../../components/Button/Button.jsx";
 import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPasswordRecov.js";

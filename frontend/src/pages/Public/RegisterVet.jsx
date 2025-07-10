@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import useFetchRegisterVet from "../../hooks/Register/useFetchRegisterVet";
 import InputComponent from "../../components/Input/Input.jsx";
 import Button from "../../components/Button/Button.jsx";
-import logo from "../../img/NavBar/LogoBandoggie.png";
+import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Register.css";
 import PasswordInput from "../../components/InputPassword/InputPassword.jsx";
 

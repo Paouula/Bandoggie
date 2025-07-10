@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../assets/styles/Choose.css"; 
 import { Link } from 'react-router-dom';
-import logo from "../../img/NavBar/LogoBandoggie.png";
+import logo from "../../img/LogoBandoggie.png";
 
 const ChooseAccountType = () => {
   const navigate = useNavigate();

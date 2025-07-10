@@ -13,7 +13,7 @@ const PasswordInput = ({ register, error, className = "", ...props }) => {
 
   return (
     <div className="input-group">
-      <div className="input-pass-group">
+      <div className="input-pass-group input-font">
         <input
           type={show ? "text" : "password"}
           onInput={handleLimit}
