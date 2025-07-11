@@ -12,6 +12,9 @@ import registerVetRoutes from './src/routes/registerVet.js'
 import loginRoutes from './src/routes/login.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecovery from './src/routes/passwordRecovery.js';
+import HolidayRoutes from './src/routes/holiday.js';
+import ProductsRoutes from './src/routes/products.js';
+import ReviewsRoutes from './src/routes/reviews.js';
 
 
 const corsOptions = {
@@ -31,5 +34,8 @@ app.use('/api/login', loginRoutes)
 app.use('/api/logout', logoutRoutes)
 app.use('/api/passwordRecovery', passwordRecovery)
 app.use('/api/registerVet', registerVetRoutes)
+app.use('/api/Holiday', HolidayRoutes)
+app.use('/api/products', ProductsRoutes)
+app.use('/api/reviews', ReviewsRoutes)
 
 export default app;
