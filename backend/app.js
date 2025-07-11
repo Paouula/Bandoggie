@@ -15,6 +15,7 @@ import passwordRecovery from './src/routes/passwordRecovery.js';
 import HolidayRoutes from './src/routes/holiday.js';
 import ProductsRoutes from './src/routes/products.js';
 import ReviewsRoutes from './src/routes/reviews.js';
+import CartRoutes from './src/routes/Cart.js';
 
 
 const corsOptions = {
@@ -37,5 +38,5 @@ app.use('/api/registerVet', registerVetRoutes)
 app.use('/api/Holiday', HolidayRoutes)
 app.use('/api/products', ProductsRoutes)
 app.use('/api/reviews', ReviewsRoutes)
-
+app.use('/api/cart', CartRoutes);
 export default app;
