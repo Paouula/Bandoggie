@@ -1,24 +1,92 @@
-import React from 'react';
-import './Navbar.css'; 
-import { Link } from 'react-router-dom'; 
-import IC_cuenta from '../../../img/NavBar/user.png';
-import IC_carrito from '../../../img/NavBar/ShoppingCart.png';
-import LogoBandoggie from '../../../img/NavBar/LogoBandoggie.png';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
+import IC_cuenta from "../../../img/NavBar/user.png";
+import IC_carrito from "../../../img/NavBar/ShoppingCart.png";
+import LogoBandoggie from "../../../img/NavBar/LogoBandoggie.png";
+
+// Importa tus modales
+import LoginModal from "../../LoginModal/Login.jsx";
+import ChooseAccountTypeModal from "../../RegisterModal/ChooseAccount.jsx";
+import RegisterModal from "../../RegisterModal/Register.jsx";
+import RegisterVetModal from "../../RegisterModal/RegisterVet.jsx";
+import VerificationCodeModal from "../../RegisterModal/VerificationCode.jsx";
 
 function NavBar() {
-  return ( 
-    <>
+  const [showLogin, setShowLogin] = useState(false);
+  const [showChoose, setShowChoose] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showRegisterVet, setShowRegisterVet] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
 
-    {/*Barra azul*/}
-    <div className="top-top-bar">
+  return (
+    <>
+      {/* MODALES */}
+      {showLogin && (
+        <LoginModal
+          onClose={() => setShowLogin(false)}
+          openChoose={() => {
+            setShowLogin(false);
+            setShowChoose(true);
+          }}
+        />
+      )}
+      {showChoose && (
+        <ChooseAccountTypeModal
+          onClose={() => setShowChoose(false)}
+          openLogin={() => {
+            setShowChoose(false);
+            setShowLogin(true);
+          }}
+          openRegisterUser={() => {
+            setShowChoose(false);
+            setShowRegister(true); // Abre modal de usuario normal
+          }}
+          openRegisterVet={() => {
+            setShowChoose(false);
+            setShowRegisterVet(true); // Abre modal de veterinaria
+          }}
+        />
+      )}
+      {showRegister && (
+        <RegisterModal
+          onClose={() => setShowRegister(false)}
+          openLogin={() => {
+            setShowRegister(false);
+            setShowLogin(true);
+          }}
+          closeChoose={() => setShowChoose(false)}
+          openVerification={() => setShowVerification(true)} 
+        />
+      )}
+
+      {showRegisterVet && (
+        <RegisterVetModal
+          onClose={() => setShowRegisterVet(false)}
+          openLogin={() => {
+            setShowRegisterVet(false);
+            setShowLogin(true);
+          }}
+          openVerification={() => setShowVerification(true)} 
+        />
+      )}
+      {showVerification && (
+        <VerificationCodeModal onClose={() => setShowVerification(false)} />
+      )}
+
+      {/* Barra superior */}
+      <div className="top-top-bar">
         <a className="top-space"> - </a>
       </div>
 
-      {/* Bloque de registro e incio de sesión */}
       <div className="top-bar">
-        <a href="/login" className="top-link">Iniciar sesión</a>
+        <span className="top-link" onClick={() => setShowLogin(true)}>
+          Iniciar sesión
+        </span>
         <span className="divider">/</span>
-        <a href="/register" className="top-link">Crear cuenta</a>
+        <span className="top-link" onClick={() => setShowChoose(true)}>
+          Crear cuenta
+        </span>
       </div>
 
       <div className="linea-separadora"></div>
@@ -29,44 +97,36 @@ function NavBar() {
           <img src={LogoBandoggie} alt="Logo" className="logo" />
         </a>
 
-        {/* Toggle de navegación en responsive */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        {/* Enlaces de navegación */}
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav">
-            <a className="nav-item nav-link" href="/">Inicio</a>
-            <a className="nav-item nav-link" href="#">Bandanas</a>
-            <a className="nav-item nav-link" href="#">Collares</a>
-            <a className="nav-item nav-link" href="#">Accesorios</a>
-            <a className="nav-item nav-link" href="#">Festividades</a>
+            <a className="nav-item nav-link" href="/">
+              Inicio
+            </a>
+            <a className="nav-item nav-link" href="#">
+              Bandanas
+            </a>
+            <a className="nav-item nav-link" href="#">
+              Collares
+            </a>
+            <a className="nav-item nav-link" href="#">
+              Accesorios
+            </a>
+            <a className="nav-item nav-link" href="#">
+              Festividades
+            </a>
           </div>
 
-          {/* Busqueda */}
           <div className="d-flex align-items-center ms-auto">
             <form className="search-form">
               <input
                 type="text"
                 className="search-input"
                 placeholder="Buscar..."
-                aria-label="Buscar"
               />
               <button type="submit" className="search-button">
                 <i className="fas fa-search"></i>
               </button>
             </form>
-
-            {/* Iconos de cuenta y carrito */}
             <div className="iconos-header">
               <img src={IC_cuenta} alt="Cuenta" className="icono-header" />
               <img src={IC_carrito} alt="Carrito" className="icono-header" />
@@ -77,6 +137,5 @@ function NavBar() {
     </>
   );
 }
-
 
 export default NavBar;

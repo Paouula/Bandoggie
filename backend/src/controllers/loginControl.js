@@ -1,4 +1,5 @@
 import ClientsModel from "../models/Clients.js";
+import Employees from "../models/Employees.js";
 import VetModel from "../models/Vets.js";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
@@ -22,6 +23,12 @@ loginController.login = async (req, res) => {
       userFound = await VetModel.findOne({ email });
       if (userFound) {
         userType = "vet";
+      }
+      else {
+        userFound = await Employees.findOne({ email });
+        if (userFound) {
+          userType = "employee";
+        }
       }
     }
 

@@ -9,11 +9,12 @@ import {
 import "./App.css";
 
 import Nav from "./components/Public/NavBar/NavBar.jsx";
-import Login from "./pages/Public/Login.jsx";
-import Register from "./pages/Public/Register.jsx";
-import RegisterVet from "./pages/Public/RegisterVet.jsx";
-import VerificationCode from "./pages/Public/VerificationCode.jsx";
-import ChooseAccountType from "./pages/Public/ChooseAccount.jsx";
+import Main from "./pages/Public/MainPage/MainPage.jsx";
+
+import Register from "./components/RegisterModal/Register.jsx";
+
+import VerificationCode from "./components/RegisterModal/VerificationCode.jsx";
+
 import RequestCode from "./pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "./pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "./pages/Public/PasswordRecovery/newPassword.jsx";
@@ -23,12 +24,8 @@ function AppContent() {
   const [isOpen, setIsOpen] = useState(true);
   //const [count, setCount] = useState(0); // <-- contador agregado
 
-  const authRoutes = [
-    "/login",
-    "/register",
-    "/register-vet",
+  const authRoutes = [,
     "/verification-code",
-    "/choose-account",
     "/request-code",
     "/verify-code",
     "/new-password",
@@ -57,12 +54,11 @@ function AppContent() {
         </button>*/}
 
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Navigate to="/mainpage" replace />} />
+          <Route path="/mainpage" element={<Main />} />
+
           <Route path="/register" element={<Register />} />
           <Route path="/verification-code" element={<VerificationCode />} />
-          <Route path="/register-vet" element={<RegisterVet />} />
-          <Route path="/choose-account" element={<ChooseAccountType />} />
           <Route path="/request-code" element={<RequestCode />} />
           <Route path="/verify-code" element={<VerifyCode />} />
           <Route path="/new-password" element={<NewPassword />} />

@@ -24,7 +24,12 @@
 }
 
 .top-link {
-  color: #CB8E45;
+  background: none;
+  border: none;
+  color: #CB8E45; /* mismo tono naranja que el texto */
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
   text-decoration: none;
 }
 
