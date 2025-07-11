@@ -4,12 +4,12 @@ const CartSchema = new Schema({
     idProducts: {
         type: Schema.Types.ObjectId,
         ref: "Product",
-        require: true
+        required: true
     },
     idClients: {
         type: Schema.Types.ObjectId,
         ref: "Client",
-        require: true
+        required: true
     },
     name: {
         type: String,
@@ -17,11 +17,21 @@ const CartSchema = new Schema({
     },
     productquantity: {
         type: Number,
-        require: true
+        required: true
     },
+
     price: {
         type: Number,
-        require: true
+        required: true
+    },
+
+    talla: {
+        type: String,
+        enum: ['XS', 'S', 'M', 'L', 'XL'],
+    },
+    
+    namedog: {
+        type: String,
     },
     
 }, {
