@@ -33,13 +33,18 @@ CartController.getById = async (req, res) => {
 // Crear un nuevo carrito
 CartController.create = async (req, res) => {
     try {
-        const { idProducts, idClients, name, productquantity, price } = req.body;
+        const { idProducts, idClients, name, productquantity, price, talla, namedog } = req.body;
+        if (!talla) {
+            return res.status(400).json({ message: "El campo talla es obligatorio" });
+        }
         const newCart = new Cart({
             idProducts,
             idClients,
             name,
             productquantity,
-            price
+            price,
+            talla,
+            namedog // este campo es opcional
         });
         await newCart.save();
         res.status(201).json(newCart);
@@ -54,6 +59,9 @@ CartController.update = async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: "Invalid cart ID" });
+        }
+        if (!req.body.talla) {
+            return res.status(400).json({ message: "El campo talla es obligatorio" });
         }
         const updatedCart = await Cart.findByIdAndUpdate(
             id,
