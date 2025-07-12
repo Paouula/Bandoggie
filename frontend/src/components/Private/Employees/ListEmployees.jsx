@@ -1,6 +1,6 @@
 // src/components/Employees/ListEmployees.jsx
 import React from 'react';
-import CardEmployee from './CardEmployee';
+import CardEmployee from './CardEmployee/CardEmployee.jsx';
 
 const ListEmployees = ({ employees }) => {
   return (

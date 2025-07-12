@@ -16,6 +16,9 @@ import HolidayRoutes from './src/routes/holiday.js';
 import ProductsRoutes from './src/routes/products.js';
 import ReviewsRoutes from './src/routes/reviews.js';
 import CartRoutes from './src/routes/Cart.js';
+import EmpleadosRoutes from "./src/routes/Empleados.js";
+import CategoriasRoutes from "./src/routes/Categorias.js";
+
 
 
 const corsOptions = {
@@ -39,4 +42,6 @@ app.use('/api/Holiday', HolidayRoutes)
 app.use('/api/products', ProductsRoutes)
 app.use('/api/reviews', ReviewsRoutes)
 app.use('/api/cart', CartRoutes);
+app.use('/api/Empleados', EmpleadosRoutes)
+app.use('/api/Categorias', CategoriasRoutes)
 export default app;

@@ -68,21 +68,7 @@
   align-items: center;
 }
 
-.action-btn {
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.check-btn.selected {
-  background: #2e6b7a;
-  box-shadow: 0 0 0 3px rgba(78, 144, 164, 0.3);
-}
 
 .review-content {
   display: flex;
