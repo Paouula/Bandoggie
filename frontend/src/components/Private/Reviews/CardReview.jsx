@@ -18,15 +18,12 @@ const CardReview = ({ review, isApproved, onApprove, onReject, onOpenModal }) =>
           <p className="review-price">${review.price}</p>
         </div>
         <div className="review-actions" onClick={(e) => e.stopPropagation()}>
-          <button className="action-btn delete-btn" onClick={() => onReject(review.id)}>
-            <DeleteButton size={18} />
-          </button>
-          <button
-            className={`action-btn check-btn ${isApproved ? 'selected' : ''}`}
-            onClick={() => onApprove(review.id)}
-          >
-            <AproveButton size={18} />
-          </button>
+            <DeleteButton size={18} onClick={() => onReject(review.id)}/>
+            <AproveButton 
+              onClick={() => onApprove(review.id)} 
+              selected={isApproved} 
+            />
+
         </div>
       </div>
 

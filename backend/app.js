@@ -11,13 +11,11 @@ import registerVetRoutes from './src/routes/registerVet.js'
 import loginRoutes from './src/routes/login.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecovery from './src/routes/passwordRecovery.js';
-
-//Importaciones de rutas de Cruds
-import clientsRoutes from './src/routes/clients.js';
-import holydaysRoutes from './src/routes/Holiday.js';
-import productsRoutes from './src/routes/Products.js';
-import employeesRoutes from './src/routes/employees.js';
-import ReviewsRoutes from './src/routes/Reviews.js';
+import HolidayRoutes from './src/routes/holiday.js';
+import ProductsRoutes from './src/routes/products.js';
+import ReviewsRoutes from './src/routes/reviews.js';
+import EmpleadosRoutes from "./src/routes/Empleados.js";
+import CategoriasRoutes from "./src/routes/Categorias.js";
 
 
 const corsOptions = {
@@ -39,9 +37,5 @@ app.use('/api/login', loginRoutes)
 app.use('/api/logout', logoutRoutes)
 app.use('/api/passwordRecovery', passwordRecovery)
 app.use('/api/registerVet', registerVetRoutes)
-app.use('/api/employees', employeesRoutes)
-app.use('/api/holidays', holydaysRoutes)
-app.use('/api/products', productsRoutes)
-app.use('/api/reviews', ReviewsRoutes)
 
 export default app;

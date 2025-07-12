@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import AddIcon from "@mui/icons-material/Add"; // este era el ícono que usabas
+import AddIcon from "@mui/icons-material/Add";
 import { Tooltip } from "@mui/material";
 
-function AgregarButton({ title = "Añadir un nuevo empleado" }) {
+function AgregarButton({ title = "Añadir un nuevo empleado", onClick }) {
   const [hovered, setHovered] = useState(false);
 
   const buttonStyle = {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    backgroundColor: hovered ? "#2e8c52" : "#28a745", // cambio en hover
+    backgroundColor: hovered ? "#2e8c52" : "#28a745",
     color: "white",
     border: "none",
     padding: "6px 32px",
@@ -30,6 +30,7 @@ function AgregarButton({ title = "Añadir un nuevo empleado" }) {
         style={buttonStyle}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onClick={onClick}
       >
         <AddIcon style={{ marginRight: "5px" }} />
         Agregar

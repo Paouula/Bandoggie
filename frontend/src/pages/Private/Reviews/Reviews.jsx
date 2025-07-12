@@ -4,7 +4,7 @@ import ReviewsBanner from '../../../img/Reseñas/ReviewsBanner.png';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
 import FilterIcon from '@mui/icons-material/Filter';
 import Paginacion from '../../../components/Paginacion.jsx';
-import ReviewModal from '../../../components/Private/Reviews/ReviewModal.jsx';
+import ReviewModal from '../../../components/Private/Reviews/ReviewModal/ReviewModal.jsx';
 import ListReviews from '../../../components/Private/Reviews/ListReviews.jsx';
 
 const Reviewslisting = () => {
