@@ -12,6 +12,7 @@ import loginRoutes from './src/routes/login.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecovery from './src/routes/passwordRecovery.js';
 import HolidayRoutes from './src/routes/holiday.js';
+import clientsRoutes from './src/routes/clients.js';
 import ProductsRoutes from './src/routes/products.js';
 import ReviewsRoutes from './src/routes/reviews.js';
 import EmpleadosRoutes from "./src/routes/Empleados.js";

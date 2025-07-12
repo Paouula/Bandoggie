@@ -45,22 +45,22 @@ const VerificationCode = () => {
       <div className="recovery-container">
         <Toaster position="top-right" reverseOrder={false} />
 
-        {/* Logo */}
+      
         <div className="recovery-logo">
           <img src={logo} alt="Bandoggie" />
         </div>
 
         <hr />
 
-        {/* Título y texto guía */}
+       
         <h2>Verifica tu código</h2>
         <p>Ingresa el código que hemos enviado a tu correo electrónico</p>
 
-        {/* Formulario */}
+       
         <form onSubmit={handleSubmit(onSubmit)} className="recovery-form">
           <VerificationCodeInput onChange={handleCodeChange} />
 
-          {/* Campo oculto que recibe el código */}
+          
           <input
             type="hidden"
             {...register("code", {
@@ -81,7 +81,7 @@ const VerificationCode = () => {
           </Button>
         </form>
 
-        {/* Franja decorativa inferior */}
+        
         <div className="recovery-decoration"></div>
       </div>
     </div>

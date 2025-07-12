@@ -24,12 +24,13 @@ const LoginModal = ({ onClose, openChoose }) => {
 
   const { handleLogin } = useFetchLogin();
 
+  // Aplica una animación de salida antes de cerrar el modal
   const handleClose = () => {
     if (modalRef.current) {
       modalRef.current.classList.add("fade-out");
       setTimeout(() => {
-        onClose?.();
-      }, 250); // Debe coincidir con duración del fadeOut
+        onClose?.(); // Cierra el modal desde el padre
+      }, 250);
     }
   };
 
@@ -45,13 +46,14 @@ const LoginModal = ({ onClose, openChoose }) => {
       if (response) {
         toast.dismiss();
         toast.success("Sesión iniciada correctamente", { id: "login" });
-        reset();
+        reset(); // Limpia los campos
 
+        // Redirección basada en el tipo de usuario (cliente, empleado, vet)
         switch (response.userType) {
           case "employee":
           case "vet":
           case "client":
-            navigate("/mainpage");
+            navigate("/mainpage"); // Página principal para todos los roles
             break;
           default:
             toast.error("Tipo de usuario no reconocido.", {
@@ -59,10 +61,11 @@ const LoginModal = ({ onClose, openChoose }) => {
             });
         }
 
-        handleClose(); // Usa fadeOut
+        handleClose();
       }
     } catch (error) {
       toast.dismiss();
+      // Manejo de errores específico según mensaje del backend
       if (
         error.message &&
         (error.message.toLowerCase().includes("not found") ||
@@ -82,14 +85,12 @@ const LoginModal = ({ onClose, openChoose }) => {
     <div className="modal-overlay">
       <Toaster position="top-right" reverseOrder={true} />
       <div className="login-container modal-content" ref={modalRef}>
-        <button className="modal-close" onClick={handleClose}>
-          ×
-        </button>
+        <button className="modal-close" onClick={handleClose}>×</button>
 
         <div className="logo-container">
           <div className="logo">
-          <img src={logo} alt="HUELLITAS Logo" />
-        </div>
+            <img src={logo} alt="HUELLITAS Logo" />
+          </div>
         </div>
 
         <hr />
@@ -99,7 +100,7 @@ const LoginModal = ({ onClose, openChoose }) => {
           className="small-link"
           onClick={() => {
             handleClose();
-            openChoose?.();
+            openChoose?.(); // Abre modal de selección o registro
           }}
           style={{ cursor: "pointer" }}
         >

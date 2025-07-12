@@ -1,116 +1,182 @@
-import employeesModel from '../models/Employees.js'
+import employeesModel from "../models/Employees.js";
 import bcryptjs from "bcryptjs";
+import validator from "validator";
 
 const employeesControllers = {};
 
+// Aquí traemos a todos los empleados de la base de datos
 employeesControllers.get = async (req, res) => {
-    try {
-        const getEmployees = await employeesModel.find()
+  try {
+    const employees = await employeesModel.find();
+    res.json({ employees });
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener datos: " + error });
+  }
+};
 
-        console.log({ getEmployees })
+// Esta función es la que se encarga de revisar si los datos vienen como deben
+const validateEmployeeFields = (data, isUpdate = false) => {
+  const errors = [];
 
-        res.json({ getEmployees })
+  // Que el nombre sea solo letras y espacios, ni corto ni largo
+  if (!data.nameEmployees || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(data.nameEmployees)) {
+    errors.push("Nombre inválido");
+  }
 
-    } catch (error) {
-        res.status(500).json({ message: "Error al obtener datos: " + error });
+  // El correo debe estar presente y ser verdadero correo
+  if (!data.email || !validator.isEmail(data.email)) {
+    errors.push("Correo electrónico inválido");
+  }
+
+  // Teléfono con formato 1111-1111, nada más y nada menos
+  if (!data.phoneEmployees || !/^\d{4}-\d{4}$/.test(data.phoneEmployees)) {
+    errors.push("Teléfono inválido (formato 1111-1111)");
+  }
+
+  // Fecha de nacimiento válida y que no sea un mocoso
+  if (!data.dateOfBirthday || !validator.isDate(data.dateOfBirthday)) {
+    errors.push("Fecha de nacimiento inválida");
+  } else {
+    const age =
+      new Date().getFullYear() - new Date(data.dateOfBirthday).getFullYear();
+    if (age < 18) errors.push("El empleado debe ser mayor de edad");
+  }
+
+  // La dirección debe estar, y no andar con cosas vacías
+  if (!data.addressEmployees || data.addressEmployees.trim().length < 5) {
+    errors.push("Dirección obligatoria");
+  }
+
+  // La contraseña solo se revisa si es creación o si la envían para actualizar
+  if (!isUpdate || data.password) {
+    if (
+      !data.password ||
+      data.password.length < 8 ||
+      data.password.length > 30
+    ) {
+      errors.push("Contraseña entre 8 y 30 caracteres");
     }
-}
+  }
 
+  // Que la fecha de contratación sea válida, no puede andar en el limbo
+  if (!data.hireDateEmployee || !validator.isDate(data.hireDateEmployee)) {
+    errors.push("Fecha de contratación inválida");
+  }
+
+  // El DUI debe tener su formato correcto, no puede ser cualquier cosa
+  if (!data.duiEmployees || !/^\d{8}-\d{1}$/.test(data.duiEmployees)) {
+    errors.push("DUI inválido (formato 12345678-9)");
+  }
+
+  return errors;
+};
+
+// Aquí registramos al nuevo empleado, cuidando que todo venga en orden
 employeesControllers.post = async (req, res) => {
-    try {
-        const {
-            nameEmployees,
-            email,
-            phoneEmployees,
-            dateOfBirthday,
-            addressEmployees,
-            password,
-            hireDateEmployee,
-            duiEmployees
-        } = req.body;
+  try {
+    const {
+      nameEmployees,
+      email,
+      phoneEmployees,
+      dateOfBirthday,
+      addressEmployees,
+      password,
+      hireDateEmployee,
+      duiEmployees,
+    } = req.body;
 
-        const passwordHash = await bcryptjs.hash(password, 10)
-
-        let existingEmployees = await employeesModel.findOne({ email });
-        if (existingEmployees) {
-            return res.status(400).json({ message: "El usuario ya existe" });
-        }
-
-        const newEmployees = await employeesModel({
-            nameEmployees,
-            email,
-            phoneEmployees,
-            dateOfBirthday,
-            addressEmployees,
-            password: passwordHash,
-            hireDateEmployee,
-            duiEmployees
-        })
-
-        await newEmployees.save()
-
-        console.log(newEmployees);
-
-        res.status(500).json({ message: "Se ha registrado el nuevo empleado correctamente" })
-
-    } catch (error) {
-        res.status(500).json({ message: "Error al insertar los datos: " + error });
+    // Primero revisamos que todos los datos estén bien, sin error alguno
+    const validationErrors = validateEmployeeFields(req.body);
+    if (validationErrors.length) {
+      return res.status(400).json({ message: validationErrors.join(", ") });
     }
-}
 
+    // Comprobamos que ese correo no esté ya en nuestra lista
+    const exists = await employeesModel.findOne({ email });
+    if (exists) return res.status(400).json({ message: "El usuario ya existe" });
+
+    // Encriptamos la contraseña para que no ande en claro por ahí
+    const passwordHash = await bcryptjs.hash(password, 10);
+
+    // Ahora sí, creamos al empleado y lo guardamos en la base
+    const newEmployee = new employeesModel({
+      nameEmployees,
+      email,
+      phoneEmployees,
+      dateOfBirthday,
+      addressEmployees,
+      password: passwordHash,
+      hireDateEmployee,
+      duiEmployees,
+    });
+
+    await newEmployee.save();
+    res.status(201).json({ message: "Empleado registrado correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al insertar datos: " + error });
+  }
+};
+
+// Para actualizar al empleado, pasamos por el mismo rigor en las pruebas
 employeesControllers.put = async (req, res) => {
-    try {
-        const {
-            id,
-            nameEmployees,
-            email,
-            phoneEmployees,
-            dateOfBirthday,
-            addressEmployees,
-            password,
-            hireDateEmployee,
-            duiEmployees
-        } = req.body;
+  try {
+    const {
+      id,
+      nameEmployees,
+      email,
+      phoneEmployees,
+      dateOfBirthday,
+      addressEmployees,
+      password,
+      hireDateEmployee,
+      duiEmployees,
+    } = req.body;
 
-        const existing = await employeesModel.findOne({ email });
-
-        if (existing && existing._id.toString() !== id) {
-            return res.status(400).json({ message: "El usuario ya existe" });
-        }
-
-        const passwordHash = await bcryptjs.hash(password, 10)
-
-        const updateEmployees = await employeesModel.findByIdAndUpdate(req.params.id, {
-            nameEmployees,
-            email,
-            phoneEmployees,
-            dateOfBirthday,
-            addressEmployees,
-            password: passwordHash,
-            hireDateEmployee,
-            duiEmployees
-        }, { new: true })
-
-        console.log(updateEmployees);
-
-        res.status(200).json({ message: "Empleado actualizado correctamente" });
-
-    } catch (error) {
-        res.status(500).json({ message: "Error al actualizar los datos: " + error });
+    // Validamos los datos otra vez, no vaya a ser que haya algún error
+    const validationErrors = validateEmployeeFields(req.body, true);
+    if (validationErrors.length) {
+      return res.status(400).json({ message: validationErrors.join(", ") });
     }
-}
 
+    // Aseguramos que el correo no esté ya tomado por otro
+    const existing = await employeesModel.findOne({ email });
+    if (existing && existing._id.toString() !== id) {
+      return res.status(400).json({ message: "El usuario ya existe" });
+    }
+
+    // Preparamos la información para actualizar
+    const updateData = {
+      nameEmployees,
+      email,
+      phoneEmployees,
+      dateOfBirthday,
+      addressEmployees,
+      hireDateEmployee,
+      duiEmployees,
+    };
+
+    // Si trajeron contraseña nueva, la encriptamos también
+    if (password) updateData.password = await bcryptjs.hash(password, 10);
+
+    // Finalmente actualizamos el registro con lo que nos dieron
+    await employeesModel.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+    });
+
+    res.status(200).json({ message: "Empleado actualizado correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar datos: " + error });
+  }
+};
+
+// Y para eliminar un empleado, solo buscamos por id y lo borramos
 employeesControllers.delete = async (req, res) => {
-    try {
-        const deleteEmployee = await employeesControllers.findByIdAndDelete(req.params.id)
-
-        console.log(deleteEmployee)
-
-        res.status(200).json({ message: "Empleado eliminado correctamente" });
-
-    } catch (error) {
-        res.status(500).json({ message: "Error al eliminar el empleado: " + error });
-    }
-}
+  try {
+    await employeesModel.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Empleado eliminado correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar empleado: " + error });
+  }
+};
 
 export default employeesControllers;

@@ -49,7 +49,7 @@ const RegisterVetModal = ({
 
       if (response) {
         reset();
-        onRegisterSuccess?.(); // Abrir modal de verificación desde el padre
+        onRegisterSuccess?.(); 
       }
     } catch (error) {
       toast.error(error.message || "Registro fallido");
@@ -58,7 +58,7 @@ const RegisterVetModal = ({
     }
   };
 
-  // Nueva función para regresar al modal ChooseAccountType
+
   const handleBack = () => {
     if (modalRef.current) {
       modalRef.current.classList.add("fade-out");
@@ -110,7 +110,7 @@ const RegisterVetModal = ({
         </p>
 
         <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
-          {/* ... aquí el resto de los inputs igual ... */}
+       
           <div className="register-input-group">
             <label htmlFor="nameVet">Nombre de la veterinaria</label>
             <InputComponent

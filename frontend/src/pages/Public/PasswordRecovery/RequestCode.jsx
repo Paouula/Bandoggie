@@ -17,18 +17,18 @@ const RequestCode = () => {
   } = useForm();
   const { handleRequest } = useFetchPasswordRecovery();
 
-  const [isSending, setIsSending] = useState(false); // 👈 Estado de carga
+  const [isSending, setIsSending] = useState(false); 
 
   const onSubmit = async (data) => {
     if (isSending) return;
-    setIsSending(true); // ⏳ bloquear al hacer submit
+    setIsSending(true); 
     try {
       await handleRequest(data.email);
       navigate("/verify-code");
     } catch (error) {
       console.error("Error al enviar el código de verificación:", error);
     } finally {
-      setIsSending(false); // 🔓 desbloquear en caso de error
+      setIsSending(false); 
     }
   };
 
@@ -60,7 +60,7 @@ const RequestCode = () => {
                 },
               })}
               className="input-recovery"
-              disabled={isSending} // 🔒 opcionalmente bloquea el input también
+              disabled={isSending} 
             />
             {errors.email && (
               <span className="form-error">{errors.email.message}</span>
