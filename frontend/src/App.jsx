@@ -17,6 +17,7 @@ import ChooseAccountType from "./pages/Public/ChooseAccount.jsx";
 import RequestCode from "./pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "./pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "./pages/Public/PasswordRecovery/newPassword.jsx";
+import Reviews from "./pages/Public/Reviews.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -32,6 +33,7 @@ function AppContent() {
     "/request-code",
     "/verify-code",
     "/new-password",
+    "/reviews", 
   ];
 
   useEffect(() => {
@@ -66,6 +68,7 @@ function AppContent() {
           <Route path="/request-code" element={<RequestCode />} />
           <Route path="/verify-code" element={<VerifyCode />} />
           <Route path="/new-password" element={<NewPassword />} />
+          <Route path="/reviews" element={<Reviews />} />
         </Routes>
       </div>
     </>
