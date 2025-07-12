@@ -1,13 +1,17 @@
 // src/pages/EmployeesInterface.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import './Employee.css';
 import EquipoEmp from '../../../img/Empleados/EquipoEmp.png';
 import LineaDivisora from '../../../components/LineaDivisora.jsx';
-import ListEmployees from '../../../components/Private/Employees/ListEmployees';
+import ListEmployees from '../../../components/Private/Employees/ListEmployees.jsx';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
+import AgregarButton from '../../../components/Private/AgregarButton.jsx';
 import Paginacion from '../../../components/Paginacion.jsx';
+import RegisterEmployee from '../../../components/Private/Employees/RegisterEmployees.jsx';
 
 const EmployeesInterface = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   const employees = [
     {
       id: 1,
@@ -49,8 +53,7 @@ const EmployeesInterface = () => {
 
   return (
     <>
-        {/*El banner principal de la página*/}
-    <BannerPrivate
+      <BannerPrivate
         title="Empleados"
         subtitle="Listado de los empleados registrados"
         mainImage={EquipoEmp}
@@ -58,16 +61,18 @@ const EmployeesInterface = () => {
 
       <LineaDivisora />
 
-        {/*Busqueda y botón de agregar*/}
       <div className="employees-container">
-        <AgregarButton/>
+        <AgregarButton onClick={() => setModalOpen(true)} />
 
-        {/* Aquí se muestra la lista de empleados */}
         <ListEmployees employees={employees} />
 
-       <Paginacion/>
-
+        <Paginacion />
       </div>
+
+      {/* Modal de registro */}
+      {modalOpen && (
+        <RegisterEmployee onClose={() => setModalOpen(false)} />
+      )}
     </>
   );
 };
