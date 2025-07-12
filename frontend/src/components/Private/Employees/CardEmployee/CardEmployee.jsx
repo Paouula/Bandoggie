@@ -1,8 +1,8 @@
 // src/components/Employees/CardEmployee.jsx
 import React from 'react';
 import './CardEmployee.css';
-import EditButton from '../EditButton.jsx';
-import DeleteButton from '../DeleteButton.jsx';
+import EditButton from '../../EditButton.jsx';
+import DeleteButton from '../../DeleteButton.jsx';
 
 const CardEmployee = ({ employee }) => (
   <div className="employee-card">
