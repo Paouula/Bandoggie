@@ -1,5 +1,5 @@
 const reviewsController = {};
-import reviewsModel from "../models/ReviewsModel.js";
+import reviewsModel from "../models/Reviews.js";
 import { v2 as cloudinary } from "cloudinary";
 import { config } from "../config.js";
 import mongoose from "mongoose";
