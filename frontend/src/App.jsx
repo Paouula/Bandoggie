@@ -13,7 +13,7 @@ import Main from "./pages/Public/MainPage/MainPage.jsx";
 
 import Register from "./components/RegisterModal/Register.jsx";
 
-import VerificationCode from "./components/RegisterModal/VerificationCode.jsx";
+
 
 import RequestCode from "./pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "./pages/Public/PasswordRecovery/verifyCode.jsx";
@@ -58,7 +58,7 @@ function AppContent() {
           <Route path="/mainpage" element={<Main />} />
 
           <Route path="/register" element={<Register />} />
-          <Route path="/verification-code" element={<VerificationCode />} />
+
           <Route path="/request-code" element={<RequestCode />} />
           <Route path="/verify-code" element={<VerifyCode />} />
           <Route path="/new-password" element={<NewPassword />} />

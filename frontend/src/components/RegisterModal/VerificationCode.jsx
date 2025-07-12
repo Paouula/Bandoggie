@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import useFetchRegister from "../../hooks/Register/UseFetchRegister.js";
@@ -15,8 +15,21 @@ const VerificationCodeModal = ({ onClose, openLogin }) => {
     formState: { errors },
   } = useForm();
 
+  const modalRef = useRef();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { verifyEmail } = useFetchRegister();
+
+  // Función para cerrar modal Y abrir login
+  const handleClose = () => {
+    if (modalRef.current) {
+      modalRef.current.classList.add("fade-out");
+      setTimeout(() => {
+        onClose?.();      // Cierra el modal de verificación
+        openLogin?.();    // Abre el login
+      }, 250); 
+    }
+  };
 
   const onSubmit = async (data) => {
     if (isSubmitting) return;
@@ -26,9 +39,18 @@ const VerificationCodeModal = ({ onClose, openLogin }) => {
       const response = await verifyEmail(data.token);
       if (response) {
         reset();
-        onClose?.();
-        reset();
-        openLogin?.(); // Cierra el modal al verificar con éxito
+        // Cerramos el modal y abrimos login después de éxito
+        if (modalRef.current) {
+          modalRef.current.classList.add("fade-out");
+          setTimeout(() => {
+            onClose?.();
+            openLogin?.();
+          }, 250);
+        } else {
+          onClose?.();
+          openLogin?.();
+        }
+        toast.success("Código verificado con éxito.");
       }
     } catch (error) {
       toast.error(error.message || "Error al verificar el código.");
@@ -44,10 +66,8 @@ const VerificationCodeModal = ({ onClose, openLogin }) => {
   return (
     <div className="modal-overlay">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="register-container modal-content">
-        <button className="modal-close" onClick={onClose}>
-          ×
-        </button>
+      <div className="register-container modal-content" ref={modalRef}>
+       
 
         <div className="register-logo" style={{ marginBottom: 10 }}>
           <img src={logo} alt="Huellitas" />

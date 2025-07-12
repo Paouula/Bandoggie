@@ -6,7 +6,7 @@ import useFetchPasswordRecovery from "../../../hooks/PasswordRecovery/useFetchPa
 import VerificationCodeInput from "../../../components/VerificationCodeInput/VerificationCodeInput";
 import logo from "../../../img/LogoBandoggie.png";
 import Button from "../../../components/Button/Button.jsx";
-import "../../../assets/styles/Register.css"; 
+import "../../../assets/styles/PasswordRecovery.css";
 
 const VerificationCode = () => {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ const VerificationCode = () => {
     reset,
     formState: { errors },
   } = useForm();
+
   const { handleVerify } = useFetchPasswordRecovery();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,61 +25,65 @@ const VerificationCode = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const result = await handleVerify(data.code); // usamos "code" aquí porque así se llama en handleVerify
+      const result = await handleVerify(data.code);
       if (result) {
         toast.success("Código verificado correctamente");
         reset();
-        navigate("/new-password"); // o donde quieras llevar al usuario
+        navigate("/new-password");
       }
     } catch (error) {
-      console.error("Error al cambiar la contraseña:", error);
+      console.error("Error al verificar el código:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleCodeChange = (value) => {
-    setValue("code", value);
-  };
+  const handleCodeChange = (value) => setValue("code", value);
 
   return (
-    <div className="register-container">
-      <Toaster position="top-right" reverseOrder={false} />
-      <div className="register-logo">
-        <img src={logo} alt="Bandoggie" />
-      </div>
-      <hr />
-      <h2 className="register-title" style={{ marginTop: 50 }}>
-        Verifica tu código
-      </h2>
-      <p className="verification-hint">
-        Ingresa el código que hemos enviado a tu correo electrónico
-      </p>
+    <div className="parent-container">
+      <div className="recovery-container">
+        <Toaster position="top-right" reverseOrder={false} />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="register-form">
-        <div style={{ marginBottom: 30 }}>
-          <VerificationCodeInput onChange={handleCodeChange} />
+        {/* Logo */}
+        <div className="recovery-logo">
+          <img src={logo} alt="Bandoggie" />
         </div>
-        {/* Validación del input */}
-        <input
-          type="hidden"
-          {...register("code", {
-            required: "El código es obligatorio",
-            minLength: {
-              value: 4,
-              message: "El código debe tener al menos 4 dígitos",
-            },
-          })}
-        />
-        {errors.code && (
-          <span style={{ color: "red" }}>{errors.code.message}</span>
-        )}
 
-        <Button type="submit" className="register-button" disabled={isSubmitting}>
-          {isSubmitting ? "Verificando..." : "Siguiente"}
-        </Button>
-      </form>
-      <div className="register-decoration"></div>
+        <hr />
+
+        {/* Título y texto guía */}
+        <h2>Verifica tu código</h2>
+        <p>Ingresa el código que hemos enviado a tu correo electrónico</p>
+
+        {/* Formulario */}
+        <form onSubmit={handleSubmit(onSubmit)} className="recovery-form">
+          <VerificationCodeInput onChange={handleCodeChange} />
+
+          {/* Campo oculto que recibe el código */}
+          <input
+            type="hidden"
+            {...register("code", {
+              required: "El código es obligatorio",
+              minLength: { value: 4, message: "Debe tener 4 dígitos" },
+            })}
+          />
+          {errors.code && (
+            <span className="form-error">{errors.code.message}</span>
+          )}
+
+          <Button
+            type="submit"
+            className="register-button"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Verificando..." : "Siguiente"}
+          </Button>
+        </form>
+
+        {/* Franja decorativa inferior */}
+        <div className="recovery-decoration"></div>
+      </div>
     </div>
   );
 };

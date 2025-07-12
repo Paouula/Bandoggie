@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useForm, Controller } from "react-hook-form";
 import useFetchRegister from "../../hooks/Register/UseFetchRegister.js";
@@ -11,8 +10,13 @@ import "../../assets/styles/Register.css";
 import InputDataPicker from "../InputDataPicker/InputDataPicker.jsx";
 import PasswordInput from "../InputPassword/InputPassword.jsx";
 
-const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
-  const navigate = useNavigate();
+const RegisterModal = ({
+  onClose,
+  openLogin,
+  onRegisterSuccess,
+  openChoose,
+}) => {
+  const modalRef = useRef();
   const {
     register,
     handleSubmit,
@@ -29,7 +33,25 @@ const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
   const { handleRegister } = useFetchRegister();
   const phoneValue = watch("phone", "");
 
-  // Formatea el teléfono con guion "1111-1111"
+  const handleClose = () => {
+    if (modalRef.current) {
+      modalRef.current.classList.add("fade-out");
+      setTimeout(() => {
+        onClose();
+      }, 250);
+    }
+  };
+
+  const handleBack = () => {
+    if (modalRef.current) {
+      modalRef.current.classList.add("fade-out");
+      setTimeout(() => {
+        onClose();
+        openChoose?.();
+      }, 250);
+    }
+  };
+
   const handlePhoneChange = (e) => {
     let value = e.target.value.replace(/\D/g, "");
     if (value.length > 4) {
@@ -62,8 +84,6 @@ const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
       );
       if (response) {
         reset();
-        // No cerramos el modal aquí
-        // Llamamos la función que el padre nos pasó para mostrar el modal de verificación
         onRegisterSuccess?.();
       }
     } catch (error) {
@@ -76,10 +96,25 @@ const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
   return (
     <div className="modal-overlay">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="register-container modal-content">
-        <button className="modal-close" onClick={onClose}>
-          ×
-        </button>
+      <div className="register-container modal-content" ref={modalRef}>
+        <div className="modal-header-buttons">
+          <button
+            type="button"
+            className="register-back-button"
+            onClick={handleBack}
+            aria-label="Regresar"
+          >
+            ←
+          </button>
+
+          <button
+            className="modal-close"
+            onClick={handleClose}
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </div>
 
         <div className="register-logo" style={{ marginBottom: 10 }}>
           <img src={logo} alt="Huellitas" />
@@ -90,7 +125,7 @@ const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
         <p
           className="small-link"
           onClick={() => {
-            onClose?.();
+            handleClose();
             openLogin?.();
           }}
           style={{ cursor: "pointer" }}
@@ -109,14 +144,14 @@ const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
               type="text"
               id="name"
               onChange={(e) => {
-                const onlyLyrics = e.target.value.replace(
+                const onlyLetters = e.target.value.replace(
                   /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
                   ""
                 );
-                e.target.value = onlyLyrics;
+                e.target.value = onlyLetters;
               }}
               placeholder="Nombre"
-              register={register("name", {
+              {...register("name", {
                 required: "El nombre es obligatorio",
               })}
               className="register-input"
@@ -132,7 +167,7 @@ const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
               type="email"
               id="email"
               placeholder="Correo Electrónico"
-              register={register("email", {
+              {...register("email", {
                 required: "El correo es obligatorio",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -189,7 +224,7 @@ const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
                 type="text"
                 id="phone"
                 placeholder="1111-1111"
-                register={register("phone", {
+                {...register("phone", {
                   required: "El teléfono es obligatorio",
                   pattern: {
                     value: /^\d{4}-\d{4}$/,
@@ -214,7 +249,7 @@ const RegisterModal = ({ onClose, openLogin, onRegisterSuccess }) => {
             <PasswordInput
               id="password"
               placeholder="Ingresa tu contraseña"
-              register={register("password", {
+              {...register("password", {
                 required: "La contraseña es obligatoria",
                 minLength: {
                   value: 8,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
@@ -11,9 +11,9 @@ import InputComponent from "../Input/Input.jsx";
 import ButtonComponent from "../Button/Button.jsx";
 import PasswordInput from "../InputPassword/InputPassword.jsx";
 
-
 const LoginModal = ({ onClose, openChoose }) => {
   const navigate = useNavigate();
+  const modalRef = useRef();
 
   const {
     register,
@@ -23,6 +23,15 @@ const LoginModal = ({ onClose, openChoose }) => {
   } = useForm();
 
   const { handleLogin } = useFetchLogin();
+
+  const handleClose = () => {
+    if (modalRef.current) {
+      modalRef.current.classList.add("fade-out");
+      setTimeout(() => {
+        onClose?.();
+      }, 250); // Debe coincidir con duración del fadeOut
+    }
+  };
 
   const onSubmit = async (data) => {
     if (!data.email || !data.password) {
@@ -45,21 +54,26 @@ const LoginModal = ({ onClose, openChoose }) => {
             navigate("/mainpage");
             break;
           default:
-            toast.error("Tipo de usuario no reconocido.", { id: "user-type-error" });
+            toast.error("Tipo de usuario no reconocido.", {
+              id: "user-type-error",
+            });
         }
 
-        onClose?.();
+        handleClose(); // Usa fadeOut
       }
     } catch (error) {
       toast.dismiss();
       if (
         error.message &&
         (error.message.toLowerCase().includes("not found") ||
-         error.message.toLowerCase().includes("no existe"))
+          error.message.toLowerCase().includes("no existe"))
       ) {
         toast.error("El perfil no existe.", { id: "no-user" });
       } else {
-        toast.error(error.message || "Login fallido. Verifica tus credenciales.", { id: "login-error" });
+        toast.error(
+          error.message || "Login fallido. Verifica tus credenciales.",
+          { id: "login-error" }
+        );
       }
     }
   };
@@ -67,11 +81,15 @@ const LoginModal = ({ onClose, openChoose }) => {
   return (
     <div className="modal-overlay">
       <Toaster position="top-right" reverseOrder={true} />
-      <div className="login-container">
-        <button className="modal-close" onClick={onClose}>×</button>
+      <div className="login-container modal-content" ref={modalRef}>
+        <button className="modal-close" onClick={handleClose}>
+          ×
+        </button>
 
-        <div className="logo">
+        <div className="logo-container">
+          <div className="logo">
           <img src={logo} alt="HUELLITAS Logo" />
+        </div>
         </div>
 
         <hr />
@@ -80,7 +98,7 @@ const LoginModal = ({ onClose, openChoose }) => {
         <p
           className="small-link"
           onClick={() => {
-            onClose?.();
+            handleClose();
             openChoose?.();
           }}
           style={{ cursor: "pointer" }}
@@ -120,7 +138,6 @@ const LoginModal = ({ onClose, openChoose }) => {
 
         <div className="decoration-container"></div>
       </div>
-      
     </div>
   );
 };

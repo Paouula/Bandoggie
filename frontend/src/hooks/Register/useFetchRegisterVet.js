@@ -21,7 +21,7 @@ const useFetchRegisterVet = () => {
                 throw new Error(data.message || 'Login failed');
             }
 
-            toast.success('Sesión iniciada correctamente');
+            toast.success('Se ha registrado correctamente. Por favor, verifica tu correo electrónico.');
             return data;
 
         } catch (error) {

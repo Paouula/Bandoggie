@@ -24,8 +24,7 @@ p {
   margin-bottom: 20px;
 }
 
-.register-container,
-.recovery-container {
+.register-container {
   margin-bottom: 30px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
@@ -34,10 +33,8 @@ p {
   text-align: center;
   position: relative;
   overflow: hidden;
+  width: 550px;
 }
-
-.register-container { width: 550px; }
-.recovery-container { width: 450px; }
 
 .register-logo {
   display: flex;
@@ -47,8 +44,7 @@ p {
 }
 .register-logo img { height: 50px; }
 
-.register-title,
-.recovery-container h2 {
+.register-title {
   color: #365A7D;
   margin: 10px 0;
   font-family: 'Baloo Bhaijaan 2', cursive;
@@ -76,11 +72,10 @@ p {
   cursor: pointer;
 }
 
-.register-form,
-.recovery-form {
+.register-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 5px;
   margin-bottom: 20px;
 }
 
@@ -111,20 +106,18 @@ hr {
 }
 
 @media (max-width: 600px) {
-  .register-container,
-  .recovery-container {
+  .register-container {
     width: 100vw;
     padding: 20px;
     border-radius: 0;
     box-shadow: none;
   }
-  .register-title,
-  .recovery-container h2 {
+  .register-title {
     font-size: 20px;
   }
 }
 
-/* =============== MODAL STYLES =============== */
+
 
 .modal-overlay {
   position: fixed;
@@ -147,6 +140,47 @@ hr {
   box-shadow: 0 4px 20px rgba(0,0,0,0.25);
   animation: fadeIn 0.3s ease-in-out;
   overflow: hidden;
+}
+
+.modal-header-buttons {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 10px;
+}
+
+.modal-close {
+  position: static; 
+  font-size: 24px;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.register-back-button {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-content.fade-out {
+  animation: fadeOut 0.25s ease-in-out forwards;
 }
 
 .modal-close {
@@ -173,9 +207,24 @@ hr {
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+
 @media (max-width: 480px) {
   .modal-content {
     width: 95%;
     padding: 20px 12px;
   }
+}
+
+.MuiPickersPopper-root {
+  z-index: 3000 !important;
 }

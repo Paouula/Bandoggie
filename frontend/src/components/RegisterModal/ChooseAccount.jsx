@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useRef } from "react";
 import "../../assets/styles/Choose.css";
 import logo from "../../img/LogoBandoggie.png";
+
 
 const ChooseAccountTypeModal = ({
   onClose,
@@ -8,10 +9,21 @@ const ChooseAccountTypeModal = ({
   openRegisterUser,
   openRegisterVet,
 }) => {
+  const modalRef = useRef();
+
+  const handleClose = () => {
+    if (modalRef.current) {
+      modalRef.current.classList.add("fade-out");
+      setTimeout(() => {
+        onClose();
+      }, 250); // Duración debe coincidir con la animación CSS
+    }
+  };
+
   return (
     <div className="modal-overlay">
-      <div className="choose-container modal-content">
-        <button className="modal-close" onClick={onClose}>
+      <div className="choose-container modal-content" ref={modalRef}>
+        <button className="modal-close" onClick={handleClose}>
           ×
         </button>
 
@@ -26,8 +38,8 @@ const ChooseAccountTypeModal = ({
           <div
             className="choose-card"
             onClick={() => {
-              onClose?.();        // Cierra este modal
-              openRegisterUser(); // Abre modal de usuario normal
+              openRegisterUser();
+              handleClose();
             }}
           >
             <h3>Usuario Normal</h3>
@@ -37,8 +49,8 @@ const ChooseAccountTypeModal = ({
           <div
             className="choose-card"
             onClick={() => {
-              onClose?.();       // Cierra este modal
-              openRegisterVet(); // Abre modal de veterinaria
+              openRegisterVet();
+              handleClose();
             }}
           >
             <h3>Veterinaria</h3>
@@ -50,8 +62,8 @@ const ChooseAccountTypeModal = ({
           <p
             className="small-link"
             onClick={() => {
-              onClose?.();
               openLogin?.();
+              handleClose();
             }}
             style={{ cursor: "pointer" }}
           >

@@ -40,11 +40,11 @@ function NavBar() {
           }}
           openRegisterUser={() => {
             setShowChoose(false);
-            setShowRegister(true); // Abre modal de usuario normal
+            setShowRegister(true);
           }}
           openRegisterVet={() => {
             setShowChoose(false);
-            setShowRegisterVet(true); // Abre modal de veterinaria
+            setShowRegisterVet(true);
           }}
         />
       )}
@@ -55,8 +55,14 @@ function NavBar() {
             setShowRegister(false);
             setShowLogin(true);
           }}
-          closeChoose={() => setShowChoose(false)}
-          openVerification={() => setShowVerification(true)} 
+          onRegisterSuccess={() => {
+            setShowRegister(false);
+            setShowVerification(true);
+          }}
+          openChoose={() => {
+            setShowRegister(false);
+            setShowChoose(true);
+          }}
         />
       )}
 
@@ -67,11 +73,25 @@ function NavBar() {
             setShowRegisterVet(false);
             setShowLogin(true);
           }}
-          openVerification={() => setShowVerification(true)} 
+          onRegisterSuccess={() => {
+            setShowRegisterVet(false);
+            setShowVerification(true);
+          }}
+          openChoose={() => {
+            setShowRegisterVet(false);
+            setShowChoose(true);
+          }}
         />
       )}
+
       {showVerification && (
-        <VerificationCodeModal onClose={() => setShowVerification(false)} />
+        <VerificationCodeModal
+          onClose={() => setShowVerification(false)}
+          openLogin={() => {
+            setShowVerification(false);
+            setShowLogin(true);
+          }}
+        />
       )}
 
       {/* Barra superior */}

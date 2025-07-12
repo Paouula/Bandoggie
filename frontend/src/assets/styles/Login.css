@@ -12,7 +12,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* fondo semitransparente */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,7 +21,7 @@ body {
   overflow: hidden;
 }
 
-/* --- Contenedor del login (modal en sí) --- */
+/* --- Contenedor del login (modal) --- */
 .login-container {
   background: #fff;
   border-radius: 20px;
@@ -31,6 +31,14 @@ body {
   text-align: center;
   position: relative;
   overflow: hidden;
+
+  /* ✅ Animación de entrada */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ✅ Clase de salida (se aplica antes de desmontar) */
+.login-container.fade-out {
+  animation: fadeOut 0.3s ease-in-out forwards;
 }
 
 /* --- Botón de cerrar modal --- */
@@ -45,7 +53,6 @@ body {
   cursor: pointer;
   z-index: 1001;
 }
-
 .modal-close:hover {
   color: #000;
 }
@@ -66,13 +73,19 @@ body {
   height: 50px;
   text-align: center;
 }
-
 .logo {
   display: unset;
   justify-content: center;
   align-items: center;
   max-width: 130px;
   height: auto;
+}
+
+.login-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 /* --- Título --- */
@@ -91,7 +104,6 @@ h2 {
   margin-top: 20px;
   transition: 800ms;
 }
-
 a:hover {
   transition: 800ms;
   text-decoration: none;
@@ -105,7 +117,6 @@ form {
   align-items: stretch;
   margin-bottom: 15%;
 }
-
 label {
   text-align: left;
   font-weight: bold;
@@ -113,11 +124,9 @@ label {
   color: #365A7D;
   margin: 10px 0 5px;
 }
-
 .input-group {
   position: relative;
 }
-
 .icon {
   position: absolute;
   right: 10px;
@@ -140,37 +149,53 @@ hr {
     align-items: flex-start;
     padding-top: 40px;
   }
-
   .login-container {
     width: 100vw;
     border-radius: 0;
     padding: 16px 8px;
     box-shadow: none;
   }
-
   .logo img {
     height: 40px;
   }
-
   .logo {
     max-width: 100px;
   }
-
   h2 {
     font-size: 1.5rem;
   }
-
   .decoration-container {
     height: 24px;
     margin-top: 10px;
     position: static;
   }
-
   form {
     margin-bottom: 10%;
   }
-
   .input-group {
     margin-bottom: 10px;
+  }
+}
+
+/* --- Animaciones --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
   }
 }
