@@ -27,9 +27,6 @@ EmpleadosControllers.createempleados = async (req, res) => {
       return res.status(500).json({message: "Necesita un dui"})
     }
 
-    if(edad < 18){
-      return res.status(500).json({message: "Error debe ser mayor de edad"})
-    }
 
     //2- Guardo los valores en la base de datos
     const newempleado = new EmpleadosModel({

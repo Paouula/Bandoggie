@@ -60,11 +60,13 @@ const Products = () => {
 
    return (
     <>
-      <BannerPrivate
-        title="Productos"
-        subtitle="Listado de los productos dentro del catálogo"
-        mainImage={BannerProduct}
-      />
+      <div className="banner-private-container">
+        <BannerPrivate
+          title="Productos"
+          subtitle="Listado de los productos dentro del catálogo"
+          mainImage={BannerProduct}
+        />
+      </div>
 
       <div className="bandana-container">
         <div className="bandana-header">
@@ -83,7 +85,9 @@ const Products = () => {
               />
               <SearchIcon className="search-icon" size={20} />
             </div>
+            <div className='agregar-btn-prod'>
             <AgregarButton />
+            </div>
           </div>
         </div>
 

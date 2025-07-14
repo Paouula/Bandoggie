@@ -38,5 +38,7 @@ app.use('/api/login', loginRoutes)
 app.use('/api/logout', logoutRoutes)
 app.use('/api/passwordRecovery', passwordRecovery)
 app.use('/api/registerVet', registerVetRoutes)
+app.use('/api/Empleados', EmpleadosRoutes)
+app.search('/api/Holidays', HolidayRoutes)
 
 export default app;

@@ -1,23 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter as Router, useLocation, } from "react-router-dom";
 import "./App.css";
-
+import Navegation from "./components/Navegation.jsx";
 import Nav from "./components/Public/NavBar/NavBar.jsx";
-import Main from "./pages/Public/MainPage/MainPage.jsx";
 
-import Register from "./components/RegisterModal/Register.jsx";
-
-
-
-import RequestCode from "./pages/Public/PasswordRecovery/RequestCode.jsx";
-import VerifyCode from "./pages/Public/PasswordRecovery/verifyCode.jsx";
-import NewPassword from "./pages/Public/PasswordRecovery/newPassword.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -53,16 +39,8 @@ function AppContent() {
           Contador: {count}
         </button>*/}
 
-        <Routes>
-          <Route path="/" element={<Navigate to="/mainpage" replace />} />
-          <Route path="/mainpage" element={<Main />} />
+        <Navegation />
 
-          <Route path="/register" element={<Register />} />
-
-          <Route path="/request-code" element={<RequestCode />} />
-          <Route path="/verify-code" element={<VerifyCode />} />
-          <Route path="/new-password" element={<NewPassword />} />
-        </Routes>
       </div>
     </>
   );
