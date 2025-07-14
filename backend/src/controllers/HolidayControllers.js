@@ -1,14 +1,41 @@
 const HolidayControllers = {};
+import Holiday from "../models/holiday.js";
+import HolidayModels from "../models/holiday.js";
 
-import HolidayModels from "../models/Holiday.js";
-
+//Select
 HolidayControllers.getAllHoliday = async (req, res) => {
-    const Holiday = await HolidayModels.find();
-    res.json(Holiday);
-}
+    try {
+        const holidays = await HolidayModels.find();
+        res.status(200).json(holidays);
 
+        
+       if (!Holiday) {
+        return res.status(404).json({ message: "Product not found" })
+    }
+    } catch (error) {
+        console.error("Error fetching holidays:", error);
+        res.status(500).json({ message: "Error fetching holidays", error });
+    } 
+};
+
+//Insert
 HolidayControllers.insertHoliday = async (req, res) => {
-    const {nameCategory} = req.body;
+    try {
+        const {nameCategory} = req.body;
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" })
+        }
+
+         
+       if (!product) {
+        return res.status(404).json({ message: "Product not found" })
+    }
+        
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+
+    
     const newHoliday = new HolidayModels({nameCategory}); 
     await newHoliday.save();
     res.json({message: "Holiday inserted"});
