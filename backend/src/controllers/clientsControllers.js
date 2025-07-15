@@ -12,7 +12,7 @@ cloudinary.config({
 
 const clientsControllers = {};
 
-// Obtén la lista de clientes, con buena intención y sin mucho alboroto
+// Lista de clientes
 clientsControllers.get = async (req, res) => {
   try {
     const clients = await clientsModel.find();
