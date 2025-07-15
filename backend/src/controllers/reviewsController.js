@@ -1,5 +1,5 @@
 const reviewsController = {};
-import reviewsModel from "../models/ReviewsModel.js";
+import reviewsModel from "../models/reviews.js";
 
 //SELECT - Obtener todas las reseñas
 reviewsController.getReviews = async (req, res) => {
