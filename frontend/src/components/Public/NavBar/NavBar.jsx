@@ -130,7 +130,7 @@ function NavBar() {
 
         <div className={`navbar-nav-container ${isNavOpen ? 'navbar-nav-open' : ''}`}>
           <div className="navbar-nav-links">
-            <Link className="navbar-nav-link" to="/">Inicio</Link>
+            <Link className="navbar-nav-link" to="/main">Inicio</Link>
             <Link className="navbar-nav-link" to="/Product">Bandanas</Link>
             <Link className="navbar-nav-link" to="/Reviews">Collares</Link>
             <Link className="navbar-nav-link" to="/Employee">Accesorios</Link>

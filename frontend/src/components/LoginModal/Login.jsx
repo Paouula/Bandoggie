@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
-import useFetchLogin from "../../hooks/Login/UseFetchLogin.js";
+import { useAuth } from "../../Context/AuthContext.jsx";
 
 import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Login.css";
@@ -14,6 +14,7 @@ import PasswordInput from "../InputPassword/InputPassword.jsx";
 const LoginModal = ({ onClose, openChoose }) => {
   const navigate = useNavigate();
   const modalRef = useRef();
+  const { Login } = useAuth();
 
   const {
     register,
@@ -21,8 +22,6 @@ const LoginModal = ({ onClose, openChoose }) => {
     reset,
     formState: { errors },
   } = useForm();
-
-  const { handleLogin } = useFetchLogin();
 
   // Aplica una animación de salida antes de cerrar el modal
   const handleClose = () => {
@@ -42,18 +41,21 @@ const LoginModal = ({ onClose, openChoose }) => {
     }
 
     try {
-      const response = await handleLogin(data.email, data.password);
-      if (response) {
+      const response = await Login(data.email, data.password);
+      
+      if (response.success) {
         toast.dismiss();
         toast.success("Sesión iniciada correctamente", { id: "login" });
         reset(); // Limpia los campos
 
-        // Redirección basada en el tipo de usuario (cliente, empleado, vet)
+        // Redirección basada en el tipo de usuario
         switch (response.userType) {
           case "employee":
+            navigate("/admin/reviews"); // Panel de administración
+            break;
           case "vet":
           case "client":
-            navigate("/mainpage"); // Página principal para todos los roles
+            navigate("/mainpage"); // Página principal para vet y client
             break;
           default:
             toast.error("Tipo de usuario no reconocido.", {
@@ -62,6 +64,8 @@ const LoginModal = ({ onClose, openChoose }) => {
         }
 
         handleClose();
+      } else {
+        throw new Error(response.message);
       }
     } catch (error) {
       toast.dismiss();

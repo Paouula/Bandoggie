@@ -1,112 +1,40 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../Context/AuthContext";
 import "./Navbar.css";
 import IC_cuenta from "../../../img/NavBar/user.png";
 import IC_carrito from "../../../img/NavBar/ShoppingCart.png";
 import LogoBandoggie from "../../../img/NavBar/LogoBandoggie.png";
 
-// Importa tus modales
-import LoginModal from "../../LoginModal/Login.jsx";
-import ChooseAccountTypeModal from "../../RegisterModal/ChooseAccount.jsx";
-import RegisterModal from "../../RegisterModal/Register.jsx";
-import RegisterVetModal from "../../RegisterModal/RegisterVet.jsx";
-import VerificationCodeModal from "../../RegisterModal/VerificationCode.jsx";
-
-function NavBar() {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showChoose, setShowChoose] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
-  const [showRegisterVet, setShowRegisterVet] = useState(false);
-  const [showVerification, setShowVerification] = useState(false);
+function AuthenticatedNavBar() {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
     <>
-      {/* MODALES */}
-      {showLogin && (
-        <LoginModal
-          onClose={() => setShowLogin(false)}
-          openChoose={() => {
-            setShowLogin(false);
-            setShowChoose(true);
-          }}
-        />
-      )}
-      {showChoose && (
-        <ChooseAccountTypeModal
-          onClose={() => setShowChoose(false)}
-          openLogin={() => {
-            setShowChoose(false);
-            setShowLogin(true);
-          }}
-          openRegisterUser={() => {
-            setShowChoose(false);
-            setShowRegister(true);
-          }}
-          openRegisterVet={() => {
-            setShowChoose(false);
-            setShowRegisterVet(true);
-          }}
-        />
-      )}
-      {showRegister && (
-        <RegisterModal
-          onClose={() => setShowRegister(false)}
-          openLogin={() => {
-            setShowRegister(false);
-            setShowLogin(true);
-          }}
-          onRegisterSuccess={() => {
-            setShowRegister(false);
-            setShowVerification(true);
-          }}
-          openChoose={() => {
-            setShowRegister(false);
-            setShowChoose(true);
-          }}
-        />
-      )}
-
-      {showRegisterVet && (
-        <RegisterVetModal
-          onClose={() => setShowRegisterVet(false)}
-          openLogin={() => {
-            setShowRegisterVet(false);
-            setShowLogin(true);
-          }}
-          onRegisterSuccess={() => {
-            setShowRegisterVet(false);
-            setShowVerification(true);
-          }}
-          openChoose={() => {
-            setShowRegisterVet(false);
-            setShowChoose(true);
-          }}
-        />
-      )}
-
-      {showVerification && (
-        <VerificationCodeModal
-          onClose={() => setShowVerification(false)}
-          openLogin={() => {
-            setShowVerification(false);
-            setShowLogin(true);
-          }}
-        />
-      )}
-
       {/* Barra superior */}
       <div className="navbar-top-bar">
         <a className="navbar-top-space"> - </a>
       </div>
 
+      {/* Información del usuario autenticado */}
       <div className="navbar-session-bar">
-        <span className="navbar-session-link" onClick={() => setShowLogin(true)}>
-          Iniciar sesión
+        <span className="navbar-session-text">
+          Bienvenido, {user?.email}
         </span>
         <span className="navbar-divider">/</span>
-        <span className="navbar-session-link" onClick={() => setShowChoose(true)}>
-          Crear cuenta
+        <span 
+          className="navbar-session-link" 
+          onClick={handleLogout}
+        >
+          Cerrar sesión
         </span>
       </div>
 
@@ -114,7 +42,7 @@ function NavBar() {
 
       {/* Barra de navegación */}
       <nav className="navbar-main">
-        <a className="navbar-brand" href="/">
+        <a className="navbar-brand" href="/mainpage">
           <img src={LogoBandoggie} alt="Logo" className="navbar-logo" />
         </a>
 
@@ -130,11 +58,14 @@ function NavBar() {
 
         <div className={`navbar-nav-container ${isNavOpen ? 'navbar-nav-open' : ''}`}>
           <div className="navbar-nav-links">
-            <Link className="navbar-nav-link" to="/">Inicio</Link>
-            <Link className="navbar-nav-link" to="/Product">Bandanas</Link>
-            <Link className="navbar-nav-link" to="/Reviews">Collares</Link>
-            <Link className="navbar-nav-link" to="/Employee">Accesorios</Link>
-            <Link className="navbar-nav-link" to="/Clients">Festividades</Link>
+            <Link className="navbar-nav-link" to="/mainpage">Inicio</Link>
+            <Link className="navbar-nav-link" to="/products">Productos</Link>
+            <Link className="navbar-nav-link" to="/reviews">Reseñas</Link>
+            <Link className="navbar-nav-link" to="/aboutus">Nosotros</Link>
+            {/* Solo mostrar ciertas opciones según el tipo de usuario */}
+            {user?.userType === 'vet' && (
+              <Link className="navbar-nav-link" to="/vet-services">Servicios</Link>
+            )}
           </div>
 
           <div className="navbar-right-section">
@@ -149,8 +80,26 @@ function NavBar() {
               </button>
             </div>
             <div className="navbar-icons-container">
-              <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />
-              <img src={IC_carrito} alt="Carrito" className="navbar-icon" />
+              <div 
+                className="navbar-icon-wrapper"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+              >
+                <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />
+                {showUserMenu && (
+                  <div className="user-dropdown-menu">
+                    <div className="user-info">
+                      <p>{user?.email}</p>
+                      <small>{user?.userType}</small>
+                    </div>
+                    <hr />
+                    <button onClick={() => navigate('/profile')}>Mi Perfil</button>
+                    <button onClick={handleLogout}>Cerrar Sesión</button>
+                  </div>
+                )}
+              </div>
+              {user?.userType === 'client' && (
+                <img src={IC_carrito} alt="Carrito" className="navbar-icon" />
+              )}
             </div>
           </div>
         </div>
@@ -159,4 +108,4 @@ function NavBar() {
   );
 }
 
-export default NavBar;
+export default AuthenticatedNavBar;
