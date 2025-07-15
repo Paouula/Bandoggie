@@ -6,7 +6,7 @@ import IC_carrito from '../../img/NavBar/ShoppingCart.png';
 import LogoBandoggie from '../../img/NavBar/LogoBandoggie.png';
 
 function NavBar() {
-  const navigate = useNavigate(); // ← CORRECTO
+  const navigate = useNavigate(); 
 
   return (
     <>
@@ -47,9 +47,9 @@ function NavBar() {
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav">
             <a className="nav-item nav-link" href="/">Inicio</a>
-            <a className="nav-item nav-link" href="">Bandanas</a>
-            <a className="nav-item nav-link" href="#">Collares</a>
-            <a className="nav-item nav-link" href="#">Accesorios</a>
+            <a className="nav-item nav-link" href="/Bandanas">Bandanas</a>
+            <a className="nav-item nav-link" href="/Bandanas">Collares</a>
+            <a className="nav-item nav-link" href="/Bandanas">Accesorios</a>
             <a className="nav-item nav-link" href="/Holiday">Festividades</a>
             <a className="nav-item nav-link" href="/AboutUs">Sobre Nosotros</a>
           </div>
