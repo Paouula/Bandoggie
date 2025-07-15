@@ -1,11 +1,25 @@
 import React from 'react';
-import './AboutUS.css';
+import Banner from '../../../components/AbouUs/Banner';
+import MissionVisionSection from '../../../components/AbouUs/MissionVisionSection';
+import FAQSection from '../../../components/AbouUs/FAQSection';
 
-function AboutUS() {
-    return ( 
-      <>
-          </>
-  )
-}
+const AboutUs = () => {
+  return (
+    <>
+      <div className="aboutus-wrapper">
+        <Banner />
+        <MissionVisionSection />
+        <FAQSection />
+      </div>
 
-export default AboutUS;
+      <style jsx>{`
+        .aboutus-wrapper {
+          width: 100%;
+          min-height: 100vh;
+        }
+      `}</style>
+    </>
+  );
+};
+
+export default AboutUs;

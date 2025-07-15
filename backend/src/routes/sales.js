@@ -15,4 +15,5 @@ router.get("/timeline", salesChartsControllers.getSalesTimelineChart);
 
 // Ruta para obtener clientes más frecuentes (gráfica de dona)
 router.get("/top-clients", salesChartsControllers.getTopClientsChart);
+
 export default router;
