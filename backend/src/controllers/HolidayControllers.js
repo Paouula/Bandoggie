@@ -1,55 +1,44 @@
-const HolidayControllers = {};
-import Holiday from "../models/holiday.js";
-import HolidayModels from "../models/holiday.js";
+import holidayModel from "../models/holiday.js";
 
-//Select
-HolidayControllers.getAllHoliday = async (req, res) => {
-    try {
-        const holidays = await HolidayModels.find();
-        res.status(200).json(holidays);
+// Array de metodos
+const holidayController = {};
 
-        
-       if (!Holiday) {
-        return res.status(404).json({ message: "Product not found" })
-    }
-    } catch (error) {
-        console.error("Error fetching holidays:", error);
-        res.status(500).json({ message: "Error fetching holidays", error });
-    } 
+// Select
+holidayController.getHoliday = async (req, res) => {
+  const holiday = await holidayModel.find();
+  res.json(holiday);
 };
 
-//Insert
-HolidayControllers.insertHoliday = async (req, res) => {
-    try {
-        const {nameCategory} = req.body;
-        if (!product) {
-            return res.status(404).json({ message: "Product not found" })
-        }
+// Insert
+holidayController.createHoliday = async (req, res) => {
+  const { nameCategory } = req.body;
+  const newHoliday = new holidayModel({ nameCategory });
+  await newHoliday.save();
+  res.json({ message: "Holiday saved" });
+};
 
-         
-       if (!product) {
-        return res.status(404).json({ message: "Product not found" })
-    }
-        
-    } catch (error) {
-        res.status(500).json({ message: error.message })
-    }
+// Delete
+holidayController.deleteHoliday = async (req, res) => {
+  const deletedHoliday = await holidayModel.findByIdAndDelete(req.params.id);
+  if (!deletedHoliday) {
+    return res.status(404).json({ message: "Holiday wasn't found" });
+  }
+  res.json({ message: "Holiday deleted" });
+};
 
-    
-    const newHoliday = new HolidayModels({nameCategory}); 
-    await newHoliday.save();
-    res.json({message: "Holiday inserted"});
-}
+// Update
+holidayController.updateHoliday = async (req, res) => {
+  // Solicito todos los valores
+  const { nameCategory } = req.body;
+  await holidayModel.findByIdAndUpdate(
+    req.params.id,
+    {
+      nameCategory
+    },
+    { new: true }
+  );
 
-HolidayControllers.updateHoliday= async (req, res) => {
-    const {nameCategory} = req.body;
-    const updatedHoliday = await HolidayModels.findByIdAndUpdate(req.params.id, {nameCategory}, {new: true});
-    res.json({message: "Holiday updated"});
-}
+  res.json({ message: "Holiday updated" });
+};
 
-HolidayControllers.deleteHoliday = async (req, res) => {
-    await HolidayModels.findByIdAndDelete(req.params.id);
-    res.json({message: "Holiday deleted"});
-}                
-
-export default HolidayControllers;
+export default holidayController;

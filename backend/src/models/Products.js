@@ -3,19 +3,19 @@ import {Schema, model} from "mongoose";
 const ProductsSchema = new Schema({
     nameProduct: {
         type: String,
-        required: true
+        require: true
     },
     price: {
         type: Number,
-        required: true
+        require: true
     },
     description: {
         type: String,
-        required: true
+        require: true
     },
     image: {
         type: String,
-        required: true
+        require: true
     },
     designImages: {
         type: [String],
@@ -33,18 +33,18 @@ const ProductsSchema = new Schema({
                 message: 'Máximo 10 imágenes de diseño permitidas'
             }
         ],
-        required: true
+        require: true
     },
 
     idHolidayProduct: {
         type: Schema.Types.ObjectId,
         ref: "Holiday",
-        required: true
+        require: true
     },
     idCategory: {
         type: Schema.Types.ObjectId,
         ref: "Category",
-        required: true
+        require: true
     },
 }, {
     timestamps: true,

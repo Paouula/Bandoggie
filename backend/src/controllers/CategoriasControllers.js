@@ -1,6 +1,6 @@
 //Array de metodos (C R U D)
 const CategoriasControllers = {};
-import CategoriasModel from "../models/Categorias.js";
+import CategoriasModel from "../models/categorias.js";
 
 // SELECT
 CategoriasControllers.getcategorias = async (req, res) => {

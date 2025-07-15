@@ -1,19 +1,31 @@
+/*
+    Campos:
+        nameAdmin,
+        emailAdmin,
+        phoneAdmin,
+        dateOfBirth,
+        addressAdmin,
+        passwordAdmin
+*/
+
 import { Schema, model} from "mongoose";
 
-const employeeSchema = new Schema({
-    nameEmployees: {
+const adminSchema = new Schema({
+    nameAdmin: {
         type: String,
         require: true,
         trim: true
     },
-    email : {
+    emailAdmin: {
         type: String,
         require: true,
+        unique: true,
         trim: true
     },
-    phoneEmployees: {
+    phoneAdmin: {
         type: String,
         require: true,
+        unique: true,
         trim: true
     },
     dateOfBirth: {
@@ -21,22 +33,12 @@ const employeeSchema = new Schema({
         require: true,
         trim: true
     },
-    addressEmployees: {
+    addressAdmin: {
         type: String,
         require: true,
         trim: true
     },
     password: {
-        type: String,
-        require: true,
-        trim: true
-    },
-    hireDateEmployee : {
-        type: Date,
-        require: true,
-        trim: true
-    },
-    duiEmployees : {
         type: String,
         require: true,
         trim: true
@@ -46,4 +48,4 @@ const employeeSchema = new Schema({
     strict: false
 })
 
-export default model('Employees', employeeSchema)
+export default model('Admin', adminSchema)

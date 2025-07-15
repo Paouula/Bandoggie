@@ -1,6 +1,6 @@
-import ClientsModel from "../models/Clients.js";
-import Employees from "../models/Employees.js";
-import VetModel from "../models/Vets.js";
+import clientsModel from "../models/clients.js";
+import Employees from "../models/employees.js";
+import VetModel from "../models/vets.js";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import { config } from "../config.js";
@@ -25,7 +25,7 @@ loginController.login = async (req, res) => {
     let userType;
 
     // Primero buscamos si es un cliente con ese correo
-    userFound = await ClientsModel.findOne({ email });
+    userFound = await clientsModel.findOne({ email });
     if (userFound) {
       userType = "client";
     } else {

@@ -1,4 +1,4 @@
-import clientsModel from "../models/Clients.js";
+import clientsModel from "../models/clients.js";
 import { v2 as cloudinary } from "cloudinary";
 import { config } from "../config.js";
 import mongoose from "mongoose";
@@ -24,10 +24,10 @@ clientsControllers.get = async (req, res) => {
 
 // Crea un cliente nuevo, pero ojo, valida antes de crear
 clientsControllers.post = async (req, res) => {
-  const { name, email, phone, birthday, password } = req.body;
+  const { name, email, phone, dateOfBirth, password } = req.body;
 
   // Validación rudimentaria, no vayas a mandar campos vacíos
-  if (!name || !email || !phone || !birthday || !password) {
+  if (!name || !email || !phone || !dateOfBirth || !password) {
     return res.status(400).json({ message: "Faltan datos obligatorios" });
   }
 
@@ -61,7 +61,7 @@ clientsControllers.post = async (req, res) => {
       name,
       email,
       phone,
-      birthday,
+      dateOfBirth,
       password: passwordHash,
       image: imgUrl,
     });
@@ -76,7 +76,7 @@ clientsControllers.post = async (req, res) => {
 
 // Aquí actualizamos cliente, pero con prudencia y cuidado
 clientsControllers.put = async (req, res) => {
-  const { name, email, phone, birthday, password } = req.body;
+  const { name, email, phone, dateOfBirth, password } = req.body;
   const { id } = req.params;
 
   // Validamos el id, que sea válido y no un disparate
@@ -85,7 +85,7 @@ clientsControllers.put = async (req, res) => {
   }
 
   // Validar campos obligatorios para la actualización
-  if (!name || !email || !phone || !birthday) {
+  if (!name || !email || !phone || !dateOfBirth) {
     return res.status(400).json({ message: "Faltan datos obligatorios para actualizar" });
   }
 
@@ -132,7 +132,7 @@ clientsControllers.put = async (req, res) => {
         name,
         email,
         phone,
-        birthday,
+        dateOfBirth,
         password: passwordHash,
         image: imgUrl || existingClient.image,
       },

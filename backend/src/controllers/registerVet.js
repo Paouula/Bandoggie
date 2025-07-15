@@ -1,5 +1,5 @@
-import vetModel from '../models/Vets.js';
-import clientsModel from '../models/Clients.js';
+import vetModel from '../models/vets.js';
+import clientsModel from '../models/clients.js';
 import { config } from '../config.js';
 import jsonwebtoken from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';

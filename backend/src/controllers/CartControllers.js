@@ -1,6 +1,6 @@
 const CartController = {};
 
-import Cart from "../models/Cart.js";
+import Cart from "../models/cart.js";
 import mongoose from "mongoose";
 
 // Obtener todos los carritos
