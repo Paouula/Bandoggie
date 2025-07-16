@@ -12,6 +12,7 @@ holidayController.getHoliday = async (req, res) => {
 // Insert
 holidayController.createHoliday = async (req, res) => {
   const { nameCategory } = req.body;
+  
   const newHoliday = new holidayModel({ nameCategory });
   await newHoliday.save();
   res.json({ message: "Holiday saved" });
