@@ -1,0 +1,130 @@
+.choose-container {
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 450px;
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #365A7D;
+}
+
+.modal-content {
+  position: relative;
+}
+
+
+.choose-footer{
+  margin: 30px;
+}
+
+.choose-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.choose-logo img {
+  height: 50px;
+}
+
+.choose-title {
+  color: #365A7D;
+  margin: 10px 0;
+  font-family: 'Baloo Bhaijaan 2';
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.choose-decoration {
+  background: linear-gradient(to right, #F7C7DE, #D9F4FF , #B4CEEC);
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.choose-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.choose-card {
+  width: 280px;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.choose-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.choose-card h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #365A7D;
+}
+
+.choose-card p {
+  font-size: 14px;
+  color: #728CA4;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .choose-container {
+    width: 100vw;
+    padding: 20px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .choose-title {
+    font-size: 20px;
+  }
+
+  .choose-logo img {
+    height: 40px;
+  }
+}

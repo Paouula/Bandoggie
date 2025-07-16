@@ -1,0 +1,189 @@
+/* Products.css */
+
+.bandana-container {
+  background-color: #FEE3EE;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  margin-top: 4%;
+  width: 100vw;
+  box-sizing: border-box;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  position: relative;
+}
+
+.bandana-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.filter-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.nueva-cate {
+  background-color: #df8600;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 550;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inria Sans', sans-serif;
+  white-space: nowrap;
+}
+
+.nueva-fest {
+  background-color: #d45d22;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 550;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inria Sans', sans-serif;
+  white-space: nowrap;
+}
+
+/* Contenedor que agrupa el input de búsqueda y el botón de agregar */
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  max-width: 100%;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+.search-container {
+  position: relative;
+  width: 300px;
+  min-width: 250px;
+  max-width: calc(100% - 140px);
+  flex-shrink: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 15px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+.agregar-btn-prod {
+  margin-right: 20%;
+}
+
+/* Estilos para alinear el banner con el contenido */
+.banner-private-container {
+  width: 100vw !important;
+  margin-left: calc(-50vw + 50%) !important;
+  margin-right: calc(-50vw + 50%) !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+}
+
+/* Alternativa si el banner usa otra clase */
+.banner-private,
+.banner-container {
+  width: 100vw !important;
+  margin-left: calc(-50vw + 50%) !important;
+  margin-right: calc(-50vw + 50%) !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bandana-container {
+    padding: 15px;
+  }
+  
+  .bandana-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .filter-tags {
+    justify-content: center;
+  }
+  
+  .search-actions {
+    justify-content: center;
+    max-width: 100%;
+  }
+  
+  .search-container {
+    width: 100%;
+    max-width: 400px;
+    min-width: auto;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .product-top-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .product-title-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .product-info {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bandana-container {
+    padding: 10px;
+  }
+  
+  .nueva-cate,
+  .nueva-fest {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+  
+  .search-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-container {
+    width: 100%;
+    max-width: 100%;
+  }
+}

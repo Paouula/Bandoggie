@@ -1,0 +1,230 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  padding: 40px 0;
+}
+
+a {
+  color: #ff9900;
+  font-size: 13px;
+  margin-bottom: 20px;
+  text-decoration: none;
+  transition: color 0.8s;
+}
+a:hover {
+  color: #365A7D;
+  text-decoration: none;
+  transition: color 0.8s;
+}
+
+p {
+  color: #728CA4;
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.register-container {
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  width: 550px;
+}
+
+.register-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.register-logo img { height: 50px; }
+
+.register-title {
+  color: #365A7D;
+  margin: 10px 0;
+  font-family: 'Baloo Bhaijaan 2', cursive;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.register-small-link {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.register-profile-image-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.register-button-image {
+  padding: 10px 20px;
+  background-color: #e3effc;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+hr {
+  width: calc(100% + 60px);
+  height: 2px;
+  background-color: #b4ceec;
+  border: none;
+  margin: 10px -30px;
+}
+
+.register-decoration {
+  background: linear-gradient(to right, #F7C7DE, #D9F4FF, #B4CEEC);
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  position: absolute;
+  bottom: 0; left: 0;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.form-error {
+  font-size: 12px;
+  color: red;
+  margin-top: 5px;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .register-container {
+    width: 100vw;
+    padding: 20px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .register-title {
+    font-size: 20px;
+  }
+}
+
+
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.modal-content {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px 20px;
+  width: 90%;
+  max-width: 520px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  animation: fadeIn 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.modal-header-buttons {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 10px;
+}
+
+.modal-close {
+  position: static; 
+  font-size: 24px;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.register-back-button {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-content.fade-out {
+  animation: fadeOut 0.25s ease-in-out forwards;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.modal-close:hover { color: #333; }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px 12px;
+  }
+}
+
+.MuiPickersPopper-root {
+  z-index: 3000 !important;
+}

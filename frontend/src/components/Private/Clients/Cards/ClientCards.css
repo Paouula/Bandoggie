@@ -1,0 +1,72 @@
+.clientCard {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.clientHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.client-logo-img,
+.client-avatar-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10%;
+  border: 2px solid #cbcbcb;
+}
+
+.avatarEmoji {
+  font-size: 32px;
+}
+
+.clientInfo {
+  flex: 1;
+}
+
+.clientName {
+  font-weight: bold;
+  font-size: 18px;
+  color: #1F2937;
+  margin-bottom: 4px;
+}
+
+.clientDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detailItem {
+  font-size: 14px;
+  color: #4B5563;
+  margin: 0;
+}
+
+.detailLabel {
+  font-weight: 500;
+}
+
+.buttonContainer {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.viewMoreButton {
+  background-color: #365A7D;
+  color: white;
+  padding: 7px 30px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
