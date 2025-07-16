@@ -21,6 +21,12 @@ import employeesRoutes from "./src/routes/employees.js";
 import categoriesRoutes from "./src/routes/Categorias.js";
 import ordersRoutes from "./src/routes/orders.js"
 
+//Rutas Invitados
+import guestWholesalers from './src/routes/guestWholesalers.js';
+import guestClients from './src/routes/guestClients.js';
+
+//Rutas Graficas
+import salesRoutes from './src/routes/sales.js';
 
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -50,5 +56,12 @@ app.use('/api/products', productsRoutes)
 app.use('/api/orders', ordersRoutes)
 app.use('/api/category', categoriesRoutes)
 app.use('/api/reviews', reviewsRoutes)
+
+//Rutas Invitados
+app.use('/api/guestWholesalers', guestWholesalers)
+app.use('/api/guestClients', guestClients)
+
+//Graficas
+app.use('/api/sales', salesRoutes)
 
 export default app;
