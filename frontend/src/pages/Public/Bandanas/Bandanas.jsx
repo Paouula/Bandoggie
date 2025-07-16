@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/ProductGrid.jsx';
+import ProductGrid from '../../../components/Public/ProductGrid.jsx';
 import './Bandanas.css';
 
 // Imágenes Products - Bandanas Navideñas

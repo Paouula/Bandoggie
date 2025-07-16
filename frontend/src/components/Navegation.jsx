@@ -3,12 +3,12 @@ import { useAuth } from "../Context/AuthContext.jsx";
 import { useEffect } from "react";
 
 // Componentes públicos
-import AboutUS from "../pages/Public/AboutUs/AboutUs";
+import AboutUS from "../pages/Public/AboutUs/AboutUs.jsx";
 import MainPage from "../pages/Public/MainPage/MainPage.jsx"; // Cambié Main por Inicio
-// import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
+import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
 // import Collares from "../pages/Public/Collares/Collares.jsx";
 // import Accesorios from "../pages/Public/Accesorios/Accesorios.jsx";
-// import Festividades from "../pages/Public/Festividades/Festividades.jsx";
+import Holidays from "../pages/Public/Holidays/ChristmasHoliday.jsx";
 import Register from "../components/RegisterModal/Register.jsx";
 import RequestCode from "../pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
@@ -81,11 +81,11 @@ function Navegation() {
             {/* Rutas públicas - solo para usuarios NO employees */}
             <Route element={<PrivateRoute />}>
                 <Route path="/mainPage" element={<MainPage />} />
-               {/* <Route path="/bandanas" element={<Bandanas />} />
-                <Route path="/collares" element={<Collares />} />
-                <Route path="/accesorios" element={<Accesorios />} />
-                <Route path="/festividades" element={<Festividades />} />
-                <Route path="/aboutus" element={<AboutUS />} /> */}
+                <Route path="/bandanas" element={<Bandanas />} />
+               {/* <Route path="/collares" element={<Collares />} />
+                <Route path="/accesorios" element={<Accesorios />} /> */}
+                <Route path="/holidays" element={<Holidays />} />
+                <Route path="/aboutus" element={<AboutUS />} /> 
             </Route>
             
             {/* Rutas privadas solo para employees */}
