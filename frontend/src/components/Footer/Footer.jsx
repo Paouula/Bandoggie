@@ -24,10 +24,10 @@ function Footer() {
       <div className="col-lg-2 col-6">
         <h5 className="title">Sobre BANDOGGIE</h5>
         <ul className="list-unstyled">
-          <li><a href="/AboutUs" className="text-white">Sobre nosotros</a></li>
-          <li><a href="/AboutUs" className="text-white">Misión</a></li>
-          <li><a href="/AboutUs" className="text-white">Visión</a></li>
-          <li><a href="/AboutUs" className="text-white">FQA</a></li>
+          <li><a href="/aboutus" className="text-white">Sobre nosotros</a></li>
+          <li><a href="/aboutus" className="text-white">Misión</a></li>
+          <li><a href="/aboutus" className="text-white">Visión</a></li>
+          <li><a href="/aboutus" className="text-white">FQA</a></li>
         </ul>
       </div>
 

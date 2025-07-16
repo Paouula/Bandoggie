@@ -3,12 +3,12 @@ import HolidayCard from './HolidayCard';
 import NavigationButton from './NavigationButton';
 
 //Imagenes 
-import DogNavideño from '../../img/MainPage/Dog.png';
-import DogHalloween from '../../img/MainPage/Dog2.png';
-import DogValetin from '../../img/MainPage/Dog3.png';
-import DogPatria from '../../img/MainPage/Dog4.png';
-import DogPascuas from '../../img/MainPage/Dog5.png';
-import DogAñonuevo from '../../img/MainPage/Dog6.png';
+import DogNavideño from '../../../img/MainPage/Dog.png';
+import DogHalloween from '../../../img/MainPage/Dog2.png';
+import DogValetin from '../../../img/MainPage/Dog3.png';
+import DogPatria from '../../../img/MainPage/Dog4.png';
+import DogPascuas from '../../../img/MainPage/Dog5.png';
+import DogAñonuevo from '../../../img/MainPage/Dog6.png';
 
 const HolidayCarousel = () => {
   const scrollRef = useRef(null);
