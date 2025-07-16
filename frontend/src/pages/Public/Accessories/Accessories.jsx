@@ -2,22 +2,22 @@ import React, { useState } from 'react';
 import ProductFilters from '../../../components/Filter.jsx';
 import ProductGrid from '../../../components/ProductGrid.jsx';
 
-//Import de las imagenes de las bandanas
-import Bandanas from '../../../img/Bandanas/bandanas.png';
-import Bandanas2 from '../../../img/Bandanas/bandanas2.png';
-import Bandanas3 from '../../../img/Bandanas/bandanas3.png';
-import Bandanas4 from '../../../img/Bandanas/bandanas4.png';
-import Bandanas5 from '../../../img/Bandanas/bandanas5.png';
-import Bandanas6 from '../../../img/Bandanas/bandanas6.png';
-import Bandanas7 from '../../../img/Bandanas/bandanas7.png';
-import Bandanas8 from '../../../img/Bandanas/bandanas8.png';
-import Bandanas9 from '../../../img/Bandanas/bandanas9.png';
-import Bandanas10 from '../../../img/Bandanas/bandanas10.png';
-import Bandanas11 from '../../../img/Bandanas/bandanas11.png';
-import Bandanas12 from '../../../img/Bandanas/bandanas12.png';
+//Import de las imagenes de los accesorios
+import Accessories from '../../../img/Accessories/Accessories.png';
+import Accessories2 from '../../../img/Accessories/Accessories2.png';
+import Accessories3 from '../../../img/Accessories/Accessories3.png';
+import Accessories4 from '../../../img/Accessories/Accessories4.png';
+import Accessories5 from '../../../img/Accessories/Accessories5.png';
+import Accessories6 from '../../../img/Accessories/Accessories6.png';
+import Accessories7 from '../../../img/Accessories/Accessories7.png';
+import Accessories8 from '../../../img/Accessories/Accessories8.png';
+import Accessories9 from '../../../img/Accessories/Accessories9.png';
+import Accessories10 from '../../../img/Accessories/Accessories10.png';
+import Accessories11 from '../../../img/Accessories/Accessories11.png';
+import Accessories12 from '../../../img/Accessories/Accessories12.png';
 
 
-const Bandanas = () => {
+const Accessories = () => {
   const [selectedFilter, setSelectedFilter] = useState('Por defecto');
   const [showFilters, setShowFilters] = useState(false);
 
@@ -26,85 +26,85 @@ const Bandanas = () => {
       id: 1,
       name: 'Bandana navideña con texto incluido',
       price: 'Desde $7.50',
-      image: Bandanas,
-      category: 'bandanas'
+      image: Accessories,
+      category: 'accessories'
     },
     {
       id: 2,
       name: 'Bandana inspirada en Santa Claus',
       price: 'Desde $8.00',
-      image: Bandanas2,
-      category: 'bandanas'
+      image: Accessories2,
+      category: 'accessories'
     },
     {
       id: 3,
       name: 'Bandana navideña de crochet',
       price: 'Desde $11.00',
-      image: Bandanas3,
-      category: 'bandanas'
+      image: Accessories3,
+      category: 'accessories'
     },
     {
       id: 4,
       name: 'Bandana inspirado en un gorro navideño',
       price: 'Desde $9.99',
-      image: Bandanas4,
-      category: 'bandanas'
+      image: Accessories4,
+      category: 'accessories'
     },
     {
       id: 5,
       name: 'Bandana navideña con texto incluido',
       price: 'Desde $7.50',
-      image: Bandanas5,
-      category: 'bandanas'
+      image: Accessories5,
+      category: 'accessories'
     },
     {
       id: 6,
       name: 'Bandana inspirada en Santa Claus',
       price: 'Desde $8.00',
-      image: Bandanas6,
-      category: 'bandanas'
+      image: Accessories6,
+      category: 'accessories'
     },
     {
       id: 7,
       name: 'Bandana navideña de crochet',
       price: 'Desde $11.00',
-      image: Bandanas7,
-      category: 'bandanas'
+      image: Accessories7,
+      category: 'accessories'
     },
     {
       id: 8,
       name: 'Bandana inspirado en un gorro navideño',
       price: 'Desde $9.99',
-      image: Bandanas8,
-      category: 'bandanas'
+      image: Accessories8,
+      category: 'accessories'
     },
     {
       id: 9,
       name: 'Bandana navideña con texto incluido',
       price: 'Desde $7.50',
-      image: Bandanas9,
-      category: 'bandanas'
+      image: Accessories9,
+      category: 'accessories'
     },
     {
       id: 10,
       name: 'Bandana inspirada en Santa Claus',
       price: 'Desde $8.00',
-      image: Bandanas10,
-      category: 'bandanas'
+      image: Accessories10,
+      category: 'accessories'
     },
     {
       id: 11,
       name: 'Bandana navideña de crochet',
       price: 'Desde $11.00',
-      image: Bandanas11,
-      category: 'bandanas'
+      image: Accessories11,
+      category: 'accessories'
     },
     {
       id: 12,
       name: 'Bandana inspirado en un gorro navideño',
       price: 'Desde $9.99',
-      image: Bandanas12,
-      category: 'bandanas'
+      image: Accessories12,
+      category: 'accessories'
     }
   ];
 
@@ -125,4 +125,4 @@ const Bandanas = () => {
   );
 };
 
-export default Bandanas;
+export default Accessories;
