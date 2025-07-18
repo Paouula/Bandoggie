@@ -1,0 +1,70 @@
+/* Estilos específicos para el banner de Cumpleaños */
+.birthday-store .hero {
+    background: linear-gradient(135deg, #d5a1f2 0%, #c8b9fd 50%, #c6aeff 100%);
+    position: relative;
+    overflow: hidden;
+    color: #ffffff; 
+  }
+  
+  .birthday-store .hero * {
+    color: #ffffff !important;
+  }
+  
+  /* Título del banner Cumpleaños */
+  .birthday-store .hero-title {
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.5),
+      0 0 20px rgba(255, 255, 255, 0.3),
+      2px 2px 4px rgba(0, 0, 0, 0.7);
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: birthdayGlow 3s ease-in-out infinite alternate;
+  }
+  
+  @keyframes birthdayGlow {
+    0% {
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 
+                   0 0 20px rgba(255, 255, 255, 0.3), 
+                   2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+    100% {
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 
+                   0 0 30px rgba(255, 255, 255, 0.6), 
+                   2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .birthday-store .hero-title {
+      font-size: 2.5rem;
+    }
+  
+    .birthday-store .hero-description {
+      font-size: 1rem;
+    }
+  
+    .birthday-store .hero-button {
+      padding: 12px 25px;
+      font-size: 1rem;
+    }
+  
+    .birthday-store .main-content {
+      padding: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .birthday-store .hero-title {
+      font-size: 2rem;
+    }
+  
+    .birthday-store .hero-nav-button {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  

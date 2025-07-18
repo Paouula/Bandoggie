@@ -1,12 +1,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding-bottom: 40px;
-  padding-top: 40px;
+  padding: 40px 0;
 }
 
 a {
@@ -14,7 +9,12 @@ a {
   font-size: 13px;
   margin-bottom: 20px;
   text-decoration: none;
-  transition: 800ms;
+  transition: color 0.8s;
+}
+a:hover {
+  color: #365A7D;
+  text-decoration: none;
+  transition: color 0.8s;
 }
 
 p {
@@ -24,34 +24,16 @@ p {
   margin-bottom: 20px;
 }
 
-a:hover {
-  transition: 800ms;
-  text-decoration: none;
-  color: #365A7D;
-}
-
-.register-container{
+.register-container {
   margin-bottom: 30px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
   width: 550px;
-  padding: 30px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.recovery-container {
-  margin-bottom: 30px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 450px;
-  padding: 30px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
 }
 
 .register-logo {
@@ -60,16 +42,12 @@ a:hover {
   align-items: center;
   margin-bottom: 10px;
 }
+.register-logo img { height: 50px; }
 
-.register-logo img {
-  height: 50px;
-}
-
-.register-title,
-.recovery-container h2 {
+.register-title {
   color: #365A7D;
   margin: 10px 0;
-  font-family: 'Baloo Bhaijaan 2', sans-serif;
+  font-family: 'Baloo Bhaijaan 2', cursive;
   font-weight: bold;
   font-size: 24px;
 }
@@ -94,11 +72,10 @@ a:hover {
   cursor: pointer;
 }
 
-.register-form,
-.recovery-form {
+.register-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 5px;
   margin-bottom: 20px;
 }
 
@@ -111,13 +88,12 @@ hr {
 }
 
 .register-decoration {
-  background: linear-gradient(to right, #F7C7DE, #D9F4FF , #B4CEEC);
+  background: linear-gradient(to right, #F7C7DE, #D9F4FF, #B4CEEC);
   width: 100%;
   height: 40px;
   margin-top: 20px;
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: 0; left: 0;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 }
@@ -130,16 +106,125 @@ hr {
 }
 
 @media (max-width: 600px) {
-  .register-container,
-  .recovery-container {
+  .register-container {
     width: 100vw;
     padding: 20px;
     border-radius: 0;
     box-shadow: none;
   }
-
-  .register-title,
-  .recovery-container h2 {
+  .register-title {
     font-size: 20px;
   }
+}
+
+
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.modal-content {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px 20px;
+  width: 90%;
+  max-width: 520px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  animation: fadeIn 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.modal-header-buttons {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 10px;
+}
+
+.modal-close {
+  position: static; 
+  font-size: 24px;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.register-back-button {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-content.fade-out {
+  animation: fadeOut 0.25s ease-in-out forwards;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.modal-close:hover { color: #333; }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px 12px;
+  }
+}
+
+.MuiPickersPopper-root {
+  z-index: 3000 !important;
 }

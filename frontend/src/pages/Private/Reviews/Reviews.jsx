@@ -3,7 +3,7 @@ import './Reviews.css';
 import ReviewsBanner from '../../../img/Reseñas/ReviewsBanner.png';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
 import FilterIcon from '@mui/icons-material/Filter';
-import Paginacion from '../../../components/Paginacion.jsx';
+import Paginacion from '../../../components/Pagination.jsx';
 import ReviewModal from '../../../components/Private/Reviews/ReviewModal/ReviewModal.jsx';
 import ListReviews from '../../../components/Private/Reviews/ListReviews.jsx';
 

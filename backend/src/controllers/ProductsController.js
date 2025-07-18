@@ -1,5 +1,5 @@
 const productsController = {};
-import productsModel from "../models/Products.js";
+import productsModel from "../models/products.js";
 import { v2 as cloudinary } from "cloudinary";
 import { config } from "../config.js";
 import mongoose from "mongoose";

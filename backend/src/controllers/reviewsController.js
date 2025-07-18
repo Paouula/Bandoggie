@@ -1,4 +1,7 @@
 const reviewsController = {};
+
+import reviewsModel from "../models/reviews.js";
+
 import reviewsModel from "../models/Reviews.js";
 import { v2 as cloudinary } from "cloudinary";
 import { config } from "../config.js";
@@ -9,6 +12,7 @@ cloudinary.config({
     api_key: config.cloudinary.cloudinary_api_key,
     api_secret: config.cloudinary.cloudinary_api_secret,
 });
+
 
 //SELECT - Obtener todas las reseñas
 reviewsController.getReviews = async (req, res) => {

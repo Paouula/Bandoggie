@@ -5,24 +5,29 @@ import "./InputDataPicker.css";
 
 const DatePickerInput = ({
   label = "Selecciona una fecha",
-  value,       // valor controlado desde afuera (react-hook-form)
-  onChange,    // función para actualizar valor controlado
+  value,
+  onChange,
   onBlur,
   name,
   error,
 }) => {
   const [open, setOpen] = useState(false);
-  const [internalValue, setInternalValue] = useState(null); // estado interno para uso no controlado
+  const [internalValue, setInternalValue] = useState(null);
 
-  // Sincronizar estado interno si el valor controlado cambia (modo controlado)
+  // Si llega una nueva fecha desde fuera, la convertimos en objeto Date y la almacenamos localmente
   useEffect(() => {
     if (value !== undefined) {
       setInternalValue(value ? new Date(value) : null);
     }
   }, [value]);
 
-  // Mostrar la fecha formateada
-  const currentDate = value !== undefined ? (value ? new Date(value) : null) : internalValue;
+  // Define cuál será la fecha actual: si hay prop externa, se usa; si no, se toma la interna
+  const currentDate =
+    value !== undefined
+      ? (value ? new Date(value) : null)
+      : internalValue;
+
+  // Convierte la fecha a un string legible en formato español si es válida
   const displayDate =
     currentDate instanceof Date && !isNaN(currentDate)
       ? currentDate.toLocaleDateString("es-ES", {
@@ -32,14 +37,14 @@ const DatePickerInput = ({
         })
       : "";
 
-  // Función para manejar cambio de fecha
+  // Maneja el cambio de fecha desde el DatePicker, propagándolo si hay handler externo
   const handleChange = (date) => {
     if (onChange) {
-      onChange(date);
+      onChange(date); // control externo (por ejemplo react-hook-form)
     } else {
-      setInternalValue(date);
+      setInternalValue(date); // lo maneja internamente si no se controla desde fuera
     }
-    setOpen(false);
+    setOpen(false); // cierra el calendario luego de elegir fecha
   };
 
   return (
@@ -72,7 +77,6 @@ const DatePickerInput = ({
           label={label}
         />
       </div>
-      
     </div>
   );
 };

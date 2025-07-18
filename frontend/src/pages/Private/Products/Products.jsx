@@ -4,7 +4,7 @@ import BannerProduct from '../../../img/Products/ProductBanner.png';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
 import AgregarButton from '../../../components/Private/AgregarButton.jsx';
 import SearchIcon from '@mui/icons-material/Search';
-import Paginacion from '../../../components/Paginacion.jsx';
+import Paginacion from '../../../components/Pagination.jsx';
 import ListProducts from '../../../components/Private/Products/ListProducts.jsx';
 
 const Products = () => {
@@ -60,11 +60,13 @@ const Products = () => {
 
    return (
     <>
-      <BannerPrivate
-        title="Productos"
-        subtitle="Listado de los productos dentro del catálogo"
-        mainImage={BannerProduct}
-      />
+      <div className="banner-private-container">
+        <BannerPrivate
+          title="Productos"
+          subtitle="Listado de los productos dentro del catálogo"
+          mainImage={BannerProduct}
+        />
+      </div>
 
       <div className="bandana-container">
         <div className="bandana-header">
@@ -83,7 +85,9 @@ const Products = () => {
               />
               <SearchIcon className="search-icon" size={20} />
             </div>
+            <div className='agregar-btn-prod'>
             <AgregarButton />
+            </div>
           </div>
         </div>
 

@@ -1,75 +1,156 @@
-import React from 'react';
-import './Navbar.css'; 
-import { Link } from 'react-router-dom'; 
-import IC_cuenta from '../../../img/NavBar/user.png';
-import IC_carrito from '../../../img/NavBar/ShoppingCart.png';
-import LogoBandoggie from '../../../img/NavBar/LogoBandoggie.png';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
+import IC_cuenta from "../../../img/NavBar/user.png";
+import IC_carrito from "../../../img/NavBar/ShoppingCart.png";
+import LogoBandoggie from "../../../img/NavBar/LogoBandoggie.png";
+
+// Importa tus modales
+import LoginModal from "../../LoginModal/Login.jsx";
+import ChooseAccountTypeModal from "../../RegisterModal/ChooseAccount.jsx";
+import RegisterModal from "../../RegisterModal/Register.jsx";
+import RegisterVetModal from "../../RegisterModal/RegisterVet.jsx";
+import VerificationCodeModal from "../../RegisterModal/VerificationCode.jsx";
 
 function NavBar() {
-  return ( 
+  const [showLogin, setShowLogin] = useState(false);
+  const [showChoose, setShowChoose] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showRegisterVet, setShowRegisterVet] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  return (
     <>
+      {/* MODALES */}
+      {showLogin && (
+        <LoginModal
+          onClose={() => setShowLogin(false)}
+          openChoose={() => {
+            setShowLogin(false);
+            setShowChoose(true);
+          }}
+        />
+      )}
+      {showChoose && (
+        <ChooseAccountTypeModal
+          onClose={() => setShowChoose(false)}
+          openLogin={() => {
+            setShowChoose(false);
+            setShowLogin(true);
+          }}
+          openRegisterUser={() => {
+            setShowChoose(false);
+            setShowRegister(true);
+          }}
+          openRegisterVet={() => {
+            setShowChoose(false);
+            setShowRegisterVet(true);
+          }}
+        />
+      )}
+      {showRegister && (
+        <RegisterModal
+          onClose={() => setShowRegister(false)}
+          openLogin={() => {
+            setShowRegister(false);
+            setShowLogin(true);
+          }}
+          onRegisterSuccess={() => {
+            setShowRegister(false);
+            setShowVerification(true);
+          }}
+          openChoose={() => {
+            setShowRegister(false);
+            setShowChoose(true);
+          }}
+        />
+      )}
 
-    {/*Barra azul*/}
-    <div className="top-top-bar">
-        <a className="top-space"> - </a>
+      {showRegisterVet && (
+        <RegisterVetModal
+          onClose={() => setShowRegisterVet(false)}
+          openLogin={() => {
+            setShowRegisterVet(false);
+            setShowLogin(true);
+          }}
+          onRegisterSuccess={() => {
+            setShowRegisterVet(false);
+            setShowVerification(true);
+          }}
+          openChoose={() => {
+            setShowRegisterVet(false);
+            setShowChoose(true);
+          }}
+        />
+      )}
+
+      {showVerification && (
+        <VerificationCodeModal
+          onClose={() => setShowVerification(false)}
+          openLogin={() => {
+            setShowVerification(false);
+            setShowLogin(true);
+          }}
+        />
+      )}
+
+      {/* Barra superior */}
+      <div className="navbar-top-bar">
+        <a className="navbar-top-space"> - </a>
       </div>
 
-      {/* Bloque de registro e incio de sesión */}
-      <div className="top-bar">
-        <a href="/login" className="top-link">Iniciar sesión</a>
-        <span className="divider">/</span>
-        <a href="/register" className="top-link">Crear cuenta</a>
+      <div className="navbar-session-bar">
+        <span className="navbar-session-link" onClick={() => setShowLogin(true)}>
+          Iniciar sesión
+        </span>
+        <span className="navbar-divider">/</span>
+        <span className="navbar-session-link" onClick={() => setShowChoose(true)}>
+          Crear cuenta
+        </span>
       </div>
 
-      <div className="linea-separadora"></div>
+      <div className="navbar-separator-line"></div>
 
       {/* Barra de navegación */}
-      <nav className="navbar navbar-expand-lg navbar-light">
+      <nav className="navbar-main">
         <a className="navbar-brand" href="/">
-          <img src={LogoBandoggie} alt="Logo" className="logo" />
+          <img src={LogoBandoggie} alt="Logo" className="navbar-logo" />
         </a>
 
-        {/* Toggle de navegación en responsive */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+        {/* Botón toggle para responsive */}
+        <button 
+          className="navbar-toggle"
+          onClick={() => setIsNavOpen(!isNavOpen)}
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggle-line"></span>
+          <span className="navbar-toggle-line"></span>
+          <span className="navbar-toggle-line"></span>
         </button>
 
-        {/* Enlaces de navegación */}
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div className="navbar-nav">
-            <a className="nav-item nav-link" href="/">Inicio</a>
-            <a className="nav-item nav-link" href="#">Bandanas</a>
-            <a className="nav-item nav-link" href="#">Collares</a>
-            <a className="nav-item nav-link" href="#">Accesorios</a>
-            <a className="nav-item nav-link" href="#">Festividades</a>
+        <div className={`navbar-nav-container ${isNavOpen ? 'navbar-nav-open' : ''}`}>
+          <div className="navbar-nav-links">
+            <Link className="navbar-nav-link" to="/main">Inicio</Link>
+            <Link className="navbar-nav-link" to="/bandanas">Bandanas</Link>
+            <Link className="navbar-nav-link" to="/Reviews">Collares</Link>
+            <Link className="navbar-nav-link" to="/Employee">Accesorios</Link>
+            <Link className="navbar-nav-link" to="/holidays">Festividades</Link>
           </div>
 
-          {/* Busqueda */}
-          <div className="d-flex align-items-center ms-auto">
-            <form className="search-form">
+          <div className="navbar-right-section">
+            <div className="navbar-search-container">
               <input
                 type="text"
-                className="search-input"
+                className="navbar-search-input"
                 placeholder="Buscar..."
-                aria-label="Buscar"
               />
-              <button type="submit" className="search-button">
+              <button type="submit" className="navbar-search-button">
                 <i className="fas fa-search"></i>
               </button>
-            </form>
-
-            {/* Iconos de cuenta y carrito */}
-            <div className="iconos-header">
-              <img src={IC_cuenta} alt="Cuenta" className="icono-header" />
-              <img src={IC_carrito} alt="Carrito" className="icono-header" />
+            </div>
+            <div className="navbar-icons-container">
+              <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />
+              <img src={IC_carrito} alt="Carrito" className="navbar-icon" />
             </div>
           </div>
         </div>
@@ -77,6 +158,5 @@ function NavBar() {
     </>
   );
 }
-
 
 export default NavBar;

@@ -3,13 +3,13 @@ import {Schema, model} from "mongoose";
 const CartSchema = new Schema({
     idProducts: {
         type: Schema.Types.ObjectId,
-        ref: "Product",
-        required: true
+        ref: "Products",
+        require: true
     },
     idClients: {
         type: Schema.Types.ObjectId,
-        ref: "Client",
-        required: true
+        ref: "Clients",
+        require: true
     },
     name: {
         type: String,
@@ -17,12 +17,12 @@ const CartSchema = new Schema({
     },
     productquantity: {
         type: Number,
-        required: true
+        require: true
     },
 
     price: {
         type: Number,
-        required: true
+        require: true
     },
 
     talla: {

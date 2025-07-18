@@ -3,28 +3,28 @@ import { Schema, model } from "mongoose";
 const vetSchema = new Schema({
     nameVet:{
         type: String,
-        required: true,
+        require: true,
         trim: true
     },
     email: {
         type: String,
-        required: true,
+        require: true,
         unique: true,
         trim: true
     },
     password: {
         type: String,
-        required: true,
+        require: true,
         trim: true
     },
     locationVet: {
         type: String,
-        required: true,
+        require: true,
         trim: true
     },
     nitVet: {
         type: String,
-        required: true,
+        require: true,
         unique: true,
         trim: true
     },

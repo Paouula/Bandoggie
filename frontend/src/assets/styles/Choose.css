@@ -10,6 +10,36 @@
   overflow: hidden;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #365A7D;
+}
+
+.modal-content {
+  position: relative;
+}
+
+
 .choose-footer{
   margin: 30px;
 }

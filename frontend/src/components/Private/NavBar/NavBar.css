@@ -1,0 +1,234 @@
+/* Barra azul de arriba*/
+.navbar-top-bar {
+  margin-top: -2.7%;
+  background-color: #B3CCEA; 
+  text-align: center;
+  padding: 0rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+}
+
+.navbar-top-space {
+  color: #B3CCEA;
+}
+
+/* Barra inicio de sesión y registro*/
+.navbar-session-bar {
+  background-color: #ffffff;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+}
+
+.navbar-session-link {
+  background: none;
+  border: none;
+  color: #CB8E45; 
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+
+.navbar-session-link:hover {
+  text-decoration: underline;
+}
+
+.navbar-divider {
+  margin: 0 0.3rem;
+  color: #CB8E45;
+}
+
+.navbar-separator-line {
+  height: 1.5px;
+  background-color: #FDC6DD;
+  width: 100%;
+}
+
+/* Logo navbar*/
+.navbar-logo {
+  margin-top: 4%;
+  max-width: 130px;
+  height: auto;
+}
+
+/* Configuracion general navbar*/
+.navbar-main {
+  background-color: #FEF0F6;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* Botón toggle para responsive */
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  gap: 0.3rem;
+}
+
+.navbar-toggle-line {
+  width: 25px;
+  height: 3px;
+  background-color: #1B1B1B;
+  transition: all 0.3s ease;
+}
+
+/* Contenedor principal de navegación */
+.navbar-nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  margin-left: 2rem;
+}
+
+/* Navegación */
+.navbar-nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+/* Texto en el navbar*/
+.navbar-nav-link {
+  color: #1B1B1B;
+  font-weight: 500;
+  white-space: nowrap;
+  font-size: 16px;
+  font-family: Inter;
+  margin-top: 4%;
+}
+
+.navbar-nav-link:hover {
+  color: #CB8E45;
+}
+
+/* Contenedor del lado derecho (search + iconos) */
+.navbar-right-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+/* Contenedor de búsqueda */
+.navbar-search-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Formulario de búsqueda: Barra o container*/
+.navbar-search-input {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 150px;
+}
+
+/* Formulario de búsqueda: botón para buscar*/
+.navbar-search-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #1B1B1B;
+  font-size: 1.1rem;
+  padding: 0.3rem;
+}
+
+/* Contenedor de iconos */
+.navbar-icons-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.navbar-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .navbar-nav-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #FEF0F6;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    margin-left: 0;
+  }
+
+  .navbar-nav-container.navbar-nav-open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .navbar-nav-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .navbar-nav-link {
+    width: 100%;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+  }
+
+  .navbar-nav-link:last-child {
+    border-bottom: none;
+  }
+
+  .navbar-right-section {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    margin-left: 0;
+  }
+
+  .navbar-search-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .navbar-search-input {
+    width: 90%;
+    max-width: 300px;
+  }
+
+  .navbar-icons-container {
+    justify-content: center;
+  }
+}

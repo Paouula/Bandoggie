@@ -1,13 +1,14 @@
 import express from 'express';
-import HolidayControllers from '../controllers/HolidayControllers.js';
+import holidayController from '../controllers/holidayControllers.js';
 
 const router = express.Router();
 
-router.route('/').get(HolidayControllers.getAllHoliday)
-.post(HolidayControllers.insertHoliday);
+router.route('/')
+.get(holidayController.getHoliday)
+.post(holidayController.createHoliday);
 
 router.route('/:id')
-.put(HolidayControllers.updateHoliday)
-.delete(HolidayControllers.deleteHoliday)
+.put(holidayController.updateHoliday)
+.delete(holidayController.deleteHoliday);
 
 export default router;      

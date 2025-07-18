@@ -1,29 +1,39 @@
+/*
+    Campos:
+        name,
+        email,
+        phone,
+        dateOfBirth,
+        password,
+        image
+*/
+
 import {Schema, model} from 'mongoose';
 
 const clientSchema = new Schema({
     name:{
         type: String,
-        required: true,
+        require: true,
         trim: true
     },
     email: {
         type: String,
-        required: true,
+        require: true,
         unique: true,
         trim: true
     },
     phone: {
         type: String,
-        required: true,
+        require: true,
         trim: true
     },
-    birthday: {
+    dateOfBirth: {
         type: Date,
-        required: true
+        require: true
     },
     password: {
         type: String,
-        required: true,
+        require: true,
         trim: true
     },
     image: {
