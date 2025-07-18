@@ -1,42 +1,64 @@
-import {Schema, model} from "mongoose";
+/**
+  Campos:
+    idClient
+    products
+      idProduct
+      quantity
+      subtotal
+    talla
+    total
+    status
+*/
+
+import { Schema, model } from "mongoose";
 
 const CartSchema = new Schema({
-    idProducts: {
+  idClient: {
+    type: Schema.Types.ObjectId,
+    ref: "Clients",
+    required: true
+  },
+
+  products: [
+    {
+      idProduct: {
         type: Schema.Types.ObjectId,
         ref: "Products",
-        require: true
-    },
-    idClients: {
-        type: Schema.Types.ObjectId,
-        ref: "Clients",
-        require: true
-    },
-    name: {
-        type: String,
-        require: true
-    },
-    productquantity: {
+        required: true
+      },
+      quantity: {
         type: Number,
-        require: true
-    },
-
-    price: {
+        min: [1, "La cantidad debe ser al menos 1"],
+        required: true
+      },
+      subtotal: {
         type: Number,
-        require: true
-    },
+        min: [0, "El subtotal no puede ser negativo"],
+        required: true
+      },
+      talla: {
+        type: String,
+        enum: ['XS', 'S', 'M', 'L', 'XL']
+      }
+    }
+  ],
 
-    talla: {
-        type: String,
-        enum: ['XS', 'S', 'M', 'L', 'XL'],
+  total: {
+    type: Number,
+    required: true,
+    min: [0, "El total no puede ser negativo"]
+  },
+
+  status: {
+    type: String,
+    enum: {
+      values: ["Pending", "Paid"],
+      message: "El estado del pedido debe ser 'Pending' o 'Paid'"
     },
-    
-    namedog: {
-        type: String,
-    },
-    
+    default: "Pending"
+  }
 }, {
-    timestamps: true,
-    strict: false
-})
+  timestamps: true
+});
 
-export default model("Cart", CartSchema)
+export default model("Cart", CartSchema);

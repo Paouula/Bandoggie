@@ -13,25 +13,9 @@ import {Schema, model} from "mongoose";
 
 const OrdersSchema = new Schema({
 
-    idClients: {
+    idCart: {
         type: Schema.Types.ObjectId,
-        ref: "Clients",
-        require: true
-    },
-
-    listProducts: {
-        type: String,
-        require: true
-    },
-
-    dateOrders: {
-        type: Date,
-        require: true
-    },
-
-     idProducts: {
-        type: Schema.Types.ObjectId,
-        ref: "Products",
+        ref: "Cart",
         require: true
     },
 
@@ -40,15 +24,13 @@ const OrdersSchema = new Schema({
         require: true
     },
 
-    subTotal: {
-        type: Number,
-        require: true
+    paymentMethod: {
+        type: String,
+        require: true,
+        enum: ["transferencia", "efectivo"]
     },
-    
-    total: {
-        type: Number,
-        require: true
-    },
+
+
     
 }, {
     timestamps: true,
