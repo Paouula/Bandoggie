@@ -5,12 +5,17 @@ import { useAuth } from "../Context/AuthContext";
 export const PrivateRoute = () => {
     const { authCokie, isEmployee } = useAuth();
     
-    // Si está autenticado Y es employee, redirige al área admin
-    if (authCokie && isEmployee()) {
-        return <Navigate to="/admin/productos" replace />;
+    // Si no está autenticado, redirige al login
+    if (!authCokie) {
+        return <Navigate to="/" replace />;
     }
     
-    // Si no está autenticado O está autenticado pero no es employee, permite acceso
+    // Si está autenticado Y es employee, redirige al área admin
+    if (authCokie && isEmployee()) {
+        return <Navigate to="/admin/home" replace />;
+    }
+    
+    // Si está autenticado pero no es employee, permite acceso
     return <Outlet />;
 };
 
@@ -25,7 +30,7 @@ export const EmployeeRoute = () => {
     
     // Si está autenticado pero no es employee, redirige a la página pública
     if (!isEmployee()) {
-        return <Navigate to="/inicio" replace />;
+        return <Navigate to="/mainPage" replace />;
     }
     
     // Si es employee, permite el acceso

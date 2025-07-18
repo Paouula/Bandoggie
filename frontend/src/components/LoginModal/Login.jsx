@@ -28,7 +28,7 @@ const LoginModal = ({ onClose, openChoose }) => {
     if (modalRef.current) {
       modalRef.current.classList.add("fade-out");
       setTimeout(() => {
-        onClose?.(); // Cierra el modal desde el padre
+        onClose?.(); 
       }, 250);
     }
   };
@@ -48,22 +48,28 @@ const LoginModal = ({ onClose, openChoose }) => {
         toast.success("Sesión iniciada correctamente", { id: "login" });
         reset(); // Limpia los campos
 
-        // Redirección basada en el tipo de usuario
-        switch (response.userType) {
-          case "employee":
-            navigate("/admin/reviews"); // Panel de administración
-            break;
-          case "vet":
-          case "client":
-            navigate("/mainpage"); // Página principal para vet y client
-            break;
-          default:
-            toast.error("Tipo de usuario no reconocido.", {
-              id: "user-type-error",
-            });
-        }
+        // Pequeño delay para permitir que el estado se actualice
+        setTimeout(() => {
+          // Redirección basada en el tipo de usuario
+          switch (response.userType) {
+            case "employee":
+              navigate("/admin/productos"); // Panel de administración
+              break;
+            case "vet":
+            case "client":
+              navigate("/mainPage"); // Página principal para vet y client
+              break;
+            default:
+              toast.error("Tipo de usuario no reconocido.", {
+                id: "user-type-error",
+              });
+          }
+        }, 100);
 
-        handleClose();
+        // Cerrar el modal después de la navegación
+        if (onClose) {
+          handleClose();
+        }
       } else {
         throw new Error(response.message);
       }
