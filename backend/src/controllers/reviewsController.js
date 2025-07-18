@@ -1,5 +1,18 @@
 const reviewsController = {};
+
 import reviewsModel from "../models/reviews.js";
+
+import reviewsModel from "../models/Reviews.js";
+import { v2 as cloudinary } from "cloudinary";
+import { config } from "../config.js";
+import mongoose from "mongoose";
+
+cloudinary.config({
+    cloud_name: config.cloudinary.cloudinary_name,
+    api_key: config.cloudinary.cloudinary_api_key,
+    api_secret: config.cloudinary.cloudinary_api_secret,
+});
+
 
 //SELECT - Obtener todas las reseñas
 reviewsController.getReviews = async (req, res) => {
@@ -34,18 +47,41 @@ reviewsController.getReviewById = async (req, res) => {
 //INSERT - Crear nueva reseña
 reviewsController.insertReview = async (req, res) => {
     try {
-        const { qualification, Coment, imagen1, imagen2, imagen3, idClients, idProducts } = req.body;
-        
-        console.log("Datos recibidos:", { qualification, Coment, imagen1, imagen2, imagen3, idClients, idProducts });
-        
-        // Validaciones adicionales
+        const { qualification, Coment, idClients, idProducts } = req.body;
+        let imagen1 = "";
+        let imagen2 = "";
+        let imagen3 = "";
+
+        // Validación de calificación
         if (qualification < 1 || qualification > 5) {
-            return res.status(400).json({ 
-                message: "La calificación debe estar entre 1 y 5" 
+            return res.status(400).json({
+                message: "La calificación debe estar entre 1 y 5"
             });
         }
-        
-        const newReview = new reviewsModel({ 
+
+        // Subir imágenes a Cloudinary si existen
+        if (req.files && req.files.imagen1) {
+            const result = await cloudinary.uploader.upload(req.files.imagen1[0].path, {
+                folder: "reviews",
+                allowed_formats: ["jpg", "png", "jpeg"],
+            });
+            imagen1 = result.secure_url;
+        }
+        if (req.files && req.files.imagen2) {
+            const result = await cloudinary.uploader.upload(req.files.imagen2[0].path, {
+                folder: "reviews",
+                allowed_formats: ["jpg", "png", "jpeg"],
+            });
+            imagen2 = result.secure_url;
+        }
+        if (req.files && req.files.imagen3) {
+            const result = await cloudinary.uploader.upload(req.files.imagen3[0].path, {
+                folder: "reviews",
+                allowed_formats: ["jpg", "png", "jpeg"],
+            });
+            imagen3 = result.secure_url;
+        }
+    const newReview = new reviewsModel({
             qualification,
             Coment,
             imagen1,
@@ -53,23 +89,23 @@ reviewsController.insertReview = async (req, res) => {
             imagen3,
             idClients,
             idProducts
-        })
-        const savedReview = await newReview.save()
-        
+        });
+        const savedReview = await newReview.save();
+
         // Populate la reseña recién creada antes de responder
         const populatedReview = await reviewsModel.findById(savedReview._id)
             .populate('idClients', 'nameClient emailClient')
-            .populate('idProducts', 'nameProduct price')
-        
+            .populate('idProducts', 'nameProduct price');
+
         res.status(201).json({
             message: "Review saved successfully",
             review: populatedReview
-        })
+        });
     } catch (error) {
         console.error("Error saving review:", error);
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message });
     }
-}
+};
 
 //DELETE - Eliminar reseña
 reviewsController.deleteReview = async (req, res) => {
@@ -89,34 +125,59 @@ reviewsController.deleteReview = async (req, res) => {
 //UPDATE - Actualizar reseña
 reviewsController.updateReview = async (req, res) => {
     try {
-        const { qualification, Coment, imagen1, imagen2, imagen3, idClients, idProducts } = req.body;
-        
+        const { qualification, Coment, idClients, idProducts } = req.body;
+        let imagen1 = req.body.imagen1 || "";
+        let imagen2 = req.body.imagen2 || "";
+        let imagen3 = req.body.imagen3 || "";
+
         // Validación de calificación si se proporciona
         if (qualification !== undefined && (qualification < 1 || qualification > 5)) {
-            return res.status(400).json({ 
-                message: "La calificación debe estar entre 1 y 5" 
+            return res.status(400).json({
+                message: "La calificación debe estar entre 1 y 5"
             });
         }
-        
-        const updatedReview = await reviewsModel.findByIdAndUpdate(
+
+        // Subir nuevas imágenes si se envían
+        if (req.files && req.files.imagen1) {
+            const result = await cloudinary.uploader.upload(req.files.imagen1[0].path, {
+                folder: "reviews",
+                allowed_formats: ["jpg", "png", "jpeg"],
+            });
+            imagen1 = result.secure_url;
+        }
+        if (req.files && req.files.imagen2) {
+            const result = await cloudinary.uploader.upload(req.files.imagen2[0].path, {
+                folder: "reviews",
+                allowed_formats: ["jpg", "png", "jpeg"],
+            });
+            imagen2 = result.secure_url;
+        }
+        if (req.files && req.files.imagen3) {
+            const result = await cloudinary.uploader.upload(req.files.imagen3[0].path, {
+                folder: "reviews",
+                allowed_formats: ["jpg", "png", "jpeg"],
+            });
+            imagen3 = result.secure_url;
+        }
+         const updatedReview = await reviewsModel.findByIdAndUpdate(
             req.params.id,
-            { qualification, Coment, imagen1, imagen2, imagen3, idClients, idProducts }, 
+            { qualification, Coment, imagen1, imagen2, imagen3, idClients, idProducts },
             { new: true, runValidators: true }
         ).populate('idClients', 'nameClient emailClient')
-         .populate('idProducts', 'nameProduct price')
-        
+         .populate('idProducts', 'nameProduct price');
+
         if (!updatedReview) {
-            return res.status(404).json({ message: "Review not found" })
+            return res.status(404).json({ message: "Review not found" });
         }
-        
+
         res.json({
             message: "Review updated successfully",
             review: updatedReview
-        })
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message });
     }
-}
+};
 
 //SELECT BY PRODUCT - Obtener reseñas por producto
 reviewsController.getReviewsByProduct = async (req, res) => {
