@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ProductFilters from '../../../components/Filter.jsx';
 import ProductGrid from '../../../components/ProductGrid.jsx';
 
 //Import de las imagenes de las bandanas

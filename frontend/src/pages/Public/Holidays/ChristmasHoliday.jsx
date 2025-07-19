@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import NavigationHoliday from '../../../components/NavegationHoliday';
-import BannerHoliday from '../../../components/BannerHoliday.jsx';
+import NavigationHoliday from '../../../components/Public/NavegationHoliday.jsx';
+import BannerHoliday from '../../../components/Public/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/ProductGrid.jsx';
+import ProductGrid from '../../../components/Public/ProductGrid.jsx';
 import './ChristmasHoliday.css';
 
 // Imágenes Products

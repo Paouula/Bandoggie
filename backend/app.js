@@ -11,6 +11,14 @@ import loginRoutes from './src/routes/login.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecovery from './src/routes/passwordRecovery.js';
 
+import HolidayRoutes from './src/routes/holiday.js';
+import ProductsRoutes from './src/routes/products.js';
+import ReviewsRoutes from './src/routes/reviews.js';
+import CartRoutes from './src/routes/Cart.js';
+import EmpleadosRoutes from "./src/routes/Empleados.js";
+import CategoriasRoutes from "./src/routes/Categorias.js";
+
+
 // Rutas de CRUDS
 import holidayRoutes from './src/routes/holiday.js';
 import clientsRoutes from './src/routes/clients.js';
@@ -27,6 +35,7 @@ import guestClients from './src/routes/guestClients.js';
 
 //Rutas Graficas
 import salesRoutes from './src/routes/sales.js';
+
 
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -61,5 +70,11 @@ app.use('/api/guestClients', guestClients)
 
 //Graficas
 app.use('/api/sales', salesRoutes)
+app.use('/api/Holiday', HolidayRoutes)
+app.use('/api/products', ProductsRoutes)
+app.use('/api/reviews', ReviewsRoutes)
+app.use('/api/cart', CartRoutes);
+app.use('/api/Empleados', EmpleadosRoutes)
+app.use('/api/Categorias', CategoriasRoutes)
 
 export default app;

@@ -1,6 +1,6 @@
 import CardMayorista from './Cards/CardMayorista';
 import CardMinorista from './Cards/CardMinorista';
-import Paginacion from '../../Paginacion.jsx';
+import Paginacion from '../../Pagination.jsx';
 
   const ListClients = ({
     viewMode,

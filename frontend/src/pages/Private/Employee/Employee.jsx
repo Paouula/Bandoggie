@@ -5,7 +5,7 @@ import LineaDivisora from '../../../components/LineaDivisora.jsx';
 import ListEmployees from '../../../components/Private/Employees/ListEmployees.jsx';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
 import AgregarButton from '../../../components/Private/AgregarButton.jsx';
-import Paginacion from '../../../components/Paginacion.jsx';
+import Paginacion from '../../../components/Pagination.jsx';
 import RegisterEmployee from '../../../components/Private/Employees/RegisterEmployees.jsx';
 import useDataEmployees from '../../../components/Private/Employees/hooks/useDataEmployees.jsx';
 import { Toaster } from 'react-hot-toast';
