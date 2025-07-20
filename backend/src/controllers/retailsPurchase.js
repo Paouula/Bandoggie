@@ -1,4 +1,4 @@
-import guestClientsModel from "../models/guestClients.js";
+import guestClientsModel from "../models/retailsPurchase.js";
 
 const guestClientsController = {};
 
