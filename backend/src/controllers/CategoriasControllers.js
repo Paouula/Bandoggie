@@ -1,44 +1,71 @@
-//Array de metodos (C R U D)
 const CategoriasControllers = {};
 import CategoriasModel from "../models/Categorias.js";
 
-// SELECT
+// SELECT - Obtener todas las categorías
 CategoriasControllers.getcategorias = async (req, res) => {
-  const categorias = await CategoriasModel.find();
-  res.json(categorias);
-};
-
-// INSERT
-CategoriasControllers.createcategorias = async (req, res) => {
-  const { nameCategory } = req.body;
-  const newccategorias = new CategoriasModel({ nameCategory });
-  await newccategorias.save();
-  res.json({ message: "Categoria Guardada" });
-};
-
-// DELETE
-CategoriasControllers.deletecategorias = async (req, res) => {
-const deletecategorias = await CategoriasModel.findByIdAndDelete(req.params.id);
-  if (!deletecategorias) {
-    return res.status(404).json({ message: "Categorias no se encuentran" });
+  try {
+    const categorias = await CategoriasModel.find();
+    res.json(categorias);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener las categorías", error });
   }
-  res.json({ message: "Categoria Eliminada" });
 };
 
-// UPDATE
+// INSERT - Crear nueva categoría
+CategoriasControllers.createcategorias = async (req, res) => {
+  try {
+    const { nameCategory } = req.body;
+
+    // Validación básica
+    if (!nameCategory || nameCategory.trim() === "") {
+      return res.status(400).json({ message: "El campo nameCategory es obligatorio" });
+    }
+
+    const newCategoria = new CategoriasModel({ nameCategory });
+    await newCategoria.save();
+    res.json({ message: "Categoría guardada correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al guardar la categoría", error });
+  }
+};
+
+// DELETE - Eliminar categoría por ID
+CategoriasControllers.deletecategorias = async (req, res) => {
+  try {
+    const categoriaEliminada = await CategoriasModel.findByIdAndDelete(req.params.id);
+    if (!categoriaEliminada) {
+      return res.status(404).json({ message: "Categoría no encontrada" });
+    }
+    res.json({ message: "Categoría eliminada correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar la categoría", error });
+  }
+};
+
+// UPDATE - Actualizar categoría por ID
 CategoriasControllers.updatecategorias = async (req, res) => {
-  // Solicito todos los valores
-  const { nameCategory } = req.body;
-  // Actualizo
-  await CategoriasModel.findByIdAndUpdate(
-    req.params.id,
-    {
-        nameCategory
-    },
-    { new: true }
-  );
-  // muestro un mensaje que todo se actualizo
-  res.json({ message: "Categoria Actualizada" });
+  try {
+    const { nameCategory } = req.body;
+
+    // Validación
+    if (!nameCategory || nameCategory.trim() === "") {
+      return res.status(400).json({ message: "El campo nameCategory es obligatorio" });
+    }
+
+    const categoriaActualizada = await CategoriasModel.findByIdAndUpdate(
+      req.params.id,
+      { nameCategory },
+      { new: true }
+    );
+
+    if (!categoriaActualizada) {
+      return res.status(404).json({ message: "Categoría no encontrada" });
+    }
+
+    res.json({ message: "Categoría actualizada correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar la categoría", error });
+  }
 };
 
 export default CategoriasControllers;
