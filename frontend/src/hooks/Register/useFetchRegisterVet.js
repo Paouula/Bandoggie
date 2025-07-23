@@ -1,58 +1,46 @@
 import { toast } from 'react-hot-toast';
+import { API_FETCH_JSON } from '../../config.js';
 
+//Hook para registro de veterinarias
 const useFetchRegisterVet = () => {
-    const ApiUrl = 'http://localhost:4000/api/registerVet';
+  const endpoint = 'registerVet';
 
-    const handleRegister = async(nameVet, email, password, locationVet, nitVet) => {
-        try {
-            const response = await fetch(ApiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', 
-                body: JSON.stringify({ nameVet, email, password, locationVet, nitVet }),
-            });
+  // Función para registrar veterinarias
+  const handleRegister = async (nameVet, email, password, locationVet, nitVet) => {
+    try {
+      const data = await API_FETCH_JSON(endpoint, {
+        method: 'POST',
+        body: { nameVet, email, password, locationVet, nitVet },
+      });
 
+      toast.success('Se ha registrado correctamente. Por favor, verifica tu correo electrónico.');
+      return data;
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Login failed');
-            }
-
-            toast.success('Se ha registrado correctamente. Por favor, verifica tu correo electrónico.');
-            return data;
-
-        } catch (error) {
-            throw error;
-        }
+    } catch (error) {
+      toast.error(error.message || 'Error en el registro');
+      throw error;
     }
+  };
+  
+  //Función para verificar el correo electrónico
+  // Esta función se usa para verificar el correo electrónico después del registro
+  const verifyEmail = async (verificationCode) => {
+    try {
+      const data = await API_FETCH_JSON(`${endpoint}/verifyCodeEmail`, {
+        method: 'POST',
+        body: { verificationCode },
+      });
 
-    const verifyEmail = async (verificationCode) => {
-        try {
-            const response = await fetch(`${ApiUrl}/verifyCodeEmail`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({ verificationCode }),
-            });
+      return data;
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Email verification failed');
-            }
-
-            return data;
-            
-        } catch (error) {
-            toast.error(error.message || 'Error during email verification');
-        }
+    } catch (error) {
+      toast.error(error.message || 'Error al verificar el correo');
+      throw error;
     }
-    return { handleRegister, verifyEmail };
-}
+  };
+
+  return { handleRegister, verifyEmail };
+};
+
 
 export default useFetchRegisterVet;

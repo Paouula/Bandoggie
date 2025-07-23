@@ -15,7 +15,7 @@ import HolidayRoutes from './src/routes/holiday.js';
 import ProductsRoutes from './src/routes/products.js';
 import ReviewsRoutes from './src/routes/reviews.js';
 import CartRoutes from './src/routes/Cart.js';
-import EmpleadosRoutes from "./src/routes/Empleados.js";
+import EmpleadosRoutes from "./src/routes/employees.js";
 import CategoriasRoutes from "./src/routes/Categorias.js";
 
 
