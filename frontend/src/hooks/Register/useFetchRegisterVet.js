@@ -39,6 +39,7 @@ const useFetchRegisterVet = () => {
     }
   };
 
+  // Retorna las funciones para ser usadas en los componentes
   return { handleRegister, verifyEmail };
 };
 
