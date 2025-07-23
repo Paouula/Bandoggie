@@ -4,6 +4,7 @@ import "./Navbar.css";
 import IC_cuenta from "../../../img/NavBar/user.png";
 import IC_carrito from "../../../img/NavBar/ShoppingCart.png";
 import LogoBandoggie from "../../../img/NavBar/LogoBandoggie.png";
+import { useAuth } from "../../../Context/AuthContext.jsx";
 
 // Importa tus modales
 import LoginModal from "../../LoginModal/Login.jsx";
@@ -19,6 +20,9 @@ function NavBar() {
   const [showRegisterVet, setShowRegisterVet] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const { authCookie } = useAuth();
+
+  const showNavSession = () => !authCookie;
 
   return (
     <>
@@ -96,21 +100,31 @@ function NavBar() {
       )}
 
       {/* Barra superior */}
-      <div className="navbar-top-bar">
-        <a className="navbar-top-space"> - </a>
-      </div>
+      {showNavSession() && (
+        <>
+          <div className="navbar-top-bar">
+            <a className="navbar-top-space"> - </a>
+          </div>
 
-      <div className="navbar-session-bar">
-        <span className="navbar-session-link" onClick={() => setShowLogin(true)}>
-          Iniciar sesión
-        </span>
-        <span className="navbar-divider">/</span>
-        <span className="navbar-session-link" onClick={() => setShowChoose(true)}>
-          Crear cuenta
-        </span>
-      </div>
+          <div className="navbar-session-bar">
+            <span
+              className="navbar-session-link"
+              onClick={() => setShowLogin(true)}
+            >
+              Iniciar sesión
+            </span>
+            <span className="navbar-divider">/</span>
+            <span
+              className="navbar-session-link"
+              onClick={() => setShowChoose(true)}
+            >
+              Crear cuenta
+            </span>
+          </div>
 
-      <div className="navbar-separator-line"></div>
+          <div className="navbar-separator-line"></div>
+        </>
+      )}
 
       {/* Barra de navegación */}
       <nav className="navbar-main">
@@ -119,7 +133,7 @@ function NavBar() {
         </a>
 
         {/* Botón toggle para responsive */}
-        <button 
+        <button
           className="navbar-toggle"
           onClick={() => setIsNavOpen(!isNavOpen)}
         >
@@ -128,13 +142,27 @@ function NavBar() {
           <span className="navbar-toggle-line"></span>
         </button>
 
-        <div className={`navbar-nav-container ${isNavOpen ? 'navbar-nav-open' : ''}`}>
+        <div
+          className={`navbar-nav-container ${
+            isNavOpen ? "navbar-nav-open" : ""
+          }`}
+        >
           <div className="navbar-nav-links">
-            <Link className="navbar-nav-link" to="/main">Inicio</Link>
-            <Link className="navbar-nav-link" to="/bandanas">Bandanas</Link>
-            <Link className="navbar-nav-link" to="/Reviews">Collares</Link>
-            <Link className="navbar-nav-link" to="/Employee">Accesorios</Link>
-            <Link className="navbar-nav-link" to="/holidays">Festividades</Link>
+            <Link className="navbar-nav-link" to="/main">
+              Inicio
+            </Link>
+            <Link className="navbar-nav-link" to="/bandanas">
+              Bandanas
+            </Link>
+            <Link className="navbar-nav-link" to="/Reviews">
+              Collares
+            </Link>
+            <Link className="navbar-nav-link" to="/Employee">
+              Accesorios
+            </Link>
+            <Link className="navbar-nav-link" to="/holidays">
+              Festividades
+            </Link>
           </div>
 
           <div className="navbar-right-section">

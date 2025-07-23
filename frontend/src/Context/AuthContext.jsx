@@ -1,96 +1,84 @@
-import React from "react";
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import useFetchLogin from "../hooks/Login/UseFetchLogin.js";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [authCokie, setAuthCokie] = useState(null);
-    const { handleLogin } = useFetchLogin();
-    
-    const Login = async (email, password) => {
-        try {
-            const data = await handleLogin(email, password);
-            
-            // Guardamos el token si viene en la respuesta
-            if (data.token) {
-                localStorage.setItem("authToken", data.token);
-                setAuthCokie(data.token);
-            }
-            
-            // Guardamos el tipo de usuario que viene del backend
-            const userData = {
-                email: data.user?.email || email,
-                userType: data.userType || 'client' // employee, vet, client
-            };
-            
-            localStorage.setItem("user", JSON.stringify(userData));
-            setUser(userData);
+  const [user, setUser] = useState(null);
+  const [authCookie, setAuthCookie] = useState(null); 
+  const { handleLogin } = useFetchLogin();
 
-            return { 
-                success: true,
-                message: data.message,
-                userType: data.userType 
-            };
-        } catch (error) {
-            return { success: false, message: error.message };
-        }
-    };
+  const Login = async (email, password) => {
+    try {
+      const data = await handleLogin(email, password);
 
-    const logout = async () => {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user");
-        setAuthCokie(null);
-        setUser(null);
-    };
+      // Guardamos el token si viene en la respuesta
+      if (data.token) {
+        localStorage.setItem("authToken", data.token);
+        setAuthCookie(data.token);
+      }
 
-    // Funciones para verificar tipos de usuario
-    const isEmployee = () => {
-        return user?.userType === 'employee';
-    };
+      // Guardamos los datos del usuario
+      const userData = {
+        email: data.user?.email || email,
+        userType: data.user?.userType || "client", // Ajustado: extraído desde data.user
+      };
 
-    const isVet = () => {
-        return user?.userType === 'vet';
-    };
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
 
-    const isClient = () => {
-        return user?.userType === 'client';
-    };
+      return {
+        success: true,
+        message: data.message,
+        userType: userData.userType,
+      };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
 
-    const isPublicUser = () => {
-        return user?.userType === 'vet' || user?.userType === 'client';
-    };
+  const logout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    setAuthCookie(null);
+    setUser(null);
+  };
 
-    useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        const savedUser = localStorage.getItem("user");
+  // Funciones de tipo de usuario
+  const isEmployee = () => user?.userType === "employee";
+  const isVet = () => user?.userType === "vet";
+  const isClient = () => user?.userType === "client";
+  const isPublicUser = () => isVet() || isClient();
 
-        if (token) {
-            setAuthCokie(token);
-            if (savedUser) {
-                setUser(JSON.parse(savedUser));
-            }
-        }
-    }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    const savedUser = localStorage.getItem("user");
 
-    return (
-        <AuthContext.Provider
-            value={{
-                user,
-                Login,
-                logout,
-                authCokie,
-                setAuthCokie,
-                isEmployee, // Corregido: era isAdmin
-                isVet,
-                isClient,
-                isPublicUser
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+    if (token) {
+      setAuthCookie(token);
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+    }
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        Login,
+        logout,
+        authCookie,
+        setAuthCookie,
+        isEmployee,
+        isVet,
+        isClient,
+        isPublicUser,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);
