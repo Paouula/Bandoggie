@@ -23,7 +23,7 @@ export const API_FETCH_JSON = async (endpoint, options = {}) => {
   }
 };
 
-// Función para relalizar peticiones con FormData
+// Función para realizar peticiones con FormData
 export const API_FETCH_FORM = async (endpoint, formData, options = {}) => {
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
@@ -40,5 +40,5 @@ export const API_FETCH_FORM = async (endpoint, formData, options = {}) => {
     console.error("Fetch error:", error);
     throw error;
   }
-}
+};
 

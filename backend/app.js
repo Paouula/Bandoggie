@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 
 
 //Rutas de verificacion y recuperacion de usuarios
-import registerRoutes from './src/routes/register.js';
+import registerRoutes from './src/routes/registerClients.js';
 import registerVetRoutes from './src/routes/registerVet.js'
 import loginRoutes from './src/routes/login.js';
 import logoutRoutes from './src/routes/logout.js';

@@ -46,7 +46,7 @@ const EmployeeLayout = () => (
 
 // Handler para decidir qué NavBar mostrar
 function NavBarHandler({ currentPath }) {
-  const { authCokie, user } = useAuth();
+  const { authCookie, user } = useAuth();
 
   const authRoutes = [
     "/verification-code",
@@ -67,28 +67,28 @@ function NavBarHandler({ currentPath }) {
   );
 
   if (shouldHideNav || isAdminRoute) return null;
-  if (!authCokie || !user) return <Nav />;
+  if (!authCookie || !user) return <Nav />;
   if (user.userType === "employee") return null;
   if (user.userType === "vet" || user.userType === "client") return <AuthenticatedNavBar />;
   return <Nav />;
 }
 
 function Navegation() {
-  const { authCokie, user } = useAuth();
+  const { authCookie, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname.toLowerCase().replace(/\/$/, "");
 
   //  Redirecciones después del login
   useEffect(() => {
-    if (authCokie && user) {
+    if (authCookie && user) {
       if (user.userType === "employee") {
         navigate("/admin/productos");
       } else {
         navigate("/mainPage");
       }
     }
-  }, [authCokie, user, navigate]);
+  }, [authCookie, user, navigate]);
 
   return (
     <>
@@ -104,7 +104,7 @@ function Navegation() {
         <Route
           path="/"
           element={
-            authCokie && user?.userType === "employee" ? (
+            authCookie && user?.userType === "employee" ? (
               <Navigate to="/admin/productos" replace />
             ) : (
               <LoginModal />

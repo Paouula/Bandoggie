@@ -1,4 +1,7 @@
 import { toast } from 'react-hot-toast';
+// Importa la función API_FETCH_JSON desde tu configuración
+/*API_FETCH_JSON es una función que maneja las solicitudes HTTP de manera global del proyecto
+En su interior, configura la URL base y los encabezados necesarios para las solicitudes.*/
 import { API_FETCH_JSON } from '../../config.js';
 
 //Hook para registro de veterinarias

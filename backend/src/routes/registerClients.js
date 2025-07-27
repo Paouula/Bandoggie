@@ -1,5 +1,5 @@
 import express from 'express';
-import registerControl from '../controllers/registerClients.js';
+import registerControl from '../controllers/registerClientsControllers.js';
 import multer from 'multer';
 
 const router = express.Router();

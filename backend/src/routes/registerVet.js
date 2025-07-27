@@ -1,5 +1,5 @@
 import express from 'express';
-import registerVetController from '../controllers/registerVet.js';
+import registerVetController from '../controllers/registerVetControllers.js';
 
 const router = express.Router()
 

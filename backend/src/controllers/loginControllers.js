@@ -66,7 +66,7 @@ loginController.login = async (req, res) => {
 
         // Ponemos el token en una cookie segura para que el cliente lo guarde
         res.cookie("authToken", token, {
-          httpOnly: true,
+          httpOnly: false,
           sameSite: "lax",
           // secure: true // recuerda activar esto cuando estés en producción con HTTPS
         });
@@ -75,6 +75,7 @@ loginController.login = async (req, res) => {
         return res.status(200).json({
           message: "Login exitoso",
           userType,
+          token,
         });
       }
     );

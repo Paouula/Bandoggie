@@ -21,9 +21,10 @@ function NavBar() {
   const [showVerification, setShowVerification] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const { authCookie } = useAuth();
-
-  const showNavSession = () => !authCookie;
-
+  const { user } = useAuth();
+  console.log("authCookie:", authCookie, "user:", user);
+  const showNavSession = () => !(authCookie && user);
+  
   return (
     <>
       {/* MODALES */}
