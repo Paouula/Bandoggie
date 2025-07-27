@@ -1,16 +1,25 @@
 /* Barra azul de arriba*/
 .navbar-top-bar {
-  margin-top: 0%;
-  background-color: #B3CCEA; 
+  min-width: 100vw;
+  left: 0;
+  top: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 1100;
+  margin-top: 0;
+  background-color: #b3ccea;
   text-align: center;
   padding: 0rem;
   font-size: 0.9rem;
   font-weight: 500;
   border: none;
+  z-index: 1100;
 }
 
 .navbar-top-space {
-  color: #B3CCEA;
+  color: #b3ccea;
 }
 
 /* Barra inicio de sesión y registro*/
@@ -26,7 +35,7 @@
 .navbar-session-link {
   background: none;
   border: none;
-  color: #CB8E45; 
+  color: #cb8e45;
   font-size: inherit;
   cursor: pointer;
   padding: 0;
@@ -39,12 +48,12 @@
 
 .navbar-divider {
   margin: 0 0.3rem;
-  color: #CB8E45;
+  color: #cb8e45;
 }
 
 .navbar-separator-line {
   height: 1.5px;
-  background-color: #FDC6DD;
+  background-color: #fdc6dd;
   width: 100%;
 }
 
@@ -57,7 +66,7 @@
 
 /* Configuracion general navbar*/
 .navbar-main {
-  background-color: #FEF0F6;
+  background-color: #fef0f6;
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
@@ -79,7 +88,7 @@
 .navbar-toggle-line {
   width: 25px;
   height: 3px;
-  background-color: #1B1B1B;
+  background-color: #1b1b1b;
   transition: all 0.3s ease;
 }
 
@@ -102,7 +111,7 @@
 
 /* Texto en el navbar*/
 .navbar-nav-link {
-  color: #1B1B1B;
+  color: #1b1b1b;
   font-weight: 500;
   white-space: nowrap;
   font-size: 16px;
@@ -111,7 +120,7 @@
 }
 
 .navbar-nav-link:hover {
-  color: #CB8E45;
+  color: #cb8e45;
 }
 
 /* Contenedor del lado derecho (search + iconos) */
@@ -142,7 +151,7 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  color: #1B1B1B;
+  color: #1b1b1b;
   font-size: 1.1rem;
   padding: 0.3rem;
 }
@@ -171,11 +180,11 @@
     top: 100%;
     left: 0;
     right: 0;
-    background-color: #FEF0F6;
+    background-color: #fef0f6;
     flex-direction: column;
     align-items: center;
     padding: 1rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;

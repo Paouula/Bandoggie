@@ -1,25 +1,18 @@
 import { toast } from 'react-hot-toast';
+//Importamos la funcion API_FETCH_JSON
+import { API_FETCH_JSON } from '../../config';
 
+//Hook para manejar la recuperación de contraseña
 const useFetchPasswordRecovery = () => {
-    const ApiUrl = 'http://localhost:4000/api/passwordRecovery';
+    const endpoint = 'passwordRecovery';
 
-    const handleRequest = async ( email ) => {
+    //Función para manejar la solicitud de código de recuperación
+    const handleRequest = async (email) => {
         try {
-            const response = await fetch(`${ApiUrl}/requestCode`, {
+            const data = await API_FETCH_JSON(`${endpoint}/requestCode`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', 
-                body: JSON.stringify({ email }),
+                body: { email },
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                toast.error(data.message || 'Request failed');
-                throw new Error(data.message || 'Request failed');
-            }
 
             toast.success('Se ha enviado el código correctamente');
             return data;
@@ -29,51 +22,33 @@ const useFetchPasswordRecovery = () => {
         }
     }
 
-    const handleVerify = async ( code ) => {
+    //Función para verificar el código de recuperación
+    const handleVerify = async (code) => {
         try {
-            const response = await fetch(`${ApiUrl}/verifyCode`, {
+            const data = await API_FETCH_JSON(`${endpoint}/verifyCode`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', 
-                body: JSON.stringify({ code }),
+                body: { code },
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Email verification failed');
-            }
 
             return data;
 
         } catch (error) {
-            toast.error(error.message || 'Error during email verification');        
+            toast.error(error.message || 'Error during email verification');
         }
     }
 
-    const handleNewPass = async ( newPassword ) => {
+    //Función para manejar la actualización de la contraseña
+    const handleNewPass = async (newPassword) => {
         try {
-            const response = await fetch(`${ApiUrl}/newPassword`, {
+            const data = await API_FETCH_JSON(`${endpoint}/newPassword`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', 
-                body: JSON.stringify({ newPassword }),
+                body: { newPassword },
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Error al actualizar la contraseña');
-            }
 
             return data;
 
         } catch (error) {
-            toast.error(error.message || 'Error al actualizar la contraseña');        
+            toast.error(error.message || 'Error al actualizar la contraseña');
         }
     }
     return { handleRequest, handleVerify, handleNewPass }

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import useFetchRegister from "../../hooks/Register/UseFetchRegister.js";
+import useFetchRegister from "../../hooks/Register/useFetchRegister.js";
 import Button from "../Button/Button.jsx";
 import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Register.css";
@@ -64,9 +64,9 @@ const VerificationCodeModal = ({ onClose, openLogin }) => {
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay-register">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="register-container modal-content" ref={modalRef}>
+      <div className="register-container modal-content-register" ref={modalRef}>
        
 
         <div className="register-logo" style={{ marginBottom: 10 }}>

@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
+import { BiArrowBack } from "react-icons/bi";
+import { RxCross1 } from "react-icons/rx";
 import useFetchRegisterVet from "../../hooks/Register/useFetchRegisterVet.js";
 import InputComponent from "../Input/Input.jsx";
 import Button from "../Button/Button.jsx";
@@ -26,12 +28,16 @@ const RegisterVetModal = ({
   const { handleRegister } = useFetchRegisterVet();
 
   const handleClose = () => {
-    if (modalRef.current) {
-      modalRef.current.classList.add("fade-out");
-      setTimeout(() => {
-        onClose?.();
-      }, 250);
-    }
+    modalRef.current?.classList.add("fade-out");
+    setTimeout(() => onClose?.(), 250);
+  };
+
+  const handleBack = () => {
+    modalRef.current?.classList.add("fade-out");
+    setTimeout(() => {
+      onClose?.();
+      openChoose?.();
+    }, 250);
   };
 
   const onSubmit = async (data) => {
@@ -49,7 +55,7 @@ const RegisterVetModal = ({
 
       if (response) {
         reset();
-        onRegisterSuccess?.(); 
+        onRegisterSuccess?.();
       }
     } catch (error) {
       toast.error(error.message || "Registro fallido");
@@ -58,59 +64,47 @@ const RegisterVetModal = ({
     }
   };
 
-
-  const handleBack = () => {
-    if (modalRef.current) {
-      modalRef.current.classList.add("fade-out");
-      setTimeout(() => {
-        onClose?.();
-        openChoose?.();
-      }, 250);
-    }
-  };
-
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay-register">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="register-container modal-content" ref={modalRef}>
-        <div className="modal-header-buttons">
+      <div className="register-container modal-content-register" ref={modalRef}>
+        <div className="modal-header-buttons-register">
           <button
             type="button"
             className="register-back-button"
             onClick={handleBack}
             aria-label="Regresar"
           >
-            ←
+            <BiArrowBack />
           </button>
 
           <button
-            className="modal-close"
+            className="modal-close-register"
             onClick={handleClose}
             aria-label="Cerrar"
           >
-            ×
+            <RxCross1 />
           </button>
         </div>
 
-        <div className="register-logo" style={{ marginBottom: 10 }}>
+        <div className="register-logo">
           <img src={logo} alt="Huellitas" />
         </div>
         <hr />
         <h2 className="register-title">REGISTRO DE VETERINARIA</h2>
 
-        <p
-          className="small-link"
+        <a
+          className="register-small-links"
           onClick={() => {
             handleClose();
             openLogin?.();
           }}
-          style={{ cursor: "pointer" }}
         >
-          ¿Ya tiene una cuenta? Inicia sesión
-        </p>
+          ¿Ya tienes una cuenta? Inicia sesión
+        </a>
 
+        
         <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
-       
           <div className="register-input-group">
             <label htmlFor="nameVet">Nombre de la veterinaria</label>
             <InputComponent
@@ -212,7 +206,7 @@ const RegisterVetModal = ({
           </div>
 
           <div className="register-forgot">
-            <a href="/request-code">¿Olvidaste tu contraseña?</a>
+            <a className="register-small-links" href="/request-code">¿Olvidaste tu contraseña?</a>
           </div>
 
           <Button

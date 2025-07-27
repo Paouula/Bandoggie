@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-.modal-overlay {
+.modal-overlay-choose {
   position: fixed;
   top: 0;
   left: 0;
@@ -24,7 +24,7 @@
   overflow: hidden;
 }
 
-.modal-close {
+.modal-close-choose {
   position: absolute;
   top: 16px;
   right: 20px;
@@ -35,7 +35,7 @@
   color: #365A7D;
 }
 
-.modal-content {
+.modal-content-choose {
   position: relative;
 }
 
