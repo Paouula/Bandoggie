@@ -75,6 +75,11 @@ loginController.login = async (req, res) => {
         return res.status(200).json({
           message: "Login exitoso",
           userType,
+          token, // Agregar esta línea
+          user: { 
+            email: userFound.email,
+            _id: userFound._id 
+          } // Agregar info del usuario
         });
       }
     );

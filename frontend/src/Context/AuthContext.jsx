@@ -7,16 +7,18 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [authCokie, setAuthCokie] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); 
     const { handleLogin } = useFetchLogin();
     
     const Login = async (email, password) => {
         try {
             const data = await handleLogin(email, password);
             
+            console.log("Login response:", data);
+            
             // Guardamos el token si viene en la respuesta
             if (data.token) {
                 localStorage.setItem("authToken", data.token);
-                setAuthCokie(data.token);
             }
             
             // Guardamos el tipo de usuario que viene del backend
@@ -26,14 +28,24 @@ export const AuthProvider = ({ children }) => {
             };
             
             localStorage.setItem("user", JSON.stringify(userData));
-            setUser(userData);
-
-            return { 
-                success: true,
-                message: data.message,
-                userType: data.userType 
-            };
+            
+            // Actualizamos el estado de forma síncrona usando funciones de callback
+            return new Promise((resolve) => {
+                setAuthCokie(data.token);
+                setUser(userData);
+                
+                // Usamos setTimeout para asegurar que React haya procesado los cambios de estado
+                setTimeout(() => {
+                    resolve({
+                        success: true,
+                        message: data.message,
+                        userType: data.userType
+                    });
+                }, 100); // Aumentamos el delay para dar más tiempo
+            });
+            
         } catch (error) {
+            console.error("Login error:", error);
             return { success: false, message: error.message };
         }
     };
@@ -69,9 +81,16 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             setAuthCokie(token);
             if (savedUser) {
-                setUser(JSON.parse(savedUser));
+                try {
+                    const parsedUser = JSON.parse(savedUser);
+                    setUser(parsedUser);
+                } catch (error) {
+                    console.error("Error parsing saved user:", error);
+                    localStorage.removeItem("user");
+                }
             }
         }
+        setIsLoading(false); // Terminamos la carga inicial
     }, []);
 
     return (
@@ -82,10 +101,11 @@ export const AuthProvider = ({ children }) => {
                 logout,
                 authCokie,
                 setAuthCokie,
-                isEmployee, // Corregido: era isAdmin
+                isEmployee,
                 isVet,
                 isClient,
-                isPublicUser
+                isPublicUser,
+                isLoading // Exponemos el estado de carga
             }}
         >
             {children}

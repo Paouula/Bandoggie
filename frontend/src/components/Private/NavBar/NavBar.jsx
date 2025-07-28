@@ -31,7 +31,7 @@ function AuthenticatedNavBar() {
         </span>
         <span className="navbar-divider">/</span>
         <span 
-          className="navbar-session-link" 
+          className="navbar-session-link"
           onClick={handleLogout}
         >
           Cerrar sesión
@@ -42,9 +42,9 @@ function AuthenticatedNavBar() {
 
       {/* Barra de navegación */}
       <nav className="navbar-main">
-        <a className="navbar-brand" href="/mainpage">
+        <Link className="navbar-brand" to="/admin/home">
           <img src={LogoBandoggie} alt="Logo" className="navbar-logo" />
-        </a>
+        </Link>
 
         {/* Botón toggle para responsive */}
         <button 
@@ -58,14 +58,11 @@ function AuthenticatedNavBar() {
 
         <div className={`navbar-nav-container ${isNavOpen ? 'navbar-nav-open' : ''}`}>
           <div className="navbar-nav-links">
-            <Link className="navbar-nav-link" to="/mainpage">Inicio</Link>
-            <Link className="navbar-nav-link" to="/products">Productos</Link>
-            <Link className="navbar-nav-link" to="/reviews">Reseñas</Link>
-            <Link className="navbar-nav-link" to="/aboutus">Nosotros</Link>
-            {/* Solo mostrar ciertas opciones según el tipo de usuario */}
-            {user?.userType === 'vet' && (
-              <Link className="navbar-nav-link" to="/vet-services">Servicios</Link>
-            )}
+            <Link className="navbar-nav-link" to="/admin/home">Inicio</Link>
+            <Link className="navbar-nav-link" to="/admin/productos">Productos</Link>
+            <Link className="navbar-nav-link" to="/admin/reseñas">Reseñas</Link>
+            <Link className="navbar-nav-link" to="/admin/empleados">Empleados</Link>
+            <Link className="navbar-nav-link" to="/admin/clientes">Clientes</Link>
           </div>
 
           <div className="navbar-right-section">
