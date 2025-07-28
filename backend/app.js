@@ -14,10 +14,8 @@ import passwordRecovery from './src/routes/passwordRecovery.js';
 import HolidayRoutes from './src/routes/holiday.js';
 import ProductsRoutes from './src/routes/products.js';
 import ReviewsRoutes from './src/routes/reviews.js';
-import CartRoutes from './src/routes/Cart.js';
-import EmpleadosRoutes from "./src/routes/Empleados.js";
-import CategoriasRoutes from "./src/routes/Categorias.js";
-
+import CartRoutes from './src/routes/cart.js';
+import CategoriasRoutes from "./src/routes/categories.js";
 
 // Rutas de CRUDS
 import holidayRoutes from './src/routes/holiday.js';
@@ -26,15 +24,12 @@ import adminRoutes from './src/routes/admin.js';
 import productsRoutes from './src/routes/products.js';
 import reviewsRoutes from './src/routes/reviews.js';
 import employeesRoutes from "./src/routes/employees.js";
-import categoriesRoutes from "./src/routes/Categorias.js";
+import categoriesRoutes from "./src/routes/categories.js";
 import ordersRoutes from "./src/routes/orders.js"
 
 //Rutas Invitados
-import guestWholesalers from './src/routes/guestWholesalers.js';
-import guestClients from './src/routes/guestClients.js';
-
-//Rutas Graficas
-import salesRoutes from './src/routes/sales.js';
+import guestWholesalers from './src/routes/wholesalersPurchase.js';
+import guestClients from './src/routes/retailsPurchase.js';
 
 
 const corsOptions = {
@@ -69,12 +64,10 @@ app.use('/api/guestWholesalers', guestWholesalers)
 app.use('/api/guestClients', guestClients)
 
 //Graficas
-app.use('/api/sales', salesRoutes)
 app.use('/api/Holiday', HolidayRoutes)
 app.use('/api/products', ProductsRoutes)
 app.use('/api/reviews', ReviewsRoutes)
 app.use('/api/cart', CartRoutes);
-app.use('/api/Empleados', EmpleadosRoutes)
-app.use('/api/Categorias', CategoriasRoutes)
+app.use('/api/Categories', CategoriasRoutes)
 
 export default app;
