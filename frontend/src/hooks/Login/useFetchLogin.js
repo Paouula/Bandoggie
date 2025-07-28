@@ -15,7 +15,7 @@ const useFetchLogin = () => {
                 method: 'POST',
                 body: { email, password },
             });
-
+            console.log("Login response:", data);
             toast.success('Sesión iniciada correctamente');
             return data;
         } catch (error) {

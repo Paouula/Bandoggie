@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import useFetchLogin from "../hooks/Login/UseFetchLogin.js";
+import useFetchLogin from "../hooks/Login/useFetchLogin.js";
 import Cookies from "js-cookie"; // <-- Importa js-cookie
 
 const AuthContext = createContext();
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
       // Guarda los datos del usuario en localStorage
       const userData = {
         email: data.user?.email || email,
-        userType: data.user?.userType || "client",
+        userType: data.userType,
       };
 
       localStorage.setItem("user", JSON.stringify(userData));

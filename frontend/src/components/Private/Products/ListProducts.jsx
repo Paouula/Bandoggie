@@ -1,4 +1,4 @@
- // ListProducts.jsx
+// ListProducts.jsx
 import React from 'react';
 import CardProduct from '../Products/CardProduct.jsx';
 
@@ -8,7 +8,7 @@ const ListProducts = ({ products, onEdit, onDelete }) => {
       {products && products.length > 0 ? (
         products.map((product) => (
           <CardProduct 
-            key={product._id} 
+            key={product._id || product.id} 
             product={product} 
             onEdit={onEdit}
             onDelete={onDelete}

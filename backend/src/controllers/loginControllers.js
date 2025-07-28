@@ -21,28 +21,32 @@ loginController.login = async (req, res) => {
   }
 
   try {
-    let userFound;
-    let userType;
+    let userFound = null;
+    let userType = null;
 
-    // Primero buscamos si es un cliente con ese correo
-    userFound = await clientsModel.findOne({ email });
+    // Busca primero en empleados
+    userFound = await Employees.findOne({ email });
     if (userFound) {
-      userType = "client";
-    } else {
-      // Si no, buscamos si es un veterinario
+      userType = "employee";
+    }
+
+    // Si no es empleado, busca en veterinarios
+    if (!userFound) {
       userFound = await VetModel.findOne({ email });
       if (userFound) {
         userType = "vet";
-      } else {
-        // Finalmente, si no apareció, buscamos entre empleados
-        userFound = await Employees.findOne({ email });
-        if (userFound) {
-          userType = "employee";
-        }
       }
     }
 
-    // Si no encontramos a nadie, decimos que no existe el usuario
+    // Si no es veterinario, busca en clientes
+    if (!userFound) {
+      userFound = await clientsModel.findOne({ email });
+      if (userFound) {
+        userType = "client";
+      }
+    }
+
+    // Si no se encuentra el usuario en ningún modelo
     if (!userFound) {
       return res.status(400).json({ message: "No se ha podido encontrar al usuario" });
     }

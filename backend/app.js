@@ -16,8 +16,6 @@ import ProductsRoutes from './src/routes/products.js';
 import ReviewsRoutes from './src/routes/reviews.js';
 import CartRoutes from './src/routes/Cart.js';
 import EmpleadosRoutes from "./src/routes/employees.js";
-import CategoriasRoutes from "./src/routes/Categorias.js";
-
 
 // Rutas de CRUDS
 import holidayRoutes from './src/routes/holiday.js';
@@ -26,7 +24,7 @@ import adminRoutes from './src/routes/admin.js';
 import productsRoutes from './src/routes/products.js';
 import reviewsRoutes from './src/routes/reviews.js';
 import employeesRoutes from "./src/routes/employees.js";
-import categoriesRoutes from "./src/routes/Categorias.js";
+import categoriesRoutes from "./src/routes/categories.js";
 import ordersRoutes from "./src/routes/orders.js"
 
 //Rutas Invitados
@@ -75,6 +73,6 @@ app.use('/api/products', ProductsRoutes)
 app.use('/api/reviews', ReviewsRoutes)
 app.use('/api/cart', CartRoutes);
 app.use('/api/Empleados', EmpleadosRoutes)
-app.use('/api/Categorias', CategoriasRoutes)
+app.use('/api/Categorias', categoriesRoutes)
 
 export default app;

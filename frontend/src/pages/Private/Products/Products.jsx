@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Products.css';
 import BannerProduct from '../../../img/Products/ProductBanner.png';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
@@ -6,59 +6,50 @@ import AgregarButton from '../../../components/Private/AgregarButton.jsx';
 import SearchIcon from '@mui/icons-material/Search';
 import Paginacion from '../../../components/Pagination.jsx';
 import ListProducts from '../../../components/Private/Products/ListProducts.jsx';
+import useFetchProducts from '../../../hooks/Products/useFetchProducts.js';
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  
-  const products = [
-    {
-      id: 1,
-      name: "Bandana con bordado",
-      price: "$12.99",
-      image: "https://miamorepets.com/cdn/shop/files/hotdog-bandana_800x800_a3e1c23f-df32-470f-a9d7-7648ccc5e743.webp?v=1718037952",
-      category: "Bandana",
-      festival: "Navidad",
-      description: "Bandana de tela lisa con aplicaciones estampadas bordadas, ideal para darle un toque de estilo y personalidad a tu mascota."
-    },
-    {
-      id: 2,
-      name: "Bandana con bordado",
-      price: "$12.99",
-      image: "https://miamorepets.com/cdn/shop/products/aspen-paws_800x800_4ffa4fd4-c88d-4c8e-bc69-8fc49fa97c73.webp?v=1666225626",
-      category: "Bandana",
-      festival: "San Valentín",
-      description: "Bandana de tela lisa con aplicación estampadas bordadas, ideal para darle un toque de estilo y personalidad a tu mascota."
-    },
-    {
-      id: 3,
-      name: "Bandana con bordado",
-      price: "$12.99",
-      image: "https://miamorepets.com/cdn/shop/files/hotdog-bandana_800x800_a3e1c23f-df32-470f-a9d7-7648ccc5e743.webp?v=1718037952",
-      category: "Bandana",
-      festival: "Navidad",
-      description: "Bandana de tela lisa con aplicaciones estampadas bordadas, ideal para darle un toque de estilo y personalidad a tu mascota."
-    },
-    {
-      id: 4,
-      name: "Bandana con bordado",
-      price: "$12.99",
-      image: "https://miamorepets.com/cdn/shop/files/hotdog-bandana_800x800_a3e1c23f-df32-470f-a9d7-7648ccc5e743.webp?v=1718037952",
-      category: "Bandana",
-      festival: "San Valentín",
-      description: "Bandana de tela lisa con aplicación estampadas bordadas, ideal para darle un toque de estilo y personalidad a tu mascota."
-    },
-    {
-      id: 5,
-      name: "Bandana con bordado",
-      price: "$12.99",
-      image: "https://miamorepets.com/cdn/shop/files/hotdog-bandana_800x800_a3e1c23f-df32-470f-a9d7-7648ccc5e743.webp?v=1718037952",
-      category: "Bandana",
-      festival: "San Valentín",
-      description: "Bandana de tela lisa con aplicación estampadas bordadas, ideal para darle un toque de estilo y personalidad a tu mascota."
-    }
-  ];
+  const [products, setProducts] = useState([]);
 
-   return (
+  const { handleGetProducts, handleDeleteProducts, handlePutProducts } = useFetchProducts();
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await handleGetProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await handleDeleteProducts(id);
+      setProducts(products.filter((p) => p._id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleEdit = async (id, updatedProductData) => {
+    try {
+      await handlePutProducts(id, updatedProductData);
+      setProducts(products.map((p) => (p._id === id ? { ...p, ...updatedProductData } : p)));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
     <>
       <div className="banner-private-container">
         <BannerPrivate
@@ -85,13 +76,13 @@ const Products = () => {
               />
               <SearchIcon className="search-icon" size={20} />
             </div>
-            <div className='agregar-btn-prod'>
-            <AgregarButton />
+            <div className="agregar-btn-prod">
+              <AgregarButton />
             </div>
           </div>
         </div>
 
-        <ListProducts products={products} />
+        <ListProducts products={filteredProducts} onEdit={handleEdit} onDelete={handleDelete} />
         <Paginacion />
       </div>
     </>

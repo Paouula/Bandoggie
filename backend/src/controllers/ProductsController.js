@@ -1,5 +1,5 @@
 const productsController = {};
-import productsModel from "../models/products.js";
+import productsModel from "../models/Products.js";
 import { v2 as cloudinary } from "cloudinary";
 import { config } from "../config.js";
 import mongoose from "mongoose";
@@ -8,74 +8,89 @@ cloudinary.config({
     cloud_name: config.cloudinary.cloudinary_name,
     api_key: config.cloudinary.cloudinary_api_key,
     api_secret: config.cloudinary.cloudinary_api_secret,
-  });
+});
 
 
 //SELECT
 productsController.getProduct = async (req, res) => {
-   try {
-       const products = await productsModel.find()
-           .populate('idHolidayProduct', 'nameHoliday')
-           .populate('idCategory', 'nameCategory')
-       res.json(products)
-   } catch (error) {
-       res.status(500).json({ message: error.message })
-   }
+    try {
+        const products = await productsModel.find()
+            .populate('idHolidayProduct', 'nameHoliday')
+            .populate('idCategory', 'nameCategory')
+        res.json(products)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 }
 
 //SELECT BY ID
 productsController.getProductById = async (req, res) => {
-   try {
-       const product = await productsModel.findById(req.params.id)
-           .populate('idHolidayProduct', 'nameHoliday')
-           .populate('idCategory', 'nameCategory')
-       
-       if (!product) {
-           return res.status(404).json({ message: "Product not found" })
-       }
-       
-       res.json(product)
-   } catch (error) {
-       res.status(500).json({ message: error.message })
-   }
+    try {
+        const product = await productsModel.findById(req.params.id)
+            .populate('idHolidayProduct', 'nameHoliday')
+            .populate('idCategory', 'nameCategory')
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" })
+        }
+
+        res.json(product)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 }
 
 //INSERT
 productsController.insertProduct = async (req, res) => {
     try {
         const { nameProduct, price, description, idHolidayProduct, idCategory } = req.body;
+
+        if (!nameProduct || !price || !description || !idHolidayProduct || !idCategory) {
+            return res.status(400).json({ message: "Todos los campos obligatorios deben estar completos" });
+        }
+
         let imageUrl = "";
         let designImagesUrls = [];
 
-        // Subir imagen principal si existe
-        if (req.files && req.files.image) {
-            const result = await cloudinary.uploader.upload(req.files.image[0].path, {
-                folder: "products",
-                allowed_formats: ["jpg", "png", "jpeg"],
-            });
-            imageUrl = result.secure_url;
-        }
-
-        // Subir imágenes de diseño si existen
-        if (req.files && req.files.designImages) {
-            if (!Array.isArray(req.files.designImages) || req.files.designImages.length < 3) {
-                return res.status(400).json({ message: "Se requieren mínimo 3 imágenes de diseño" });
-            }
-            if (req.files.designImages.length > 10) {
-                return res.status(400).json({ message: "Máximo 10 imágenes de diseño permitidas" });
-            }
-            for (const file of req.files.designImages) {
-                const result = await cloudinary.uploader.upload(file.path, {
-                    folder: "products/designs",
+        // Subir imagen principal
+        if (req.files?.image?.[0]) {
+            try {
+                const result = await cloudinary.uploader.upload(req.files.image[0].path, {
+                    folder: "products",
                     allowed_formats: ["jpg", "png", "jpeg"],
                 });
-                designImagesUrls.push(result.secure_url);
+                imageUrl = result.secure_url;
+            } catch (err) {
+                console.error("Error al subir imagen principal:", err);
+                return res.status(500).json({ message: "Error al subir imagen principal", error: err.message });
             }
-        } else {
-            return res.status(400).json({ message: "El campo designImages es requerido y debe ser un array" });
         }
-        
-      const newProduct = new productsModel({
+
+        // Subir imágenes de diseño
+        const designImages = req.files?.designImages;
+        if (!Array.isArray(designImages) || designImages.length < 3) {
+            return res.status(400).json({ message: "Se requieren mínimo 3 imágenes de diseño" });
+        }
+        if (designImages.length > 10) {
+            return res.status(400).json({ message: "Máximo 10 imágenes de diseño permitidas" });
+        }
+
+        try {
+            const uploads = designImages.map(file =>
+                cloudinary.uploader.upload(file.path, {
+                    folder: "products/designs",
+                    allowed_formats: ["jpg", "png", "jpeg"],
+                })
+            );
+            const results = await Promise.all(uploads);
+            designImagesUrls = results.map(result => result.secure_url);
+        } catch (err) {
+            console.error("Error al subir imágenes de diseño:", err);
+            return res.status(500).json({ message: "Error subiendo imágenes de diseño", error: err.message });
+        }
+
+        // Guardar en DB
+        const newProduct = new productsModel({
             nameProduct,
             price,
             description,
@@ -92,13 +107,16 @@ productsController.insertProduct = async (req, res) => {
             .populate('idCategory', 'nameCategory');
 
         res.status(201).json({
-            message: "Product saved successfully",
+            message: "Producto guardado exitosamente",
             product: populatedProduct
         });
+
     } catch (error) {
-        res.status(500).json({ message: "Error creating product", error });
+        console.error("Error general en insertProduct:", error);
+        res.status(500).json({ message: "Error creando el producto", error: error.message });
     }
 };
+
 
 //DELETE
 productsController.deleteProduct = async (req, res) => {
@@ -143,7 +161,7 @@ productsController.updateProduct = async (req, res) => {
             });
             imageUrl = result.secure_url;
         }
-         // Actualizar imágenes de diseño si se envían
+        // Actualizar imágenes de diseño si se envían
         if (req.files && req.files.designImages) {
             if (!Array.isArray(req.files.designImages) || req.files.designImages.length < 3) {
                 return res.status(400).json({ message: "Se requieren mínimo 3 imágenes de diseño" });
@@ -160,7 +178,7 @@ productsController.updateProduct = async (req, res) => {
                 designImagesUrls.push(result.secure_url);
             }
         }
-         const updatedProduct = await productsModel.findByIdAndUpdate(
+        const updatedProduct = await productsModel.findByIdAndUpdate(
             id,
             {
                 nameProduct,
@@ -173,7 +191,7 @@ productsController.updateProduct = async (req, res) => {
             },
             { new: true }
         ).populate('idHolidayProduct', 'nameHoliday')
-         .populate('idCategory', 'nameCategory');
+            .populate('idCategory', 'nameCategory');
 
         res.json({ message: "Product updated successfully", product: updatedProduct });
     } catch (error) {

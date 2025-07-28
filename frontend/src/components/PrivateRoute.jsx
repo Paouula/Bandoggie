@@ -3,10 +3,10 @@ import { useAuth } from "../Context/AuthContext";
 
 // Ruta para sitio público - solo usuarios NO autenticados o autenticados que NO sean employees
 export const PrivateRoute = () => {
-    const { authCokie, isEmployee } = useAuth();
+    const { authCookie, isEmployee } = useAuth();
     
     // Si está autenticado Y es employee, redirige al área admin
-    if (authCokie && isEmployee()) {
+    if (authCookie && isEmployee()) {
         return <Navigate to="/admin/productos" replace />;
     }
     
@@ -16,10 +16,10 @@ export const PrivateRoute = () => {
 
 // Ruta para employees - área privada/admin (requiere autenticación y ser employee)
 export const EmployeeRoute = () => {
-    const { authCokie, isEmployee } = useAuth();
+    const { authCookie, isEmployee } = useAuth();
     
     // Si no está autenticado, redirige al login
-    if (!authCokie) {
+    if (!authCookie) {
         return <Navigate to="/" replace />;
     }
     

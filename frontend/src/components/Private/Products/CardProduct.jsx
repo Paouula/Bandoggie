@@ -1,10 +1,9 @@
-// CardProduct.jsx
 import React from 'react';
 import './CardProduct.css';
 import DeleteButton from '../DeleteButton.jsx';
 import EditButton from '../EditButton.jsx';
 
-const CardProduct = ({ product }) => {
+const CardProduct = ({ product, onEdit, onDelete }) => {
   return (
     <div className="product-card">
       {/* Parte superior: imagen + acciones */}
@@ -19,8 +18,14 @@ const CardProduct = ({ product }) => {
           <div className="product-title-actions">
             <h3 className="product-name">{product.name}</h3>
             <div className="product-actions">
-              <EditButton title="Editar los detalles del producto" />
-              <DeleteButton title="Eliminar el producto" />
+              <EditButton 
+                title="Editar los detalles del producto" 
+                onClick={() => onEdit(product)} 
+              />
+              <DeleteButton 
+                title="Eliminar el producto" 
+                onClick={() => onDelete(product._id || product.id)} 
+              />
             </div>
           </div>
           <p className="product-price">{product.price}</p>
