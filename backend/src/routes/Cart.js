@@ -1,21 +1,24 @@
 import { Router } from "express";
-import cartController from "../controllers/cartController.js";
+import CartController from "../controllers/CartControllers.js";
 
 const router = Router();
 
-// Obtener todos los carritos
-router.get("/", cartController.getAll);
+// Estadísticas del carrito
+router.get("/stats", CartController.getCartStats);
 
-// Obtener un carrito por ID
-router.get("/:id", cartController.getById);
+// Obtener carrito por cliente
+router.get("/client/:clientId", CartController.getByClient);
 
-// Crear un nuevo carrito
-router.post("/", cartController.create);
+// Operaciones CRUD básicas
+router.get("/", CartController.getAll);        // Obtener todos los carritos
+router.post("/", CartController.create);       // Crear nuevo carrito
+router.get("/:id", CartController.getById);    // Obtener carrito por ID
+router.put("/:id", CartController.update);     // Actualizar carrito por ID
+router.delete("/:id", CartController.delete);  // Eliminar carrito por ID
 
-// Actualizar un carrito
-router.put("/:id", cartController.update);
-
-// Eliminar un carrito
-router.delete("/:id", cartController.delete);
+// Productos dentro del carrito
+router.post("/:id/products", CartController.addProduct);                // Agregar producto
+router.delete("/:id/products/:productId", CartController.removeProduct); // Eliminar producto específico
+router.put("/:id/clear", CartController.clearCart);                     // Vaciar carrito
 
 export default router;
