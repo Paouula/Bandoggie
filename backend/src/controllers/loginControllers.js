@@ -14,10 +14,17 @@ loginController.login = async (req, res) => {
 
   // Validamos que nos envíen un correo y una contraseña, nada de vacíos
   if (!email || !validator.isEmail(email)) {
-    return res.status(400).json({ message: "Correo electrónico inválido o faltante" });
+    return res
+      .status(400)
+      .json({ message: "Correo electrónico inválido o faltante" });
   }
   if (!password || password.length < 8) {
-    return res.status(400).json({ message: "La contraseña es obligatoria y debe tener al menos 8 caracteres" });
+    return res
+      .status(400)
+      .json({
+        message:
+          "La contraseña es obligatoria y debe tener al menos 8 caracteres",
+      });
   }
 
   try {
@@ -48,7 +55,9 @@ loginController.login = async (req, res) => {
 
     // Si no se encuentra el usuario en ningún modelo
     if (!userFound) {
-      return res.status(400).json({ message: "No se ha podido encontrar al usuario" });
+      return res
+        .status(400)
+        .json({ message: "No se ha podido encontrar al usuario" });
     }
 
     // Comprobamos que la contraseña que enviaron sea la misma que la guardada
@@ -70,16 +79,19 @@ loginController.login = async (req, res) => {
 
         // Ponemos el token en una cookie segura para que el cliente lo guarde
         res.cookie("authToken", token, {
-          httpOnly: false,
+          httpOnly: true, // Ahora la cookie es invisible para JavaScript
           sameSite: "lax",
-          // secure: true // recuerda activar esto cuando estés en producción con HTTPS
+          secure: false,
         });
 
         // Finalmente, decimos que el login fue exitoso y enviamos qué tipo de usuario es
         return res.status(200).json({
           message: "Login exitoso",
           userType,
-          token,
+          user: {
+            email: userFound.email,
+            name: userFound.name,
+          },
         });
       }
     );
@@ -89,5 +101,41 @@ loginController.login = async (req, res) => {
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
+loginController.getAuthenticatedUser = async (req, res) => {
+  const token = req.cookies.authToken;
+
+  if (!token) {
+    return res.status(401).json({ message: "No autenticado" });
+  }
+
+  try {
+    const decoded = jsonwebtoken.verify(token, config.JWT.secret);
+    let user = null;
+
+    if (decoded.userType === "employee") {
+      user = await Employees.findById(decoded.user);
+    } else if (decoded.userType === "vet") {
+      user = await VetModel.findById(decoded.user);
+    } else if (decoded.userType === "client") {
+      user = await clientsModel.findById(decoded.user);
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    return res.status(200).json({
+      user: {
+        email: user.email,
+        name: user.name,
+        userType: decoded.userType,
+      },
+    });
+  } catch (error) {
+    return res.status(401).json({ message: "Token inválido o expirado" });
+  }
+};
+
 
 export default loginController;

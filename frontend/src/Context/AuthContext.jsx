@@ -1,25 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import useFetchLogin from "../hooks/Login/useFetchLogin.js";
-import Cookies from "js-cookie"; // <-- Importa js-cookie
+import { API_FETCH_JSON } from "../config.js";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const endpoint = "login";
   const [user, setUser] = useState(null);
-  const [authCookie, setAuthCookie] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
   const { handleLogin } = useFetchLogin();
 
   const Login = async (email, password) => {
     try {
-      const data = await handleLogin(email, password);
+      const data = await handleLogin(email, password); // backend guarda la cookie
 
-      // Guarda el token en la cookie
-      if (data.token) {
-        Cookies.set("authToken", data.token, { expires: 7 }); // 7 días, ajusta si quieres
-        setAuthCookie(data.token);
-      }
-
-      // Guarda los datos del usuario en localStorage
+      // Guardar datos de usuario si vienen del login
       const userData = {
         email: data.user?.email || email,
         userType: data.userType,
@@ -38,45 +34,82 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+/*  const logout = () => {
     Cookies.remove("authToken");
     localStorage.removeItem("user");
-    setAuthCookie(null);
+    setUser(null);
+  };
+*/  
+
+  const logout = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",   
+      });
+    } catch (error) {
+      console.error("Error en logout:", error);
+    }
+
+    localStorage.removeItem("user");
     setUser(null);
   };
 
   // Funciones de tipo de usuario
+  /*useEffect(() => {
+    API_FETCH_JSON(`${endpoint}/auth/me`, {
+      credentials: 'include', 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("No autenticado");
+        return res.json();
+      })
+      .then((data) => {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      })
+      .catch(() => {
+        setUser(null);
+      })
+  }, []);*/
+useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    setUser(JSON.parse(storedUser));
+  }
+
+  API_FETCH_JSON(`${endpoint}/auth/me`, {
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("No autenticado");
+      return res.json();
+    })
+    .then((data) => {
+      if (data?.user) {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+    })
+    .catch((err) => {
+      console.warn("Fallo en auth/me:", err.message);
+      // NO borramos localStorage aquí
+      // Solo quitamos el loading flag
+    })
+    .finally(() => {
+      setLoadingUser(false);
+    });
+}, []);
+
+
   const isEmployee = () => user?.userType === "employee";
   const isVet = () => user?.userType === "vet";
   const isClient = () => user?.userType === "client";
   const isPublicUser = () => isVet() || isClient();
-
-  useEffect(() => {
-    const token = Cookies.get("authToken");
-    const savedUser = localStorage.getItem("user");
-
-    console.log("Token:", token, "savedUser:", savedUser); // <-- Aquí
-
-    if (token) {
-      setAuthCookie(token);
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-        console.log("AuthContext -> setUser:", JSON.parse(savedUser)); // <-- Aquí
-      } else {
-        // Si solo tienes el token, pide el usuario al backend
-        fetch("/api/auth/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            setUser(data.user);
-            localStorage.setItem("user", JSON.stringify(data.user));
-            console.log("AuthContext -> fetched user:", data.user); // <-- Aquí
-          })
-          .catch(() => setUser(null));
-      }
-    }
-  }, []);
 
   return (
     <AuthContext.Provider
@@ -84,8 +117,6 @@ export const AuthProvider = ({ children }) => {
         user,
         Login,
         logout,
-        authCookie,
-        setAuthCookie,
         isEmployee,
         isVet,
         isClient,
