@@ -7,16 +7,6 @@ import Nav from "./components/Public/NavBar/NavBar.jsx";
 import AuthenticatedNavBar from "./components/Public/NavBar/NavBar.jsx";
 import { AuthProvider, useAuth } from "./Context/AuthContext.jsx";
 
-import Login from "./pages/Public/Login.jsx";
-import Register from "./pages/Public/Register.jsx";
-import RegisterVet from "./pages/Public/RegisterVet.jsx";
-import VerificationCode from "./pages/Public/VerificationCode.jsx";
-import ChooseAccountType from "./pages/Public/ChooseAccount.jsx";
-import RequestCode from "./pages/Public/PasswordRecovery/RequestCode.jsx";
-import VerifyCode from "./pages/Public/PasswordRecovery/verifyCode.jsx";
-import NewPassword from "./pages/Public/PasswordRecovery/newPassword.jsx";
-import Reviews from "./pages/Public/Reviews.jsx";
-
 
 function AppContent() {
   const location = useLocation();
@@ -28,24 +18,23 @@ function AppContent() {
     "/request-code", 
     "/verify-code",
     "/new-password",
-    "/reviews", 
   ];
 
-  const adminRoutes = ["/admin"];
+ const adminRoutes = ["/admin"];
 
   useEffect(() => {
     const currentPath = location.pathname.toLowerCase().replace(/\/$/, "");
-    
+
     // No mostrar navbar en rutas de autenticación
     const shouldHideNav = authRoutes.some(
       (route) => currentPath === route || currentPath.startsWith(route + "/")
     );
-    
+
     // No mostrar navbar público en rutas de admin
     const isAdminRoute = adminRoutes.some(route => 
       currentPath.startsWith(route)
     );
-    
+
     setIsOpen(!shouldHideNav && !isAdminRoute);
   }, [location.pathname]);
 
@@ -89,18 +78,6 @@ function AppContent() {
 
         
         <Navegation />
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/verification-code" element={<VerificationCode />} />
-          <Route path="/register-vet" element={<RegisterVet />} />
-          <Route path="/choose-account" element={<ChooseAccountType />} />
-          <Route path="/request-code" element={<RequestCode />} />
-          <Route path="/verify-code" element={<VerifyCode />} />
-          <Route path="/new-password" element={<NewPassword />} />
-          <Route path="/reviews" element={<Reviews />} />
-        </Routes>
       </div>
     </>
   );
