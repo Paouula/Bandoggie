@@ -3,12 +3,12 @@ import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext.jsx";
 
-//  NavBars
+// NavBars
 import Nav from "../components/Public/NavBar/NavBar.jsx";
 import AuthenticatedNavBar from "../components/Public/NavBar/NavBar.jsx";
 import PrivateNavBar from "../components/Private/NavBar/NavBar.jsx";
 
-//  Componentes Públicos
+// Componentes Públicos
 import AboutUS from "../pages/Public/AboutUs/AboutUs.jsx";
 import MainPage from "../pages/Public/MainPage/MainPage.jsx";
 import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
@@ -19,16 +19,16 @@ import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import LoginModal from "../components/LoginModal/Login.jsx";
 
-//  Componentes Privados (solo employee)
+// Componentes Privados
 import Productos from "../pages/Private/Products/Products.jsx";
 import Reseñas from "../pages/Private/Reviews/Reviews.jsx";
 import Empleados from "../pages/Private/Employee/Employee.jsx";
 import Clientes from "../pages/Private/Clients/Clients.jsx";
 
-// 🔒 Rutas protegidas
+// Rutas protegidas
 import { PrivateRoute, EmployeeRoute } from "./PrivateRoute.jsx";
 
-// 🧱 Layout privado con NavBar del empleado
+// 🧱 Layout para empleados
 const EmployeeLayout = () => (
   <>
     <PrivateNavBar />
@@ -44,10 +44,8 @@ const EmployeeLayout = () => (
   </>
 );
 
-// Handler para decidir qué NavBar mostrar
-function NavBarHandler({ currentPath }) {
-  const { authCookie, user } = useAuth();
-
+// Manejo dinámico del NavBar
+function NavBarHandler({ currentPath, user }) {
   const authRoutes = [
     "/verification-code",
     "/request-code",
@@ -67,45 +65,56 @@ function NavBarHandler({ currentPath }) {
   );
 
   if (shouldHideNav || isAdminRoute) return null;
-  if (!authCookie || !user) return <Nav />;
+  if (!user) return <Nav />;
   if (user.userType === "employee") return null;
   if (user.userType === "vet" || user.userType === "client") return <AuthenticatedNavBar />;
   return <Nav />;
 }
 
 function Navegation() {
-  const { authCookie, user } = useAuth();
+  const { user, loadingUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname.toLowerCase().replace(/\/$/, "");
 
-  //  Redirecciones después del login
+  // Esperar a que se cargue el usuario antes de continuar
+  if (loadingUser) return null;
+
+  // Redirección automática según el tipo de usuario
   useEffect(() => {
-    if (authCookie && user) {
-      if (user.userType === "employee") {
+    if (user) {
+      const alreadyInAdmin = location.pathname.startsWith("/admin");
+      const alreadyInMain = location.pathname === "/mainPage";
+
+      if (user.userType === "employee" && !alreadyInAdmin) {
         navigate("/admin/productos");
-      } else {
+      } else if (
+        (user.userType === "vet" || user.userType === "client") &&
+        !alreadyInMain
+      ) {
         navigate("/mainPage");
       }
     }
-  }, [authCookie, user, navigate]);
+  }, [user, navigate, location.pathname]);
 
   return (
     <>
-      <NavBarHandler currentPath={currentPath} />
+      <NavBarHandler currentPath={currentPath} user={user} />
       <Routes>
-        {/* Rutas de autenticación públicas */}
+        {/* Rutas de autenticación */}
         <Route path="/register" element={<Register />} />
         <Route path="/request-code" element={<RequestCode />} />
         <Route path="/verify-code" element={<VerifyCode />} />
         <Route path="/new-password" element={<NewPassword />} />
 
-        {/* Ruta de inicio/login */}
+        {/* Inicio / Login */}
         <Route
           path="/"
           element={
-            authCookie && user?.userType === "employee" ? (
+            user?.userType === "employee" ? (
               <Navigate to="/admin/productos" replace />
+            ) : user ? (
+              <Navigate to="/mainPage" replace />
             ) : (
               <LoginModal />
             )
