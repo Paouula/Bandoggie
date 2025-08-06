@@ -13,6 +13,7 @@ const useFetchLogin = () => {
         try {
             const data = await API_FETCH_JSON(endpoint, {
                 method: 'POST',
+                headers: { "Content-Type": "application/json" },
                 body: { email, password },
             });
             console.log("Login response:", data);

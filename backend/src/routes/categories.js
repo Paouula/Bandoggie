@@ -1,16 +1,16 @@
 import express from "express"
-import CategoriasControllers from "../controllers/categoriesControllers.js"
+import categoriesControllers from "../controllers/categoriesControllers.js"
 
 const router = express.Router();
 
 router 
 .route("/")
-.get(CategoriasControllers.getcategorias)
-.post(CategoriasControllers.createcategorias);
+.get(categoriesControllers.getcategorias)
+.post(categoriesControllers.createcategorias);
 
 router
 .route("/:id")
-.put(CategoriasControllers.updatecategorias)
-.delete(CategoriasControllers.deletecategorias);
+.put(categoriesControllers.updatecategorias)
+.delete(categoriesControllers.deletecategorias);
 
 export default router;

@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-        console.warn("Fallo en auth/me:", err.message);
+       // console.warn("Fallo en login/auth/me:", err.message);
       })
       .finally(() => {
         setLoadingUser(false);

@@ -1,36 +1,36 @@
 //Array de metodos (C R U D)
-const CategoriasControllers = {};
-import CategoriasModel from "../models/Categories.js";
+const categoriesControllers = {};
+import categoriesModel from "../models/Categories.js";
 
 // SELECT
-CategoriasControllers.getcategorias = async (req, res) => {
-  const categorias = await CategoriasModel.find();
-  res.json(categorias);
+categoriesControllers.getcategorias = async (req, res) => {
+  const categories = await categoriesModel.find();
+  res.json(categories);
 };
 
 // INSERT
-CategoriasControllers.createcategorias = async (req, res) => {
+categoriesControllers.createcategorias = async (req, res) => {
   const { nameCategory } = req.body;
-  const newccategorias = new CategoriasModel({ nameCategory });
-  await newccategorias.save();
+  const newCategory = new categoriesModel({ nameCategory });
+  await newCategory.save();
   res.json({ message: "Categoria Guardada" });
 };
 
 // DELETE
-CategoriasControllers.deletecategorias = async (req, res) => {
-const deletecategorias = await CategoriasModel.findByIdAndDelete(req.params.id);
-  if (!deletecategorias) {
+categoriesControllers.deletecategorias = async (req, res) => {
+const deleteCategory = await categoriesModel.findByIdAndDelete(req.params.id);
+  if (!deleteCategory) {
     return res.status(404).json({ message: "Categorias no se encuentran" });
   }
   res.json({ message: "Categoria Eliminada" });
 };
 
 // UPDATE
-CategoriasControllers.updatecategorias = async (req, res) => {
+categoriesControllers.updatecategorias = async (req, res) => {
   // Solicito todos los valores
   const { nameCategory } = req.body;
   // Actualizo
-  await CategoriasModel.findByIdAndUpdate(
+  await categoriesModel.findByIdAndUpdate(
     req.params.id,
     {
         nameCategory
@@ -41,4 +41,4 @@ CategoriasControllers.updatecategorias = async (req, res) => {
   res.json({ message: "Categoria Actualizada" });
 };
 
-export default CategoriasControllers;
+export default categoriesControllers;

@@ -15,14 +15,14 @@ const buildFormData = (productData) => {
     } = productData;
 
     const formData = new FormData();
-    formData.append('name', nameProduct);
+    formData.append('nameProduct', nameProduct);
     formData.append('price', price);
     formData.append('description', description);
 
     if (image) {
         formData.append('image', image);
     }
-
+    
     if (Array.isArray(designImages)) {
         designImages.forEach((file, index) => {
             formData.append('designImages', file); 

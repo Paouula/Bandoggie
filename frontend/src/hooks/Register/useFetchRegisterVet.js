@@ -9,11 +9,11 @@ const useFetchRegisterVet = () => {
   const endpoint = 'registerVet';
 
   // Función para registrar veterinarias
-  const handleRegister = async (nameVet, email, password, locationVet, nitVet) => {
+  const handleRegister = async (registerVetData) => {
     try {
       const data = await API_FETCH_JSON(endpoint, {
         method: 'POST',
-        body: { nameVet, email, password, locationVet, nitVet },
+        body: registerVetData,
       });
 
       toast.success('Se ha registrado correctamente. Por favor, verifica tu correo electrónico.');

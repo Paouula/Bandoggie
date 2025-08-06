@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import { Tooltip } from "@mui/material";
 
-function DeleteButton({ title = "Eliminar empleado" }) {
+function DeleteButton({ title = "Eliminar empleado", onClick }) {
   const [hovered, setHovered] = useState(false);
 
   const buttonStyle = {
@@ -27,6 +27,7 @@ function DeleteButton({ title = "Eliminar empleado" }) {
         style={buttonStyle}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onClick={onClick} 
       >
         <EditIcon size={14} />
       </button>

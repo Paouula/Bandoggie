@@ -80,20 +80,14 @@ function Navegation() {
   // Esperar a que se cargue el usuario antes de continuar
   if (loadingUser) return null;
 
-  // Redirección automática según el tipo de usuario
+  // Redirección automática solo si se entra por "/"
   useEffect(() => {
-    if (user) {
-      const alreadyInAdmin = location.pathname.startsWith("/admin");
-      const alreadyInMain = location.pathname === "/mainPage";
+    if (!user || location.pathname !== "/") return;
 
-      if (user.userType === "employee" && !alreadyInAdmin) {
-        navigate("/admin/productos");
-      } else if (
-        (user.userType === "vet" || user.userType === "client") &&
-        !alreadyInMain
-      ) {
-        navigate("/mainPage");
-      }
+    if (user.userType === "employee") {
+      navigate("/admin/productos");
+    } else if (user.userType === "vet" || user.userType === "client") {
+      navigate("/mainPage");
     }
   }, [user, navigate, location.pathname]);
 

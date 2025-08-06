@@ -59,7 +59,6 @@ app.use('/api/admin', adminRoutes)
 app.use('/api/holiday', holidayRoutes)
 app.use('/api/products', productsRoutes)
 app.use('/api/orders', ordersRoutes)
-app.use('/api/category', categoriesRoutes)
 app.use('/api/reviews', reviewsRoutes)
 
 //Rutas Invitados
@@ -72,7 +71,7 @@ app.use('/api/Holiday', HolidayRoutes)
 app.use('/api/products', ProductsRoutes)
 app.use('/api/reviews', ReviewsRoutes)
 app.use('/api/cart', CartRoutes);
-app.use('/api/Empleados', EmpleadosRoutes)
-app.use('/api/Categorias', categoriesRoutes)
+app.use('/api/employees', EmpleadosRoutes)
+app.use('/api/categories', categoriesRoutes)
 
 export default app;

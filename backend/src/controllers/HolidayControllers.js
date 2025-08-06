@@ -11,9 +11,9 @@ holidayController.getHoliday = async (req, res) => {
 
 // Insert
 holidayController.createHoliday = async (req, res) => {
-  const { nameCategory } = req.body;
-  
-  const newHoliday = new holidayModel({ nameCategory });
+  const { nameHoliday } = req.body;
+
+  const newHoliday = new holidayModel({ nameHoliday });
   await newHoliday.save();
   res.json({ message: "Holiday saved" });
 };
@@ -30,11 +30,11 @@ holidayController.deleteHoliday = async (req, res) => {
 // Update
 holidayController.updateHoliday = async (req, res) => {
   // Solicito todos los valores
-  const { nameCategory } = req.body;
+  const { nameHoliday } = req.body;
   await holidayModel.findByIdAndUpdate(
     req.params.id,
     {
-      nameCategory
+      nameHoliday
     },
     { new: true }
   );

@@ -1,0 +1,192 @@
+.modal-content-generic {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-overlay-generic {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-container-generic {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-close-generic {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #365a7d;
+}
+
+.modal-title-generic {
+  font-size: 22px;
+  color: #365a7d;
+  margin-bottom: 20px;
+}
+
+.modal-content-generic {
+  margin-bottom: 20px;
+}
+
+.modal-actions-generic {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.form-edit-generic {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.form-edit-generic input,
+.form-edit-generic textarea,
+.form-edit-generic select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #b4ceec;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: "Raleway", sans-serif;
+  background: #fafdff;
+  color: #365a7d;
+  transition: border 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.form-edit-generic input:focus,
+.form-edit-generic textarea:focus,
+.form-edit-generic select:focus {
+  outline: none;
+  border: 2px solid #ff9900;
+  box-shadow: 0 0 0 2px #ffe0b2;
+  background-color: #fffdfa;
+}
+
+.modal-container-generic {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  max-height: 85vh; /* Limita la altura total del modal */
+  overflow: hidden; /* Oculta el scroll externo */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-container-generic.fade-out {
+  animation: fadeOut 0.3s ease-in-out forwards;
+}
+
+.modal-content-generic {
+  overflow-y: auto; /* Scroll vertical interno */
+  max-height: 60vh; /* Altura máxima del área de contenido */
+  padding-right: 10px; /* Espacio para que el scroll no pegue al borde */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* 🎨 Estilo personalizado del scroll */
+.modal-content-generic::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content-generic::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content-generic::-webkit-scrollbar-thumb {
+  background: #b4ceec;
+  border-radius: 10px;
+  border: 2px solid #fff;
+}
+
+.modal-content-generic::-webkit-scrollbar-thumb:hover {
+  background: #a0bdd8;
+}
+
+/* 📱 Responsividad para pantallas pequeñas */
+@media (max-width: 600px) {
+  .modal-container-generic {
+    width: 95%;
+    padding: 20px;
+    max-height: 75vh;
+  }
+
+  .modal-content-generic {
+    max-height: 50vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-container-generic {
+    width: 95%;
+    padding: 20px 12px;
+    max-height: 70vh;
+  }
+
+  .modal-content-generic {
+    max-height: 45vh;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .modal-container-generic {
+    width: 80%;
+    padding: 24px;
+    max-height: 75vh;
+  }
+
+  .modal-content-generic {
+    max-height: 45vh;
+    padding-right: 8px;
+  }
+
+  .modal-title-generic {
+    font-size: 20px;
+  }
+
+  .form-edit-generic input,
+  .form-edit-generic textarea,
+  .form-edit-generic select {
+    font-size: 15px;
+  }
+}
+
+.modal-actions-generic button {
+  padding: 10px 20px;
+  background-color: #365a7d;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.modal-actions-generic button:hover {
+  background-color: #2b4a65;
+}

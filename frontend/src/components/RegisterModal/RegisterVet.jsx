@@ -45,13 +45,14 @@ const RegisterVetModal = ({
     setIsSubmitting(true);
     toast.success("Enviando información...");
     try {
-      const response = await handleRegister(
-        data.nameVet,
-        data.email,
-        data.password,
-        data.locationVet,
-        data.nitVet
-      );
+      const registerVetData = {
+        nameVet: data.nameVet,
+        email: data.email,
+        password: data.password,
+        locationVet: data.locationVet,
+        nitVet: data.nitVet
+      }
+      const response = await handleRegister(registerVetData);
 
       if (response) {
         reset();
