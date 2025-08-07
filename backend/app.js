@@ -26,7 +26,7 @@ import guestWholesalers from './src/routes/wholesalersPurchase.js';
 import guestClients from './src/routes/retailsPurchase.js';
 
 // Rutas Gráficas
-import salesRoutes from './src/routes/sales.js';
+//import salesRoutes from './src/routes/sales.js';
 
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -60,7 +60,7 @@ app.use('/api/guestWholesalers', guestWholesalers);
 app.use('/api/guestClients', guestClients);
 
 // Rutas Gráficas
-app.use('/api/sales', salesRoutes);
+//app.use('/api/sales', salesRoutes);
 
 // Carrito
 app.use('/api/cart', cartRoutes);

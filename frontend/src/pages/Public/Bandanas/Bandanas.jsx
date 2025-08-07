@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import ProductGrid from '../../../components/ProductGrid.jsx';
+//import ProductGrid from '../../../components/ProductGrid.jsx';
 
 //Import de las imagenes de las bandanas
-import Bandanas from '../../../img/Bandanas/bandanas.png';
+import Bandanas1 from '../../../img/Bandanas/bandanas.png';
 import Bandanas2 from '../../../img/Bandanas/bandanas2.png';
 import Bandanas3 from '../../../img/Bandanas/bandanas3.png';
 import Bandanas4 from '../../../img/Bandanas/bandanas4.png';
@@ -17,7 +17,7 @@ import Bandanas12 from '../../../img/Bandanas/bandanas12.png';
 
 
 const Bandanas = () => {
-  const [selectedFilter, setSelectedFilter] = useState('Por defecto');
+  const [selectedFilter, setSelectedFilter] = useState();
   const [showFilters, setShowFilters] = useState(false);
 
   const products = [
