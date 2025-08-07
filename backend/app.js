@@ -22,8 +22,8 @@ import categoriesRoutes from "./src/routes/categories.js";
 import ordersRoutes from "./src/routes/orders.js";
 
 // Rutas Invitados
-import guestWholesalers from './src/routes/guestWholesalers.js';
-import guestClients from './src/routes/guestClients.js';
+import guestWholesalers from './src/routes/wholesalersPurchase.js';
+import guestClients from './src/routes/retailsPurchase.js';
 
 // Rutas Gráficas
 import salesRoutes from './src/routes/sales.js';
