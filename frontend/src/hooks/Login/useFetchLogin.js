@@ -20,10 +20,11 @@ const useFetchLogin = () => {
             toast.success('Sesión iniciada correctamente');
             return data;
         } catch (error) {
-            toast.error(error.message || 'Error during login');
+            console.error('Login error in hook:', error); // Para debugging
             throw error;
         }
     }
+    
     return { handleLogin };
 }
 

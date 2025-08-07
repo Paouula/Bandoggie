@@ -19,10 +19,11 @@ import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import LoginModal from "../components/LoginModal/Login.jsx";
 
-// Componentes Privados
-import Productos from "../pages/Private/Products/Products.jsx";
-import Reseñas from "../pages/Private/Reviews/Reviews.jsx";
-import Empleados from "../pages/Private/Employee/Employee.jsx";
+// Componentes privados 
+import Home from "../pages/Private/MainPage/MainPage.jsx";
+import Productos from "../pages/Private/Products/Products.jsx"; 
+import Reseñas from "../pages/Private/Reviews/Reviews.jsx"; 
+import Empleados from "../pages/Private/Employee/Employee.jsx"; 
 import Clientes from "../pages/Private/Clients/Clients.jsx";
 
 // Rutas protegidas
