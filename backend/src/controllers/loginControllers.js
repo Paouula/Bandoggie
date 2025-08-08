@@ -1,6 +1,6 @@
-import clientsModel from "../models/clients.js";
-import Employees from "../models/employees.js";
-import VetModel from "../models/vets.js";
+import clientsModel from "../models/Clients.js";
+import Employees from "../models/Employees.js";
+import VetModel from "../models/Vets.js";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import { config } from "../config.js";

@@ -1,4 +1,4 @@
-import clientsModel from "../models/clients.js";
+import clientsModel from "../models/Clients.js";
 import { v2 as cloudinary } from "cloudinary";
 import { config } from "../config.js";
 import mongoose from "mongoose";
