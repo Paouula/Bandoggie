@@ -12,18 +12,21 @@ const CardReview = ({ review, isApproved, onApprove, onReject, onOpenModal }) =>
   return (
     <div className="review-card" onClick={() => onOpenModal(review)}>
       <div className="review-header">
-        <img src={review.image} alt={review.name} className="review-image" />
+        <img 
+          src={review.designImages?.[0]} 
+          alt={review.idProduct?.nameProduct} 
+          className="review-image" 
+        />
         <div className="review-info">
-          <h3 className="review-name">{review.name}</h3>
-          <p className="review-price">${review.price}</p>
+          <h3 className="review-name">{review.idProduct?.nameProduct}</h3>
+          <p className="review-price">${review.idProduct?.price}</p>
         </div>
         <div className="review-actions" onClick={(e) => e.stopPropagation()}>
-            <DeleteButton size={18} onClick={() => onReject(review.id)}/>
-            <AproveButton 
-              onClick={() => onApprove(review.id)} 
-              selected={isApproved} 
-            />
-
+          <DeleteButton size={18} onClick={() => onReject(review._id)} />
+          <AproveButton 
+            onClick={() => onApprove(review._id)} 
+            selected={isApproved} 
+          />
         </div>
       </div>
 
@@ -31,15 +34,15 @@ const CardReview = ({ review, isApproved, onApprove, onReject, onOpenModal }) =>
         <div className="review-details">
           <div className="detail-item">
             <span className="detail-label">Usuario:</span>
-            <span className="detail-value">{review.user}</span>
+            <span className="detail-value">{review.idClient?.name}</span>
           </div>
           <div className="detail-item">
             <span className="detail-label">Puntuación:</span>
-            <span className="detail-value">{renderStars(review.rating)}</span>
+            <span className="detail-value">{renderStars(review.qualification)}</span>
           </div>
           <div className="detail-item">
             <span className="detail-label">Publicación:</span>
-            <span className="detail-value">{review.publishDate}</span>
+            <span className="detail-value">{new Date(review.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
         <div className="comment-section">
