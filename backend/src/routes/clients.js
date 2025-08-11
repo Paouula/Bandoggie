@@ -7,7 +7,7 @@ const upload = multer({ dest: 'public/' });
 
 router.route('/')
   .get(clientsControl.get)
-  .post(upload.single('image'), clientsControl.post);
+ // .post(upload.single('image'), clientsControl.post);
 
 router.route('/:id')
   .put(upload.single('image'), clientsControl.put)

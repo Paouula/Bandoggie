@@ -29,6 +29,10 @@ const vetSchema = new Schema(
       unique: true,
       trim: true,
     },
+    image: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
