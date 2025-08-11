@@ -1,4 +1,6 @@
 import { toast } from 'react-hot-toast';
+//Importo las funciones globales para realizar el fetch
+
 import { API_FETCH_FORM, API_FETCH_JSON } from '../../config';
 
 // Función reutilizable para construir el FormData
@@ -22,10 +24,10 @@ const buildFormData = (productData) => {
     if (image) {
         formData.append('image', image);
     }
-    
+
     if (Array.isArray(designImages)) {
         designImages.forEach((file, index) => {
-            formData.append('designImages', file); 
+            formData.append('designImages', file);
         });
     }
 
@@ -39,10 +41,14 @@ const buildFormData = (productData) => {
     return formData;
 };
 
+//Constante que contendra los metodos
 
 const useFetchProducts = () => {
+    //Declaro el endpoint
+
     const endpoint = 'products';
 
+    //Obtiene todos los productos
     const handleGetProducts = async () => {
         try {
             const data = await API_FETCH_JSON(endpoint);
@@ -53,6 +59,7 @@ const useFetchProducts = () => {
         }
     };
 
+    //Crea un nuevo producto
     const handlePostProducts = async (productData) => {
         try {
             const formData = buildFormData(productData);
@@ -69,6 +76,7 @@ const useFetchProducts = () => {
         }
     };
 
+    //Actualiza un producto ya existente
     const handlePutProducts = async (id, productData) => {
         try {
             const formData = buildFormData(productData);
@@ -84,6 +92,7 @@ const useFetchProducts = () => {
         }
     };
 
+    //Elimina un producto
     const handleDeleteProducts = async (id) => {
         try {
             await API_FETCH_JSON(`${endpoint}/${id}`, {

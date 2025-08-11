@@ -8,7 +8,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import Paginacion from "../../../components/Pagination.jsx";
 import ListProducts from "../../../components/Private/Products/ListProducts.jsx";
 
-//Importacion del hook para obtener los productos, categorias y festividades
+//Importacion de los hooks para obtener los productos, categorias y festividades
 import useFetchHolidays from "../../../hooks/Holidays/useFetchHolidays.js";
 import useFetchProducts from "../../../hooks/Products/useFetchProducts.js";
 import useFetchCategory from "../../../hooks/Categories/useFetchCategory.js";
@@ -17,6 +17,7 @@ import useFetchCategory from "../../../hooks/Categories/useFetchCategory.js";
 import Modal from "../../../components/Modal/Modal.jsx";
 import { useForm } from "react-hook-form";
 
+//Importacion de componentes para el uso de formularios
 import Input from "../../../components/Input/Input.jsx";
 import Button from "../../../components/Button/Button.jsx";
 import TextArea from "../../../components/TextArea/TextArea.jsx";
@@ -25,6 +26,9 @@ import MultiImageUploader from "../../../components/MultiImageUploader/MultiImag
 import InputSelect from "../../../components/InputSelect/InputSelect.jsx";
 import { da, se } from "date-fns/locale";
 import { set } from "mongoose";
+
+//Importacion de componente de recarga
+import Loading from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const Products = () => {
   const {
@@ -35,6 +39,10 @@ const Products = () => {
     setValue,
     formState: { errors },
   } = useForm();
+
+  const formCategory = useForm();
+
+  const formHoliday = useForm();
 
   useEffect(() => {
     register("designImages", {
@@ -59,6 +67,8 @@ const Products = () => {
   const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false);
   const [showCreateHolidayModal, setShowCreateHolidayModal] = useState(false);
   const [image, setImage] = useState(null);
+
+  const [loading, setLoading] = useState(false);
 
   const [createDesignImages, setCreateDesignImages] = useState([]);
   const [editDesignImages, setEditDesignImages] = useState([]);
@@ -119,9 +129,15 @@ const Products = () => {
   };
 
   useEffect(() => {
-    loadProducts();
-    loadCategories();
-    loadHolidays();
+    const init = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([loadProducts(), loadCategories(), loadHolidays()]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
   }, []);
 
   // Funciones para abrir los modales de creación, edición y eliminación
@@ -177,6 +193,7 @@ const Products = () => {
         idHolidayProduct: data.idHolidayProduct,
       };
 
+      setLoading(true);
       await handlePostProducts(productData);
       setShowCreateModal(false);
       reset();
@@ -184,6 +201,8 @@ const Products = () => {
     } catch (error) {
       console.error(error);
       toast.error("Hubo un error al crear el producto");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -213,8 +232,8 @@ const Products = () => {
         idHolidayProduct: data.idHolidayProduct,
       };
 
+      setLoading(true);
       await handlePutProducts(selectedProduct._id, productData);
-
       setShowEditModal(false);
       setSelectedProduct(null);
       reset();
@@ -222,18 +241,23 @@ const Products = () => {
     } catch (error) {
       console.error(error);
       toast.error("Hubo un error al actualizar el producto");
+    } finally {
+      setLoading(false);
     }
   };
 
   // Función para manejar la eliminación de un producto
   const handleDelete = async (id) => {
     try {
+      setLoading(true);
       setProducts(products.filter((p) => p._id !== id));
       await handleDeleteProducts(id);
       setShowDeleteModal(false);
       setSelectedProduct(null);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -329,6 +353,12 @@ const Products = () => {
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
+
+      {loading && (
+        <div className="loading-overlay">
+          <Loading message="Cargando productos..." />
+        </div>
+      )}
 
       {showCreateModal && (
         <Modal
@@ -578,7 +608,7 @@ const Products = () => {
           onClose={() => setShowCreateCategoryModal(false)}
           actions={
             <Button
-              onClick={handleSubmit(onSubmitCategory)}
+              onClick={formCategory.handleSubmit(onSubmitCategory)}
               type="submit"
               form="form-create-category"
             >
@@ -588,11 +618,11 @@ const Products = () => {
         >
           <form
             id="form-create-category"
-            onSubmit={handleSubmit(onSubmitCategory)}
+            onSubmit={formCategory.handleSubmit(onSubmitCategory)}
             className="form-create-category"
           >
             <Input
-              {...register("nameCategory", {
+              {...formCategory.register("nameCategory", {
                 required: "El nombre de la categoría es obligatorio",
                 maxLength: {
                   value: 50,
@@ -615,7 +645,7 @@ const Products = () => {
           onClose={() => setShowCreateHolidayModal(false)}
           actions={
             <Button
-              onClick={handleSubmit(onSubmitHoliday)}
+              onClick={formHoliday.handleSubmit(onSubmitHoliday)}
               type="submit"
               form="form-create-holiday"
             >
@@ -625,11 +655,11 @@ const Products = () => {
         >
           <form
             id="form-create-holiday"
-            onSubmit={handleSubmit(onSubmitHoliday)}
+            onSubmit={formHoliday.handleSubmit(onSubmitHoliday)}
             className="form-create-holiday"
           >
             <Input
-              {...register("nameHoliday", {
+              {...formHoliday.register("nameHoliday", {
                 required: "El nombre de la festividad es obligatorio",
                 maxLength: {
                   value: 50,

@@ -6,6 +6,8 @@ import { API_FETCH_FORM, API_FETCH_JSON } from '../../config';
 
 //Hook para registro de usuarios
 const useFetchRegister = () => {
+    //Declaro el endpoint
+
     const endpoint = 'register';
 
     // Función para registrar usuarios

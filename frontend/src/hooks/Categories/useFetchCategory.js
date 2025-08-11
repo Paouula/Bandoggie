@@ -1,8 +1,10 @@
 import { toast } from 'react-hot-toast';
+//Importo la funcion para realizar el fetch
 import { API_FETCH_JSON } from '../../config';
 
 // Hook para manejar las conexiones a la API relacionadas con las categorías
 const useFetchCategory = () => {
+    //Declaro el endpoind
     const endpoint = 'categories';
 
     // Función para obtener las categorías
