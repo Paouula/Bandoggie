@@ -10,7 +10,7 @@ const ListClients = ({
   clientesMayoristas,
   clientesMinoristas,
 }) => {
-  // Filtrar clientes mayoristas - CORREGIDO: usar nameVet en lugar de nameVet
+  // Filtrar clientes mayoristas - CORREGIDO: usar nameVet que es lo que viene de la BD
   const filteredMayoristas = clientesMayoristas.filter((client) =>
     (client.nameVet || "").toLowerCase().includes(searchTerm.toLowerCase())
   );

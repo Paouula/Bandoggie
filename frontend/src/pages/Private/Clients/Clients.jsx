@@ -61,13 +61,12 @@ const ClientsPage = () => {
   // MAPEO CORREGIDO PARA CLIENTES MINORISTAS
   const mappedClients = clients.map((client) => ({
     id: client._id,
-    name: client.name, 
-    Image: client.image, 
-    email: client.email, 
-    phone: client.phone, 
-    birthday: client.birthday, 
-    
-    
+    name: client.name,
+    Image: client.image,
+    email: client.email,
+    phone: client.phone,
+    birthday: client.birthday,
+
     avatar: client.image,
     nameClients: client.name,
     emailClients: client.email,
@@ -76,16 +75,17 @@ const ClientsPage = () => {
   }));
 
   // MAPEO CORREGIDO PARA VETERINARIOS/MAYORISTAS
-  const mappedVets = vets.map((vet) => ({
-    id: vet._id,
-    name: vet.name, 
-    logo: vet.image, 
-    nameVet: vet.name, 
-    locationVet: vet.address,
-    locationsVet: vet.address, 
-    nitVet: vet.nit, 
-  }));
-
+  const mappedVets = vets.map((vet) => {
+    console.log("Mapeando veterinario:", vet);
+    return {
+      id: vet._id,
+      name: vet.nameVet, 
+      logo: vet.image || "/default-vet-logo.png", 
+      nameVet: vet.nameVet, 
+      locationVet: vet.locationVet, 
+      nitVet: vet.nitVet, 
+    };
+  });
   const handleOpenModal = (client, type) => {
     setSelectedClient(client);
     setClientType(type);

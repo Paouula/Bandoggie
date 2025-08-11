@@ -48,7 +48,7 @@ const ClientModal = ({ selectedClient, clientType, onClose }) => {
                 </div>
                 <div className="detailCard detailCardFullWidth" style={{ backgroundColor: '#FAF5FF' }}>
                   <label className="detailCardLabel">Ubicación</label>
-                  <p className="detailCardValue">{selectedClient.locationsVet}</p>
+                  <p className="detailCardValue">{selectedClient.locationVet}</p>
                 </div>
               </>
             ) : (
@@ -72,7 +72,7 @@ const ClientModal = ({ selectedClient, clientType, onClose }) => {
               </>
             )}
           </div>
-
+          
           <div className="modalActions">
             <button className="closeModalButton" onClick={onClose}>Cerrar</button>
           </div>
