@@ -8,6 +8,9 @@ import Nav from "../components/Public/NavBar/NavBar.jsx";
 import AuthenticatedNavBar from "../components/Public/NavBar/NavBar.jsx";
 import PrivateNavBar from "../components/Private/NavBar/NavBar.jsx";
 
+//Footer
+import Footer from "../components/Footer/Footer.jsx";
+
 // Componentes Públicos
 import AboutUS from "../pages/Public/AboutUs/AboutUs.jsx";
 import MainPage from "../pages/Public/MainPage/MainPage.jsx";
@@ -111,14 +114,17 @@ function Navegation() {
             ) : user ? (
               <Navigate to="/mainPage" replace />
             ) : (
-              <LoginModal />
+              <MainPage />
             )
           }
         />
 
+        {/* Rutas públicas publicas */}
+        <Route path="/mainPage" element={<MainPage />} />
+        
+
         {/* Rutas públicas protegidas */}
         <Route element={<PrivateRoute />}>
-          <Route path="/mainPage" element={<MainPage />} />
           <Route path="/bandanas" element={<Bandanas />} />
           <Route path="/holidays" element={<Holidays />} />
           <Route path="/aboutus" element={<AboutUS />} />
@@ -132,7 +138,12 @@ function Navegation() {
         {/* Ruta por defecto */}
         <Route path="*" element={<Navigate to="/mainPage" replace />} />
       </Routes>
-    </>
+
+      <>
+      
+      .<Footer /></>
+      </>
+    
   );
 }
 

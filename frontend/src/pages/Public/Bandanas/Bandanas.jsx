@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-//import ProductGrid from '../../../components/ProductGrid.jsx';
+//import ProductGrid from '../../../components/ProductGrid.jsx'; (Corregir esto después)
 
 //Import de las imagenes de las bandanas
 import Bandanas1 from '../../../img/Bandanas/bandanas.png';
