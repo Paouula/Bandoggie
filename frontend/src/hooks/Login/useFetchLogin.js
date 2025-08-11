@@ -6,6 +6,8 @@ import { API_FETCH_JSON } from '../../config.js';
 
 //Hook para el incio de sesión de los usuarios
 const useFetchLogin = () => {
+    //Declaro el endpoint
+
     const endpoint = 'login';
 
     //Funcion para iniciar sesion
@@ -24,7 +26,7 @@ const useFetchLogin = () => {
             throw error;
         }
     }
-    
+
     return { handleLogin };
 }
 

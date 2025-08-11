@@ -6,6 +6,8 @@ import { API_FETCH_JSON } from '../../config.js';
 
 //Hook para registro de veterinarias
 const useFetchRegisterVet = () => {
+  //Declaro el endpoint
+
   const endpoint = 'registerVet';
 
   // Función para registrar veterinarias
@@ -24,7 +26,7 @@ const useFetchRegisterVet = () => {
       throw error;
     }
   };
-  
+
   //Función para verificar el correo electrónico
   // Esta función se usa para verificar el correo electrónico después del registro
   const verifyEmail = async (verificationCode) => {

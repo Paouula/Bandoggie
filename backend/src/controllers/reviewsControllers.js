@@ -16,7 +16,7 @@ reviewsController.getReviews = async (req, res) => {
     try {
         const reviews = await reviewsModel.find()
             .populate('idClient', 'name email')
-            .populate('idProduct', 'name price')
+            .populate('idProduct', 'nameProduct price')
             .sort({ publicationDate: -1 });
         
         res.status(200).json(reviews);

@@ -1,4 +1,5 @@
 import { toast } from 'react-hot-toast';
+//Importo las funciones globales para realizar el fetch
 import { API_FETCH_FORM, API_FETCH_JSON } from '../../config';
 
 
@@ -34,10 +35,12 @@ const buildFormData = (reviewData) => {
 
 };
 
-
+//Constante que contendra los metodos
 const useFetchReviews = () => {
+  //Declaro el endpoint
   const endpoint = 'reviews';
 
+  // Obtener todas las reviews
   const handleGetReviews = async () => {
     try {
       const data = await API_FETCH_JSON(endpoint);
@@ -48,6 +51,7 @@ const useFetchReviews = () => {
     }
   };
 
+  // Crea una nueva review
   const handlePostReviews = async (reviewData) => {
     try {
       const formData = buildFormData(reviewData);
@@ -64,6 +68,7 @@ const useFetchReviews = () => {
     }
   };
 
+  //Actualiza un review ya existente
   const handlePutReviews = async (id, reviewData) => {
     try {
       const formData = buildFormData(reviewData);
@@ -80,6 +85,7 @@ const useFetchReviews = () => {
     }
   };
 
+  //Elimina un review
   const handleDeleteReviews = async (id) => {
     try {
       await API_FETCH_JSON(`${endpoint}/${id}`, {

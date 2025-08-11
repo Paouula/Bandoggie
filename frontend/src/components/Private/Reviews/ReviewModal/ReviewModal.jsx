@@ -36,7 +36,7 @@ const ReviewModal = ({ isOpen, onClose, review, onApprove, onReject, isApproved 
             <h2 className="modal-title">{review.idProduct?.nameProduct}</h2>
             <p className="modal-price">${review.idProduct?.price}</p>
             <div className="modal-rating">
-              {renderStars(product.rating)}
+              {renderStars(review.qualification)}
             </div>
           </div>
         </div>

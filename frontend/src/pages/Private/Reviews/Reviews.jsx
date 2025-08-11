@@ -42,8 +42,7 @@ const Reviewslisting = () => {
     const init = async () => {
       setLoading(true);
       try {
-        const data = await loadReviews();
-        console.log("Reviews cargadas:", data);
+        await loadReviews();
       } finally {
         setLoading(false);
       }
@@ -56,9 +55,6 @@ const Reviewslisting = () => {
       ?.toLowerCase()
       .includes(searchTerm.toLowerCase())
   );*/
-
-  console.log("Reviews originales:", reviews);
-  //console.log("Reviews filtradas:", filteredReviews);
 
   const toggleReviewSelection = (reviewId) => {
     const newSelected = new Set(selectedReviews);
@@ -155,10 +151,10 @@ const Reviewslisting = () => {
         <ReviewModal
           isOpen={isModalOpen}
           onClose={closeModal}
-          product={selectedReviewModal}
-          onApprove={() => handleApprove(selectedReviewModal?.id)}
-          onReject={() => handleReject(selectedReviewModal?.id)}
-          isApproved={selectedReviews.has(selectedReviewModal?.id)}
+          review={selectedReviewModal} 
+          onApprove={() => handleApprove(selectedReviewModal?._id)}
+          onReject={() => handleReject(selectedReviewModal?._id)}
+          isApproved={selectedReviews.has(selectedReviewModal?._id)}
         />
       </div>
     </>

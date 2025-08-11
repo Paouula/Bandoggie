@@ -10,6 +10,7 @@ const DatePickerInput = ({
   onBlur,
   name,
   error,
+  className = "",     
 }) => {
   const [open, setOpen] = useState(false);
   const [internalValue, setInternalValue] = useState(null);
@@ -48,7 +49,7 @@ const DatePickerInput = ({
   };
 
   return (
-    <div className="input-group">
+    <div className={`input-group ${className}`}>
       <div className="input-date-group">
         <input
           type="text"
