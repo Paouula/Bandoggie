@@ -67,7 +67,7 @@ const ClientModal = ({ selectedClient, clientType, onClose }) => {
                 </div>
                 <div className="detailCard" style={{ backgroundColor: '#FAF5FF' }}>
                   <label className="detailCardLabel">Fecha de Nacimiento</label>
-                  <p className="detailCardValue">{selectedClient.dateOfBirthday}</p>
+                  <p className="detailCardValue">{selectedClient.birthday}</p>
                 </div>
               </>
             )}

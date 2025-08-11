@@ -27,7 +27,7 @@ const clientSchema = new Schema({
         require: true,
         trim: true
     },
-    dateOfBirth: {
+    birthday: {
         type: Date,
         require: true
     },

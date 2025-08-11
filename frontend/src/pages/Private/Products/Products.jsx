@@ -25,7 +25,6 @@ import ImageUploader from "../../../components/ImageUploader/ImageUploader.jsx";
 import MultiImageUploader from "../../../components/MultiImageUploader/MultiImageUploader.jsx";
 import InputSelect from "../../../components/InputSelect/InputSelect.jsx";
 import { da, se } from "date-fns/locale";
-import { set } from "mongoose";
 
 //Importacion de componente de recarga
 import Loading from "../../../components/LoadingScreen/LoadingScreen.jsx";
