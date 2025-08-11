@@ -1,7 +1,7 @@
-import React from 'react';
-import CardEmployee from '../Employees/CardEmployee/CardEmployee.jsx';
+import React from "react";
+import CardEmployee from "../Employees/CardEmployee/CardEmployee.jsx";
 
-const ListEmployees = ({ employees = [], onEdit, onDelete }) => {
+const ListEmployees = ({ employees = [], onEdit, onDelete, currentUserEmail }) => {
   if (employees.length === 0) {
     return (
       <div className="empty-employees">
@@ -21,6 +21,7 @@ const ListEmployees = ({ employees = [], onEdit, onDelete }) => {
             employee={employee}
             onEdit={onEdit}
             onDelete={onDelete}
+            currentUserEmail={currentUserEmail}
           />
         ))}
       </div>

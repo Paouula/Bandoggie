@@ -2,8 +2,8 @@ import React from 'react';
 import './ReviewModal.css'
 import { X } from 'lucide-react';
 
-const ReviewModal = ({ isOpen, onClose, product, onApprove, onReject, isApproved }) => {
-  if (!isOpen || !product) return null;
+const ReviewModal = ({ isOpen, onClose, review, onApprove, onReject, isApproved }) => {
+  if (!isOpen || !review) return null;
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -28,15 +28,15 @@ const ReviewModal = ({ isOpen, onClose, product, onApprove, onReject, isApproved
         
         <div className="modal-header">
           <img 
-            src={product.image} 
-            alt={product.name}
+            src={review.designImages?.[0]} 
+            alt={review.idProduct?.nameProduct}
             className="modal-image"
           />
           <div className="modal-info">
-            <h2 className="modal-title">{product.name}</h2>
-            <p className="modal-price">${product.price}</p>
+            <h2 className="modal-title">{review.idProduct?.nameProduct}</h2>
+            <p className="modal-price">${review.idProduct?.price}</p>
             <div className="modal-rating">
-              {renderStars(product.rating)}
+              {renderStars(review.qualification)}
             </div>
           </div>
         </div>
@@ -44,22 +44,22 @@ const ReviewModal = ({ isOpen, onClose, product, onApprove, onReject, isApproved
         <div className="modal-details">
           <div className="detail-row">
             <span className="detail-label">Usuario:</span>
-            <span className="detail-value">{product.user}</span>
+            <span className="detail-value">{review.idClient?.name}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Producto:</span>
-            <span className="detail-value">{product.name}</span>
+            <span className="detail-value">{review.idProduct?.nameProduct}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Fecha de publicación:</span>
-            <span className="detail-value">{product.publishDate}</span>
+            <span className="detail-value">{review.createdAt}</span>
           </div>
         </div>
 
         <div className="modal-comment-section">
           <h3 className="comment-title">Comentario de la reseña:</h3>
           <div className="modal-comment">
-            {product.comment}
+            {review.comment}
           </div>
         </div>
 

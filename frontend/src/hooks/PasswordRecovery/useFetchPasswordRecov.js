@@ -4,6 +4,8 @@ import { API_FETCH_JSON } from '../../config';
 
 //Hook para manejar la recuperación de contraseña
 const useFetchPasswordRecovery = () => {
+    //Declaro el endpoint
+
     const endpoint = 'passwordRecovery';
 
     //Función para manejar la solicitud de código de recuperación

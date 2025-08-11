@@ -1,6 +1,12 @@
 // Navegation.jsx
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useAuth } from "../Context/AuthContext.jsx";
 
 // NavBars
@@ -22,11 +28,11 @@ import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import LoginModal from "../components/LoginModal/Login.jsx";
 
-// Componentes privados 
+// Componentes privados
 import Home from "../pages/Private/MainPage/MainPage.jsx";
-import Productos from "../pages/Private/Products/Products.jsx"; 
-import Reseñas from "../pages/Private/Reviews/Reviews.jsx"; 
-import Empleados from "../pages/Private/Employee/Employee.jsx"; 
+import Productos from "../pages/Private/Products/Products.jsx";
+import Reseñas from "../pages/Private/Reviews/Reviews.jsx";
+import Empleados from "../pages/Private/Employee/Employee.jsx";
 import Clientes from "../pages/Private/Clients/Clients.jsx";
 
 // Rutas protegidas
@@ -60,18 +66,19 @@ function NavBarHandler({ currentPath, user }) {
 
   const adminRoutes = ["/admin"];
 
-  const shouldHideNav = authRoutes.some(route =>
-    currentPath === route || currentPath.startsWith(route + "/")
+  const shouldHideNav = authRoutes.some(
+    (route) => currentPath === route || currentPath.startsWith(route + "/")
   );
 
-  const isAdminRoute = adminRoutes.some(route =>
+  const isAdminRoute = adminRoutes.some((route) =>
     currentPath.startsWith(route)
   );
 
   if (shouldHideNav || isAdminRoute) return null;
   if (!user) return <Nav />;
   if (user.userType === "employee") return null;
-  if (user.userType === "vet" || user.userType === "client") return <AuthenticatedNavBar />;
+  if (user.userType === "vet" || user.userType === "client")
+    return <AuthenticatedNavBar />;
   return <Nav />;
 }
 
