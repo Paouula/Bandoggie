@@ -1,4 +1,4 @@
-import guestWholesalersModel from "../models/wholesalersPurchase.js";
+import guestWholesalersModel from "../models/WholesalersPurchase.js";
 
 const guestWholesalersController = {};
 

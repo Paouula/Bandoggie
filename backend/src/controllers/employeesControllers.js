@@ -1,4 +1,4 @@
-import employeesModel from "../models/employees.js";
+import employeesModel from "../models/Employees.js";
 import bcryptjs from "bcryptjs";
 import validator from "validator";
 

@@ -1,4 +1,4 @@
-import ordersModel from "../models/orders.js";
+import ordersModel from "../models/Orders.js";
 import mongoose from "mongoose";
 
 const ordersController = {};

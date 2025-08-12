@@ -1,11 +1,11 @@
-import jsonwebtoken from "jsonwebtoken";
-import crypto from "crypto";
-import bcryptjs from "bcryptjs";
-import vetModel from "../models/Vets.js";
-import clientsModel from "../models/clients.js";
-import { config } from "../config.js";
-import cloudinary from "cloudinary";
-import sendVerificationEmail from "../utils/verificationCode.js";
+import jsonwebtoken from 'jsonwebtoken';
+import crypto from 'crypto';
+import bcryptjs from 'bcryptjs';
+import vetModel from '../models/Vets.js';
+import clientsModel from '../models/Clients.js';
+import { config } from '../config.js';
+import cloudinary from 'cloudinary';
+import sendVerificationEmail from '../utils/verificationCode.js';
 
 const registerController = {};
 

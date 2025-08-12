@@ -13,6 +13,7 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Navegation />
+        
       </Router>
     </AuthProvider>
   );

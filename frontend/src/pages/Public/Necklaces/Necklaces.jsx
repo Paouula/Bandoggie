@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/ProductGrid.jsx';
+import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
 
 //Import de las imagenes de los collares
-import Necklaces from '../../../img/Necklaces/Necklaces.png';
+import Necklaces1 from '../../../img/Necklaces/Necklaces.png';
 import Necklaces2 from '../../../img/Necklaces/Necklaces2.png';
 import Necklaces3 from '../../../img/Necklaces/Necklaces3.png';
 import Necklaces4 from '../../../img/Necklaces/Necklaces4.png';
@@ -24,7 +24,7 @@ const Necklaces = () => {
       id: 1,
       name: 'Bandanas navideñas con texto incluido',
       price: 'Desde $7.50',
-      image: Necklaces,
+      image: Necklaces1,
       category: 'necklaces'
     },
     {

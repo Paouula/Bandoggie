@@ -1,4 +1,4 @@
-import adminModel from "../models/admin.js";
+import adminModel from "../models/Admin.js";
 import bcryptjs from "bcryptjs";
 import validator from "validator";
 
