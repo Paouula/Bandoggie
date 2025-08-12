@@ -156,6 +156,7 @@ function NavBar() {
             <Link className="navbar-nav-link" to="/necklaces">Collares</Link>
             <Link className="navbar-nav-link" to="/accessories">Accesorios</Link>
             <Link className="navbar-nav-link" to="/Holidays">Festividades</Link>
+            <Link className="navbar-nav-link" to="/aboutus">Sobre nosotros</Link>
           </div>
 
           <div className="navbar-right-section">
@@ -170,7 +171,9 @@ function NavBar() {
               </button>
             </div>
             <div className="navbar-icons-container">
-              <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />
+              <a href="/profile">
+                <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />
+              </a>
               <img src={IC_carrito} alt="Carrito" className="navbar-icon" />
             </div>
           </div>

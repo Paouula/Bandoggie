@@ -93,7 +93,7 @@ const ProfileCard = ({ userInfo, isEditing, onInputChange, onEditToggle }) => {
           background: rgba(255,255,255,0.95); 
           border-radius: 20px; 
           padding: 30px; 
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+          box-shadow: 0 10px 30px hsla(0, 26%, 23%, 0.10); 
           backdrop-filter: blur(10px); 
         }
         
