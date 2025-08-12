@@ -1,5 +1,5 @@
 import React from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCardPublic.jsx';
 import Pagination from '../Pagination';
 
 const ProductGrid = ({ products }) => {

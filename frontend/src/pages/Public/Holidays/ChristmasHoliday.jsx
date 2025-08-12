@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import NavigationHoliday from '../../../components/Public/NavegationHoliday.jsx';
 import BannerHoliday from '../../../components/Public/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/Public/ProductGrid.jsx';
+import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
 import './ChristmasHoliday.css';
 
 // Imágenes Products
@@ -80,7 +80,7 @@ const ChristmasPetStore = () => {
 
   const breadcrumbs = ['Navidad', 'Halloween', 'San Valentín', 'Días Patrios', 'Año Nuevo', 'Cumpleaños'];
 
-  // 🔥 FUNCIÓN DE NAVEGACIÓN - Conecta con tu sistema de rutas
+  // Función de naveggación
   const handleNavigate = (item, index) => {
     const pageRoutes = {
       'Navidad': '/christmas-holiday',
@@ -94,28 +94,18 @@ const ChristmasPetStore = () => {
     const route = pageRoutes[item];
     console.log(`Navegando a: ${item} - Ruta: ${route}`);
     
-    // 🔥 DESCOMENTA LA OPCIÓN QUE USES:
-    
-    // Opción 1 - Navegación directa:
-    // window.location.href = route;
-    
-    // Opción 2 - React Router (useNavigate):
-    // navigate(route);
-    
-    // Opción 3 - Next.js Router:
-    // router.push(route);
   };
 
   return (
     <div className="christmas-store">
-      {/* 🔥 COMPONENTE DE NAVEGACIÓN CON PROPS CORRECTAS */}
+      {/* Componente de nav */}
       <NavigationHoliday 
         breadcrumbs={breadcrumbs}
         currentPage="Navidad"
         onNavigate={handleNavigate}
       />
       
-      {/* 🔥 TUS COMPONENTES EXISTENTES */}
+      {/* Componente*/}
       <BannerHoliday />
       
       <div className="main-content">

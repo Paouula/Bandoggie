@@ -20,13 +20,17 @@ import Footer from "../components/Footer/Footer.jsx";
 // Componentes Públicos
 import AboutUS from "../pages/Public/AboutUs/AboutUs.jsx";
 import MainPage from "../pages/Public/MainPage/MainPage.jsx";
-import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
 import Holidays from "../pages/Public/Holidays/ChristmasHoliday.jsx";
 import Register from "../components/RegisterModal/Register.jsx";
 import RequestCode from "../pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import LoginModal from "../components/LoginModal/Login.jsx";
+
+//Paginas de productos sitio público
+import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
+import Necklaces from "../pages/Public/Necklaces/Necklaces.jsx";
+import Accessories from "../pages/Public/Accessories/Accessories.jsx";
 
 // Componentes privados
 import Home from "../pages/Private/MainPage/MainPage.jsx";
@@ -38,7 +42,7 @@ import Clientes from "../pages/Private/Clients/Clients.jsx";
 // Rutas protegidas
 import { PrivateRoute, EmployeeRoute } from "./PrivateRoute.jsx";
 
-// 🧱 Layout para empleados
+// Layout para empleados
 const EmployeeLayout = () => (
   <>
     <PrivateNavBar />
@@ -128,14 +132,12 @@ function Navegation() {
 
         {/* Rutas públicas publicas */}
         <Route path="/mainPage" element={<MainPage />} />
-        
-
-        {/* Rutas públicas protegidas */}
-        <Route element={<PrivateRoute />}>
-          <Route path="/bandanas" element={<Bandanas />} />
-          <Route path="/holidays" element={<Holidays />} />
-          <Route path="/aboutus" element={<AboutUS />} />
-        </Route>
+        <Route path="/bandanas" element={<Bandanas />} />
+        <Route path="/necklaces" element={<Necklaces />} />
+        <Route path="/accessories" element={<Accessories />} />
+        <Route path="/holidays" element={<Holidays />} />
+        <Route path="/aboutus" element={<AboutUS />} />
+      
 
         {/* Área privada para empleados */}
         <Route element={<EmployeeRoute />}>

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/ProductGrid.jsx';
+import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
 
 //Import de las imagenes de los accesorios
-import Accessories from '../../../img/Accessories/Accessories.png';
+import Accessories1 from '../../../img/Accessories/Accessories.png';
 import Accessories2 from '../../../img/Accessories/Accessories2.png';
 import Accessories3 from '../../../img/Accessories/Accessories3.png';
 import Accessories4 from '../../../img/Accessories/Accessories4.png';
@@ -26,7 +26,7 @@ const Accessories = () => {
       id: 1,
       name: 'Bandana navideña con texto incluido',
       price: 'Desde $7.50',
-      image: Accessories,
+      image: Accessories1,
       category: 'accessories'
     },
     {

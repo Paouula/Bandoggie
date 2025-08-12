@@ -29,7 +29,7 @@ function NavBar() {
 
   return (
     <>
-      {/* MODALES */}
+      {/* Modales */}
       {showLogin && (
         <LoginModal
           onClose={() => setShowLogin(false)}
@@ -153,8 +153,8 @@ function NavBar() {
           <div className="navbar-nav-links">
             <Link className="navbar-nav-link" to="/main">Inicio</Link>
             <Link className="navbar-nav-link" to="/Bandanas">Bandanas</Link>
-            <Link className="navbar-nav-link" to="/Necklaces">Collares</Link>
-            <Link className="navbar-nav-link" to="/Accesories">Accesorios</Link>
+            <Link className="navbar-nav-link" to="/necklaces">Collares</Link>
+            <Link className="navbar-nav-link" to="/accessories">Accesorios</Link>
             <Link className="navbar-nav-link" to="/Holidays">Festividades</Link>
           </div>
 
