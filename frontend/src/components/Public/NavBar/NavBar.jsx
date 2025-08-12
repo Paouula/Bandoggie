@@ -6,12 +6,14 @@ import IC_carrito from "../../../img/NavBar/ShoppingCart.png";
 import LogoBandoggie from "../../../img/NavBar/LogoBandoggie.png";
 import { useAuth } from "../../../Context/AuthContext.jsx";
 
+
 // Importa tus modales
 import LoginModal from "../../LoginModal/Login.jsx";
 import ChooseAccountTypeModal from "../../RegisterModal/ChooseAccount.jsx";
 import RegisterModal from "../../RegisterModal/Register.jsx";
 import RegisterVetModal from "../../RegisterModal/RegisterVet.jsx";
 import VerificationCodeModal from "../../RegisterModal/VerificationCode.jsx";
+
 
 function NavBar() {
   const [showLogin, setShowLogin] = useState(false);
@@ -156,6 +158,8 @@ function NavBar() {
             <Link className="navbar-nav-link" to="/necklaces">Collares</Link>
             <Link className="navbar-nav-link" to="/accessories">Accesorios</Link>
             <Link className="navbar-nav-link" to="/Holidays">Festividades</Link>
+            <Link className="navbar-nav-link" to="/OrderHistory">Historial de pedidos</Link>
+
           </div>
 
           <div className="navbar-right-section">
@@ -170,8 +174,12 @@ function NavBar() {
               </button>
             </div>
             <div className="navbar-icons-container">
+              <a class="nav-item " href="/Cuenta" data-discover="true">
               <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />
+              </a>
+              <a class="nav-item " href="/Carrito" data-discover="true">
               <img src={IC_carrito} alt="Carrito" className="navbar-icon" />
+              </a>
             </div>
           </div>
         </div>
