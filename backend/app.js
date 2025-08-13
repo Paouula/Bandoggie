@@ -46,7 +46,7 @@ app.use('/api/login', loginRoutes);
 app.use('/api/logout', logoutRoutes);
 app.use('/api/passwordRecovery', passwordRecoveryRoutes);
 app.use('/api/registerVet', registerVetRoutes);
-app.use('/auth/pending-verification', checkVerificationRoutes)
+app.use('/api/auth/pending-verification', checkVerificationRoutes)
 
 // Rutas de CRUDs y Graficas
 app.use('/api/clients', clientsRoutes);

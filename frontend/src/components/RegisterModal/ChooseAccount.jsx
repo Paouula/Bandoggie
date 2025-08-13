@@ -1,8 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import "../../assets/styles/Choose.css";
 import logo from "../../img/LogoBandoggie.png";
 import { RxCross1 } from "react-icons/rx";
-
 
 const ChooseAccountTypeModal = ({
   onClose,
@@ -12,8 +11,15 @@ const ChooseAccountTypeModal = ({
 }) => {
   const modalRef = useRef();
 
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.classList.add("fade-in");
+    }
+  }, []);
+
   const handleClose = () => {
     if (modalRef.current) {
+      modalRef.current.classList.remove("fade-in");
       modalRef.current.classList.add("fade-out");
       setTimeout(() => {
         onClose?.();
@@ -24,7 +30,6 @@ const ChooseAccountTypeModal = ({
   return (
     <div className="modal-overlay-choose">
       <div className="choose-container modal-content-choose" ref={modalRef}>
-        {/* Botón de cierre con clase personalizada */}
         <button className="modal-close-choose" onClick={handleClose}>
           <RxCross1 />
         </button>

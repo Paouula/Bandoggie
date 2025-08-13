@@ -79,7 +79,7 @@ registerVetController.register = async (req, res) => {
       .toString("hex")
       .toUpperCase();
     const token = jsonwebtoken.sign(
-      { email, verificationCode },
+      { email, verificationCode, role: "vet" },
       config.JWT.secret,
       { expiresIn: "2h" }
     );
@@ -102,47 +102,6 @@ registerVetController.register = async (req, res) => {
   } catch (error) {
     console.log("Error: " + error);
     res.status(500).json({ message: "Error en el registro", error });
-  }
-};
-
-// Aquí se verifica el código que llegó por correo para confirmar el email
-registerVetController.verifyEmail = async (req, res) => {
-  const { verificationCode } = req.body;
-  const token = req.cookies.VerificationToken;
-
-  // Si no hay token, no podemos seguir, anda a pedirlo primero
-  if (!token) {
-    return res.status(401).json({ message: "Token no encontrado" });
-  }
-
-
-  try {
-    // Verificar que el token sea válido y no haya expirado
-    const decode = jsonwebtoken.verify(token, config.JWT.secret);
-
-    // Si el código no cuadra, ni sueñes con pasar
-    if (decode.verificationCode !== verificationCode) {
-      return res
-        .status(400)
-        .json({ message: "Código de verificación incorrecto" });
-    }
-
-    // Actualizamos el estado del veterinario en la base de datos
-    const updatedVet = await vetModel.findOneAndUpdate(
-      { email: decode.email },
-      { emailVerified: true },
-      { new: true }
-    );
-
-    if (!updatedVet) {
-      return res.status(404).json({ message: "Veterinario no encontrado" });
-    }
-
-    // Ya validado el correo, limpiamos la cookie y avisamos al usuario
-    res.clearCookie("VerificationToken");
-    res.status(200).json({ message: "Correo verificado correctamente" });
-  } catch (error) {
-    res.status(500).json({ message: "Token inválido o expirado", error });
   }
 };
 

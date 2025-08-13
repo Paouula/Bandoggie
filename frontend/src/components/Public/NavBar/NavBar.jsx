@@ -20,8 +20,17 @@ function NavBar() {
   const [showRegisterVet, setShowRegisterVet] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const { user, loadingUser, pendingVerification, setPendingVerification } =
-    useAuth();
+
+  const {
+    user,
+    loadingUser,
+    pendingVerification,
+    setPendingVerification,
+    loadingVerification,
+  } = useAuth();
+
+  const shouldShowVerificationModal =
+    !loadingVerification && pendingVerification;
 
   const showNavSession = () => {
     if (loadingUser) return false;
@@ -66,7 +75,7 @@ function NavBar() {
           }}
           onRegisterSuccess={() => {
             setShowRegister(false);
-            setShowVerification(true);
+            setPendingVerification(true);
           }}
           openChoose={() => {
             setShowRegister(false);
@@ -84,7 +93,7 @@ function NavBar() {
           }}
           onRegisterSuccess={() => {
             setShowRegisterVet(false);
-            setShowVerification(true);
+            setPendingVerification(true);
           }}
           openChoose={() => {
             setShowRegisterVet(false);
@@ -93,11 +102,11 @@ function NavBar() {
         />
       )}
 
-      {pendingVerification && (
+      {shouldShowVerificationModal && (
         <VerificationCodeModal
-          onClose={() => setShowVerification(false)}
+          onClose={() => setPendingVerification(false)}
           openLogin={() => {
-            setShowVerification(false);
+            setPendingVerification(false);
             setShowLogin(true);
           }}
         />

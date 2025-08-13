@@ -80,7 +80,7 @@ registerController.register = async (req, res) => {
 
     // Firmamos token con el código y correo, que dure dos horas
     const token = jsonwebtoken.sign(
-      { email, verificationCode },
+      { email, verificationCode, role: "client" },
       config.JWT.secret,
       { expiresIn: "2h" }
     );
@@ -109,43 +109,6 @@ registerController.register = async (req, res) => {
   }
 };
 
-registerController.verifyEmail = async (req, res) => {
-  const { verificationCode } = req.body;
-  const token = req.cookies.VerificationToken;
 
-  // Si no hay token, no podemos verificar, pide que inicie el proceso bien
-  if (!token) {
-    return res.status(401).json({ message: "Token no encontrado." });
-  }
-
-  try {
-    // Verificamos que el token sea válido y no haya expirado
-    const decoded = jsonwebtoken.verify(token, config.JWT.secret);
-
-    // Si el código no bate, no se pasa
-    if (decoded.verificationCode !== verificationCode) {
-      return res
-        .status(400)
-        .json({ message: "Código de verificación incorrecto." });
-    }
-
-    // Actualizamos el estado del cliente en la base de datos
-    const updatedClient = await clientsModel.findOneAndUpdate(
-      { email: decoded.email },
-      { emailVerified: true },
-      { new: true }
-    );
-
-    if (!updatedClient) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
-    }
-
-    // Borramos la cookie y confirmamos la verificación
-    res.clearCookie("VerificationToken");
-    res.status(200).json({ message: "Correo verificado correctamente." });
-  } catch (error) {
-    res.status(500).json({ message: "Token inválido o expirado.", error });
-  }
-};
 
 export default registerController;

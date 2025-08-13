@@ -5,10 +5,11 @@ import { API_FETCH_JSON } from "../config.js";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const endpoint = ["login", "logout", "/auth/pending-verification"];
+  const endpoint = ["login", "logout", "auth/pending-verification"];
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
-  const [pendingVerification, setPendingVerification] = useState(true);
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [loadingVerification, setLoadingVerification] = useState(true);
 
   const { handleLogin } = useFetchLogin();
 
@@ -109,11 +110,28 @@ export const AuthProvider = ({ children }) => {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log("Respuesta completa de API_FETCH_JSON:", res);
+        if (typeof res === "object") {
+          return res;
+        }
+        if (res.json) {
+          return res.json();
+        }
+        return res;
+      })
       .then((data) => {
+        console.log("Pending verification data:", data);
         setPendingVerification(data.pending);
       })
-      .catch(() => {});
+      .catch((error) => {
+        console.error("Error al obtener estado de verificación:", error);
+        setPendingVerification(false);
+      })
+      .finally(() => {
+        //Marcar que terminó la carga de verificación
+        setLoadingVerification(false);
+      });
   }, []);
 
   const isEmployee = () => user?.userType === "employee";
@@ -133,6 +151,8 @@ export const AuthProvider = ({ children }) => {
         isPublicUser,
         pendingVerification,
         setPendingVerification,
+        loadingVerification,
+        setLoadingVerification
       }}
     >
       {children}
