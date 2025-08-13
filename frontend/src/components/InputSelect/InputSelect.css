@@ -1,0 +1,58 @@
+/* Estilo base para el select */
+.custom-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #b4ceec;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Raleway', sans-serif;
+  background-color: #fafdff;
+  color: #365A7D;
+  transition: border 0.2s, box-shadow 0.2s, background-color 0.2s;
+  appearance: none; /* Oculta el estilo por defecto del navegador */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23365A7D' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+/* Estilo al enfocar el select */
+.custom-select:focus {
+  outline: none;
+  border: 2px solid #ff9900;
+  box-shadow: 0 0 0 2px #ffe0b2;
+  background-color: #fffdfa;
+}
+
+/* Estilo para las opciones del select */
+.custom-select option {
+  background-color: #fafdff;
+  color: #365A7D;
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  padding: 10px;
+  border-bottom: 1px solid #b4ceec;
+}
+
+/* Estilo para opción seleccionada (algunos navegadores lo respetan) */
+.custom-select option:checked {
+  background-color: #e6f0ff;
+  font-weight: bold;
+}
+
+.custom-select,
+.custom-select option {
+  background-color: #fafdff !important;
+  color: #365A7D !important;
+}
+
+
+.custom-select option:hover {
+  background-color: #e6f0ff; /* Un azul claro acorde al borde */
+  color: #365A7D;
+  cursor: pointer;
+}
+

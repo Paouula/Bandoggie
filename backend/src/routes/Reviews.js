@@ -1,31 +1,30 @@
-import express from 'express';
-import reviewsController from '../controllers/reviewsController.js';
+import { Router } from "express";
+import reviewsController from '../controllers/reviewsControllers.js';
+import multer from 'multer';
 
-const router = express.Router();
+// Configuración de multer para manejar la subida de imágenes
+const upload = multer({ 
+  dest: 'uploads/reviews/',
+  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB
+});
 
-// Rutas principales
-router.route('/')
-.get(reviewsController.getReviews)
-.post(reviewsController.insertReview);
 
-// Ruta para obtener reseña por ID
-router.route('/:id')
-.get(reviewsController.getReviewById)
-.put(reviewsController.updateReview)
-.delete(reviewsController.deleteReview);
+const router = Router();
+router.get('/product/:productId', reviewsController.getReviewsByProduct);// Obtiene todas las reseñas de un producto por su ID
+router.get('/client/:clientId', reviewsController.getReviewsByClient);// Obtiene todas las reseñas hechas por un cliente específico
+router.get('/qualification/:qualification', reviewsController.getReviewsByQualification);// Obtiene todas las reseñas con una calificación específica
+router.get('/stats/product/:productId', reviewsController.getProductReviewStats);// Obtiene estadísticas de reseñas de un producto (por ejemplo, promedio de calificaciones)
 
-// Rutas para filtrar reseñas
-router.route('/product/:productId')
-.get(reviewsController.getReviewsByProduct);
 
-router.route('/client/:clientId')
-.get(reviewsController.getReviewsByClient);
-
-router.route('/qualification/:qualification')
-.get(reviewsController.getReviewsByQualification);
-
-// Ruta para estadísticas de reseñas por producto
-router.route('/stats/product/:productId')
-.get(reviewsController.getProductReviewStats);
+// Obtiene todas las reseñas sin filtros
+router.get('/', reviewsController.getReviews);
+// Inserta una nueva reseña:
+router.post('/', upload.array('designImages', 5), reviewsController.insertReview);
+// Obtiene una sola reseña por su ID
+router.get('/:id', reviewsController.getReviewById);
+// Actualiza una reseña por su ID
+router.put('/:id', reviewsController.updateReview);
+// Elimina una reseña por su ID
+router.delete('/:id', reviewsController.deleteReview);
 
 export default router;

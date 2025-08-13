@@ -1,0 +1,66 @@
+/* Estilos específicos para el banner de San Valentín */
+.valentine-store .hero {
+    background: linear-gradient(135deg, #ffb6c1 0%, #ff69b4 50%, #ff1493 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Título del banner San Valentín */
+  .valentine-store .hero-title {
+    color: #ff5eaf;
+    text-shadow: 
+      0 0 10px rgb(255, 84, 201),
+      0 0 20px rgb(255, 79, 170),
+      2px 2px 6px rgba(0, 0, 0, 0.6);
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: valentineGlow 3s ease-in-out infinite alternate;
+  }
+  
+  @keyframes valentineGlow {
+    0% {
+      text-shadow: 0 0 10px rgba(255, 182, 193, 0.6),
+                   0 0 20px rgba(255, 116, 185, 0.71),
+                   2px 2px 6px rgba(0, 0, 0, 0.6);
+    }
+    100% {
+      text-shadow: 0 0 20px rgba(255, 105, 180, 0.9),
+                   0 0 30px rgba(255, 104, 185, 0.6),
+                   2px 2px 6px rgba(0, 0, 0, 0.6);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .valentine-store .hero-title {
+      font-size: 2.5rem;
+    }
+  
+    .valentine-store .hero-description {
+      font-size: 1rem;
+    }
+  
+    .valentine-store .hero-button {
+      padding: 12px 25px;
+      font-size: 1rem;
+    }
+  
+    .valentine-store .main-content {
+      padding: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .valentine-store .hero-title {
+      font-size: 2rem;
+    }
+  
+    .valentine-store .hero-nav-button {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  

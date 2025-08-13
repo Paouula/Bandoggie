@@ -3,7 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Tooltip } from "@mui/material";
 
 // Recibe el mensaje como prop: title
-function DeleteButton({ title = "Eliminar empleado" }) {
+function DeleteButton({ title = "Eliminar empleado", onClick }) {
   const [hovered, setHovered] = useState(false);
 
   const buttonStyle = {
@@ -28,6 +28,7 @@ function DeleteButton({ title = "Eliminar empleado" }) {
         style={buttonStyle}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onClick={onClick}
       >
         <DeleteIcon fontSize="small" />
       </button>

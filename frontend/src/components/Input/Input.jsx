@@ -1,7 +1,7 @@
 import React from 'react';
-import "./Input.css"; // Asegúrate de que esta ruta sea correcta
+import "./Input.css"; 
 
-const InputComponent = ({ type, id, placeholder, register = {}, className = "", ...props }) => {
+const InputComponent = ({ type, id, placeholder, register = {}, className = "", ...props }) => { //En esta parte el componente recibe varios props para su uso
     return (
         <div className="input-group">
             <input
@@ -13,6 +13,8 @@ const InputComponent = ({ type, id, placeholder, register = {}, className = "", 
                 {...props}
             />
         </div>
+        //Retorna el input con sus respectivos atributos y clases, teniendo en cuenta que se pueden pasar más props si es necesario
+        //Ademas de tener un diseño personalizado 
     );
 };
 

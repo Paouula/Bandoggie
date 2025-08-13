@@ -1,0 +1,73 @@
+/* Estilos específicos para el banner patriótico */
+.patriotic-store .hero {
+    background: linear-gradient(135deg, #002b7f 0%, #0047ab 50%, #0051a7 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .patriotic-store .hero-title {
+    color: #ffffff;
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.5),
+      0 0 20px rgba(255, 255, 255, 0.3),
+      2px 2px 4px rgba(0, 0, 0, 0.7);
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: patrioticGlow 3s ease-in-out infinite alternate;
+  }
+  
+  @keyframes patrioticGlow {
+    0% {
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+                   0 0 20px rgba(255, 255, 255, 0.3),
+                   2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+    100% {
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                   0 0 30px rgba(255, 255, 255, 0.6),
+                   2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+  }
+  
+  .patriotic-store .hero-description {
+    color: #f0f8ff;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+  }
+
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .patriotic-store .hero-title {
+      font-size: 2.5rem;
+    }
+  
+    .patriotic-store .hero-description {
+      font-size: 1rem;
+    }
+  
+    .patriotic-store .hero-button {
+      padding: 12px 25px;
+      font-size: 1rem;
+    }
+  
+    .patriotic-store .main-content {
+      padding: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .patriotic-store .hero-title {
+      font-size: 2rem;
+    }
+  }
+  

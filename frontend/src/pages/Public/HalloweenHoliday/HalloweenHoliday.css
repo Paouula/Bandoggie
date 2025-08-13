@@ -1,0 +1,59 @@
+  /* Estilos específicos para el banner de Halloween */
+  .halloween-store .hero {
+    background: linear-gradient(135deg, #1a0a1a 0%, #2d0a2d 50%, #4a0e4a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Título del banner Halloween */
+  .halloween-store .hero-title {
+    color: #ff6b00;
+    text-shadow: 
+      0 0 10px rgba(255, 107, 0, 0.5),
+      0 0 20px rgba(255, 107, 0, 0.3),
+      2px 2px 4px rgba(0, 0, 0, 0.7);
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: halloweenGlow 3s ease-in-out infinite alternate;
+  }
+  
+  @keyframes halloweenGlow {
+    0% { text-shadow: 0 0 10px rgba(255, 107, 0, 0.5), 0 0 20px rgba(255, 107, 0, 0.3), 2px 2px 4px rgba(0, 0, 0, 0.7); }
+    100% { text-shadow: 0 0 20px rgba(255, 107, 0, 0.8), 0 0 30px rgba(255, 107, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.7); }
+  }
+  
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .halloween-store .hero-title {
+      font-size: 2.5rem;
+    }
+    
+    .halloween-store .hero-description {
+      font-size: 1rem;
+    }
+    
+    .halloween-store .hero-button {
+      padding: 12px 25px;
+      font-size: 1rem;
+    }
+    
+    .halloween-store .main-content {
+      padding: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .halloween-store .hero-title {
+      font-size: 2rem;
+    }
+    
+    .halloween-store .hero-nav-button {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  

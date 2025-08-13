@@ -1,0 +1,24 @@
+.check-btn {
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(97, 150, 164);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.check-btn.selected {
+  background-color: #2e6b7a;
+  box-shadow: 0 0 0 3px rgba(78, 144, 164, 0.3);
+}
+
+.check-btn:hover {
+  background-color: #357a8a;
+  box-shadow: 0 5px 15px rgba(74, 144, 164, 0.3);
+  transform: scale(1.1);
+}

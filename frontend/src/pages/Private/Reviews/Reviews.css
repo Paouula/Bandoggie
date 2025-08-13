@@ -1,7 +1,30 @@
+/* Reset para eliminar márgenes del body y html */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 .reviews-listing {
   min-height: 100vh;
   font-family: 'Arial', sans-serif;
   padding: 0;
+  margin: 0;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }
 
 .banner-private-wrapper {
@@ -15,9 +38,11 @@
 .reviews-content {
   background-color: #FEE3EE;
   width: 100%;
+  max-width: 100%;
   padding: 40px 20px;
   margin: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .header {
@@ -104,7 +129,6 @@
   font-size: 12px;
   font-weight: bold;
 }
-
 
 @media (max-width: 1200px) {
   .reviews-grid {
