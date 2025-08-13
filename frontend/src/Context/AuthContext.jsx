@@ -5,9 +5,10 @@ import { API_FETCH_JSON } from "../config.js";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const endpoint = ["login", "logout"];
+  const endpoint = ["login", "logout", "/auth/pending-verification"];
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [pendingVerification, setPendingVerification] = useState(true);
 
   const { handleLogin } = useFetchLogin();
 
@@ -76,7 +77,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
       })
   }, []);*/
-  
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -98,11 +99,21 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-       // console.warn("Fallo en login/auth/me:", err.message);
+        // console.warn("Fallo en login/auth/me:", err.message);
       })
       .finally(() => {
         setLoadingUser(false);
       });
+
+    API_FETCH_JSON(endpoint[2], {
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setPendingVerification(data.pending);
+      })
+      .catch(() => {});
   }, []);
 
   const isEmployee = () => user?.userType === "employee";
@@ -120,6 +131,8 @@ export const AuthProvider = ({ children }) => {
         isVet,
         isClient,
         isPublicUser,
+        pendingVerification,
+        setPendingVerification,
       }}
     >
       {children}

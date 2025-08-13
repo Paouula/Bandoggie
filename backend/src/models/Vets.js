@@ -33,6 +33,10 @@ const vetSchema = new Schema(
       type: String,
       trim: true,
     },
+    emailVerified: { 
+        type: Boolean, 
+        default: false 
+    }
   },
   {
     timestamps: true,

@@ -11,21 +11,14 @@ const useFetchRegisterVet = () => {
   const endpoint = "registerVet";
 
   // Función para registrar veterinarias
-  const handleRegister = async (
-    nameVet,
-    email,
-    password,
-    locationVet,
-    nitVet,
-    image
-  ) => {
+  const handleRegister = async (nameVet, email, password, locationVet, nitVet, image) => {
     try {
       const formData = new FormData();
-      formData.append("name", nameVet);
+      formData.append("nameVet", nameVet);
       formData.append("email", email);
-      formData.append("phone", password);
-      formData.append("birthday", locationVet);
-      formData.append("password", nitVet);
+      formData.append("password", password);
+      formData.append("locationVet", locationVet);
+      formData.append("nitVet", nitVet);
       if (image) {
         formData.append("image", image);
       }

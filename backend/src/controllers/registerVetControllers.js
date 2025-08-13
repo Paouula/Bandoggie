@@ -1,6 +1,7 @@
 import vetModel from '../models/Vets.js';
 import clientsModel from '../models/Clients.js';
 import { config } from '../config.js';
+import cloudinary from 'cloudinary';
 import jsonwebtoken from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
@@ -93,7 +94,7 @@ registerVetController.register = async (req, res) => {
     // Mandamos correo con el código para que verifique
     await sendVerificationEmail(email, verificationCode);
 
-      // Avisamos que todo salió bien y que revise su correo
+    // Avisamos que todo salió bien y que revise su correo
     res.status(201).json({
       message:
         "Veterinario registrado, verifica tu correo para activar la cuenta.",
@@ -114,6 +115,7 @@ registerVetController.verifyEmail = async (req, res) => {
     return res.status(401).json({ message: "Token no encontrado" });
   }
 
+
   try {
     // Verificar que el token sea válido y no haya expirado
     const decode = jsonwebtoken.verify(token, config.JWT.secret);
@@ -125,6 +127,17 @@ registerVetController.verifyEmail = async (req, res) => {
         .json({ message: "Código de verificación incorrecto" });
     }
 
+    // Actualizamos el estado del veterinario en la base de datos
+    const updatedVet = await vetModel.findOneAndUpdate(
+      { email: decode.email },
+      { emailVerified: true },
+      { new: true }
+    );
+
+    if (!updatedVet) {
+      return res.status(404).json({ message: "Veterinario no encontrado" });
+    }
+
     // Ya validado el correo, limpiamos la cookie y avisamos al usuario
     res.clearCookie("VerificationToken");
     res.status(200).json({ message: "Correo verificado correctamente" });
@@ -132,5 +145,6 @@ registerVetController.verifyEmail = async (req, res) => {
     res.status(500).json({ message: "Token inválido o expirado", error });
   }
 };
+
 
 export default registerVetController;

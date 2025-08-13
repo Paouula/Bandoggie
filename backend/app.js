@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import registerRoutes from './src/routes/registerClients.js';
 import registerVetRoutes from './src/routes/registerVet.js';
 import loginRoutes from './src/routes/login.js';
+import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
 import cartRoutes from './src/routes/Cart.js';
@@ -45,6 +46,7 @@ app.use('/api/login', loginRoutes);
 app.use('/api/logout', logoutRoutes);
 app.use('/api/passwordRecovery', passwordRecoveryRoutes);
 app.use('/api/registerVet', registerVetRoutes);
+app.use('/auth/pending-verification', checkVerificationRoutes)
 
 // Rutas de CRUDs y Graficas
 app.use('/api/clients', clientsRoutes);

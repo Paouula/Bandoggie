@@ -9,6 +9,7 @@ import Button from "../Button/Button.jsx";
 import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Register.css";
 import PasswordInput from "../InputPassword/InputPassword.jsx";
+import ImageLoader from "../ImageLoader/ImageLoader.jsx"; // ✅ Importación añadida
 
 const RegisterVetModal = ({
   onClose,
@@ -25,6 +26,7 @@ const RegisterVetModal = ({
   } = useForm();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [profileImage, setProfileImage] = useState(null); // ✅ Estado para imagen
   const { handleRegister } = useFetchRegisterVet();
 
   const handleClose = () => {
@@ -42,20 +44,28 @@ const RegisterVetModal = ({
 
   const onSubmit = async (data) => {
     if (isSubmitting) return;
+
+    if (!profileImage) {
+      toast.error("Por favor, sube una imagen de perfil.");
+      return;
+    }
+
     setIsSubmitting(true);
     toast.success("Enviando información...");
+
     try {
-      const registerVetData = {
-        nameVet: data.nameVet,
-        email: data.email,
-        password: data.password,
-        locationVet: data.locationVet,
-        nitVet: data.nitVet
-      }
-      const response = await handleRegister(registerVetData);
+      const response = await handleRegister(
+        data.nameVet,
+        data.email,
+        data.password,
+        data.locationVet,
+        data.nitVet,
+        profileImage
+      );
 
       if (response) {
         reset();
+        setProfileImage(null); // ✅ Limpieza de imagen
         onRegisterSuccess?.();
       }
     } catch (error) {
@@ -104,8 +114,12 @@ const RegisterVetModal = ({
           ¿Ya tienes una cuenta? Inicia sesión
         </a>
 
-        
         <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
+          {/* ✅ Campo de imagen */}
+          <div className="register-profile-image-container">
+            <ImageLoader id="image" onImageChange={setProfileImage} />
+          </div>
+
           <div className="register-input-group">
             <label htmlFor="nameVet">Nombre de la veterinaria</label>
             <InputComponent
@@ -207,7 +221,9 @@ const RegisterVetModal = ({
           </div>
 
           <div className="register-forgot">
-            <a className="register-small-links" href="/request-code">¿Olvidaste tu contraseña?</a>
+            <a className="register-small-links" href="/request-code">
+              ¿Olvidaste tu contraseña?
+            </a>
           </div>
 
           <Button

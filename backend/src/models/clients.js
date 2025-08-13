@@ -8,10 +8,10 @@
         image
 */
 
-import {Schema, model} from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 const clientSchema = new Schema({
-    name:{
+    name: {
         type: String,
         require: true,
         trim: true
@@ -39,6 +39,10 @@ const clientSchema = new Schema({
     image: {
         type: String,
         trim: true
+    },
+    emailVerified: { 
+        type: Boolean, 
+        default: false 
     }
 }, {
     timestamps: true,

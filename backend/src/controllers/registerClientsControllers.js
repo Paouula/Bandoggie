@@ -6,6 +6,7 @@ import clientsModel from '../models/Clients.js';
 import { config } from '../config.js';
 import cloudinary from 'cloudinary';
 import sendVerificationEmail from '../utils/verificationCode.js';
+import { register } from 'module';
 
 const registerController = {};
 
@@ -128,11 +129,19 @@ registerController.verifyEmail = async (req, res) => {
         .json({ message: "Código de verificación incorrecto." });
     }
 
-    // Si llegó hasta acá, borramos la cookie y confirmamos la verificación
+    // Actualizamos el estado del cliente en la base de datos
+    const updatedClient = await clientsModel.findOneAndUpdate(
+      { email: decoded.email },
+      { emailVerified: true },
+      { new: true }
+    );
+
+    if (!updatedClient) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Borramos la cookie y confirmamos la verificación
     res.clearCookie("VerificationToken");
-
-    // Aquí podrías actualizar el usuario en BD para marcarlo como verificado, si quieres
-
     res.status(200).json({ message: "Correo verificado correctamente." });
   } catch (error) {
     res.status(500).json({ message: "Token inválido o expirado.", error });
