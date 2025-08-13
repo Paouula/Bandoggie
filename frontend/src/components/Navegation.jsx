@@ -35,7 +35,7 @@ import LoginModal from "../components/LoginModal/Login.jsx";
 
 //Paginas de productos sitio público
 import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
-import Necklaces from "../pages/Public/Necklaces/Necklaces.jsx";
+import Necklaces from "../pages/Public/Collars/Collars.jsx";
 import Accessories from "../pages/Public/Accessories/Accessories.jsx";
 
 // Componentes privados
@@ -161,7 +161,6 @@ function Navegation() {
       </Routes>
 
       <>
-      
       .<Footer /></>
       </>
     
