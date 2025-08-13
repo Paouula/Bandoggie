@@ -101,6 +101,7 @@ const Reviewslisting = () => {
           <Loading message="Cargando reviews..." />
         </div>
       )}
+      
       <div className="reviews-listing">
         <div className="banner-private-wrapper">
           <BannerPrivate

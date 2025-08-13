@@ -7,13 +7,15 @@ import cookieParser from "cookie-parser";
 import registerRoutes from './src/routes/registerClients.js';
 import registerVetRoutes from './src/routes/registerVet.js';
 import loginRoutes from './src/routes/login.js';
+import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
-import passwordRecovery from './src/routes/passwordRecovery.js';
+import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
 import cartRoutes from './src/routes/Cart.js';
 
 // Rutas de CRUDs
 import holidayRoutes from './src/routes/holiday.js';
 import clientsRoutes from './src/routes/clients.js';
+import vetsRoutes from './src/routes/vets.js'
 import adminRoutes from './src/routes/admin.js';
 import productsRoutes from './src/routes/products.js';
 import reviewsRoutes from './src/routes/reviews.js';
@@ -42,11 +44,13 @@ app.use(cors(corsOptions));
 app.use('/api/register', registerRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/logout', logoutRoutes);
-app.use('/api/passwordRecovery', passwordRecovery);
+app.use('/api/passwordRecovery', passwordRecoveryRoutes);
 app.use('/api/registerVet', registerVetRoutes);
+app.use('/api/auth/pending-verification', checkVerificationRoutes)
 
 // Rutas de CRUDs y Graficas
 app.use('/api/clients', clientsRoutes);
+app.use('/api/vets', vetsRoutes)
 app.use('/api/employees', employeesRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/holiday', holidayRoutes);

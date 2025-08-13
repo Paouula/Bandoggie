@@ -5,6 +5,7 @@ import useFetchRegister from "../../hooks/Register/useFetchRegister.js";
 import Button from "../Button/Button.jsx";
 import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Register.css";
+import { useAuth } from "../../Context/AuthContext.jsx";
 import VerificationCodeInput from "../VerificationCodeInput/VerificationCodeInput.jsx";
 
 const VerificationCodeModal = ({ onClose, openLogin }) => {
@@ -13,12 +14,15 @@ const VerificationCodeModal = ({ onClose, openLogin }) => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: { token: "" },
+  });
 
   const modalRef = useRef();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { verifyEmail } = useFetchRegister();
+  const { setPendingVerification } = useAuth()
 
   // Función para cerrar modal Y abrir login
   const handleClose = () => {
@@ -31,26 +35,33 @@ const VerificationCodeModal = ({ onClose, openLogin }) => {
     }
   };
 
-  const onSubmit = async (data) => {
+   const onSubmit = async (data) => {
+    if (!data.token || data.token.length < 6) { // 🔹 Validación mínima
+      toast.error("Debes ingresar un código válido");
+      return;
+    }
+
     if (isSubmitting) return;
     setIsSubmitting(true);
-    toast.success("Código enviado. Por favor, espera...");
+
     try {
       const response = await verifyEmail(data.token);
       if (response) {
+        toast.success("Código verificado con éxito.");
         reset();
-        // Cerramos el modal y abrimos login después de éxito
+
+        // 🔹 Actualiza estado global para que no vuelva a abrir
+        setPendingVerification(false);
+
+        // 🔹 Animación de cierre
         if (modalRef.current) {
           modalRef.current.classList.add("fade-out");
           setTimeout(() => {
-            onClose?.();
             openLogin?.();
           }, 250);
         } else {
-          onClose?.();
           openLogin?.();
         }
-        toast.success("Código verificado con éxito.");
       }
     } catch (error) {
       toast.error(error.message || "Error al verificar el código.");

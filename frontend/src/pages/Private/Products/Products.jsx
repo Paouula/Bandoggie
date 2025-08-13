@@ -24,15 +24,7 @@ import TextArea from "../../../components/TextArea/TextArea.jsx";
 import ImageUploader from "../../../components/ImageUploader/ImageUploader.jsx";
 import MultiImageUploader from "../../../components/MultiImageUploader/MultiImageUploader.jsx";
 import InputSelect from "../../../components/InputSelect/InputSelect.jsx";
-//import { da, se } from "date-fns/locale";
-//Anterior: import { set } from "mongoose";
-
-//Prubea
-fetch("http://localhost:5000/api/productos", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ nombre: "Producto A" })
-});
+import { da, se } from "date-fns/locale";
 
 //Importacion de componente de recarga
 import Loading from "../../../components/LoadingScreen/LoadingScreen.jsx";

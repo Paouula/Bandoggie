@@ -20,10 +20,20 @@ function NavBar() {
   const [showRegisterVet, setShowRegisterVet] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const { user, loadingUser } = useAuth();
+
+  const {
+    user,
+    loadingUser,
+    pendingVerification,
+    setPendingVerification,
+    loadingVerification,
+  } = useAuth();
+
+  const shouldShowVerificationModal =
+    !loadingVerification && pendingVerification;
 
   const showNavSession = () => {
-    if (loadingUser) return false; 
+    if (loadingUser) return false;
     return !user;
   };
 
@@ -65,7 +75,7 @@ function NavBar() {
           }}
           onRegisterSuccess={() => {
             setShowRegister(false);
-            setShowVerification(true);
+            setPendingVerification(true);
           }}
           openChoose={() => {
             setShowRegister(false);
@@ -83,7 +93,7 @@ function NavBar() {
           }}
           onRegisterSuccess={() => {
             setShowRegisterVet(false);
-            setShowVerification(true);
+            setPendingVerification(true);
           }}
           openChoose={() => {
             setShowRegisterVet(false);
@@ -92,11 +102,11 @@ function NavBar() {
         />
       )}
 
-      {showVerification && (
+      {shouldShowVerificationModal && (
         <VerificationCodeModal
-          onClose={() => setShowVerification(false)}
+          onClose={() => setPendingVerification(false)}
           openLogin={() => {
-            setShowVerification(false);
+            setPendingVerification(false);
             setShowLogin(true);
           }}
         />
@@ -157,6 +167,7 @@ function NavBar() {
             <Link className="navbar-nav-link" to="/accessories">Accesorios</Link>
             <Link className="navbar-nav-link" to="/Holidays">Festividades</Link>
             <Link className="navbar-nav-link" to="/aboutus">Sobre nosotros</Link>
+            <Link className="navbar-nav-link" to="/OrderHistory">Historial de pedidos</Link>
           </div>
 
           <div className="navbar-right-section">
@@ -171,10 +182,13 @@ function NavBar() {
               </button>
             </div>
             <div className="navbar-icons-container">
+
               <a href="/profile">
                 <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />
               </a>
-              <img src={IC_carrito} alt="Carrito" className="navbar-icon" />
+              <a class="nav-item " href="/Carrito" data-discover="true">
+                <img src={IC_carrito} alt="Carrito" className="navbar-icon" />
+              </a>
             </div>
           </div>
         </div>

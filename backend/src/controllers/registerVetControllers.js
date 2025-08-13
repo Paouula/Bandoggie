@@ -1,6 +1,7 @@
 import vetModel from '../models/Vets.js';
 import clientsModel from '../models/Clients.js';
 import { config } from '../config.js';
+import cloudinary from 'cloudinary';
 import jsonwebtoken from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
@@ -8,100 +9,101 @@ import sendVerificationEmail from '../utils/verificationCode.js';
 
 const registerVetController = {};
 
+// Configurar Cloudinary con las credenciales de la config
+cloudinary.config({
+  cloud_name: config.cloudinary.cloudinary_name,
+  api_key: config.cloudinary.cloudinary_api_key,
+  api_secret: config.cloudinary.cloudinary_api_secret,
+});
+
 // Aquí se registra el veterinario, pero ojo, antes valida que los datos no estén vacíos ni mal formados
 registerVetController.register = async (req, res) => {
   const { nameVet, email, password, locationVet, nitVet } = req.body;
+  let imageUrl = "";
 
-  // No andes dejando campos vacíos, que eso no es bueno
+  // No dejes que falte dato esencial, que eso es fallo grande
+
   if (!nameVet || !email || !password || !locationVet || !nitVet) {
-    return res.status(400).json({ message: "Faltan datos obligatorios para el registro" });
+    return res
+      .status(400)
+      .json({ message: "Faltan datos obligatorios para el registro" });
   }
 
-  // Validar que el correo tenga forma decente
+  // Revisa que el correo tenga forma decente, no vale cualquier cosa
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ message: "Correo inválido" });
   }
 
-  // La contraseña debe tener al menos 8 caracteres, no seas tacaño con la seguridad
+  // La contraseña ha de tener por lo menos 8 caracteres para ser decente
   if (password.length < 8) {
-    return res.status(400).json({ message: "La contraseña debe tener al menos 8 caracteres" });
+    return res
+      .status(400)
+      .json({ message: "La contraseña debe tener al menos 8 caracteres" });
   }
 
   try {
-    // Buscar si ya existe un vet o cliente con ese correo, que no haya duplicados
+    // Aquí buscamos si ya hay alguien con este correo, no vaya a ser duplicado
     const existingVet = await vetModel.findOne({ email });
     const existingEmail = await clientsModel.findOne({ email });
     if (existingVet || existingEmail) {
       return res.status(400).json({ message: "El correo ya está registrado." });
     }
 
-    // Hashear la contraseña antes de guardarla, que no se te olvide
+    // Ciframos la contraseña para guardarla bien segura
     const passwordHash = await bcryptjs.hash(password, 10);
 
-    // Crear el veterinario con sus datos bien limpiecitos
+    // Si hay imagen en la petición, se sube a Cloudinary
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "vets",
+        allowed_formats: ["jpg", "png", "jpeg"],
+      });
+      imageUrl = uploadResult.secure_url;
+    }
+
+    //Creamos el nuevo cliente con todo en orden y lo guardamos en mongoDB
     const newVet = new vetModel({
       nameVet,
       email,
       password: passwordHash,
       locationVet,
       nitVet,
+      image: imageUrl, // Se guarda la URL de la imagen si fue cargada
     });
     await newVet.save();
 
-    // Generar código de verificación para el correo, así nadie se cuela
-    const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
-
-    // Crear token para verificar, que dure dos horas
+    // Generamos un código para que verifique su correo
+    const verificationCode = crypto
+      .randomBytes(3)
+      .toString("hex")
+      .toUpperCase();
     const token = jsonwebtoken.sign(
-      { email, verificationCode },
+      { email, verificationCode, role: "vet" },
       config.JWT.secret,
-      { expiresIn: '2h' }
+      { expiresIn: "2h" }
     );
 
-    // Guardar el token en cookie httpOnly para seguridad
-    res.cookie('VerificationToken', token, {
+    // Firmamos token con el código y correo, que dure dos horas
+    res.cookie("VerificationToken", token, {
       maxAge: 2 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: "lax",
     });
 
-    // Mandar el correo con el código para que el vet confirme su email
+    // Mandamos correo con el código para que verifique
     await sendVerificationEmail(email, verificationCode);
 
-    // Avisar que todo fue bien, pero que revise su correo
-    res.status(201).json({ message: "Veterinario registrado, verifica tu correo para activar la cuenta." });
+    // Avisamos que todo salió bien y que revise su correo
+    res.status(201).json({
+      message:
+        "Veterinario registrado, verifica tu correo para activar la cuenta.",
+    });
   } catch (error) {
-    console.log('Error: ' + error);
+    console.log("Error: " + error);
     res.status(500).json({ message: "Error en el registro", error });
   }
 };
 
-// Aquí se verifica el código que llegó por correo para confirmar el email
-registerVetController.verifyEmail = async (req, res) => {
-  const { verificationCode } = req.body;
-  const token = req.cookies.VerificationToken;
-
-  // Si no hay token, no podemos seguir, anda a pedirlo primero
-  if (!token) {
-    return res.status(401).json({ message: "Token no encontrado" });
-  }
-
-  try {
-    // Verificar que el token sea válido y no haya expirado
-    const decode = jsonwebtoken.verify(token, config.JWT.secret);
-
-    // Si el código no cuadra, ni sueñes con pasar
-    if (decode.verificationCode !== verificationCode) {
-      return res.status(400).json({ message: "Código de verificación incorrecto" });
-    }
-
-    // Ya validado el correo, limpiamos la cookie y avisamos al usuario
-    res.clearCookie('VerificationToken');
-    res.status(200).json({ message: "Correo verificado correctamente" });
-  } catch (error) {
-    res.status(500).json({ message: "Token inválido o expirado", error });
-  }
-};
 
 export default registerVetController;

@@ -6,6 +6,7 @@ import clientsModel from '../models/Clients.js';
 import { config } from '../config.js';
 import cloudinary from 'cloudinary';
 import sendVerificationEmail from '../utils/verificationCode.js';
+import { register } from 'module';
 
 const registerController = {};
 
@@ -22,7 +23,9 @@ registerController.register = async (req, res) => {
 
   // No dejes que falte dato esencial, que eso es fallo grande
   if (!name || !email || !phone || !birthday || !password) {
-    return res.status(400).json({ message: "Faltan datos obligatorios para el registro." });
+    return res
+      .status(400)
+      .json({ message: "Faltan datos obligatorios para el registro." });
   }
 
   // Revisa que el correo tenga forma decente, no vale cualquier cosa
@@ -33,7 +36,9 @@ registerController.register = async (req, res) => {
 
   // La contraseña ha de tener por lo menos 8 caracteres para ser decente
   if (password.length < 8) {
-    return res.status(400).json({ message: "La contraseña debe tener al menos 8 caracteres." });
+    return res
+      .status(400)
+      .json({ message: "La contraseña debe tener al menos 8 caracteres." });
   }
 
   try {
@@ -68,20 +73,23 @@ registerController.register = async (req, res) => {
     await newClient.save();
 
     // Generamos un código para que verifique su correo
-    const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
+    const verificationCode = crypto
+      .randomBytes(3)
+      .toString("hex")
+      .toUpperCase();
 
     // Firmamos token con el código y correo, que dure dos horas
     const token = jsonwebtoken.sign(
-      { email, verificationCode },
+      { email, verificationCode, role: "client" },
       config.JWT.secret,
-      { expiresIn: '2h' }
+      { expiresIn: "2h" }
     );
 
     // Guardamos el token en cookie para que el cliente lo use luego
-    res.cookie('VerificationToken', token, {
+    res.cookie("VerificationToken", token, {
       maxAge: 2 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: "lax",
       // secure: true, // en producción con HTTPS habilita esto
     });
 
@@ -89,41 +97,18 @@ registerController.register = async (req, res) => {
     await sendVerificationEmail(email, verificationCode);
 
     // Avisamos que todo salió bien y que revise su correo
-    res.status(201).json({ message: "Cliente registrado exitosamente, verifica tu correo electrónico para completar el registro." });
-
+    res
+      .status(201)
+      .json({
+        message:
+          "Cliente registrado exitosamente, verifica tu correo electrónico para completar el registro.",
+      });
   } catch (error) {
-    console.log('Error: ' + error);
+    console.log("Error: " + error);
     res.status(500).json({ message: "Error en el registro", error });
   }
 };
 
-registerController.verifyEmail = async (req, res) => {
-  const { verificationCode } = req.body;
-  const token = req.cookies.VerificationToken;
 
-  // Si no hay token, no podemos verificar, pide que inicie el proceso bien
-  if (!token) {
-    return res.status(401).json({ message: "Token no encontrado." });
-  }
-
-  try {
-    // Verificamos que el token sea válido y no haya expirado
-    const decoded = jsonwebtoken.verify(token, config.JWT.secret);
-
-    // Si el código no bate, no se pasa
-    if (decoded.verificationCode !== verificationCode) {
-      return res.status(400).json({ message: "Código de verificación incorrecto." });
-    }
-
-    // Si llegó hasta acá, borramos la cookie y confirmamos la verificación
-    res.clearCookie('VerificationToken');
-
-    // Aquí podrías actualizar el usuario en BD para marcarlo como verificado, si quieres
-
-    res.status(200).json({ message: "Correo verificado correctamente." });
-  } catch (error) {
-    res.status(500).json({ message: "Token inválido o expirado.", error });
-  }
-};
 
 export default registerController;
