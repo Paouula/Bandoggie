@@ -11,7 +11,7 @@ import Navegation from "./components/Navegation.jsx";
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router>  
         <Navegation />
         
       </Router>

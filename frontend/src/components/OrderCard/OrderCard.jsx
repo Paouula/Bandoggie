@@ -50,14 +50,6 @@ const OrderCard = ({ order }) => {
           <span className={`order-status ${getStatusClass(order.status)}`}>
             {order.status}
           </span>
-          <div className="action-buttons">
-            <button 
-              className="btn-icon"
-              onClick={handleToggleExpand}
-              title={isExpanded ? 'Contraer' : 'Expandir'}
-            >
-              {isExpanded ? '▲' : '▼'}
-            </button>
             <button 
               className="btn-icon"
               onClick={handlePrintOrder}
@@ -73,7 +65,6 @@ const OrderCard = ({ order }) => {
               📄
             </button>
           </div>
-        </div>
       </div>
 
       <div className="order-content">
@@ -172,41 +163,7 @@ const OrderCard = ({ order }) => {
         </div>
       </div>
 
-      {isExpanded && (
-        <div className="order-timeline">
-          <h4 className="timeline-title">Estado del Pedido</h4>
-          <div className="timeline">
-            <div className="timeline-item completed">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
-                <h5>Pedido Confirmado</h5>
-                <p>25 de Enero, 10:30 AM</p>
-              </div>
-            </div>
-            <div className="timeline-item completed">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
-                <h5>En Producción</h5>
-                <p>26 de Enero, 2:15 PM</p>
-              </div>
-            </div>
-            <div className="timeline-item completed">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
-                <h5>Enviado</h5>
-                <p>28 de Enero, 9:00 AM</p>
-              </div>
-            </div>
-            <div className="timeline-item completed">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
-                <h5>Entregado</h5>
-                <p>30 de Enero, 3:45 PM</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      )
     </div>
   );
 };

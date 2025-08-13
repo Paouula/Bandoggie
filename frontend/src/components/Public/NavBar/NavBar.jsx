@@ -176,9 +176,6 @@ function NavBar() {
             <Link className="navbar-nav-link" to="/Holidays">
               Festividades
             </Link>
-            <Link className="navbar-nav-link" to="/OrderHistory">
-              Historial de pedidos
-            </Link>
           </div>
 
           <div className="navbar-right-section">

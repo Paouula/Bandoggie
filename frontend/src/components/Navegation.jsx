@@ -26,6 +26,7 @@ import RequestCode from "../pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import LoginModal from "../components/LoginModal/Login.jsx";
+import OrderHistory from "../pages/Public/OrderHistory/OrderHistory.jsx";
 
 //Paginas de productos sitio público
 import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
@@ -137,6 +138,7 @@ function Navegation() {
         <Route path="/accessories" element={<Accessories />} />
         <Route path="/holidays" element={<Holidays />} />
         <Route path="/aboutus" element={<AboutUS />} />
+        <Route path="/OrderHistory" element={<OrderHistory />} />
       
 
         {/* Área privada para empleados */}

@@ -17,7 +17,7 @@ const OrderHistory = () => {
       date: '2025-01-30',
       product: {
         name: 'Bandanas celeste con diseño',
-        image: '/src/assets/images/bandana-celeste.jpg',
+        //image: '/src/assets/images/bandana-celeste.jpg',
         size: 'XL',
         quantity: 3,
         color: '#87ceeb',
@@ -41,7 +41,7 @@ const OrderHistory = () => {
       date: '2025-02-01',
       product: {
         name: 'Collar de cuero premium',
-        image: '/src/assets/images/collar-cuero.jpg',
+        //image: '/src/assets/images/collar-cuero.jpg',
         size: 'M',
         quantity: 1,
         color: '#8B4513',
@@ -107,58 +107,10 @@ const OrderHistory = () => {
         </p>
       </div>
 
-      <div className="filters-section">
-        <div className="filter-tabs">
-          <button 
-            className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('all')}
-          >
-            Todos ({orders.length})
-          </button>
-          <button 
-            className={`filter-tab ${filter === 'completado' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('completado')}
-          >
-            Completados ({orders.filter(o => o.status === 'Completado').length})
-          </button>
-          <button 
-            className={`filter-tab ${filter === 'pendiente' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('pendiente')}
-          >
-            Pendientes ({orders.filter(o => o.status === 'Pendiente').length})
-          </button>
-          <button 
-            className={`filter-tab ${filter === 'enviado' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('enviado')}
-          >
-            Enviados ({orders.filter(o => o.status === 'Enviado').length})
-          </button>
-        </div>
-
-        <div className="search-filter">
-          <input
-            type="text"
-            placeholder="Buscar por número de pedido, producto o cliente..."
-            value={searchTerm}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="search-input"
-          />
-          <button className="search-btn">
-            🔍
-          </button>
-        </div>
-      </div>
-
       <div className="orders-stats">
         <div className="stat-card">
           <div className="stat-number">{orders.length}</div>
           <div className="stat-label">Total Pedidos</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">
-            ${orders.reduce((sum, order) => sum + order.product.price, 0).toFixed(2)}
-          </div>
-          <div className="stat-label">Ingresos Totales</div>
         </div>
         <div className="stat-card">
           <div className="stat-number">
