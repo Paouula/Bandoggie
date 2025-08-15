@@ -2,6 +2,9 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import fs from "fs";
+import path from "path";
 
 // Rutas de verificación y recuperación de usuarios
 import registerRoutes from './src/routes/registerClients.js';
@@ -65,6 +68,13 @@ app.use('/api/guestClients', guestClients);
 
 // Rutas Gráficas
 //app.use('/api/sales', salesRoutes);
+
+//documrentación swagger
+const swaggerDocument = JSON.parse(
+    fs.readFileSync(path.resolve("./ricaldone-81c-Bandoggie-1.0.0-resolved.json"), "utf8")
+);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Carrito
 app.use('/api/cart', cartRoutes);
