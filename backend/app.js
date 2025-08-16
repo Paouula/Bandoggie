@@ -11,6 +11,7 @@ import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
 import cartRoutes from './src/routes/Cart.js';
+import resendVerifyCode from './src/routes/resendVerifyCode.js'
 
 // Rutas de CRUDs
 import holidayRoutes from './src/routes/holiday.js';
@@ -46,7 +47,8 @@ app.use('/api/login', loginRoutes);
 app.use('/api/logout', logoutRoutes);
 app.use('/api/passwordRecovery', passwordRecoveryRoutes);
 app.use('/api/registerVet', registerVetRoutes);
-app.use('/api/auth/pending-verification', checkVerificationRoutes)
+app.use('/api/auth/pending-verification', checkVerificationRoutes);
+app.use('/api/resend-code', resendVerifyCode);
 
 // Rutas de CRUDs y Graficas
 app.use('/api/clients', clientsRoutes);

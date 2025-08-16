@@ -9,7 +9,7 @@ import Button from "../Button/Button.jsx";
 import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Register.css";
 import PasswordInput from "../InputPassword/InputPassword.jsx";
-import ImageLoader from "../ImageLoader/ImageLoader.jsx"; // ✅ Importación añadida
+import ImageLoader from "../ImageLoader/ImageLoader.jsx"; 
 
 const RegisterVetModal = ({
   onClose,
@@ -26,7 +26,7 @@ const RegisterVetModal = ({
   } = useForm();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [profileImage, setProfileImage] = useState(null); // ✅ Estado para imagen
+  const [profileImage, setProfileImage] = useState(null); 
   const { handleRegister } = useFetchRegisterVet();
 
   const handleClose = () => {
@@ -65,8 +65,8 @@ const RegisterVetModal = ({
 
       if (response) {
         reset();
-        setProfileImage(null); // ✅ Limpieza de imagen
-        onRegisterSuccess?.();
+        setProfileImage(null); 
+        onRegisterSuccess?.(data.email, "vet");
       }
     } catch (error) {
       toast.error(error.message || "Registro fallido");

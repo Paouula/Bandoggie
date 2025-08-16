@@ -19,6 +19,7 @@ function NavBar() {
   const [showRegister, setShowRegister] = useState(false);
   const [showRegisterVet, setShowRegisterVet] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
+
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   const {
@@ -27,6 +28,9 @@ function NavBar() {
     pendingVerification,
     setPendingVerification,
     loadingVerification,
+    verificationInfo,
+    updateVerificationInfo, // 🆕 Usar la función persistente
+    clearVerificationInfo,   // 🆕 Función para limpiar
   } = useAuth();
 
   const shouldShowVerificationModal =
@@ -73,8 +77,11 @@ function NavBar() {
             setShowRegister(false);
             setShowLogin(true);
           }}
-          onRegisterSuccess={() => {
+          onRegisterSuccess={(email, role) => {
+            console.log("✅ RegisterModal - onRegisterSuccess:", { email, role });
             setShowRegister(false);
+            // 🆕 Usar updateVerificationInfo para persistir los datos
+            updateVerificationInfo({ email, role });
             setPendingVerification(true);
           }}
           openChoose={() => {
@@ -91,8 +98,11 @@ function NavBar() {
             setShowRegisterVet(false);
             setShowLogin(true);
           }}
-          onRegisterSuccess={() => {
+          onRegisterSuccess={(email, role) => {
+            console.log("✅ RegisterVetModal - onRegisterSuccess:", { email, role });
             setShowRegisterVet(false);
+            // 🆕 Usar updateVerificationInfo para persistir los datos
+            updateVerificationInfo({ email, role });
             setPendingVerification(true);
           }}
           openChoose={() => {
@@ -104,9 +114,15 @@ function NavBar() {
 
       {shouldShowVerificationModal && (
         <VerificationCodeModal
-          onClose={() => setPendingVerification(false)}
+          email={verificationInfo.email}
+          role={verificationInfo.role}
+          onClose={() => {
+            console.log("🚪 Cerrando modal de verificación");
+            clearVerificationInfo(); // 🆕 Limpiar datos al cerrar
+          }}
           openLogin={() => {
-            setPendingVerification(false);
+            console.log("🚪 Abriendo login desde verificación");
+            clearVerificationInfo(); // 🆕 Limpiar datos al ir al login
             setShowLogin(true);
           }}
         />
