@@ -21,15 +21,21 @@ import Footer from "../components/Footer/Footer.jsx";
 import AboutUS from "../pages/Public/AboutUs/AboutUs.jsx";
 import MainPage from "../pages/Public/MainPage/MainPage.jsx";
 import Holidays from "../pages/Public/Holidays/ChristmasHoliday.jsx";
+import Halloween from "../pages/Public/HalloweenHoliday/HalloweenHoliday.jsx";
+import Valentine from "../pages/Public/ValentineHoliday/ValentineHoliday.jsx";
+import Patriotic from "../pages/Public/PatrioticHoliday/PatrioticHoliday.jsx";  
+import NewYear from "../pages/Public/NewYearHoliday/NewYearHoliday.jsx";
+import Birthday from "../pages/Public/BirthdayHoliday/BirthdayHoliday.jsx";
 import Register from "../components/RegisterModal/Register.jsx";
 import RequestCode from "../pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
+import Profile from "../pages/Public/Profile/Profile.jsx";
 import LoginModal from "../components/LoginModal/Login.jsx";
 
 //Paginas de productos sitio público
 import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
-import Necklaces from "../pages/Public/Necklaces/Necklaces.jsx";
+import Necklaces from "../pages/Public/Collars/Collars.jsx";
 import Accessories from "../pages/Public/Accessories/Accessories.jsx";
 
 // Componentes privados
@@ -136,7 +142,13 @@ function Navegation() {
         <Route path="/necklaces" element={<Necklaces />} />
         <Route path="/accessories" element={<Accessories />} />
         <Route path="/holidays" element={<Holidays />} />
+        <Route path="/halloween" element={<Halloween />} />
+        <Route path="/valentine" element={<Valentine />} />
+        <Route path="/patriotic" element={<Patriotic />} />
+        <Route path="/newyear" element={<NewYear />} />
+        <Route path="/birthday" element={<Birthday />} />
         <Route path="/aboutus" element={<AboutUS />} />
+        <Route path="/profile" element={<Profile />} />
       
 
         {/* Área privada para empleados */}
@@ -149,7 +161,6 @@ function Navegation() {
       </Routes>
 
       <>
-      
       .<Footer /></>
       </>
     

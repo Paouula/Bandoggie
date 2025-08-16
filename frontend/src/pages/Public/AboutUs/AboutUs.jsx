@@ -1,5 +1,5 @@
 import React from 'react';
-import Banner from '../../../components/Public/BannerHoliday';
+import Banner from '../../../components/Public/AbouUs/Banner';
 import MissionVisionSection from '../../../components/Public/AbouUs/MissionVisionSection';
 import FAQSection from '../../../components/Public/AbouUs/FAQSection';
 
