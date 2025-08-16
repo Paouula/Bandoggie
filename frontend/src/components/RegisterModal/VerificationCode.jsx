@@ -8,6 +8,7 @@ import "../../assets/styles/Register.css";
 import { useAuth } from "../../Context/AuthContext.jsx";
 import VerificationCodeInput from "../VerificationCodeInput/VerificationCodeInput.jsx";
 
+
 const VerificationCodeModal = ({ onClose, openLogin }) => {
   const {
     handleSubmit,
