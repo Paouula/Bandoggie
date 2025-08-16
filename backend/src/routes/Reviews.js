@@ -1,5 +1,5 @@
 import { Router } from "express";
-import reviewsController from '../controllers/reviewsController.js';
+import reviewsController from '../controllers/reviewsControllers.js';
 import multer from 'multer';
 
 // Configuración de multer para manejar la subida de imágenes

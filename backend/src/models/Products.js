@@ -38,7 +38,7 @@ const ProductsSchema = new Schema({
 
     idHolidayProduct: {
         type: Schema.Types.ObjectId,
-        ref: "Holiday",
+        ref: "Holidays",
         require: true
     },
     idCategory: {

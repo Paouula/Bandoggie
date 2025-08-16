@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
+import { BiArrowBack } from "react-icons/bi";
+import { RxCross1 } from "react-icons/rx";
 import { useForm, Controller } from "react-hook-form";
-import useFetchRegister from "../../hooks/Register/UseFetchRegister.js";
+import useFetchRegister from "../../hooks/Register/useFetchRegister.js";
 import InputComponent from "../Input/Input.jsx";
 import Button from "../Button/Button.jsx";
 import ImageLoader from "../ImageLoader/ImageLoader.jsx";
@@ -29,43 +31,31 @@ const RegisterModal = ({
 
   const [profileImage, setProfileImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const { handleRegister } = useFetchRegister();
   const phoneValue = watch("phone", "");
 
   const handleClose = () => {
-    if (modalRef.current) {
-      modalRef.current.classList.add("fade-out");
-      setTimeout(() => {
-        onClose();
-      }, 250);
-    }
+    modalRef.current?.classList.add("fade-out");
+    setTimeout(() => onClose(), 250);
   };
 
   const handleBack = () => {
-    if (modalRef.current) {
-      modalRef.current.classList.add("fade-out");
-      setTimeout(() => {
-        onClose();
-        openChoose?.();
-      }, 250);
-    }
+    modalRef.current?.classList.add("fade-out");
+    setTimeout(() => {
+      onClose();
+      openChoose?.();
+    }, 250);
   };
 
   const handlePhoneChange = (e) => {
     let value = e.target.value.replace(/\D/g, "");
-    if (value.length > 4) {
-      value = value.slice(0, 4) + "-" + value.slice(4, 8);
-    }
-    if (value.length > 9) {
-      value = value.slice(0, 9);
-    }
+    if (value.length > 4) value = value.slice(0, 4) + "-" + value.slice(4, 8);
+    if (value.length > 9) value = value.slice(0, 9);
     setValue("phone", value);
   };
 
   const onSubmit = async (data) => {
     if (isSubmitting) return;
-
     if (!profileImage) {
       toast.error("Por favor, sube una imagen de perfil.");
       return;
@@ -73,6 +63,7 @@ const RegisterModal = ({
 
     setIsSubmitting(true);
     toast.success("La información se ha enviado. Por favor, espera...");
+
     try {
       const response = await handleRegister(
         data.name,
@@ -94,44 +85,42 @@ const RegisterModal = ({
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay-register">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="register-container modal-content" ref={modalRef}>
-        <div className="modal-header-buttons">
+      <div className="register-container modal-content-register" ref={modalRef}>
+        <div className="modal-header-buttons-register">
           <button
             type="button"
             className="register-back-button"
             onClick={handleBack}
             aria-label="Regresar"
           >
-            ←
+            <BiArrowBack />
           </button>
-
           <button
-            className="modal-close"
+            className="modal-close-register"
             onClick={handleClose}
             aria-label="Cerrar"
           >
-            ×
+            <RxCross1 />
           </button>
         </div>
 
-        <div className="register-logo" style={{ marginBottom: 10 }}>
+        <div className="register-logo">
           <img src={logo} alt="Huellitas" />
         </div>
         <hr />
         <h2 className="register-title">REGISTRO</h2>
 
-        <p
-          className="small-link"
+        <a
+          className="register-small-links"
           onClick={() => {
             handleClose();
             openLogin?.();
           }}
-          style={{ cursor: "pointer" }}
         >
           ¿Ya tienes una cuenta? Inicia sesión
-        </p>
+        </a>
 
         <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
           <div className="register-profile-image-container">
@@ -157,7 +146,7 @@ const RegisterModal = ({
               className="register-input"
             />
             {errors.name && (
-              <span style={{ color: "red" }}>{errors.name.message}</span>
+              <span className="form-error">{errors.name.message}</span>
             )}
           </div>
 
@@ -177,7 +166,7 @@ const RegisterModal = ({
               className="register-input"
             />
             {errors.email && (
-              <span style={{ color: "red" }}>{errors.email.message}</span>
+              <span className="form-error">{errors.email.message}</span>
             )}
           </div>
 
@@ -214,7 +203,7 @@ const RegisterModal = ({
                 )}
               />
               {errors.birthday && (
-                <span style={{ color: "red" }}>{errors.birthday.message}</span>
+                <span className="form-error">{errors.birthday.message}</span>
               )}
             </div>
 
@@ -239,7 +228,7 @@ const RegisterModal = ({
                 value={phoneValue}
               />
               {errors.phone && (
-                <span style={{ color: "red" }}>{errors.phone.message}</span>
+                <span className="form-error">{errors.phone.message}</span>
               )}
             </div>
           </div>
@@ -267,7 +256,7 @@ const RegisterModal = ({
           </div>
 
           <div className="register-forgot">
-            <a href="/request-code">¿Olvidaste tu contraseña?</a>
+            <a className="register-small-links" href="/request-code">¿Olvidaste tu contraseña?</a>
           </div>
 
           <Button

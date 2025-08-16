@@ -5,15 +5,15 @@ const CardMinorista = ({ client, onOpenModal }) => (
   <div className="clientCard">
     <div className="clientHeader">
     <div className="clientAvatar">
-      <img src={client.avatar} alt={client.name} className="client-avatar-img" />
+      <img src={client.Image} alt={client.name} className="client-avatar-img" />
     </div>
       <div className="clientInfo">
         <h3 className="clientName">{client.name}</h3>
         <div className="clientDetails">
-          <p className="detailItem"><span className="detailLabel">Nombre:</span> {client.nameClients}</p>
-          <p className="detailItem"><span className="detailLabel">Email:</span> {client.emailClients}</p>
-          <p className="detailItem"><span className="detailLabel">Teléfono:</span> {client.phoneClients}</p>
-          <p className="detailItem"><span className="detailLabel">Fecha de nacimiento:</span> {client.dateOfBirthday}</p>
+          <p className="detailItem"><span className="detailLabel">Nombre:</span> {client.name}</p>
+          <p className="detailItem"><span className="detailLabel">Email:</span> {client.email}</p>
+          <p className="detailItem"><span className="detailLabel">Teléfono:</span> {client.phone}</p>
+          <p className="detailItem"><span className="detailLabel">Fecha de nacimiento:</span> {client.birthday}</p>
         </div>
       </div>
     </div>

@@ -1,61 +1,91 @@
-import React, { useState } from 'react';
-import './Clients.css';
-import ClientsBanner from '../../../img/BannerPrivate/ClientsBanner.png';
-import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
-import ListClients from '../../../components/Private/Clients/ListClients.jsx';
-import ClientModal from '../../../components/Private/Clients/ClientsModal/ClientsModal.jsx';
-import { Filter } from 'lucide-react';
-import SearchIcon from '@mui/icons-material/Search';
+import React, { useState, useEffect } from "react";
+import { Toaster, toast } from "react-hot-toast";
+import "./Clients.css";
+import ClientsBanner from "../../../img/BannerPrivate/ClientsBanner.png";
+import BannerPrivate from "../../../components/Private/BannerPrivate/BannerPrivate.jsx";
+import ListClients from "../../../components/Private/Clients/ListClients.jsx";
+import ClientModal from "../../../components/Private/Clients/ClientsModal/ClientsModal.jsx";
+import { Filter } from "lucide-react";
+import SearchIcon from "@mui/icons-material/Search";
+
+import useFetchUsers from "../../../hooks/Clients/useFetchUsers.js";
+import Loading from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const ClientsPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterBy, setFilterBy] = useState('Por defecto');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterBy, setFilterBy] = useState("Por defecto");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
-  const [clientType, setClientType] = useState('');
-  const [viewMode, setViewMode] = useState('both');
+  const [clientType, setClientType] = useState("");
+  const [viewMode, setViewMode] = useState("both");
+  const [clients, setClients] = useState([]);
+  const [vets, setVets] = useState([]);
+  const [loading, setLoading] = useState(null);
 
-  const clientesMayoristas = [
-  {
-    id: 1,
-    name: 'Veterinaria Suroeste',
-    logo: 'https://i.pinimg.com/736x/55/e4/4a/55e44a2d69e78a235dc4ce88f0d01f38.jpg',
-    nameVet: 'Veterinaria Suroeste S.A.S',
-    locationsVet: 'Calle 45 #23-67, San Salvador',
-    nitVet: '900.123.456-7'
-  },
-  {
-    id: 2,
-    name: 'Vet Patitas Pet',
-    logo: 'https://i.pinimg.com/736x/55/e4/4a/55e44a2d69e78a235dc4ce88f0d01f38.jpg',
-    nameVet: 'Clínica Veterinaria Patitas Pet Ltda.',
-    locationsVet: 'Avenida 80 #45-23, San Salvador',
-    nitVet: '900.789.123-4'
-  }
-];
+  const { handleGetClientes, handleGetVets } = useFetchUsers();
 
-const clientesMinoristas = [
-  {
-    id: 1,
-    name: 'Mario Navarro',
-    avatar: 'https://i.pinimg.com/736x/f0/e9/05/f0e905fb19ef0e1c5db1970a7d65d1cb.jpg',
-    nameClients: 'Mario Andrés Navarro García',
-    emailClients: 'mario.navarro@email.com',
-    phoneClients: '7589 2564',
-    dateOfBirthday: '1985-03-15',
-  },
-  {
-    id: 2,
-    name: 'Joel Ramirez',
-    avatar: 'https://i.pinimg.com/736x/f0/e9/05/f0e905fb19ef0e1c5db1970a7d65d1cb.jpg',
-    nameClients: 'Joel Alexander Ramírez López',
-    emailClients: 'joel.ramirez@email.com',
-    phoneClients: '7128 2800',
-    dateOfBirthday: '1990-07-22',
-  }
-];
+  const loadClients = async () => {
+    try {
+      const data = await handleGetClientes();
+      setClients(data);
+      return data;
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al cargar los clientes");
+    }
+  };
 
+  const loadVets = async () => {
+    try {
+      const data = await handleGetVets();
+      setVets(data);
+      return data;
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al cargar los veterinarios");
+    }
+  };
 
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([loadClients(), loadVets()]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
+  }, []);
+
+  // MAPEO CORREGIDO PARA CLIENTES MINORISTAS
+  const mappedClients = clients.map((client) => ({
+    id: client._id,
+    name: client.name,
+    Image: client.image,
+    email: client.email,
+    phone: client.phone,
+    birthday: client.birthday,
+
+    avatar: client.image,
+    nameClients: client.name,
+    emailClients: client.email,
+    phoneClients: client.phone,
+    dateOfBirthday: client.dateOfBirth,
+  }));
+
+  // MAPEO CORREGIDO PARA VETERINARIOS/MAYORISTAS
+  const mappedVets = vets.map((vet) => {
+    console.log("Mapeando veterinario:", vet);
+    return {
+      id: vet._id,
+      name: vet.nameVet, 
+      logo: vet.image || "/default-vet-logo.png", 
+      nameVet: vet.nameVet, 
+      locationVet: vet.locationVet, 
+      nitVet: vet.nitVet, 
+    };
+  });
   const handleOpenModal = (client, type) => {
     setSelectedClient(client);
     setClientType(type);
@@ -64,12 +94,20 @@ const clientesMinoristas = [
 
   const handleCloseModal = () => {
     setSelectedClient(null);
-    setClientType('');
+    setClientType("");
     setModalOpen(false);
   };
 
   return (
     <>
+      <Toaster position="top-right" reverseOrder={false} />
+
+      {loading && (
+        <div className="loading-overlay">
+          <Loading message="Cargando clientes..." />
+        </div>
+      )}
+
       <BannerPrivate
         title="Clientes"
         subtitle="Lista de los clientes registrados, mayoristas y minoristas"
@@ -87,7 +125,7 @@ const clientesMinoristas = [
               <select
                 className="select"
                 value={filterBy}
-                onChange={e => setFilterBy(e.target.value)}
+                onChange={(e) => setFilterBy(e.target.value)}
               >
                 <option>Por defecto</option>
                 <option>Alfabético</option>
@@ -99,7 +137,7 @@ const clientesMinoristas = [
               <select
                 className="select"
                 value={viewMode}
-                onChange={e => setViewMode(e.target.value)}
+                onChange={(e) => setViewMode(e.target.value)}
               >
                 <option value="both">Ambos</option>
                 <option value="mayorista">Solo Mayoristas</option>
@@ -113,20 +151,20 @@ const clientesMinoristas = [
               type="text"
               placeholder="Buscar..."
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <SearchIcon />
           </div>
         </div>
 
         {/* Lista clientes */}
-          <ListClients
+        <ListClients
           viewMode={viewMode}
           searchTerm={searchTerm}
           filterBy={filterBy}
           onOpenModal={handleOpenModal}
-          clientesMayoristas={clientesMayoristas}
-          clientesMinoristas={clientesMinoristas}
+          clientesMayoristas={mappedVets}
+          clientesMinoristas={mappedClients}
         />
 
         {/* Modal para ver más*/}

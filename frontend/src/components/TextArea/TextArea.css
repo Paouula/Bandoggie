@@ -1,0 +1,20 @@
+.custom-textarea {
+  width: 100%;
+  min-height: 100px; /* Altura mínima */
+  padding: 10px;
+  border: 1px solid #b4ceec;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Raleway', sans-serif;
+  background: #fafdff;
+  color: #365A7D;
+  resize: vertical; /* Permite al usuario ajustar la altura */
+  transition: border 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.custom-textarea:focus {
+  outline: none;
+  border: 2px solid #ff9900;
+  box-shadow: 0 0 0 2px #ffe0b2;
+  background-color: #fffdfa;
+}

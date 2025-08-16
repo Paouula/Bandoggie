@@ -1,4 +1,4 @@
-import employeesModel from "../models/employees.js";
+import employeesModel from "../models/Employees.js";
 import bcryptjs from "bcryptjs";
 import validator from "validator";
 
@@ -19,7 +19,7 @@ const validateEmployeeFields = (data, isUpdate = false) => {
   const errors = [];
 
   // Que el nombre sea solo letras y espacios
-  if (!data.name || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(data.name)) {
+  if (!data.nameEmployees || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(data.nameEmployees)) {
     errors.push("Nombre inválido");
   }
 
@@ -75,7 +75,7 @@ const validateEmployeeFields = (data, isUpdate = false) => {
 employeesControllers.post = async (req, res) => {
   try {
     const {
-      name,
+      nameEmployees,
       email,
       phoneEmployees,
       dateOfBirth,
@@ -100,7 +100,7 @@ employeesControllers.post = async (req, res) => {
 
     // Ahora sí, creamos al empleado y lo guardamos en la base
     const newEmployee = new employeesModel({
-      name,
+      nameEmployees,
       email,
       phoneEmployees,
       dateOfBirth,
@@ -121,7 +121,7 @@ employeesControllers.post = async (req, res) => {
 employeesControllers.put = async (req, res) => {
   try {
     const {
-      name,
+      nameEmployees,
       email,
       phoneEmployees,
       dateOfBirth,
@@ -144,7 +144,7 @@ employeesControllers.put = async (req, res) => {
     }
 
     const updateData = {
-      name,
+      nameEmployees,
       email,
       phoneEmployees,
       dateOfBirth,

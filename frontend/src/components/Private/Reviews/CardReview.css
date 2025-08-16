@@ -1,3 +1,4 @@
+/* Estilos base (escritorio) */
 .review-card {
   background-image: url('../../../img/Products/CardBackground.png');
   border-radius: 15px;
@@ -68,8 +69,6 @@
   align-items: center;
 }
 
-
-
 .review-content {
   display: flex;
   flex-direction: column;
@@ -129,4 +128,196 @@
 
 .comment.expanded {
   max-height: none;
+}
+
+/* Responsive: Tablets (768px - 1024px) */
+@media (max-width: 1024px) {
+  .review-card {
+    padding: 16px;
+    min-height: 240px;
+  }
+
+  .review-header {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .review-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .review-name {
+    font-size: 16px;
+  }
+
+  .review-price {
+    font-size: 15px;
+  }
+
+  .review-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Responsive: Móviles (hasta 767px) */
+@media (max-width: 767px) {
+  .review-card {
+    padding: 14px;
+    min-height: 200px;
+  }
+
+  .review-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .review-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .review-name {
+    font-size: 15px;
+  }
+
+  .review-price {
+    font-size: 14px;
+  }
+
+  .review-details {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .comment {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .star {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .review-card {
+    padding: 14px;
+    min-height: 200px;
+  }
+
+  .review-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .review-image {
+    width: 55px;
+    height: 55px;
+  }
+
+  .review-name {
+    font-size: 15px;
+  }
+
+  .review-price {
+    font-size: 13px;
+  }
+
+  .review-details {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .comment {
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  .star {
+    font-size: 12px;
+  }
+}
+
+/*Css para la parte de las listas*/
+
+/* 🌟 Estilos base para escritorio */
+.reviews-grid {
+  background-color: #fee3ee;
+  border-radius: 15px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.no-reviews {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.no-reviews-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+/* 📲 Tablets (768px - 1024px) */
+@media (max-width: 1024px) {
+  .reviews-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 18px;
+    gap: 18px;
+  }
+
+  .no-reviews {
+    font-size: 15px;
+    padding: 50px 15px;
+  }
+
+  .no-reviews-icon {
+    font-size: 42px;
+  }
+}
+
+/* 📱 Teléfonos medianos (481px - 767px) */
+@media (max-width: 767px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .no-reviews {
+    font-size: 14px;
+    padding: 40px 10px;
+  }
+
+  .no-reviews-icon {
+    font-size: 38px;
+  }
+}
+
+/* 📱 Teléfonos pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .no-reviews {
+    font-size: 13px;
+    padding: 30px 8px;
+  }
+
+  .no-reviews-icon {
+    font-size: 34px;
+  }
 }

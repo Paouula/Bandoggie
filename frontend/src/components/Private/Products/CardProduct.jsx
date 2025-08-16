@@ -1,26 +1,32 @@
-// CardProduct.jsx
 import React from 'react';
 import './CardProduct.css';
 import DeleteButton from '../DeleteButton.jsx';
 import EditButton from '../EditButton.jsx';
 
-const CardProduct = ({ product }) => {
+const CardProduct = ({ product, onEdit, onDelete }) => {
+
+
   return (
     <div className="product-card">
       {/* Parte superior: imagen + acciones */}
       <div className="product-top-section">
         <img 
           src={product.image} 
-          alt={product.name}
           className="product-image"
         />
 
         <div className="product-main-info">
           <div className="product-title-actions">
-            <h3 className="product-name">{product.name}</h3>
+            <h3 className="product-name">{product.nameProduct}</h3>
             <div className="product-actions">
-              <EditButton title="Editar los detalles del producto" />
-              <DeleteButton title="Eliminar el producto" />
+              <EditButton 
+                title="Editar los detalles del producto" 
+                onClick={() => onEdit(product)} 
+              />
+              <DeleteButton 
+                title="Eliminar el producto" 
+                onClick={() => onDelete(product)} 
+              />
             </div>
           </div>
           <p className="product-price">{product.price}</p>
@@ -33,7 +39,7 @@ const CardProduct = ({ product }) => {
           <div className="info-column">
             <div className="info-row">
               <span className="info-label">Nombre:</span>
-              <span className="info-value">{product.name}</span>
+              <span className="info-value">{product.nameProduct}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Precio:</span>
@@ -41,11 +47,11 @@ const CardProduct = ({ product }) => {
             </div>
             <div className="info-row">
               <span className="info-label">Categoría:</span>
-              <span className="info-value">{product.category}</span>
+              <span className="info-value">{product.idCategory?.nameCategory}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Festividad:</span>
-              <span className="info-value">{product.festival}</span>
+              <span className="info-value">{product.idHolidayProduct?.nameHoliday || 'Valor no disponible'}</span>
             </div>
           </div>
 

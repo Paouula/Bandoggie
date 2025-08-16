@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { Tooltip } from "@mui/material";
 
-function AgregarButton({ title = "Añadir un nuevo empleado", onClick }) {
+function AgregarButton({ title = "Añadir un nuevo producto", onClick }) {
   const [hovered, setHovered] = useState(false);
 
   const buttonStyle = {

@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import "../../assets/styles/Choose.css";
 import logo from "../../img/LogoBandoggie.png";
+import { RxCross1 } from "react-icons/rx";
 
 const ChooseAccountTypeModal = ({
   onClose,
@@ -8,22 +9,30 @@ const ChooseAccountTypeModal = ({
   openRegisterUser,
   openRegisterVet,
 }) => {
-  const modalRef = useRef(); // Referencia al contenedor para aplicar animación de salida
+  const modalRef = useRef();
 
-  // Agrega clase de salida y cierra el modal después de una breve espera (sincronizado con animación)
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.classList.add("fade-in");
+    }
+  }, []);
+
   const handleClose = () => {
     if (modalRef.current) {
+      modalRef.current.classList.remove("fade-in");
       modalRef.current.classList.add("fade-out");
       setTimeout(() => {
-        onClose(); // Llama al cierre desde el padre
+        onClose?.();
       }, 250);
     }
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="choose-container modal-content" ref={modalRef}>
-        <button className="modal-close" onClick={handleClose}>×</button>
+    <div className="modal-overlay-choose">
+      <div className="choose-container modal-content-choose" ref={modalRef}>
+        <button className="modal-close-choose" onClick={handleClose}>
+          <RxCross1 />
+        </button>
 
         <div className="choose-logo">
           <img src={logo} alt="Huellitas" />
@@ -33,19 +42,17 @@ const ChooseAccountTypeModal = ({
         <h2 className="choose-title">¿Qué tipo de cuenta deseas crear?</h2>
 
         <div className="choose-options">
-          {/* Opción para registrar un cliente normal */}
           <div
             className="choose-card"
             onClick={() => {
               openRegisterUser();
-              handleClose(); // Cierra el modal tras elegir
+              handleClose();
             }}
           >
             <h3>Usuario Normal</h3>
             <p>Compra productos personalizados a tu gusto</p>
           </div>
 
-          {/* Opción para registrar como veterinaria */}
           <div
             className="choose-card"
             onClick={() => {
@@ -58,12 +65,11 @@ const ChooseAccountTypeModal = ({
           </div>
         </div>
 
-        {/* Acceso a la vista de login si ya tiene cuenta */}
         <div className="choose-footer">
           <p
             className="small-link"
             onClick={() => {
-              openLogin?.(); // Solo si está definido
+              openLogin?.();
               handleClose();
             }}
             style={{ cursor: "pointer" }}

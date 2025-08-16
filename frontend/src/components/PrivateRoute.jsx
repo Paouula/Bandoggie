@@ -1,38 +1,37 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../Context/AuthContext";
+import { useAuth } from "../Context/AuthContext.jsx";
 
-// Ruta para sitio público - solo usuarios NO autenticados o autenticados que NO sean employees
+// Ruta pública protegida (solo NO empleados)
 export const PrivateRoute = () => {
-    const { authCokie, isEmployee } = useAuth();
-    
-    // Si no está autenticado, redirige al login
-    if (!authCokie) {
-        return <Navigate to="/" replace />;
-    }
-    
-    // Si está autenticado Y es employee, redirige al área admin
-    if (authCokie && isEmployee()) {
-        return <Navigate to="/admin/home" replace />;
-    }
-    
-    // Si está autenticado pero no es employee, permite acceso
-    return <Outlet />;
+  const { user, isEmployee, loadingUser } = useAuth();
+
+  if (loadingUser) return null; // o un loader visual si prefieres
+
+  // Si está autenticado Y es empleado, redirige a admin
+  if (user && isEmployee()) {
+    return <Navigate to="/admin/productos" replace />;
+  }
+
+  // Si no es empleado o no está autenticado, permite acceso
+  return <Outlet />;
 };
 
-// Ruta para employees - área privada/admin (requiere autenticación y ser employee)
+// Ruta privada para empleados (área admin)
 export const EmployeeRoute = () => {
-    const { authCokie, isEmployee } = useAuth();
-    
-    // Si no está autenticado, redirige al login
-    if (!authCokie) {
-        return <Navigate to="/" replace />;
-    }
-    
-    // Si está autenticado pero no es employee, redirige a la página pública
-    if (!isEmployee()) {
-        return <Navigate to="/mainPage" replace />;
-    }
-    
-    // Si es employee, permite el acceso
-    return <Outlet />;
+  const { user, isEmployee, loadingUser } = useAuth();
+
+  if (loadingUser) return null;
+
+  // Si no está autenticado
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  // Si está autenticado pero no es empleado
+  if (!isEmployee()) {
+    return <Navigate to="/mainPage" replace />;
+  }
+
+  // Si es empleado, permite acceso
+  return <Outlet />;
 };

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
 import { useAuth } from "../../Context/AuthContext.jsx";
+import { RxCross1 } from "react-icons/rx";
+
 
 import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Login.css";
@@ -92,14 +94,16 @@ const LoginModal = ({ onClose, openChoose }) => {
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay-login">
       <Toaster position="top-right" reverseOrder={true} />
-      <div className="login-container modal-content" ref={modalRef}>
-        <button className="modal-close" onClick={handleClose}>×</button>
+      <div className="login-container modal-content-login" ref={modalRef}>
+        <button className="modal-close-login" onClick={handleClose}>
+          <RxCross1 />
+        </button>
 
         <div className="logo-container">
           <div className="logo">
-            <img src={logo} alt="HUELLITAS Logo" />
+            <img src={logo} alt="Bandoggie Logo" />
           </div>
         </div>
 

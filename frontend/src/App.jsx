@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, useLocation } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
+
+// Proveedor de autenticación
+import { AuthProvider } from "./Context/AuthContext.jsx";
+
+// Archivo principal de navegación
 import Navegation from "./components/Navegation.jsx";
 import Nav from "./components/Public/NavBar/NavBar.jsx";
 
@@ -87,7 +92,8 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <AppContent />
+        <Navegation />
+        
       </Router>
     </AuthProvider>
   );
