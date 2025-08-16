@@ -1,4 +1,5 @@
 import ordersModel from "../models/orders.js";
+import cartModel from "../models/Cart.js";
 import mongoose from "mongoose";
 
 const ordersController = {};

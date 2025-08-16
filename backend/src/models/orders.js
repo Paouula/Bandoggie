@@ -24,7 +24,7 @@ const OrdersSchema = new Schema({
         require: true
     },
 
-    paymentMethod: {
+    PaymentMethod: {
         type: String,
         require: true,
         enum: ["transferencia", "efectivo"]
