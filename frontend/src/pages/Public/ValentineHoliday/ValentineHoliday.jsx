@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navigation from '../../../components/Public/NavegationHoliday.jsx';
 import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/Public/Products/ProductGridPublic.jsx';
+import ProductGrid from '../../../components/Public/PublicCardProduct/ProductGridPublic.jsx';
 import './ValentineHoliday.css';
 
 // Imágenes de productos

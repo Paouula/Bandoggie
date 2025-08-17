@@ -7,7 +7,7 @@ const useDataBandanas = () => {
 
   const fetchBandanas = async () => {
     try {
-      // ⚠️ Reemplaza este ID con el ObjectId real de la categoría "Bandanas"
+      
       const categoryId = "68a1475a6b65e3a7962662a1";  
 
       const response = await fetch(`http://localhost:4000/api/products/category/${categoryId}`);

@@ -35,7 +35,7 @@ import LoginModal from "../components/LoginModal/Login.jsx";
 
 //Paginas de productos sitio público
 import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
-import Necklaces from "../pages/Public/Collars/Collars.jsx";
+import Collars from "../pages/Public/Collars/Collars.jsx";
 import Accessories from "../pages/Public/Accessories/Accessories.jsx";
 
 // Componentes privados
@@ -139,7 +139,7 @@ function Navegation() {
         {/* Rutas públicas publicas */}
         <Route path="/mainPage" element={<MainPage />} />
         <Route path="/bandanas" element={<Bandanas />} />
-        <Route path="/necklaces" element={<Necklaces />} />
+        <Route path="/collars" element={<Collars />} />
         <Route path="/accessories" element={<Accessories />} />
         <Route path="/holidays" element={<Holidays />} />
         <Route path="/halloween" element={<Halloween />} />

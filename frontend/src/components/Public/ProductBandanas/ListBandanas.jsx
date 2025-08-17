@@ -1,6 +1,5 @@
-// components/Public/Products/ListBandanas.jsx
 import React from "react";
-import ProductCard from "./PublicCardProduct/ProductCardPublic.jsx"; 
+import ProductCard from "../PublicCardProduct/ProductCardPublic.jsx"; 
 
 const ListBandanas = ({ Bandanas }) => {
   console.log("Bandanas que llegan al componente:", Bandanas);
