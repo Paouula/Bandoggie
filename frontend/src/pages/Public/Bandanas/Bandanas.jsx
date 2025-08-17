@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ProductFilters from "../../../components/Filter.jsx";
-import ListBandanas from "../../../components/Public/Products/ListBandanas.jsx";
-import useDataBandanas from "../../../components/Public/Products/hooks/useDataBandanas.jsx";
+import ListBandanas from "../../../components/Public/ProductBandanas/ListBandanas.jsx";
+import useDataBandanas from "../../../components/Public/ProductBandanas/hooks/useDataBandanas.jsx";
 
 const Bandanas = () => {
   const [selectedFilter, setSelectedFilter] = useState();
