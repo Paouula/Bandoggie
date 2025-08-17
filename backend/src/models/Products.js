@@ -38,12 +38,12 @@ const ProductsSchema = new Schema({
 
     idHolidayProduct: {
         type: Schema.Types.ObjectId,
-        ref: "Holidays",
+        ref: "Holiday",
         require: true
     },
     idCategory: {
         type: Schema.Types.ObjectId,
-        ref: "Categorias",
+        ref: "Categories",
         require: true
     },
 }, {

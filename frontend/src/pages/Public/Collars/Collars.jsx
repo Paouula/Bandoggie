@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
+import ProductGrid from '../../../components/Public/Products/ProductGridPublic.jsx';
 
 //Import de las imagenes de los collares
 import Necklaces1 from '../../../img/Necklaces/Necklaces.png';

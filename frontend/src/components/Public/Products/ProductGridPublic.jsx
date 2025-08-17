@@ -1,6 +1,6 @@
 import React from 'react';
-import ProductCard from './ProductCardPublic.jsx';
-import Pagination from '../Pagination';
+import ProductCard from './PublicCardProduct/ProductCardPublic.jsx';
+import Pagination from '../../Pagination.jsx';
 
 const ProductGrid = ({ products }) => {
   return (

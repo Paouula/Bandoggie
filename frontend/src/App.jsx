@@ -10,7 +10,7 @@ import Navegation from "./components/Navegation.jsx";
 import Nav from "./components/Public/NavBar/NavBar.jsx";
 
 import AuthenticatedNavBar from "./components/Public/NavBar/NavBar.jsx";
-import { AuthProvider, useAuth } from "./Context/AuthContext.jsx";
+
 
 
 function AppContent() {

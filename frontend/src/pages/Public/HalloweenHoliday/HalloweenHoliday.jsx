@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Navigation from '../../../components/Public/NavegationHoliday.jsx';
-import Banner from '../../../components/Public/BannerHoliday.jsx';
+import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
+import ProductGrid from '../../../components/Public/Products/ProductGridPublic.jsx';
 import './HalloweenHoliday.css';
 
 // Imágenes Products
@@ -87,7 +87,7 @@ const HalloweenPetStore = () => {
     <div className="halloween-store">
       <Navigation breadcrumbs={breadcrumbs} />
       
-      <Banner 
+      <BannerHoliday 
         title="Halloween"
         description="¡Dale un toque aterrador y adorable a tu peludo con nuestras bandanas de Halloween!"
         buttonText="Comprar"

@@ -1,9 +1,9 @@
 /* Grid contenedor */
 .product-grid {
   display: grid !important; 
-  grid-template-columns: repeat(2, 1fr) !important;
+  grid-template-columns: repeat(5, 1fr) !important;
   gap: 20px !important;
-  padding: 20px !important;
+  padding: 5px !important;
   max-width: 1280px !important;
   margin: 0 auto !important;
   
