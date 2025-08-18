@@ -5,7 +5,7 @@ import ListOrders from "../../../components/Private/MainPage/ListOrderMainPage.j
 import BannerMainPage from '../../../img/BannerPrivate/MainPageBanner.png';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
 import LineaDivisora from '../../../components/LineaDivisora.jsx';
-import axios from "axios";
+//import axios from "axios";
 
 const OrdersPage = () => {
   const [carts, setCarts] = useState([]);
