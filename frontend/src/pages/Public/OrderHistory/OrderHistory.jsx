@@ -1,98 +1,90 @@
-// src/pages/Private/OrderHistory/OrderHistory.jsx
+// src/pages/Public/OrderHistory/OrderHistory.jsx
 import React, { useState, useEffect } from 'react';
 import OrderCard from '../../../components/OrderCard/OrderCard';
+import useOrders from '../../../hooks/OrderHistory/useOrders'; // CORRECCIÓN: Orders con mayúscula
 import './OrderHistory.css';
 
 const OrderHistory = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Datos de ejemplo - reemplazar con API call
-  const mockOrders = [
-    {
-      id: '2025024',
-      status: 'Completado',
-      date: '2025-01-30',
-      product: {
-        name: 'Bandanas celeste con diseño',
-        //image: '/src/assets/images/bandana-celeste.jpg',
-        size: 'XL',
-        quantity: 3,
-        color: '#87ceeb',
-        price: 12.99
-      },
-      delivery: {
-        city: 'San Salvador',
-        region: 'Mexicanos',
-        address: 'Calle 12, avenida 14',
-        reference: 'Hospital Zacamil'
-      },
-      customer: {
-        firstName: 'María',
-        lastName: 'Rosales',
-        phone: '76054567'
-      }
-    },
-    {
-      id: '2025023',
-      status: 'Pendiente',
-      date: '2025-02-01',
-      product: {
-        name: 'Collar de cuero premium',
-        //image: '/src/assets/images/collar-cuero.jpg',
-        size: 'M',
-        quantity: 1,
-        color: '#8B4513',
-        price: 25.99
-      },
-      delivery: {
-        city: 'San Salvador',
-        region: 'Centro',
-        address: 'Av. Roosevelt, Casa 123',
-        reference: 'Frente al parque'
-      },
-      customer: {
-        firstName: 'Carlos',
-        lastName: 'Mendoza',
-        phone: '78123456'
-      }
-    }
-  ];
+  // Usar el hook personalizado
+  const {
+    orders,
+    loading,
+    error,
+    fetchOrders,
+    filterOrders,
+    clearError
+  } = useOrders();
 
+  // Cargar órdenes al montar el componente
   useEffect(() => {
-    // Simular carga de datos
-    setTimeout(() => {
-      setOrders(mockOrders);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    fetchOrders().catch(err => {
+      console.error('Error loading orders:', err);
+    });
+  }, [fetchOrders]);
 
-  const filteredOrders = orders.filter(order => {
-    const matchesFilter = filter === 'all' || order.status.toLowerCase() === filter.toLowerCase();
-    const matchesSearch = order.id.includes(searchTerm) || 
-                         order.product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.customer.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.customer.lastName.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesFilter && matchesSearch;
-  });
+  // Filtrar órdenes según criterios
+  const filteredOrders = filterOrders(orders, filter, searchTerm);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
   };
 
-  const handleSearchChange = (term) => {
-    setSearchTerm(term);
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
-  if (loading) {
+  const handleSearch = () => {
+    // Búsqueda ya se maneja en tiempo real con filteredOrders
+  };
+
+  const handleRetry = () => {
+    clearError();
+    fetchOrders();
+  };
+
+  // Calcular estadísticas basadas en todas las órdenes cargadas
+  const stats = {
+    total: orders.length,
+    completed: orders.filter(o => o.status === 'Completado').length,
+    pending: orders.filter(o => o.status === 'Pendiente').length,
+    shipped: orders.filter(o => o.status === 'Enviado').length
+  };
+
+  if (loading && orders.length === 0) {
     return (
       <main className="main-container">
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Cargando historial de pedidos...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error && orders.length === 0) {
+    return (
+      <main className="main-container">
+        <div className="no-orders">
+          <div className="no-orders-icon">⚠️</div>
+          <h3>Error al cargar pedidos</h3>
+          <p>{error}</p>
+          <button 
+            onClick={handleRetry}
+            style={{
+              marginTop: '1rem',
+              padding: '0.8rem 1.5rem',
+              background: '#667eea',
+              color: 'white',
+              border: 'none',
+              borderRadius: '25px',
+              cursor: 'pointer'
+            }}
+          >
+            Reintentar
+          </button>
         </div>
       </main>
     );
@@ -107,22 +99,64 @@ const OrderHistory = () => {
         </p>
       </div>
 
+      <div className="filters-section">
+        <div className="filter-tabs">
+          <button 
+            className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => handleFilterChange('all')}
+          >
+            Todos
+          </button>
+          <button 
+            className={`filter-tab ${filter === 'completado' ? 'active' : ''}`}
+            onClick={() => handleFilterChange('completado')}
+          >
+            Completados
+          </button>
+          <button 
+            className={`filter-tab ${filter === 'pendiente' ? 'active' : ''}`}
+            onClick={() => handleFilterChange('pendiente')}
+          >
+            Pendientes
+          </button>
+          <button 
+            className={`filter-tab ${filter === 'enviado' ? 'active' : ''}`}
+            onClick={() => handleFilterChange('enviado')}
+          >
+            Enviados
+          </button>
+        </div>
+
+        <div className="search-filter">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Buscar por ID, producto o cliente..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <button className="search-btn" onClick={handleSearch}>
+            🔍
+          </button>
+        </div>
+      </div>
+
       <div className="orders-stats">
         <div className="stat-card">
-          <div className="stat-number">{orders.length}</div>
+          <div className="stat-number">{stats.total}</div>
           <div className="stat-label">Total Pedidos</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">
-            {orders.filter(o => o.status === 'Completado').length}
-          </div>
+          <div className="stat-number">{stats.completed}</div>
           <div className="stat-label">Completados</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">
-            {orders.filter(o => o.status === 'Pendiente').length}
-          </div>
+          <div className="stat-number">{stats.pending}</div>
           <div className="stat-label">Pendientes</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{stats.shipped}</div>
+          <div className="stat-label">Enviados</div>
         </div>
       </div>
 
@@ -134,7 +168,9 @@ const OrderHistory = () => {
             <p>
               {searchTerm 
                 ? `No hay pedidos que coincidan con "${searchTerm}"`
-                : 'No hay pedidos para mostrar en este filtro'
+                : filter === 'all' 
+                  ? 'No tienes pedidos registrados aún'
+                  : `No hay pedidos con estado "${filter}"`
               }
             </p>
           </div>
@@ -145,17 +181,19 @@ const OrderHistory = () => {
         )}
       </div>
 
-      <div className="pagination">
-        <button className="pagination-btn" disabled>
-          ← Anterior
-        </button>
-        <span className="pagination-info">
-          Página 1 de 1
-        </span>
-        <button className="pagination-btn" disabled>
-          Siguiente →
-        </button>
-      </div>
+      {filteredOrders.length > 0 && (
+        <div className="pagination">
+          <button className="pagination-btn" disabled>
+            ← Anterior
+          </button>
+          <span className="pagination-info">
+            Mostrando {filteredOrders.length} de {orders.length} pedidos
+          </span>
+          <button className="pagination-btn" disabled>
+            Siguiente →
+          </button>
+        </div>
+      )}
     </main>
   );
 };

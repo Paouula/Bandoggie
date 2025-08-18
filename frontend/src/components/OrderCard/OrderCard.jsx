@@ -21,10 +21,26 @@ const OrderCard = ({ order }) => {
   };
 
   const formatPrice = (price) => {
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
     return new Intl.NumberFormat('es-SV', {
       style: 'currency',
       currency: 'USD'
-    }).format(price);
+    }).format(numPrice || 0);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Fecha no disponible';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-SV', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      return dateString;
+    }
   };
 
   const handleToggleExpand = () => {
@@ -32,13 +48,97 @@ const OrderCard = ({ order }) => {
   };
 
   const handlePrintOrder = () => {
-    window.print();
+    const printContent = generatePrintContent();
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const generatePrintContent = () => {
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Pedido ${order.id}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          .header { text-align: center; margin-bottom: 30px; }
+          .section { margin: 20px 0; }
+          .label { font-weight: bold; }
+          .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+          @media print { button { display: none; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>Pedido #${order.id}</h1>
+          <p>Estado: ${order.status}</p>
+          <p>Fecha: ${formatDate(order.date)}</p>
+        </div>
+        
+        <div class="section">
+          <h3>Producto</h3>
+          <p><span class="label">Nombre:</span> ${order.product.name}</p>
+          <p><span class="label">Talla:</span> ${order.product.size}</p>
+          <p><span class="label">Cantidad:</span> ${order.product.quantity}</p>
+          <p><span class="label">Precio:</span> ${formatPrice(order.product.price)}</p>
+        </div>
+        
+        <div class="info-grid">
+          <div class="section">
+            <h3>Información de Entrega</h3>
+            <p><span class="label">Ciudad:</span> ${order.delivery.city}</p>
+            <p><span class="label">Región:</span> ${order.delivery.region}</p>
+            <p><span class="label">Dirección:</span> ${order.delivery.address}</p>
+            <p><span class="label">Referencia:</span> ${order.delivery.reference}</p>
+          </div>
+          
+          <div class="section">
+            <h3>Información del Cliente</h3>
+            <p><span class="label">Nombres:</span> ${order.customer.firstName}</p>
+            <p><span class="label">Apellidos:</span> ${order.customer.lastName}</p>
+            <p><span class="label">Teléfono:</span> ${order.customer.phone}</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
   };
 
   const handleDownloadPDF = () => {
-    // Implementar descarga de PDF
-    console.log('Descargar PDF del pedido:', order.id);
+    // Implementación básica de descarga como HTML
+    // En un entorno real, usarías una librería como jsPDF
+    const content = generatePrintContent();
+    const blob = new Blob([content], { type: 'text/html' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `pedido-${order.id}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   };
+
+  // Validar que el objeto order tenga la estructura esperada
+  if (!order || !order.product) {
+    return (
+      <div className="order-card">
+        <div className="order-header">
+          <div className="order-number">
+            Pedido n°: {order?.id || 'N/A'}
+          </div>
+          <span className="order-status status-default">
+            Error de datos
+          </span>
+        </div>
+        <div className="no-orders">
+          <p>Error: Datos del pedido incompletos</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`order-card ${isExpanded ? 'order-card-expanded' : ''}`}>
@@ -50,6 +150,14 @@ const OrderCard = ({ order }) => {
           <span className={`order-status ${getStatusClass(order.status)}`}>
             {order.status}
           </span>
+          <div className="action-buttons">
+            <button 
+              className="btn-icon"
+              onClick={handleToggleExpand}
+              title={isExpanded ? "Contraer" : "Expandir"}
+            >
+              {isExpanded ? '⬆️' : '⬇️'}
+            </button>
             <button 
               className="btn-icon"
               onClick={handlePrintOrder}
@@ -65,6 +173,7 @@ const OrderCard = ({ order }) => {
               📄
             </button>
           </div>
+        </div>
       </div>
 
       <div className="order-content">
@@ -100,8 +209,8 @@ const OrderCard = ({ order }) => {
             <p className="color-label">Color:</p>
             <div 
               className="color-indicator"
-              style={{ backgroundColor: order.product.color }}
-              title={`Color: ${order.product.color}`}
+              style={{ backgroundColor: order.product.color || '#87ceeb' }}
+              title={`Color: ${order.product.color || 'Predeterminado'}`}
             ></div>
           </div>
 
@@ -113,7 +222,6 @@ const OrderCard = ({ order }) => {
         <div className="order-info">
           <div className="info-section delivery-info">
             <h3 className="info-title">
-              <span className="info-icon">📍</span>
               Información de Entrega
             </h3>
             <div className="info-grid">
@@ -133,12 +241,15 @@ const OrderCard = ({ order }) => {
                 <span className="info-label">Referencia:</span>
                 <span className="info-value">{order.delivery.reference}</span>
               </div>
+              <div className="info-item">
+                <span className="info-label">Fecha:</span>
+                <span className="info-value">{formatDate(order.date)}</span>
+              </div>
             </div>
           </div>
 
           <div className="info-section customer-info">
             <h3 className="info-title">
-              <span className="info-icon">👤</span>
               Información del Cliente
             </h3>
             <div className="info-grid">
@@ -163,9 +274,61 @@ const OrderCard = ({ order }) => {
         </div>
       </div>
 
-      )
+      {isExpanded && (
+        <div className="order-timeline">
+          <h3 className="timeline-title">Seguimiento del Pedido</h3>
+          <div className="timeline">
+            <div className="timeline-item completed">
+              <div className="timeline-marker"></div>
+              <div className="timeline-content">
+                <h5>Pedido Recibido</h5>
+                <p>{formatDate(order.date)}</p>
+              </div>
+            </div>
+            
+            <div className={`timeline-item ${order.status !== 'Pendiente' ? 'completed' : ''}`}>
+              <div className="timeline-marker"></div>
+              <div className="timeline-content">
+                <h5>En Proceso</h5>
+                <p>
+                  {order.status !== 'Pendiente' 
+                    ? 'Pedido confirmado y en preparación'
+                    : 'Esperando confirmación de pago'
+                  }
+                </p>
+              </div>
+            </div>
+            
+            <div className={`timeline-item ${order.status === 'Enviado' || order.status === 'Completado' ? 'completed' : ''}`}>
+              <div className="timeline-marker"></div>
+              <div className="timeline-content">
+                <h5>Enviado</h5>
+                <p>
+                  {order.status === 'Enviado' || order.status === 'Completado'
+                    ? 'Pedido en camino'
+                    : 'Pendiente de envío'
+                  }
+                </p>
+              </div>
+            </div>
+            
+            <div className={`timeline-item ${order.status === 'Completado' ? 'completed' : ''}`}>
+              <div className="timeline-marker"></div>
+              <div className="timeline-content">
+                <h5>Entregado</h5>
+                <p>
+                  {order.status === 'Completado'
+                    ? 'Pedido entregado exitosamente'
+                    : 'Pendiente de entrega'
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default OrderCard;
+export default OrderCard; 
