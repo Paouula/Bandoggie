@@ -1,232 +1,131 @@
-import React, { useState } from 'react';
-import { Camera, User, Mail, Calendar, Phone, Lock, Loader2 } from 'lucide-react';
-import './ProfileCard.css';
+// ProfileCard.jsx
+import React, { useState } from "react";
+import { Loader2, User, Mail, Phone, Home } from "lucide-react";
+import useFetchUser from "../../hooks/Profile/useFetchProfileCard"; 
+import "./ProfileCard.css";
 
-const ProfileCard = ({ 
-  userInfo, 
-  isEditing, 
-  onInputChange, 
-  onEditToggle, 
-  isLoading = false, 
-  isAuthenticated = false,
-  onUpdateProfile 
-}) => {
-  const [isSaving, setIsSaving] = useState(false);
+const ProfileCard = () => {
+  const {
+    userInfo,
+    handleInputChange,
+    updateUserData,
+    isLoading,
+  } = useFetchUser();
 
-  // Configuración de campos según el tipo de usuario
-  const getFieldsConfig = (userType) => {
-    const baseFields = [
-      {
-        name: 'name',
-        label: 'Nombre',
-        type: 'text',
-        placeholder: 'Ingresa tu nombre',
-        icon: <User size={18} />,
-        required: true
-      },
-      {
-        name: 'email',
-        label: 'Correo Electrónico',
-        type: 'email',
-        placeholder: 'correo@ejemplo.com',
-        icon: <Mail size={18} />,
-        required: true
-      }
-    ];
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-    const additionalFields = {
-      client: [
-        {
-          name: 'birthDate',
-          label: 'Fecha de nacimiento',
-          type: 'date',
-          placeholder: 'DD/MM/YYYY',
-          icon: <Calendar size={18} />,
-          required: false
-        },
-        {
-          name: 'phone',
-          label: 'Teléfono',
-          type: 'tel',
-          placeholder: '0000-0000',
-          icon: <Phone size={18} />,
-          required: false
-        }
-      ],
-      employee: [
-        {
-          name: 'phone',
-          label: 'Teléfono de contacto',
-          type: 'tel',
-          placeholder: '0000-0000',
-          icon: <Phone size={18} />,
-          required: true
-        },
-        {
-          name: 'department',
-          label: 'Departamento',
-          type: 'text',
-          placeholder: 'Área de trabajo',
-          icon: <User size={18} />,
-          required: false
-        }
-      ],
-      vet: [
-        {
-          name: 'phone',
-          label: 'Teléfono de consulta',
-          type: 'tel',
-          placeholder: '0000-0000',
-          icon: <Phone size={18} />,
-          required: true
-        },
-        {
-          name: 'specialization',
-          label: 'Especialización',
-          type: 'text',
-          placeholder: 'Especialidad veterinaria',
-          icon: <User size={18} />,
-          required: false
-        },
-        {
-          name: 'license',
-          label: 'Número de licencia',
-          type: 'text',
-          placeholder: 'Licencia profesional',
-          icon: <User size={18} />,
-          required: false
-        }
-      ]
-    };
-
-    return [
-      ...baseFields,
-      ...(additionalFields[userType] || additionalFields.client),
-      {
-        name: 'password',
-        label: 'Contraseña',
-        type: 'password',
-        placeholder: '••••••••',
-        icon: <Lock size={18} />,
-        required: false
-      }
-    ];
-  };
-
+  // Guardar cambios
   const handleSave = async () => {
-    if (onUpdateProfile) {
-      setIsSaving(true);
-      const success = await onUpdateProfile(userInfo);
-      setIsSaving(false);
-      if (success) {
-        onEditToggle();
-      }
-    } else {
-      onEditToggle();
-    }
-  };
-
-  const renderFormFields = () => {
-    if (!isAuthenticated) {
-      return (
-        <div className="auth-placeholder">
-          <div className="auth-message">
-            <User size={48} className="auth-icon" />
-            <h3>Inicia sesión para ver tu perfil</h3>
-            <p>Accede a tu cuenta para gestionar tu información personal</p>
-          </div>
-        </div>
-      );
-    }
-
-    if (isLoading) {
-      return (
-        <div className="loading-container">
-          <Loader2 size={24} className="spinning" />
-          <p>Cargando información del perfil...</p>
-        </div>
-      );
-    }
-
-    const fields = getFieldsConfig(userInfo.userType);
-
-    return (
-      <>
-        {fields.map((field) => (
-          <div key={field.name} className="form-group">
-            <label className="form-label">
-              {field.icon && <span className="label-icon">{field.icon}</span>}
-              {field.label}
-              {field.required && <span className="required-asterisk">*</span>}
-            </label>
-            <div className="input-wrapper">
-              <input
-                type={field.type}
-                value={userInfo[field.name] || ''}
-                onChange={(e) => onInputChange(field.name, e.target.value)}
-                className={`form-input ${!isEditing ? 'readonly' : ''}`}
-                readOnly={!isEditing}
-                placeholder={field.placeholder}
-                required={field.required}
-              />
-            </div>
-          </div>
-        ))}
-      </>
-    );
-  };
-
-  const getRoleDisplayName = (userType) => {
-    const roleNames = {
-      client: 'Cliente',
-      employee: 'Empleado',
-      vet: 'Veterinario'
-    };
-    return roleNames[userType] || 'Usuario';
+    setSaving(true);
+    const success = await updateUserData(userInfo);
+    if (success) setIsEditing(false);
+    setSaving(false);
   };
 
   return (
-    <div className={`profile-card ${isLoading ? 'loading' : ''}`}>
+    <div className={`profile-card ${isLoading ? "loading" : ""}`}>
       <div className="profile-header">
         <div className="profile-avatar">
           <div className="avatar-placeholder">
-            {userInfo.name ? userInfo.name.charAt(0).toUpperCase() : <User size={24} />}
+            {userInfo?.name?.[0] || "U"}
           </div>
-          {isAuthenticated && (
-            <div className="camera-icon">
-              <Camera size={16} />
-            </div>
-          )}
         </div>
-        {isAuthenticated && userInfo.userType && (
-          <div className="user-role-badge">
-            <span className={`role-badge role-${userInfo.userType}`}>
-              {getRoleDisplayName(userInfo.userType)}
-            </span>
-          </div>
-        )}
+        <div className="user-role-badge">
+          <span className="role-badge role-client">
+            {userInfo.userType || "Cliente"}
+          </span>
+        </div>
       </div>
-      
+
       <div className="profile-form">
-        {renderFormFields()}
-        
-        {isAuthenticated && (
+        <div className="form-fields-container">
+          {/* Nombre */}
+          <div className="form-group">
+            <label className="form-label">
+              <User size={16} /> Nombre
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={userInfo.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              className={`form-input ${!isEditing ? "readonly" : ""}`}
+              readOnly={!isEditing}
+            />
+          </div>
+
+          {/* Correo */}
+          <div className="form-group">
+            <label className="form-label">
+              <Mail size={16} /> Correo
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={userInfo.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              className={`form-input ${!isEditing ? "readonly" : ""}`}
+              readOnly={!isEditing}
+            />
+          </div>
+
+          {/* Teléfono */}
+          <div className="form-group">
+            <label className="form-label">
+              <Phone size={16} /> Teléfono
+            </label>
+            <input
+              type="text"
+              name="phone"
+              value={userInfo.phone}
+              onChange={(e) => handleInputChange("phone", e.target.value)}
+              className={`form-input ${!isEditing ? "readonly" : ""}`}
+              readOnly={!isEditing}
+            />
+          </div>
+
+          {/* Dirección */}
+          <div className="form-group">
+            <label className="form-label">
+              <Home size={16} /> Dirección
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={userInfo.address}
+              onChange={(e) => handleInputChange("address", e.target.value)}
+              className={`form-input ${!isEditing ? "readonly" : ""}`}
+              readOnly={!isEditing}
+            />
+          </div>
+        </div>
+
+        {/* Botones */}
+        <div className="button-group">
           <button
-            type="button"
-            onClick={isEditing ? handleSave : onEditToggle}
-            className={`edit-button ${isEditing ? 'save-mode' : ''}`}
-            disabled={isSaving}
+            className={`edit-button ${isEditing ? "save-mode" : ""}`}
+            onClick={isEditing ? handleSave : () => setIsEditing(true)}
+            disabled={saving}
           >
-            {isSaving ? (
-              <>
-                <Loader2 size={16} className="spinning" />
-                Guardando...
-              </>
+            {saving ? (
+              <Loader2 className="spinning" size={18} />
+            ) : isEditing ? (
+              "Cancelar"
             ) : (
-              isEditing ? 'Guardar' : 'Editar'
+              "Editar"
             )}
           </button>
-        )}
+
+          {isEditing && (
+            <button
+              className="cancel-button"
+              onClick={() => setIsEditing(false)}
+            >
+              Guardar
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
