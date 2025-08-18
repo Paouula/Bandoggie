@@ -15,16 +15,18 @@ const Reviews = ({ reviews }) => {
     ));
 
   if (!reviews || reviews.length === 0) {
-    return <p>No hay reseñas para este producto.</p>;
+    return <p>¡Aún no hay reseñas para este producto!</p>;
   }
 
   return (
     <div className="reviews">
-      <h2>📝 Comentarios y reseñas</h2>
+      <div className="review-header">
+      <p className="review-tittle">Comentarios y reseñas</p>
+      </div>
       {reviews.map((review) => (
         <div key={review._id} className="review">
           {/* Cabecera */}
-          <div className="review-header">
+          <div className="review-user">
             <User size={20} />
             <h4>
               {review.idClient?.name || "Usuario"} {/* si backend popula */}

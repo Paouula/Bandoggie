@@ -30,12 +30,14 @@ const RelatedProducts = ({ products }) => {
     <style jsx>{`
         .related-products {
         margin-top: 50px;
+        font-family: 'Inter';
       }
 
       .related-products .title {
         font-size: 22px;
         font-weight: bold;
         margin-bottom: 20px;
+        color: #CB8E45 !important;
       }
 
       .related-grid {
@@ -70,14 +72,15 @@ const RelatedProducts = ({ products }) => {
       .related-card .info h3 {
         font-size: 16px;
         margin: 0 0 6px 0;
-        font-weight: 600;
+        font-weight: 500;
       }
 
       .related-card .info p {
         font-size: 14px;
-        color: orange;
+        color: #1B1B1B;
         margin: 0;
         font-weight: bold;
+        font-family: 'Inter'
       }
 
       `}</style>
