@@ -7,20 +7,38 @@
   padding: 10px 0;
 }
 
-.review-header{
-  background-color: #B4CEEC;
-  padding: 2px;
+.review-header {
 
+  background-image: url('../../../img/SelectedProduct/ReviewsHeader.png');
+  padding: 3px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px; 
 }
 
-.review-tittle {
+.review-title {
   font-family: 'Inter';
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 600;
   color: #1b1b1b;
-  margin-left: 10px;
-  margin-bottom: 4px;
+  margin: 0;
 }
+
+.toggle-reviews-btn {
+  background: none;
+  border: none;
+  color: #000000;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.toggle-reviews-btn:hover {
+  text-decoration: underline;
+}
+
 
 .review-user {
   display: flex;

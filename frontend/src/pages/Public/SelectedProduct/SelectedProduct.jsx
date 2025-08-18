@@ -4,16 +4,20 @@ import { useParams, Link } from "react-router-dom";
 import useProductData from "../../../components/Public/SelectedProduct/hooks/useProductData.jsx";
 import Reviews from "../../../components/Public/SelectedProduct/Reviews.jsx";
 import RelatedProducts from "../../../components/Public/SelectedProduct/RelatedProduct.jsx";
+import { useAuth } from "../../../Context/AuthContext.jsx"; 
+import { toast } from "react-hot-toast";
 import "./SelectedProduct.css";
 
 const SelectedProduct = () => {
   const { id } = useParams();
   const { product, relatedProducts, reviews, loading } = useProductData(id);
+  const { user } = useAuth(); // Obtener el estado del usuario desde el contexto
 
   const [selectedSize, setSelectedSize] = useState("S");
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
+  const [includeName, setIncludeName] = useState(true);
 
   const sizes = ["XS", "S", "M", "L", "XL"];
 
@@ -43,6 +47,15 @@ const SelectedProduct = () => {
   const nextImage = () => {
     setSelectedImage((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
   };
+
+  const totalReviews = reviews?.length || 0;
+
+  const averageRating =
+    totalReviews > 0
+      ? (
+          reviews.reduce((sum, r) => sum + (r.qualification || 0), 0) / totalReviews
+        ).toFixed(1)
+      : "5.0";
 
   return (
     <div className="product-page">
@@ -82,9 +95,7 @@ const SelectedProduct = () => {
               <button
                 key={index}
                 onClick={() => setSelectedImage(index)}
-                className={`thumbnail ${
-                  selectedImage === index ? "thumbnail-active" : ""
-                }`}
+                className={`thumbnail ${selectedImage === index ? "thumbnail-active" : ""}`}
                 aria-label={`Ver imagen ${index + 1}`}
               >
                 <img src={img} alt={`Miniatura ${index + 1}`} />
@@ -98,10 +109,11 @@ const SelectedProduct = () => {
           <h1>{product.nameProduct}</h1>
           <p className="price">Desde ${product.price}</p>
           <div className="rating">
-            <span>5.0</span>
-            <div className="stars">{renderStars(5)}</div>
-            <span>({reviews.length} evaluaciones)</span>
+            <span>{averageRating}</span>
+            <div className="stars">{renderStars(Math.round(averageRating))}</div>
+            <span>({totalReviews} evaluaciones)</span>
           </div>
+
           <p className="description-review">{product.description}</p>
 
           {/* Tallas */}
@@ -112,25 +124,38 @@ const SelectedProduct = () => {
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`size ${
-                    selectedSize === size ? "size-active" : ""
-                  }`}
+                  className={`size ${selectedSize === size ? "size-active" : ""}`}
                 >
                   {size}
                 </button>
               ))}
             </div>
+            <p className="size-guide">
+              <a href="/docs/guia-de-tallas.pdf" target="_blank" rel="noopener noreferrer">
+                Guía de tallas
+              </a>
+            </p>
           </div>
 
           {/* Nombre mascota */}
           <div className="section">
-            <label>Nombre </label>
-            <input
-              type="text"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              placeholder="Nombre de tu mascota"
-            />
+            <div className="customization-toggle">
+              <span>Personalizar con nombre</span>
+              <input
+                type="checkbox"
+                checked={includeName}
+                onChange={() => setIncludeName(!includeName)}
+              />
+            </div>
+
+            {includeName && (
+              <input
+                type="text"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                placeholder="Nombre de tu mascota"
+              />
+            )}
           </div>
 
           {/* Acciones */}
@@ -153,7 +178,7 @@ const SelectedProduct = () => {
       </div>
 
       {/* Reseñas */}
-      <Reviews reviews={reviews} />
+      <Reviews reviews={reviews} productId={product._id} />
 
       {/* Relacionados */}
       <RelatedProducts products={relatedProducts} />

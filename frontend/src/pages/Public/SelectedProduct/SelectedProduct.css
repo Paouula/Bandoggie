@@ -182,6 +182,34 @@
   border-color: #6897cc;
 }
 
+.size-guide {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.size-guide a {
+  color: #0056b3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.size-guide a:hover {
+  color: #CB8E45;
+}
+    
+.customization-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.customization-toggle input{
+  margin-left: -280px;
+}
+
 input {
   width: 100%;
   padding: 10px;
@@ -265,4 +293,47 @@ input {
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #ccc;
+}
+
+
+
+
+
+
+.btn-add-review {
+  background: #cb8e45;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 20px auto 10px;
+  display: block;
+  font-weight: bold;
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.review-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+}
+
+.review-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.review-message {
+  margin-top: 10px;
+  text-align: center;
+  color: green;
+  font-weight: 500;
 }
