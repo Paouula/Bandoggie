@@ -13,7 +13,7 @@ import loginRoutes from './src/routes/login.js';
 import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
-import cartRoutes from './src/routes/Cart.js';
+import cartRoutes from './src/routes/cart.js';
 import resendVerifyCode from './src/routes/resendVerifyCode.js'
 
 // Rutas de CRUDs
