@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-        toast.error("Usuario no autentificado: ".err.message);
+        toast.error("Usuario no autentificado: "+ err);
       })
       .finally(() => {
         setLoadingUser(false);

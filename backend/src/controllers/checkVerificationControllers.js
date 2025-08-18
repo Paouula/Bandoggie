@@ -7,7 +7,7 @@ checkVerification.checkPendingVerification = async (req, res) => {
   const token = req.cookies.VerificationToken;
 
   if (!token) {
-    console.log("No hay token, respondiendo pending: false");
+    console.log("No hay token de verificacion pendiente");
     return res.json({ pending: false });
   }
 
