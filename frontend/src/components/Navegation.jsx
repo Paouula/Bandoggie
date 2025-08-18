@@ -37,6 +37,7 @@ import LoginModal from "../components/LoginModal/Login.jsx";
 import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
 import Collars from "../pages/Public/Collars/Collars.jsx";
 import Accessories from "../pages/Public/Accessories/Accessories.jsx";
+import SelectedProduct from "../pages/Public/SelectedProduct/SelectedProduct.jsx";
 
 // Componentes privados
 import Home from "../pages/Private/MainPage/MainPage.jsx";
@@ -141,6 +142,7 @@ function Navegation() {
         <Route path="/bandanas" element={<Bandanas />} />
         <Route path="/collars" element={<Collars />} />
         <Route path="/accessories" element={<Accessories />} />
+        <Route path="/products/:id" element={<SelectedProduct />} />
         <Route path="/holidays" element={<Holidays />} />
         <Route path="/halloween" element={<Halloween />} />
         <Route path="/valentine" element={<Valentine />} />

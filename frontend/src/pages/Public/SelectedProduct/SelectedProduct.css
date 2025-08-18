@@ -1,0 +1,163 @@
+.product-page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.breadcrumb-active {
+  font-weight: bold;
+}
+
+.product-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.product-images .main-image img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.thumbnail-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-active {
+  border-color: #CB8E45;
+}
+
+.product-info h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.price {
+  color: #CB8E45;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.star-filled {
+  color: gold;
+}
+
+.star-empty {
+  color: lightgray;
+}
+
+.section {
+  margin: 20px 0;
+}
+
+.design-options {
+  display: flex;
+  gap: 10px;
+}
+
+.design {
+  width: 40px;
+  height: 40px;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.design-active {
+  border-color: gray;
+}
+
+.sizes {
+  display: flex;
+  gap: 10px;
+}
+
+.size {
+  padding: 8px 12px;
+  border: 2px solid gray;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.size-active {
+  background: lightblue;
+  border-color: blue;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 6px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn {
+  padding: 12px;
+  border-radius: 26px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+.add-to-cart {
+  background: #CB8E45;
+  color: white;
+}
+
+.buy-now {
+  background: #F7C7DE;
+  color: black;
+}
+
+.reviews {
+  margin-top: 40px;
+}
+
+.review {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

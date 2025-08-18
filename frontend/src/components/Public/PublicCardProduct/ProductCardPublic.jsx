@@ -1,9 +1,16 @@
 import React from 'react';
 import './ProductCardPublic.css';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/products/${product._id}`);
+  };
+
   return (
-    <div className="product-card">
+    <div className="product-card cursor-pointer" onClick={handleClick}>
       <div className="product-image">
         <img src={product.image} alt={product.nameProduct} />
       </div>
