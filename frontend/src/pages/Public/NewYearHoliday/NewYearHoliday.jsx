@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Navigation from '../../../components/Public/NavegationHoliday.jsx';
-import Banner from '../../../components/Public/BannerHoliday.jsx';
+import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
+import ProductGrid from '../../../components/Public/PublicCardProduct/ProductGridPublic.jsx';
 import './NewYearHoliday.css';
 
 // Imágenes de productos de Año Nuevo
@@ -87,7 +87,7 @@ const NewYearPetStore = () => {
     <div className="newyear-store">
       <Navigation breadcrumbs={breadcrumbs} />
       
-      <Banner 
+      <BannerHoliday 
         title="Año Nuevo"
         description="¡Recibe el nuevo año con estilo! Descubre nuestras bandanas brillantes y festivas para tu mascota."
         buttonText="Comprar"

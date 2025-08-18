@@ -2,12 +2,12 @@ import React from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 
 // Elementos gráficos
-import Element from '../../img/MainPage/Element.png';
-import Element2 from '../../img/MainPage/Element2.png';
-import Vector from '../../img/MainPage/VectorMainPage.png';
+import Element from '../../../img/MainPage/Element.png';
+import Element2 from '../../../img/MainPage/Element2.png';
+import Vector from '../../../img/MainPage/VectorMainPage.png';
 
 // Imagen Banner por defecto
-import DogCH from '../../img/ChristmasHoliday/DogCH.png';
+import DogCH from '../../../img/ChristmasHoliday/DogCH.png';
 
 const Banner = ({ 
   title = "Navidad", 

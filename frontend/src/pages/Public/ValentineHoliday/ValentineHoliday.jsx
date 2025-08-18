@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Navigation from '../../../components/Public/NavegationHoliday.jsx';
-import Banner from '../../../components/Public/BannerHoliday.jsx';
+import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
+import ProductGrid from '../../../components/Public/PublicCardProduct/ProductGridPublic.jsx';
 import './ValentineHoliday.css';
 
 // Imágenes de productos
@@ -87,7 +87,7 @@ const ValentinePetStore = () => {
     <div className="valentine-store">
       <Navigation breadcrumbs={breadcrumbs} />
       
-      <Banner 
+      <BannerHoliday 
         title="San Valentín"
         description="Celebra el amor con nuestras adorables bandanas temáticas para tu peludo. "
         buttonText="Comprar"

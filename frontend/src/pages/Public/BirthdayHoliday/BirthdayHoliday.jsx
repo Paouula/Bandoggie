@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Navigation from '../../../components/Public/NavegationHoliday.jsx';
-import Banner from '../../../components/Public/BannerHoliday.jsx';
+import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
+import ProductGrid from '../../../components/Public/PublicCardProduct/ProductGridPublic.jsx';
 import './BirthdayHoliday.css';
 
 // Imágenes de productos de cumpleaños
@@ -87,7 +87,7 @@ const BirthdayPetStore = () => {
     <div className="birthday-store">
       <Navigation breadcrumbs={breadcrumbs} />
 
-      <Banner 
+      <BannerHoliday 
         title="¡Feliz Cumpleaños!"
         description="Celebra el día más especial de tu mascota con nuestras bandanas llenas de color y alegría."
         buttonText="Comprar"

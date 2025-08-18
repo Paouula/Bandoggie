@@ -205,7 +205,7 @@ function NavBar() {
           <div className="navbar-nav-links">
             <Link className="navbar-nav-link" to="/main">Inicio</Link>
             <Link className="navbar-nav-link" to="/Bandanas">Bandanas</Link>
-            <Link className="navbar-nav-link" to="/necklaces">Collares</Link>
+            <Link className="navbar-nav-link" to="/collars">Collares</Link>
             <Link className="navbar-nav-link" to="/accessories">Accesorios</Link>
             <Link className="navbar-nav-link" to="/Holidays">Festividades</Link>
             <Link className="navbar-nav-link" to="/aboutus">Sobre nosotros</Link>

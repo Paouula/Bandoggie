@@ -1,6 +1,6 @@
 import {Schema, model} from "mongoose";
 
-const HolidaysSchema = new Schema({
+const HolidaySchema = new Schema({
     name: {
         type: String,
         require: true
@@ -10,4 +10,4 @@ const HolidaysSchema = new Schema({
     strict: false
 })
 
-export default model("Holidays", HolidaysSchema)
+export default model("Holiday", HolidaySchema)

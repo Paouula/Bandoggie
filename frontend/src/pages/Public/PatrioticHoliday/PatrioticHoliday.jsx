@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Navigation from '../../../components/Public/NavegationHoliday.jsx';
-import Banner from '../../../components/Public/BannerHoliday.jsx';
+import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx';
 import ProductFilters from '../../../components/Filter.jsx';
-import ProductGrid from '../../../components/Public/ProductGridPublic.jsx';
+import ProductGrid from '../../../components/Public/PublicCardProduct/ProductGridPublic.jsx';
 import './PatrioticHoliday.css';
 
 // Imágenes de productos 
@@ -81,7 +81,7 @@ const PatrioticPetStore = () => {
     <div className="patriotic-store">
       <Navigation breadcrumbs={breadcrumbs} />
       
-      <Banner 
+      <BannerHoliday
         title="Días Patrios"
         description="Celebra el orgullo salvadoreño con nuestras bandanas patrióticas para tu mejor amigo"
         buttonText="Comprar"

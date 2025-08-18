@@ -19,12 +19,10 @@ loginController.login = async (req, res) => {
       .json({ message: "Correo electrónico inválido o faltante" });
   }
   if (!password || password.length < 8) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "La contraseña es obligatoria y debe tener al menos 8 caracteres",
-      });
+    return res.status(400).json({
+      message:
+        "La contraseña es obligatoria y debe tener al menos 8 caracteres",
+    });
   }
 
   try {
@@ -102,6 +100,7 @@ loginController.login = async (req, res) => {
   }
 };
 
+// Obtener datos del usuario autenticado
 loginController.getAuthenticatedUser = async (req, res) => {
   const token = req.cookies.authToken;
 
@@ -129,6 +128,8 @@ loginController.getAuthenticatedUser = async (req, res) => {
       user: {
         email: user.email,
         name: user.name,
+        phone: user.phone || "",
+        address: user.address || "",
         userType: decoded.userType,
       },
     });
@@ -137,5 +138,59 @@ loginController.getAuthenticatedUser = async (req, res) => {
   }
 };
 
+// Actualizar datos del perfil
+loginController.updateProfile = async (req, res) => {
+  const token = req.cookies.authToken;
+
+  if (!token) {
+    return res.status(401).json({ message: "No autenticado" });
+  }
+
+  try {
+    const decoded = jsonwebtoken.verify(token, config.JWT.secret);
+    let user = null;
+
+    // Datos que se pueden actualizar
+    const { name, email, phone, address } = req.body;
+    const updateData = { name, email, phone, address };
+
+    // Eliminamos campos vacíos (para no sobreescribir con undefined)
+    Object.keys(updateData).forEach(
+      (key) => updateData[key] === undefined && delete updateData[key]
+    );
+
+    if (decoded.userType === "employee") {
+      user = await Employees.findByIdAndUpdate(decoded.user, updateData, {
+        new: true,
+      });
+    } else if (decoded.userType === "vet") {
+      user = await VetModel.findByIdAndUpdate(decoded.user, updateData, {
+        new: true,
+      });
+    } else if (decoded.userType === "client") {
+      user = await clientsModel.findByIdAndUpdate(decoded.user, updateData, {
+        new: true,
+      });
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    return res.status(200).json({
+      message: "Perfil actualizado correctamente",
+      user: {
+        email: user.email,
+        name: user.name,
+        phone: user.phone || "",
+        address: user.address || "",
+        userType: decoded.userType,
+      },
+    });
+  } catch (error) {
+    console.error("Error en updateProfile:", error);
+    return res.status(500).json({ message: "Error al actualizar el perfil" });
+  }
+};
 
 export default loginController;
