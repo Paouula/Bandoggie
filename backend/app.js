@@ -17,7 +17,7 @@ import cartRoutes from './src/routes/Cart.js';
 import resendVerifyCode from './src/routes/resendVerifyCode.js'
 
 // Rutas de CRUDs
-import holidayRoutes from './src/routes/holiday.js';
+import holidayRoutes from './src/routes/holidays.js';
 import clientsRoutes from './src/routes/clients.js';
 import vetsRoutes from './src/routes/vets.js'
 import adminRoutes from './src/routes/admin.js';

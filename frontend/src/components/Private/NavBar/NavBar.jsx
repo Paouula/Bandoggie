@@ -63,6 +63,7 @@ function AuthenticatedNavBar() {
             <Link className="navbar-nav-link" to="/admin/reseñas">Reseñas</Link>
             <Link className="navbar-nav-link" to="/admin/empleados">Empleados</Link>
             <Link className="navbar-nav-link" to="/admin/clientes">Clientes</Link>
+            <Link className="navbar-nav-link" to="/admin/graphics">Graficas</Link>
           </div>
 
           <div className="navbar-right-section">
