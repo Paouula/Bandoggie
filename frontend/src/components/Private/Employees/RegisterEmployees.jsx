@@ -173,7 +173,7 @@ export default function RegisterEmployee({
             {/* Información Personal */}
             <div className="form-section">
               <h3 className="section-title">
-                <User size={20} color="#3b82f6" /> Información Personal
+                <User size={20} color="#F5A02D" /> Información Personal
               </h3>
               <div className="form-grid">
                 {/* Nombre */}
