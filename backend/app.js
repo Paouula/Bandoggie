@@ -2,6 +2,9 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import fs from "fs";
+import path from "path";
 
 // Rutas de verificación y recuperación de usuarios
 import registerRoutes from './src/routes/registerClients.js';
@@ -11,6 +14,7 @@ import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
 import cartRoutes from './src/routes/Cart.js';
+import resendVerifyCode from './src/routes/resendVerifyCode.js'
 
 // Rutas de CRUDs
 import holidayRoutes from './src/routes/holiday.js';
@@ -46,7 +50,8 @@ app.use('/api/login', loginRoutes);
 app.use('/api/logout', logoutRoutes);
 app.use('/api/passwordRecovery', passwordRecoveryRoutes);
 app.use('/api/registerVet', registerVetRoutes);
-app.use('/api/auth/pending-verification', checkVerificationRoutes)
+app.use('/api/auth/pending-verification', checkVerificationRoutes);
+app.use('/api/resend-code', resendVerifyCode);
 
 // Rutas de CRUDs y Graficas
 app.use('/api/clients', clientsRoutes);
@@ -65,6 +70,13 @@ app.use('/api/guestClients', guestClients);
 
 // Rutas Gráficas
 //app.use('/api/sales', salesRoutes);
+
+//documrentación swagger
+const swaggerDocument = JSON.parse(
+    fs.readFileSync(path.resolve("./ricaldone-81c-Bandoggie-1.0.0-resolved.json"), "utf8")
+);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Carrito
 app.use('/api/cart', cartRoutes);

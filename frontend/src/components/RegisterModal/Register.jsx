@@ -11,6 +11,7 @@ import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Register.css";
 import InputDataPicker from "../InputDataPicker/InputDataPicker.jsx";
 import PasswordInput from "../InputPassword/InputPassword.jsx";
+import { useAuth } from "../../Context/AuthContext.jsx";
 
 const RegisterModal = ({
   onClose,
@@ -75,7 +76,7 @@ const RegisterModal = ({
       );
       if (response) {
         reset();
-        onRegisterSuccess?.();
+        onRegisterSuccess?.(data.email, "client");
       }
     } catch (error) {
       toast.error(error.message || "Registro fallido. Verifica tus datos.");
