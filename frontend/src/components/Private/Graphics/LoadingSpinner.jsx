@@ -1,4 +1,3 @@
-// Graphics.jsx - Componente principal
 import React, { useEffect, useState } from "react";
 import { BarChart3, LineChart, PieChart } from "lucide-react";
 import StatsCards from "../../../components/Private/Graphics/StatsCards.jsx";
@@ -6,7 +5,6 @@ import ChartBarDefault from "../../../components/Private/Graphics/ChartBarDefaul
 import ChartLineLabel from "../../../components/Private/Graphics/ChartLineLabel.jsx";
 import ChartPieDevices from "../../../components/Private/Graphics/ChartPieDevices.jsx";
 import MetricsCard from "../../../components/Private/Graphics/MetricsCard.jsx";
-import LoadingSpinner from "../../../components/Private/Graphics/LoadingSpinner.jsx";
 
 const Graphics = () => {
   const [isLoading, setIsLoading] = useState(true);

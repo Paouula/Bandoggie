@@ -13,7 +13,7 @@ import loginRoutes from './src/routes/login.js';
 import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
-import cartRoutes from './src/routes/cart.js';
+import cartRoutes from './src/routes/carts.js';
 import resendVerifyCode from './src/routes/resendVerifyCode.js'
 
 // Rutas de CRUDs
@@ -30,9 +30,6 @@ import ordersRoutes from "./src/routes/orders.js";
 // Rutas Invitados
 import guestWholesalers from './src/routes/wholesalersPurchase.js';
 import guestClients from './src/routes/retailsPurchase.js';
-
-// Rutas Gráficas
-//import salesRoutes from './src/routes/sales.js';
 
 const corsOptions = {
     origin: 'http://localhost:5173',

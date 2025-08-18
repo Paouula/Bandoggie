@@ -32,7 +32,6 @@ import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import Profile from "../pages/Public/Profile/Profile.jsx";
 import LoginModal from "../components/LoginModal/Login.jsx";
-import Graphics from "../pages/Private/Graphics/Graphics.jsx";
 
 //Paginas de productos sitio público
 import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
@@ -46,6 +45,7 @@ import Productos from "../pages/Private/Products/Products.jsx";
 import Reseñas from "../pages/Private/Reviews/Reviews.jsx";
 import Empleados from "../pages/Private/Employee/Employee.jsx";
 import Clientes from "../pages/Private/Clients/Clients.jsx";
+import Graphics from "../pages/Private/Graphics/Graphics.jsx";
 
 // Rutas protegidas
 import { PrivateRoute, EmployeeRoute } from "./PrivateRoute.jsx";
@@ -60,8 +60,8 @@ const EmployeeLayout = () => (
         <Route path="reseñas" element={<Reseñas />} />
         <Route path="empleados" element={<Empleados />} />
         <Route path="clientes" element={<Clientes />} />
-        <Route path="graphics" element={<Graphics/>}/>
         <Route path="*" element={<Navigate to="/admin/productos" replace />} />
+        <Route path="graphics" element={<Graphics/>}/>
       </Routes>
     </div>
   </>
