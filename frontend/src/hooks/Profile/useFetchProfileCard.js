@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import { API_FETCH_JSON } from '../../config.js';
 
 const useFetchUser = () => {
+  // Aquí se encuentran campos tanto de clientes como de veterinarias
   const [userInfo, setUserInfo] = useState({
     _id: '',
     userType: null,
@@ -11,71 +12,81 @@ const useFetchUser = () => {
     image: '',
     name: '',
     phone: '',
-    address: ''
+    address: '',
+    birthday: '',      
+    locationVet: '',   
+    nitVet: ''         
   });
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const endpoint = ["login", "logout"];
 
-  // Función para mapear los datos del backend a nuestro estado
+  // Mapear datos según tipo de usuario - MEJORADO
   const mapUserData = (userData) => {
-    console.log('=== Mapping User Data ===');
-    console.log('Raw user data:', userData);
-
-    const mappedData = {
+    const base = {
       _id: userData._id || '',
-      userType: userData.userType,
+      userType: userData.userType || null,
       email: userData.email || '',
       password: '',
       image: userData.image || '',
       name: userData.name || '',
       phone: userData.phone || '',
-      address: userData.address || ''
+      address: userData.address || '',
+      birthday: '',
+      locationVet: '',
+      nitVet: ''
     };
 
-    console.log('Mapped user data:', mappedData);
-    console.log('=========================');
-    return mappedData;
+    // Campos específicos para clientes
+    if (userData.userType === "client") {
+      base.birthday = userData.birthday || '';
+    }
+
+    // Campos específicos para veterinarios
+    if (userData.userType === "vet") {
+      base.locationVet = userData.locationVet || '';
+      base.nitVet = userData.nitVet || '';
+    }
+
+    return base;
   };
 
-  // Obtener datos del usuario autenticado
+  // Obtener datos del usuario autenticado - MEJORADO
   const fetchUserData = async () => {
-    console.log('🔍 Fetching user data...');
     try {
       setIsLoading(true);
 
-      const data = await API_FETCH_JSON('login/auth/me', {
+      const response = await API_FETCH_JSON(`${endpoint[0]}/auth/me`, {
         method: 'GET',
         headers: { "Content-Type": "application/json" },
         credentials: 'include'
       });
 
-      console.log('✅ API Response:', data);
-
-      if (data && data.user) {
-        const mappedUserData = mapUserData(data.user);
+      // Verificar si es una respuesta exitosa
+      if (response && response.user) {
+        const mappedUserData = mapUserData(response.user);
+        console.log('✅ Datos del usuario cargados:', mappedUserData);
         setUserInfo(mappedUserData);
         setIsAuthenticated(true);
-        console.log('✅ User authenticated successfully');
       } else {
-        console.log('❌ No user data found');
+        console.log('❌ No se encontraron datos de usuario');
         setIsAuthenticated(false);
         resetUserInfo();
       }
     } catch (error) {
       console.error('❌ Error fetching user data:', error);
-
+      
+      // Solo mostrar error si no es un 401 (no autenticado)
       if (error.status !== 401) {
         toast.error('Error al cargar datos del usuario');
       }
-
+      
       setIsAuthenticated(false);
       resetUserInfo();
     } finally {
       setIsLoading(false);
     }
-
-    console.log('🏁 Fetch completed');
   };
 
   // Resetear estado
@@ -88,91 +99,115 @@ const useFetchUser = () => {
       image: '',
       name: '',
       phone: '',
-      address: ''
+      address: '',
+      birthday: '',
+      locationVet: '',
+      nitVet: ''
     });
   };
 
-  // Filtrar datos antes de enviar
+  // Filtrar datos antes de enviar - MEJORADO
   const filterDataForUpdate = (data) => {
-    const filteredData = { ...data };
+    const filteredData = {};
 
-    delete filteredData.password;
-    delete filteredData._id;
-    delete filteredData.userType;
-    delete filteredData.image; // imagen se maneja aparte
+    // Campos comunes para todos los usuarios
+    if (data.email) filteredData.email = data.email;
+    if (data.phone) filteredData.phone = data.phone;
+    if (data.address) filteredData.address = data.address;
 
-    // Quitar vacíos
+    // Incluir solo campos relevantes según el tipo de usuario
+    if (data.userType === "client") {
+      if (data.name) filteredData.name = data.name;
+      if (data.birthday) filteredData.birthday = data.birthday;
+    } else if (data.userType === "vet") {
+      // Para veterinarios, enviar el nombre como 'nameVet' si es necesario
+      if (data.name) filteredData.name = data.name; // El backend decidirá si usar nameVet
+      if (data.locationVet) filteredData.locationVet = data.locationVet;
+      if (data.nitVet) filteredData.nitVet = data.nitVet;
+    } else if (data.userType === "employee") {
+      if (data.name) filteredData.name = data.name;
+    }
+
+    // Eliminar campos vacíos, pero mantener cadenas vacías válidas para algunos campos
     Object.keys(filteredData).forEach(key => {
-      if (
-        filteredData[key] === undefined ||
-        filteredData[key] === null ||
-        filteredData[key] === ''
-      ) {
+      if (filteredData[key] === undefined || filteredData[key] === null) {
         delete filteredData[key];
       }
     });
 
+    console.log('📤 Datos a enviar:', filteredData);
     return filteredData;
   };
 
-  // Actualizar datos del usuario
+  // Actualizar datos del usuario - MEJORADO
   const updateUserData = async (updatedData) => {
     try {
       const dataToSend = filterDataForUpdate(updatedData);
 
-      console.log('🔄 Updating user data via: login/auth/me');
-      console.log('🔄 Filtered data to send:', dataToSend);
+      console.log('🔄 Actualizando usuario con:', dataToSend);
 
-      const data = await API_FETCH_JSON('login/auth/me', {
+      const response = await API_FETCH_JSON(`${endpoint[0]}/auth/me/update`, {
         method: 'PUT',
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
         body: JSON.stringify(dataToSend)
       });
 
-      console.log('Update response:', data);
-
-      if (data.message && (
-        data.message.includes('actualizado') ||
-        data.message.includes('éxito') ||
-        data.message.includes('correctamente')
+      if (response && response.message && (
+        response.message.includes('actualizado') ||
+        response.message.includes('éxito') ||
+        response.message.includes('correctamente')
       )) {
-        setUserInfo(prevState => ({
-          ...prevState,
-          ...updatedData
-        }));
+        // Actualizar estado local con los datos devueltos por el servidor
+        if (response.user) {
+          const mappedUserData = mapUserData(response.user);
+          setUserInfo(mappedUserData);
+        } else {
+          // Si no devuelve user, actualizar solo los campos que enviamos
+          setUserInfo(prevState => ({
+            ...prevState,
+            ...dataToSend
+          }));
+        }
+        
         toast.success('Datos actualizados correctamente');
         return true;
       } else {
-        console.warn('Respuesta inesperada:', data);
-        toast.error('Error al actualizar los datos');
+        toast.error(response.message || 'Error al actualizar los datos');
         return false;
       }
     } catch (error) {
       console.error('❌ Error updating user data:', error);
-      toast.error(`Error al actualizar los datos: ${error.message || 'Error desconocido'}`);
+      
+      let errorMessage = 'Error al actualizar los datos';
+      
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage);
       return false;
     }
   };
 
   // Cambiar inputs del formulario
   const handleInputChange = (field, value) => {
-    console.log(`📝 Updating field: ${field} = ${value}`);
+    console.log(`📝 Cambiando ${field}: ${value}`);
     setUserInfo(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  // Logout
+  // Logout - MEJORADO
   const logout = async () => {
     try {
-      await API_FETCH_JSON('login/auth/logout', {
+      await API_FETCH_JSON(`${endpoint[1]}`, {
         method: 'POST',
         credentials: 'include'
       });
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error('Error durante logout:', error);
     } finally {
       setIsAuthenticated(false);
       resetUserInfo();
@@ -180,12 +215,13 @@ const useFetchUser = () => {
     }
   };
 
+  // Cargar datos al montar el componente
   useEffect(() => {
     fetchUserData();
   }, []);
 
+  // Función para refrescar datos
   const refreshUserData = () => {
-    console.log(' Refreshing user data...');
     fetchUserData();
   };
 

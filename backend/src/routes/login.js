@@ -10,6 +10,6 @@ router.post('/', loginController.login);
 router.get("/auth/me", loginController.getAuthenticatedUser);
 
 // Actualizar perfil
-router.put("/auth/me", loginController.updateProfile);
+router.put("/auth/me/update", loginController.updateProfile);
 
 export default router;
