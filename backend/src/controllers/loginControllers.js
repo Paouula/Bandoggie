@@ -8,16 +8,18 @@ import { config } from "../config.js";
 import validator from "validator";
 
 const loginController = {};
-const MAX_ATTEMPTS = 3, LOCK_TIME = 15 * 60 * 1000;
+const MAX_ATTEMPTS = 3, LOCK_TIME = 15 * 60 * 1000; // Max intentos antes de bloquear y tiempo de bloqueo (15 min)
 
 const toISODate = (v) => (v ? new Date(v).toISOString().split("T")[0] : "");
 
+// Mapeo de los distintos tipos de usuarios para buscarlos en la bd
 const models = {
   employee: Employees,
   vet: VetModel,
   client: clientsModel,
 };
 
+// Armamos la respuesta del usuario dependiendo de su tipo
 const buildUserResponse = (user, type) => {
   const base = {
     _id: user._id,
@@ -51,6 +53,8 @@ const buildUserResponse = (user, type) => {
 // -------------------------- LOGIN --------------------------
 loginController.login = async (req, res) => {
   const { email, password } = req.body;
+
+  // Validaciones basicas de email y password (acá evitamos basura en la entrada)
   if (!email || !validator.isEmail(email))
     return res.status(400).json({ message: "Correo electrónico inválido o faltante" });
   if (!password || password.length < 8)
@@ -58,22 +62,26 @@ loginController.login = async (req, res) => {
 
   try {
     let userFound, userType;
+    // Buscamos al usuario en cada colección (empleados, vets y clientes)
     for (const [type, model] of Object.entries(models)) {
       userFound = await model.findOne({ email });
       if (userFound) { userType = type; break; }
     }
     if (!userFound) return res.status(404).json({ message: "Usuario no encontrado" });
 
-    // Bloqueo activo
+    // Si el usuario está bloqueado todavía no puede entrar
     if (userFound.lockUntil && userFound.lockUntil.getTime() > Date.now()) {
       const m = Math.ceil((userFound.lockUntil.getTime() - Date.now()) / 60000);
       return res.status(403).json({ message: `Cuenta bloqueada. Intenta en ${m} min.` });
     }
 
+    // Comparamos contraseña con bcrypt
     const isMatch = await bcryptjs.compare(password, userFound.password);
     if (!isMatch) {
+      // Aumentamos los intentos fallidos
       userFound.loginAttempts = (userFound.loginAttempts || 0) + 1;
 
+      // Si ya pasó el límite, se bloquea la cuenta
       if (userFound.loginAttempts >= MAX_ATTEMPTS) {
         userFound.lockUntil = new Date(Date.now() + LOCK_TIME);
         await userFound.save();
@@ -89,17 +97,19 @@ loginController.login = async (req, res) => {
       });
     }
 
-    // Login exitoso -> resetear intentos
+    // Si la contraseña está bien -> reseteamos intentos y quitamos bloqueo
     userFound.loginAttempts = 0;
     userFound.lockUntil = undefined;
     await userFound.save();
 
+    // Generamos el token JWT para mantener la sesión
     const token = jsonwebtoken.sign(
       { user: String(userFound._id), userType },
       config.JWT.secret,
       { expiresIn: config.JWT.expiresIn }
     );
 
+    // Guardamos token en una cookie httpOnly (no se puede leer desde JS del navegador)
     res.cookie("authToken", token, { httpOnly: true, sameSite: "lax", secure: false });
     return res.status(200).json({
       message: "Login exitoso",
@@ -113,6 +123,8 @@ loginController.login = async (req, res) => {
 };
 
 // -------------------------- GET AUTH USER --------------------------
+// Checamos el token de la cookie y devolvemos los datos del usuario logueado
+// (si no existe el token o está expirado, se rechaza)
 loginController.getAuthenticatedUser = async (req, res) => {
   const token = req.cookies?.authToken;
   if (!token) return res.status(401).json({ message: "No autenticado" });
@@ -129,6 +141,8 @@ loginController.getAuthenticatedUser = async (req, res) => {
 };
 
 // -------------------------- UPDATE PROFILE --------------------------
+// Permite actualizar datos del perfil del usuario autenticado
+// Nota: acá solo dejamos cambiar lo basico (nombre, correo, etc) para evitar lios de seguridad
 loginController.updateProfile = async (req, res) => {
   const token = req.cookies?.authToken;
   if (!token) return res.status(401).json({ message: "No autenticado" });
@@ -142,6 +156,7 @@ loginController.updateProfile = async (req, res) => {
     if (userType === "vet") Object.assign(updateData, { nameVet: name, name, locationVet, nitVet });
     if (userType === "employee") updateData.name = name;
 
+    // Limpiamos campos vacios antes de guardar (truco para no mandar nulls innecesarios)
     Object.keys(updateData).forEach(k => !updateData[k] && delete updateData[k]);
     if (updateData.email && !validator.isEmail(updateData.email))
       return res.status(400).json({ message: "Correo electrónico inválido" });
@@ -162,6 +177,8 @@ loginController.updateProfile = async (req, res) => {
 };
 
 // -------------------------- LOGOUT --------------------------
+// Simple: limpiamos la cookie y listo, el user queda deslogueado
+// (esto es super util cuando quieres cerrar sesion desde el front)
 loginController.logout = (req, res) => {
   try {
     res.clearCookie("authToken", { httpOnly: true, sameSite: "lax", secure: false });

@@ -22,7 +22,7 @@ import clientsRoutes from './src/routes/clients.js';
 import vetsRoutes from './src/routes/vets.js'
 import adminRoutes from './src/routes/admin.js';
 import productsRoutes from './src/routes/product.js';
-import reviewsRoutes from './src/routes/reviews.js';
+import reviewsRoutes from './src/routes/review.js';
 import employeesRoutes from "./src/routes/employees.js";
 import categoriesRoutes from "./src/routes/categories.js";
 import ordersRoutes from "./src/routes/orders.js";
