@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { User, Star, Plus, Minus } from "lucide-react";
 import ReviewForm from "../../../components/Public/SelectedProduct/ReviewsForm/ReviewForm.jsx";
 import { useAuth } from "../../../Context/AuthContext.jsx";
-import { toast } from "react-hot-toast";
 import "./Reviews.css";
 
 const Reviews = ({ reviews, productId }) => {
   const [expanded, setExpanded] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [loginMessage, setLoginMessage] = useState(""); 
   const { user } = useAuth();
 
+  /* control del rating de estrellas */
   const renderStars = (rating) =>
     [...Array(5)].map((_, i) => (
       <Star
@@ -21,11 +22,10 @@ const Reviews = ({ reviews, productId }) => {
 
   const handleAddReviewClick = () => {
     if (!user) {
-      toast.error("¡Debes iniciar sesión para dejar una reseña!", {
-        id: "login-required",
-      });
+      setLoginMessage(" ¡Debes iniciar sesión para dejar una reseña!");
       return;
     }
+    setLoginMessage(""); // limpiar mensaje si ahora sí hay usuario
     setShowForm((prev) => !prev); // Alternar mostrar/ocultar formulario
   };
 
@@ -33,6 +33,7 @@ const Reviews = ({ reviews, productId }) => {
     <div className="reviews">
       <div className="review-header">
         <button
+          type="button"
           className="toggle-reviews-btn"
           onClick={() => setExpanded(!expanded)}
         >
@@ -57,7 +58,9 @@ const Reviews = ({ reviews, productId }) => {
                   </span>
                 </div>
 
-                <div className="review-stars">{renderStars(review.qualification)}</div>
+                <div className="review-stars">
+                  {renderStars(review.qualification)}
+                </div>
 
                 <p>{review.comment}</p>
 
@@ -81,11 +84,19 @@ const Reviews = ({ reviews, productId }) => {
 
           {/* Botón Agregar reseña */}
           <div className="add-review-wrapper">
-            <button className="btn-add-review" onClick={handleAddReviewClick}>
+            <button
+              type="button"
+              className="btn-add-review"
+              onClick={handleAddReviewClick}
+            >
               {showForm ? "Cancelar" : "Agregar reseña"}
             </button>
 
-            {showForm && <ReviewForm productId={productId} />}
+            {/* Mensaje si no hay sesión */}
+            {loginMessage && <p className="login-warning">{loginMessage}</p>}
+
+            {/* Formulario solo si hay sesión */}
+            {showForm && <ReviewForm productId={productId} user={user && user._id ? user : { ...user, _id: user.email }} />}
           </div>
         </div>
       )}

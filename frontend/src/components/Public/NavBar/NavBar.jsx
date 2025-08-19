@@ -281,16 +281,7 @@ function NavBar() {
           </div>
 
           <div className="navbar-right-section">
-            <div className="navbar-search-container">
-              <input
-                type="text"
-                className="navbar-search-input"
-                placeholder="Buscar..."
-              />
-              <button type="submit" className="navbar-search-button">
-                <i className="fas fa-search"></i>
-              </button>
-            </div>
+          
             <div className="navbar-icons-container">
               <a href="/profile">
                 <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />

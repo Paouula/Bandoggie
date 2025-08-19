@@ -99,3 +99,8 @@
 .review button:hover {
   text-decoration: underline;
 }
+
+.login-warning{
+  text-align: center;
+  margin-top: 18px;
+}

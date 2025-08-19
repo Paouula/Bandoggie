@@ -11,7 +11,7 @@ import "./SelectedProduct.css";
 const SelectedProduct = () => {
   const { id } = useParams();
   const { product, relatedProducts, reviews, loading } = useProductData(id);
-  const { user } = useAuth(); // Obtener el estado del usuario desde el contexto
+  const { user } = useAuth();
 
   const [selectedSize, setSelectedSize] = useState("S");
   const [quantity, setQuantity] = useState(1);
@@ -23,6 +23,128 @@ const SelectedProduct = () => {
 
   if (loading) return <p>Cargando producto...</p>;
   if (!product) return <p>No se encontró el producto</p>;
+
+  // Función mejorada para agregar al carrito
+  const handleAddToCart = () => {
+    try {
+      // Validar campos requeridos
+      if (!selectedSize) {
+        toast.error('Por favor selecciona una talla');
+        return;
+      }
+
+      if (includeName && !customerName.trim()) {
+        toast.error('Por favor ingresa el nombre de tu mascota');
+        return;
+      }
+
+      // Crear el objeto del producto con la estructura exacta que espera ShoppingCartApp
+      const productToAdd = {
+        _id: product._id,
+        id: product._id,
+        name: product.nameProduct,
+        nameProduct: product.nameProduct,
+        price: parseFloat(product.price) || 0,
+        quantity: quantity,
+        talla: selectedSize,
+        color: null, // Agregar si tienes selección de color
+        petName: includeName ? customerName.trim() : null,
+        image: product.image,
+        productInfo: {
+          image: product.image
+        }
+      };
+
+      console.log('Producto a agregar:', productToAdd); // Debug
+
+      // Obtener carrito existente del localStorage
+      let existingCart = [];
+      try {
+        const savedCart = localStorage.getItem('bandoggie_cart');
+        console.log('Carrito existente en localStorage:', savedCart); // Debug
+        
+        if (savedCart && savedCart !== 'undefined' && savedCart !== 'null') {
+          existingCart = JSON.parse(savedCart);
+          if (!Array.isArray(existingCart)) {
+            existingCart = [];
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing existing cart:', error);
+        existingCart = [];
+      }
+
+      console.log('Carrito parseado:', existingCart); // Debug
+
+      // Verificar si el producto ya existe en el carrito (considerando talla y nombre de mascota)
+      const existingItemIndex = existingCart.findIndex(item => 
+        item._id === productToAdd._id && 
+        item.talla === productToAdd.talla &&
+        item.petName === productToAdd.petName
+      );
+
+      let updatedCart;
+      if (existingItemIndex !== -1) {
+        // Si el producto ya existe, actualizar cantidad
+        updatedCart = [...existingCart];
+        updatedCart[existingItemIndex].quantity += quantity;
+        updatedCart[existingItemIndex].subtotal = 
+          updatedCart[existingItemIndex].quantity * updatedCart[existingItemIndex].price;
+        
+        toast.success(`Cantidad actualizada: ${updatedCart[existingItemIndex].quantity} unidades`);
+      } else {
+        // Si no existe, agregar como nuevo item
+        const newItem = {
+          ...productToAdd,
+          subtotal: productToAdd.price * quantity
+        };
+        updatedCart = [...existingCart, newItem];
+        
+        toast.success(`${productToAdd.name} agregado al carrito`);
+      }
+
+      console.log('Carrito actualizado:', updatedCart); // Debug
+
+      // Guardar el carrito actualizado en localStorage
+      localStorage.setItem('bandoggie_cart', JSON.stringify(updatedCart));
+      
+      // Disparar evento para que el NavBar y otros componentes se actualicen
+      window.dispatchEvent(new Event('cartUpdated'));
+      
+      // También disparar un evento personalizado con más detalles si es necesario
+      window.dispatchEvent(new CustomEvent('cartItemAdded', {
+        detail: {
+          product: productToAdd,
+          cartCount: updatedCart.length,
+          totalItems: updatedCart.reduce((sum, item) => sum + item.quantity, 0)
+        }
+      }));
+
+      console.log('Eventos disparados'); // Debug
+
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Error al agregar el producto al carrito');
+    }
+  };
+
+  // Función para verificar el estado del carrito (para debugging)
+  const checkCartStatus = () => {
+    const cart = localStorage.getItem('bandoggie_cart');
+    console.log('Estado actual del carrito:', cart);
+    if (cart) {
+      try {
+        const parsedCart = JSON.parse(cart);
+        console.log('Carrito parseado:', parsedCart);
+        toast.success(`Carrito tiene ${parsedCart.length} productos diferentes`);
+      } catch (e) {
+        console.error('Error al parsear carrito:', e);
+        toast.error('Error al leer el carrito');
+      }
+    } else {
+      toast.info('El carrito está vacío');
+    }
+  };
 
   // Unimos todas las imágenes en un solo array
   const allImages = [
@@ -170,9 +292,16 @@ const SelectedProduct = () => {
                   <option key={num}>{num}</option>
                 ))}
               </select>
-              <button className="btn add-to-cart">Añadir al carrito</button>
+              <button 
+                className="btn add-to-cart" 
+                onClick={handleAddToCart}
+                disabled={!selectedSize || (includeName && !customerName.trim())}
+              >
+                Añadir al carrito
+              </button>
             </div>
             <button className="btn buy-now">Comprar ahora</button>
+            
           </div>
         </div>
       </div>
