@@ -42,7 +42,7 @@ const OrderInformation = ({ order }) => {
     return (
       <div className="order-info-card">
         <div className="card-header">
-          <h1 className="title">Tus Pedidos</h1>
+          <h1 className="title">Información Pedido</h1>
           <p className="order-id">Pedido n°: {orderData?.id || 'N/A'}</p>
         </div>
         <div className="error-content">
