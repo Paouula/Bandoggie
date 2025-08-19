@@ -7,39 +7,84 @@ import {
   Home,
   MapPin,
   BadgeDollarSign,
-  AlertCircle
+  AlertCircle,
+  LogIn,
+  UserCircle,
+  Edit3,
+  Save,
+  X,
+  Shield,
+  Calendar
 } from "lucide-react";
 import useFetchUser from "../../hooks/Profile/useFetchProfileCard";
 import "./ProfileCard.css";
 
-const ProfileCard = () => {
+const ProfileCard = ({ 
+  isEditing: propIsEditing, 
+  onEditToggle, 
+  onUpdateProfile,
+  isLoading: propIsLoading,
+  isAuthenticated: propIsAuthenticated 
+}) => {
   const {
     userInfo,
     handleInputChange,
     updateUserData,
-    isLoading,
-    isAuthenticated
+    isLoading: hookIsLoading,
+    isAuthenticated: hookIsAuthenticated,
+    login
   } = useFetchUser();
 
-  const [isEditing, setIsEditing] = useState(false);
+  // Usar props si están disponibles, sino usar valores del hook
+  const isLoading = propIsLoading !== undefined ? propIsLoading : hookIsLoading;
+  const isAuthenticated = propIsAuthenticated !== undefined ? propIsAuthenticated : hookIsAuthenticated;
+
+  const [isEditing, setIsEditing] = useState(propIsEditing || false);
   const [saving, setSaving] = useState(false);
+  const [originalData, setOriginalData] = useState(null);
+
+  // Sincronizar con props
+  useEffect(() => {
+    if (propIsEditing !== undefined) {
+      setIsEditing(propIsEditing);
+    }
+  }, [propIsEditing]);
 
   // Debug: Mostrar datos en consola
   useEffect(() => {
     console.log('🔍 ProfileCard - Estado actual:', {
       userInfo,
       isLoading,
-      isAuthenticated
+      isAuthenticated,
+      propIsEditing,
+      isEditing
     });
-  }, [userInfo, isLoading, isAuthenticated]);
+  }, [userInfo, isLoading, isAuthenticated, propIsEditing, isEditing]);
+
+  // Guardar datos originales cuando entra en modo edición
+  const handleStartEdit = () => {
+    setOriginalData({ ...userInfo });
+    setIsEditing(true);
+    if (onEditToggle) onEditToggle();
+  };
 
   // Guardar cambios
   const handleSave = async () => {
     setSaving(true);
     try {
-      const success = await updateUserData(userInfo);
+      let success;
+      if (onUpdateProfile) {
+        // Usar función del componente padre si está disponible
+        success = await onUpdateProfile(userInfo);
+      } else {
+        // Usar función del hook
+        success = await updateUserData(userInfo);
+      }
+      
       if (success) {
         setIsEditing(false);
+        setOriginalData(null);
+        if (onEditToggle) onEditToggle();
       }
     } catch (error) {
       console.error('Error al guardar:', error);
@@ -50,9 +95,15 @@ const ProfileCard = () => {
 
   // Cancelar edición y revertir cambios
   const handleCancel = () => {
+    if (originalData) {
+      // Revertir todos los campos a su estado original
+      Object.keys(originalData).forEach(key => {
+        handleInputChange(key, originalData[key]);
+      });
+    }
     setIsEditing(false);
-    // Aquí podrías revertir los cambios si es necesario
-    // fetchUserData(); // Si tienes esta función disponible
+    setOriginalData(null);
+    if (onEditToggle) onEditToggle();
   };
 
   // Manejar cambios de input con validación
@@ -61,153 +112,254 @@ const ProfileCard = () => {
     handleInputChange(field, value);
   };
 
-  // Si no está autenticado, mostrar mensaje
-  if (!isAuthenticated && !isLoading) {
-    return (
-      <div className="profile-card error-state">
-        <div className="error-message">
-          <AlertCircle size={48} color="#dc2626" />
-          <h3>No autenticado</h3>
-          <p>Por favor, inicia sesión para ver tu perfil.</p>
+  // Componente para cuando no está autenticado
+  const NotAuthenticatedCard = () => (
+    <div className="profile-card not-authenticated">
+      <div className="not-auth-content">
+        <div className="not-auth-header">
+          <div className="not-auth-text">
+            <h2 className="not-auth-title">¡Hola! Accede a tu perfil</h2>
+            <p className="not-auth-subtitle">
+              Inicia sesión para ver y gestionar tu información personal
+            </p>
+          </div>
         </div>
       </div>
-    );
+    </div>
+  );
+
+
+  // Componente para estado de carga
+  const LoadingCard = () => (
+    <div className="profile-card loading-state">
+      <div className="loading-content">
+        <div className="loading-spinner">
+          <Loader2 className="spinner-icon" size={48} />
+        </div>
+        <div className="loading-text">
+          <h3>Cargando tu perfil...</h3>
+          <p>Obteniendo información personalizada</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Componente para errores
+  const ErrorCard = () => (
+    <div className="profile-card error-state">
+      <div className="error-content">
+        <div className="error-icon">
+          <AlertCircle size={48} />
+        </div>
+        <div className="error-text">
+          <h3>Ops! Algo salió mal</h3>
+          <p>No pudimos cargar tu información. Intenta nuevamente.</p>
+        </div>
+        <button 
+          className="retry-button"
+          onClick={() => window.location.reload()}
+        >
+          Intentar de nuevo
+        </button>
+      </div>
+    </div>
+  );
+
+  // Función para obtener el tipo de usuario en español
+  const getUserTypeLabel = (userType) => {
+    const types = {
+      vet: "Veterinario",
+      client: "Cliente", 
+      employee: "Empleado"
+    };
+    return types[userType] || "Usuario";
+  };
+
+  // Si no está autenticado, mostrar tarjeta de login
+  if (!isAuthenticated && !isLoading) {
+    return <NotAuthenticatedCard />;
   }
 
   // Si está cargando, mostrar loader
   if (isLoading) {
-    return (
-      <div className="profile-card loading-state">
-        <div className="loading-spinner">
-          <Loader2 className="spinning" size={48} />
-          <p>Cargando información del perfil...</p>
-        </div>
-      </div>
-    );
+    return <LoadingCard />;
   }
 
   // Si no hay userInfo después de cargar, mostrar error
   if (!userInfo || !userInfo.userType) {
-    return (
-      <div className="profile-card error-state">
-        <div className="error-message">
-          <AlertCircle size={48} color="#dc2626" />
-          <h3>Error al cargar perfil</h3>
-          <p>No se pudieron cargar los datos del usuario.</p>
-        </div>
-      </div>
-    );
+    return <ErrorCard />;
   }
 
   return (
-    <div className={`profile-card ${isLoading ? "loading" : ""}`}>
+    <div className={`profile-card authenticated ${isEditing ? 'editing' : ''}`}>
+      {/* Header del perfil */}
       <div className="profile-header">
-        <div className="profile-avatar">
-          <div className="avatar-placeholder">
-            {userInfo?.name?.[0]?.toUpperCase() || "U"}
+        <div className="profile-avatar-section">
+          <div className="profile-avatar">
+            {userInfo.image ? (
+              <img 
+                src={userInfo.image} 
+                alt={userInfo.name} 
+                className="avatar-image"
+              />
+            ) : (
+              <div className="avatar-placeholder">
+                {userInfo?.name?.[0]?.toUpperCase() || "U"}
+              </div>
+            )}
+          </div>
+          <div className="profile-header-info">
+            <h2 className="profile-name">{userInfo.name || "Usuario"}</h2>
+            <span className={`role-badge role-${userInfo.userType}`}>
+              {getUserTypeLabel(userInfo.userType)}
+            </span>
           </div>
         </div>
-        <div className="user-role-badge">
-          <span className={`role-badge role-${userInfo.userType}`}>
-            {userInfo.userType === "vet" 
-              ? "Veterinario" 
-              : userInfo.userType === "client" 
-              ? "Cliente" 
-              : "Empleado"
-            }
-          </span>
+        
+        <div className="profile-actions">
+          {!isEditing ? (
+            <button 
+              className="edit-button"
+              onClick={handleStartEdit}
+              disabled={saving}
+            >
+              <Edit3 size={16} />
+              Editar Perfil
+            </button>
+          ) : (
+            <div className="edit-actions">
+              <button 
+                className="save-button"
+                onClick={handleSave}
+                disabled={saving}
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="spinning" size={16} />
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} />
+                    Guardar
+                  </>
+                )}
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={handleCancel}
+                disabled={saving}
+              >
+                <X size={16} />
+                Cancelar
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Formulario de información */}
       <div className="profile-form">
-        <div className="form-fields-container">
-          {/* Nombre */}
-          <div className="form-group">
-            <label className="form-label">
-              <User size={16} /> Nombre
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={userInfo.name || ""}
-              onChange={(e) => handleInputChangeWithValidation("name", e.target.value)}
-              className={`form-input ${!isEditing ? "readonly" : ""}`}
-              readOnly={!isEditing}
-              placeholder="Ingresa tu nombre"
-            />
-          </div>
-
-          {/* Correo */}
-          <div className="form-group">
-            <label className="form-label">
-              <Mail size={16} /> Correo
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={userInfo.email || ""}
-              onChange={(e) => handleInputChangeWithValidation("email", e.target.value)}
-              className={`form-input ${!isEditing ? "readonly" : ""}`}
-              readOnly={!isEditing}
-              placeholder="Ingresa tu correo"
-            />
-          </div>
-
-          {/* Teléfono */}
-          <div className="form-group">
-            <label className="form-label">
-              <Phone size={16} /> Teléfono
-            </label>
-            <input
-              type="text"
-              name="phone"
-              value={userInfo.phone || ""}
-              onChange={(e) => handleInputChangeWithValidation("phone", e.target.value)}
-              className={`form-input ${!isEditing ? "readonly" : ""}`}
-              readOnly={!isEditing}
-              placeholder="Ingresa tu teléfono"
-            />
-          </div>
-
-          {/* Dirección - Campo común para todos */}
-          <div className="form-group">
-            <label className="form-label">
-              <Home size={16} /> Dirección
-            </label>
-            <input
-              type="text"
-              name="address"
-              value={userInfo.address || ""}
-              onChange={(e) => handleInputChangeWithValidation("address", e.target.value)}
-              className={`form-input ${!isEditing ? "readonly" : ""}`}
-              readOnly={!isEditing}
-              placeholder="Ingresa tu dirección"
-            />
-          </div>
-
-          {/* Campos específicos para CLIENTES */}
-          {userInfo.userType === "client" && (
+        <div className="form-sections">
+          {/* Información básica */}
+          <div className="form-section">
+            <h4 className="section-title">Información Personal</h4>
+            
             <div className="form-group">
               <label className="form-label">
-                <Home size={16} /> Cumpleaños
+                <User size={16} />
+                Nombre completo
               </label>
               <input
-                type="date"
-                name="birthday"
-                value={userInfo.birthday || ""}
-                onChange={(e) => handleInputChangeWithValidation("birthday", e.target.value)}
+                type="text"
+                name="name"
+                value={userInfo.name || ""}
+                onChange={(e) => handleInputChangeWithValidation("name", e.target.value)}
                 className={`form-input ${!isEditing ? "readonly" : ""}`}
                 readOnly={!isEditing}
+                placeholder="Ingresa tu nombre completo"
               />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <Mail size={16} />
+                Correo electrónico
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={userInfo.email || ""}
+                onChange={(e) => handleInputChangeWithValidation("email", e.target.value)}
+                className={`form-input ${!isEditing ? "readonly" : ""}`}
+                readOnly={!isEditing}
+                placeholder="correo@ejemplo.com"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <Phone size={16} />
+                Teléfono
+              </label>
+              <input
+                type="text"
+                name="phone"
+                value={userInfo.phone || ""}
+                onChange={(e) => handleInputChangeWithValidation("phone", e.target.value)}
+                className={`form-input ${!isEditing ? "readonly" : ""}`}
+                readOnly={!isEditing}
+                placeholder="+503 0000-0000"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <Home size={16} />
+                Dirección
+              </label>
+              <input
+                type="text"
+                name="address"
+                value={userInfo.address || ""}
+                onChange={(e) => handleInputChangeWithValidation("address", e.target.value)}
+                className={`form-input ${!isEditing ? "readonly" : ""}`}
+                readOnly={!isEditing}
+                placeholder="Tu dirección completa"
+              />
+            </div>
+          </div>
+
+          {/* Información específica por tipo de usuario */}
+          {userInfo.userType === "client" && (
+            <div className="form-section">
+              <h4 className="section-title">Información Adicional</h4>
+              
+              <div className="form-group">
+                <label className="form-label">
+                  <Calendar size={16} />
+                  Fecha de nacimiento
+                </label>
+                <input
+                  type="date"
+                  name="birthday"
+                  value={userInfo.birthday ? userInfo.birthday.split('T')[0] : ""}
+                  onChange={(e) => handleInputChangeWithValidation("birthday", e.target.value)}
+                  className={`form-input ${!isEditing ? "readonly" : ""}`}
+                  readOnly={!isEditing}
+                />
+              </div>
             </div>
           )}
 
-          {/* Campos específicos para VETERINARIOS */}
           {userInfo.userType === "vet" && (
-            <>
+            <div className="form-section">
+              <h4 className="section-title">Información de Veterinaria</h4>
+              
               <div className="form-group">
                 <label className="form-label">
-                  <MapPin size={16} /> Ubicación
+                  <MapPin size={16} />
+                  Ubicación
                 </label>
                 <input
                   type="text"
@@ -222,7 +374,8 @@ const ProfileCard = () => {
 
               <div className="form-group">
                 <label className="form-label">
-                  <BadgeDollarSign size={16} /> NIT
+                  <BadgeDollarSign size={16} />
+                  NIT
                 </label>
                 <input
                   type="text"
@@ -234,63 +387,37 @@ const ProfileCard = () => {
                   placeholder="NIT de la veterinaria"
                 />
               </div>
-            </>
+            </div>
           )}
         </div>
 
-        {/* Botones */}
-        <div className="button-group">
-          <button
-            className={`edit-button ${isEditing ? "cancel-mode" : ""}`}
-            onClick={isEditing ? handleCancel : () => setIsEditing(true)}
-            disabled={saving}
-          >
-            {saving ? (
-              <>
-                <Loader2 className="spinning" size={18} />
-                Guardando...
-              </>
-            ) : isEditing ? (
-              "Cancelar"
-            ) : (
-              "Editar"
-            )}
-          </button>
+        {/* Información de estado */}
+        {isEditing && (
+          <div className="editing-notice">
+            <AlertCircle size={16} />
+            <span>Modo de edición activado. Realiza tus cambios y guarda.</span>
+          </div>
+        )}
+      </div>
 
-          {isEditing && (
-            <button
-              className="save-button"
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? (
-                <>
-                  <Loader2 className="spinning" size={18} />
-                  Guardando...
-                </>
-              ) : (
-                "Guardar"
-              )}
-            </button>
-          )}
-        </div>
-
-        {/* Debug info - Remover en producción */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="debug-info">
-            <details>
-              <summary>Debug Info</summary>
-              <pre>{JSON.stringify({
+      {/* Debug info - Solo en desarrollo */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="debug-section">
+          <details className="debug-details">
+            <summary>Información de Debug</summary>
+            <pre className="debug-content">
+              {JSON.stringify({
                 userInfo,
                 isLoading,
                 isAuthenticated,
                 isEditing,
-                saving
-              }, null, 2)}</pre>
-            </details>
-          </div>
-        )}
-      </div>
+                saving,
+                originalData
+              }, null, 2)}
+            </pre>
+          </details>
+        </div>
+      )}
     </div>
   );
 };
