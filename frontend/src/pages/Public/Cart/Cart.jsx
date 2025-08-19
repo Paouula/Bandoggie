@@ -8,7 +8,7 @@ const ShoppingCartApp = ({ onClose }) => {
   const [cartItems, setCartItems] = useState([]);
   const [currentStep, setCurrentStep] = useState('cart');
   const [paymentMethod, setPaymentMethod] = useState('transferencia');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [guestId, setGuestId] = useState(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
@@ -36,45 +36,198 @@ const ShoppingCartApp = ({ onClose }) => {
     return `guest_${timestamp}_${random}`;
   }, []);
 
-  // Inicializar guest ID y cargar carrito de localStorage
-  useEffect(() => {
+  // FUNCIÓN MEJORADA PARA CARGAR EL CARRITO DE LOCALSTORAGE
+  const loadCartFromStorage = useCallback(() => {
     try {
+      console.log('🔄 Cargando carrito desde localStorage...');
+      
+      const savedCart = localStorage.getItem('bandoggie_cart');
+      console.log('📦 Carrito raw desde localStorage:', savedCart);
+      
+      if (!savedCart || savedCart === 'undefined' || savedCart === 'null') {
+        console.log('❌ No hay carrito guardado o está vacío');
+        setCartItems([]);
+        return;
+      }
+
+      const parsedCart = JSON.parse(savedCart);
+      console.log('📋 Carrito parseado:', parsedCart);
+      
+      if (!Array.isArray(parsedCart)) {
+        console.log('❌ El carrito no es un array válido');
+        setCartItems([]);
+        return;
+      }
+
+      if (parsedCart.length === 0) {
+        console.log('📭 El carrito está vacío');
+        setCartItems([]);
+        return;
+      }
+
+      // Normalizar cada item del carrito para asegurar consistencia
+      const normalizedCart = parsedCart.map((item, index) => {
+        console.log(`📝 Normalizando item ${index}:`, item);
+        
+        const normalizedItem = {
+          _id: item._id || item.id || `temp_${Date.now()}_${index}`,
+          id: item._id || item.id || `temp_${Date.now()}_${index}`,
+          name: item.name || item.nameProduct || 'Producto Sin Nombre',
+          nameProduct: item.name || item.nameProduct || 'Producto Sin Nombre',
+          price: parseFloat(item.price) || 0,
+          quantity: parseInt(item.quantity) || 1,
+          subtotal: item.subtotal || (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 1),
+          talla: item.talla || null,
+          color: item.color || null,
+          petName: item.petName || null,
+          image: item.image || (item.productInfo && item.productInfo.image) || null,
+          productInfo: item.productInfo || { image: item.image || null }
+        };
+        
+        console.log(`✅ Item normalizado ${index}:`, normalizedItem);
+        return normalizedItem;
+      });
+      
+      console.log('🛒 Carrito final normalizado:', normalizedCart);
+      console.log(`📊 Total de items en el carrito: ${normalizedCart.length}`);
+      
+      setCartItems(normalizedCart);
+      
+    } catch (error) {
+      console.error('❌ Error cargando carrito desde localStorage:', error);
+      setCartItems([]);
+      toast.error('Error al cargar el carrito');
+    }
+  }, []);
+
+  // Escuchar cambios en localStorage directamente
+  const handleStorageChange = useCallback((e) => {
+    if (e.key === 'bandoggie_cart') {
+      console.log('🔔 Evento de cambio en localStorage detectado');
+      loadCartFromStorage();
+    }
+  }, [loadCartFromStorage]);
+
+  // Inicializar componente
+  useEffect(() => {
+    console.log('🚀 Inicializando ShoppingCartApp...');
+    
+    try {
+      setLoading(true);
+      
       // Generar guest ID si no existe
       if (!guestId) {
         const newGuestId = generateGuestId();
         setGuestId(newGuestId);
+        console.log('🆔 Generated guest ID:', newGuestId);
       }
 
       // Cargar carrito del localStorage
-      const savedCart = localStorage.getItem('bandoggie_cart');
-      if (savedCart) {
-        try {
-          const parsedCart = JSON.parse(savedCart);
-          if (Array.isArray(parsedCart)) {
-            setCartItems(parsedCart);
-          }
-        } catch (parseError) {
-          console.error('Error parsing saved cart:', parseError);
+      loadCartFromStorage();
+      
+    } catch (error) {
+      console.error('❌ Error initializing cart:', error);
+      setInternalError('Error al inicializar el carrito');
+    } finally {
+      // Pequeño delay para mostrar el loading
+      setTimeout(() => {
+        setLoading(false);
+        console.log('✅ ShoppingCartApp inicializado');
+      }, 500);
+    }
+  }, [guestId, generateGuestId, loadCartFromStorage]);
+
+  // Escuchar eventos de actualización del carrito
+  useEffect(() => {
+    const handleCartUpdate = (e) => {
+      console.log('🔄 Evento cartUpdated recibido:', e);
+      loadCartFromStorage();
+    };
+
+    const handleCartItemAdded = (e) => {
+      console.log('➕ Evento cartItemAdded recibido:', e.detail);
+      loadCartFromStorage();
+    };
+
+    // Eventos personalizados
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener('cartItemAdded', handleCartItemAdded);
+    
+    // Eventos del sistema
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener('cartItemAdded', handleCartItemAdded);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [loadCartFromStorage, handleStorageChange]);
+
+  // Forzar recarga del carrito cada vez que se abre el componente
+  useEffect(() => {
+    console.log('👀 Componente montado/actualizado, forzando recarga del carrito...');
+    loadCartFromStorage();
+  }, []); // Solo ejecutar una vez al montar
+
+  // Log de cambios en cartItems para debugging
+  useEffect(() => {
+    console.log('🔄 cartItems actualizado:', cartItems);
+    console.log(`📊 Cantidad de items: ${cartItems.length}`);
+  }, [cartItems]);
+
+  // Guardar carrito en localStorage cuando cambie (pero solo si no estamos cargando)
+  useEffect(() => {
+    if (loading) return; // No guardar mientras estamos cargando
+    
+    try {
+      if (cartItems.length > 0) {
+        const cartToSave = JSON.stringify(cartItems);
+        localStorage.setItem('bandoggie_cart', cartToSave);
+        console.log('💾 Carrito guardado en localStorage:', cartToSave);
+        
+        // Disparar evento para que NavBar se actualice
+        window.dispatchEvent(new Event('cartUpdated'));
+      } else {
+        // Solo limpiar si explícitamente se vació el carrito y no estamos cargando
+        if (!loading) {
           localStorage.removeItem('bandoggie_cart');
+          console.log('🗑️ Carrito limpiado del localStorage');
+          window.dispatchEvent(new Event('cartUpdated'));
         }
       }
     } catch (error) {
-      console.error('Error initializing cart:', error);
+      console.error('❌ Error saving cart to localStorage:', error);
     }
-  }, [guestId, generateGuestId]);
+  }, [cartItems, loading]);
 
-  // Guardar carrito en localStorage cuando cambie
-  useEffect(() => {
-    try {
-      if (cartItems.length >= 0) {
-        localStorage.setItem('bandoggie_cart', JSON.stringify(cartItems));
-        // Disparar evento para que NavBar se actualice
-        window.dispatchEvent(new Event('cartUpdated'));
+  // Función para recargar manualmente el carrito
+  const reloadCart = () => {
+    console.log('🔄 Recargando carrito manualmente...');
+    loadCartFromStorage();
+    toast.success('Carrito recargado');
+  };
+
+  // Función para debuggar el carrito
+  const debugCart = () => {
+    console.log('🐛 DEBUG CART INFO:');
+    console.log('- cartItems:', cartItems);
+    console.log('- cartItems.length:', cartItems.length);
+    console.log('- localStorage content:', localStorage.getItem('bandoggie_cart'));
+    console.log('- loading:', loading);
+    console.log('- currentStep:', currentStep);
+    
+    const savedCart = localStorage.getItem('bandoggie_cart');
+    if (savedCart) {
+      try {
+        const parsed = JSON.parse(savedCart);
+        toast.success(`Debug: ${parsed.length} items en localStorage`);
+      } catch (e) {
+        toast.error('Debug: Error parseando localStorage');
       }
-    } catch (error) {
-      console.error('Error saving cart to localStorage:', error);
+    } else {
+      toast.info('Debug: No hay datos en localStorage');
     }
-  }, [cartItems]);
+  };
 
   // Funciones de validación
   const validateEmail = (email) => {
@@ -162,7 +315,8 @@ const ShoppingCartApp = ({ onClose }) => {
         const existingItemIndex = prevItems.findIndex(item => 
           item._id === product._id && 
           item.talla === product.talla &&
-          item.color === product.color
+          item.color === product.color &&
+          item.petName === product.petName
         );
         
         if (existingItemIndex !== -1) {
@@ -178,6 +332,7 @@ const ShoppingCartApp = ({ onClose }) => {
             _id: product._id || `temp_${Date.now()}`,
             id: product._id || `temp_${Date.now()}`,
             name: product.nameProduct || product.name || 'Producto',
+            nameProduct: product.nameProduct || product.name || 'Producto',
             price: parseFloat(product.price) || 0,
             quantity: quantity,
             subtotal: (parseFloat(product.price) || 0) * quantity,
@@ -203,9 +358,12 @@ const ShoppingCartApp = ({ onClose }) => {
   // Remover producto del carrito
   const removeFromCart = (productId) => {
     try {
-      setCartItems(prevItems => prevItems.filter(item => 
-        item._id !== productId && item.id !== productId
-      ));
+      setCartItems(prevItems => {
+        const newItems = prevItems.filter(item => 
+          item._id !== productId && item.id !== productId
+        );
+        return newItems;
+      });
       toast.success('Producto removido del carrito');
     } catch (error) {
       console.error('Error removing from cart:', error);
@@ -244,6 +402,7 @@ const ShoppingCartApp = ({ onClose }) => {
     if (window.confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
       try {
         setCartItems([]);
+        localStorage.removeItem('bandoggie_cart');
         toast.success('Carrito limpiado');
       } catch (error) {
         console.error('Error clearing cart:', error);
@@ -276,12 +435,14 @@ const ShoppingCartApp = ({ onClose }) => {
       _id: `sample_${Date.now()}`,
       nameProduct: `Producto de Ejemplo ${cartItems.length + 1}`,
       price: Math.floor(Math.random() * 50) + 10,
-      image: null
+      image: null,
+      talla: 'M',
+      petName: null
     };
     addToCart(sampleProduct, 1);
   };
 
-  // Función para enviar email con datos bancarios (corregida)
+  // [Resto del código permanece igual - sendBankingDetailsEmail, processCheckout, etc.]
   const sendBankingDetailsEmail = async (orderData) => {
     try {
       const emailData = {
@@ -304,26 +465,26 @@ const ShoppingCartApp = ({ onClose }) => {
               <p style="margin: 10px 0;"><strong>Tipo de cuenta:</strong> Cuenta de Ahorro</p>
               <p style="margin: 10px 0;"><strong>Número de cuenta:</strong> 3680297372</p>
               <p style="margin: 10px 0;"><strong>Titular:</strong> XIOMARA CASTILLO</p>
-              <p style="margin: 10px 0; font-size: 18px;"><strong>Monto a transferir:</strong> <span style="color: #D2691E;">${orderData.total.toFixed(2)}</span></p>
+              <p style="margin: 10px 0; font-size: 18px;"><strong>Monto a transferir:</strong> <span style="color: #D2691E;">$${orderData.total.toFixed(2)}</span></p>
             </div>
             
             <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
               <h4 style="color: #1976d2; margin-top: 0;">📋 Resumen de tu pedido:</h4>
               <p><strong>Número de orden:</strong> GUEST-${orderData.guestId}-${Date.now()}</p>
               ${orderData.items.map(item => `
-                <p style="margin: 5px 0;">• ${item.name} - Cantidad: ${item.quantity} - ${item.subtotal.toFixed(2)}</p>
+                <p style="margin: 5px 0;">• ${item.name} - Cantidad: ${item.quantity} - $${item.subtotal.toFixed(2)}</p>
               `).join('')}
               <p style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
-                <strong>Subtotal:</strong> ${(orderData.total - orderData.shippingCost).toFixed(2)}<br>
-                <strong>Envío:</strong> ${orderData.shippingCost.toFixed(2)}<br>
-                <strong>Total:</strong> ${orderData.total.toFixed(2)}
+                <strong>Subtotal:</strong> $${(orderData.total - orderData.shippingCost).toFixed(2)}<br>
+                <strong>Envío:</strong> $${orderData.shippingCost.toFixed(2)}<br>
+                <strong>Total:</strong> $${orderData.total.toFixed(2)}
               </p>
             </div>
             
             <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
               <h4 style="color: #856404; margin-top: 0;">⚠️ Instrucciones importantes:</h4>
               <ol style="color: #856404;">
-                <li>Envía el monto exacto de <strong>${orderData.total.toFixed(2)}</strong> a la cuenta indicada</li>
+                <li>Envía el monto exacto de <strong>$${orderData.total.toFixed(2)}</strong> a la cuenta indicada</li>
                 <li>Una vez realizada la transferencia, nos comunicaremos contigo para coordinar la entrega</li>
                 <li>Guarda el comprobante de transferencia para cualquier consulta</li>
                 <li>Si tienes alguna duda, no dudes en contactarnos</li>
@@ -345,27 +506,7 @@ const ShoppingCartApp = ({ onClose }) => {
         }
       };
 
-      // Simular envío de email (aquí puedes integrar con tu servicio de email real)
       console.log('📧 Email enviado con datos bancarios:', emailData);
-      
-      // Si tienes un endpoint para enviar emails, descomenta y ajusta:
-      /*
-      const response = await fetch('http://localhost:4000/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(emailData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al enviar el email');
-      }
-
-      return await response.json();
-      */
-      
-      // Simulación exitosa
       return { success: true, message: 'Email enviado correctamente' };
     } catch (error) {
       console.error('Error enviando email con datos bancarios:', error);
@@ -411,6 +552,7 @@ const ShoppingCartApp = ({ onClose }) => {
 
       // Limpiar carrito
       setCartItems([]);
+      localStorage.removeItem('bandoggie_cart');
       
       // Ir a confirmación
       setCurrentStep('confirmation');
@@ -621,6 +763,38 @@ const ShoppingCartApp = ({ onClose }) => {
     );
   };
 
+  // Mostrar loading mientras se carga el carrito
+  if (loading) {
+    return (
+      <div className="cart-container">
+        <div className="cart-scroll-content">
+          <div className="cart-card" style={{ textAlign: 'center', padding: '40px' }}>
+            <h2>Cargando carrito...</h2>
+            <div style={{ 
+              display: 'inline-block',
+              width: '32px',
+              height: '32px',
+              border: '3px solid #f3f3f3',
+              borderTop: '3px solid #3498db',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '20px 0'
+            }}></div>
+            <p style={{ color: '#666' }}>
+              Cargando tus productos...
+            </p>
+          </div>
+        </div>
+        <style jsx>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   // Mostrar error crítico si hay problemas importantes
   if (internalError && internalError.includes('crítico')) {
     return (
@@ -720,8 +894,10 @@ const ShoppingCartApp = ({ onClose }) => {
     );
   }
 
-  // Vista del Carrito
+  // Vista del Carrito - CORREGIDA
   if (currentStep === 'cart') {
+    console.log('🛒 Renderizando vista del carrito. Items:', cartItems.length);
+    
     return (
       <div className="cart-container">
         <div className="cart-scroll-content">
@@ -730,12 +906,13 @@ const ShoppingCartApp = ({ onClose }) => {
               <span className="cart-step-number-text">1</span>
             </div>
             <h2 className="cart-step-title">Tu carrito</h2>
+            
           </div>
 
           {cartItems.length === 0 ? (
             <div className="cart-card">
               <p style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-                Tu carrito está vacío
+                Tu carrito está vacío ({cartItems.length} items)
               </p>
               
               {/* Mostrar productos recomendados cuando el carrito está vacío */}
@@ -775,6 +952,12 @@ const ShoppingCartApp = ({ onClose }) => {
           ) : (
             <>
               <div className="cart-card">
+                <div style={{ marginBottom: '16px', padding: '8px', backgroundColor: '#e8f5e8', borderRadius: '4px' }}>
+                  <small style={{ color: '#2d5a2d' }}>
+                    ✅ {cartItems.length} producto{cartItems.length !== 1 ? 's' : ''} en tu carrito
+                  </small>
+                </div>
+                
                 {cartItems.map(item => (
                   <div key={item._id || item.id} className="cart-item">
                     <div className="cart-product-image">
@@ -805,10 +988,9 @@ const ShoppingCartApp = ({ onClose }) => {
                       <div className="cart-product-label">Producto</div>
                       <div className="cart-product-name">{item.name}</div>
                       <div className="cart-product-specs">
-                        Especificaciones: 
-                        {item.talla && ` Talla: ${item.talla}`}
-                        {item.color && ` / Color: ${item.color}`}
-                        {item.petName && ` / Mascota: ${item.petName}`}
+                        {item.talla && `Talla: ${item.talla}`}
+                        {item.color && ` | Color: ${item.color}`}
+                        {item.petName && ` | Mascota: ${item.petName}`}
                       </div>
                     </div>
 
@@ -1050,12 +1232,8 @@ const ShoppingCartApp = ({ onClose }) => {
                     className="cart-login-button"
                     type="button"
                     onClick={() => {
-                      // Cerrar el carrito y mostrar el login del NavBar
                       onClose();
-                      
-                      // Disparar evento personalizado para que NavBar abra el login
                       window.dispatchEvent(new CustomEvent('openLoginModal'));
-                      
                       toast.success('Cerrando carrito para iniciar sesión...');
                     }}
                   >
