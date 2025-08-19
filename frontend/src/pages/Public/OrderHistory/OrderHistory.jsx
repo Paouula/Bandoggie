@@ -99,66 +99,37 @@ const OrderHistory = () => {
         </p>
       </div>
 
-      <div className="filters-section">
-        <div className="filter-tabs">
-          <button 
-            className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('all')}
-          >
-            Todos
-          </button>
-          <button 
-            className={`filter-tab ${filter === 'completado' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('completado')}
-          >
-            Completados
-          </button>
-          <button 
-            className={`filter-tab ${filter === 'pendiente' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('pendiente')}
-          >
-            Pendientes
-          </button>
-          <button 
-            className={`filter-tab ${filter === 'enviado' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('enviado')}
-          >
-            Enviados
-          </button>
-        </div>
-
-        <div className="search-filter">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Buscar por ID, producto o cliente..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <button className="search-btn" onClick={handleSearch}>
-            🔍
-          </button>
-        </div>
-      </div>
-
-      <div className="orders-stats">
-        <div className="stat-card">
-          <div className="stat-number">{stats.total}</div>
-          <div className="stat-label">Total Pedidos</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{stats.completed}</div>
-          <div className="stat-label">Completados</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{stats.pending}</div>
-          <div className="stat-label">Pendientes</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{stats.shipped}</div>
-          <div className="stat-label">Enviados</div>
-        </div>
-      </div>
+<div 
+  className="filters-section" 
+  style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}
+>
+  <div className="filter-tabs" style={{ display: 'flex', gap: '10px' }}>
+    <button 
+      className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+      onClick={() => handleFilterChange('all')}
+    >
+      Todos
+    </button>
+    <button 
+      className={`filter-tab ${filter === 'completado' ? 'active' : ''}`}
+      onClick={() => handleFilterChange('completado')}
+    >
+      Completados
+    </button>
+    <button 
+      className={`filter-tab ${filter === 'pendiente' ? 'active' : ''}`}
+      onClick={() => handleFilterChange('pendiente')}
+    >
+      Pendientes
+    </button>
+    <button 
+      className={`filter-tab ${filter === 'enviado' ? 'active' : ''}`}
+      onClick={() => handleFilterChange('enviado')}
+    >
+      Enviados
+    </button>
+  </div>
+</div>
 
       <div className="orders-container">
         {filteredOrders.length === 0 ? (
