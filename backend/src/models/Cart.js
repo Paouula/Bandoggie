@@ -16,7 +16,7 @@ const CartSchema = new Schema({
   idClient: {
     type: Schema.Types.ObjectId,
     ref: "Clients",
-    required: true
+    required: false
   },
 
   products: [
@@ -38,7 +38,7 @@ const CartSchema = new Schema({
       },
       talla: {
         type: String,
-        enum: ['XS', 'S', 'M', 'L', 'XL']
+        enum: ['XS', 'S', 'M', 'L']
       }
     }
   ],
