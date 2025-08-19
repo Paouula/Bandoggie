@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
-const useDataChristmasProducts = () => {
-  const [ChristmasProducts, setChristmasProducts] = useState([]);
+const useDataValentinesProducts = () => {
+  const [ValentinesProducts, setValentinesProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchChristmasProducts = async () => {
+  const fetchValentinesProducts = async () => {
     try {
-      const holidayId = "687054b2eb1f61053860409a";  
+      const holidayId = "68a4b29c8ae388e19910c1fa";  
       const response = await fetch(`http://localhost:4000/api/products/holiday/${holidayId}`);
       
       if (!response.ok) throw new Error(`Error ${response.status}`);
@@ -17,10 +17,10 @@ const useDataChristmasProducts = () => {
 
       // Asegúrate de que la estructura de data sea la esperada
       if (Array.isArray(data)) {
-        setChristmasProducts(data);
+        setValentinesProducts(data);
       } else {
         console.error("La respuesta no es un array:", data);
-        setChristmasProducts([]);
+        setValentinesProducts([]);
       }
     } catch (err) {
       console.error("Error fetching productos:", err);
@@ -31,10 +31,10 @@ const useDataChristmasProducts = () => {
   };
 
   useEffect(() => {
-    fetchChristmasProducts();
+    fetchValentinesProducts();
   }, []);
 
-  return { ChristmasProducts, loading, error };
+  return { ValentinesProducts, loading, error };
 };
 
-export default useDataChristmasProducts;
+export default useDataValentinesProducts;

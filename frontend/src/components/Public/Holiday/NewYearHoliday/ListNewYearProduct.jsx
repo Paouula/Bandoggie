@@ -1,13 +1,13 @@
 import React from "react";
 import ProductCard from "../../PublicCardProduct/ProductCardPublic.jsx"; 
 
-const ListChristmasProducts = ({ ChristmasProducts }) => {
-  console.log("Productos que llegan al componente:", ChristmasProducts);
+const ListNewYearProducts = ({ NewYearProducts }) => {
+  console.log("Productos que llegan al componente:", NewYearProducts);
 
   return (
     <div className="product-grid">
-        {Array.isArray(ChristmasProducts) && ChristmasProducts.length > 0 ? (
-            ChristmasProducts.map((product) => (
+        {Array.isArray(NewYearProducts) && NewYearProducts.length > 0 ? (
+            NewYearProducts.map((product) => (
             <ProductCard key={product._id} product={product} />
             ))
         ) : (
@@ -18,4 +18,4 @@ const ListChristmasProducts = ({ ChristmasProducts }) => {
   );
 };
 
-export default ListChristmasProducts;
+export default ListNewYearProducts;
