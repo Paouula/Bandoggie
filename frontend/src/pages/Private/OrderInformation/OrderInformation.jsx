@@ -1,6 +1,8 @@
 // OrderInformation.jsx
 import React from 'react';
 import './OrderInformation.css';
+import useOrderInfo from '../../../hooks/OrderHistory/useOrders.js';
+
 
 const OrderInformation = ({ order }) => {
   // Datos por defecto que coinciden exactamente con tu imagen

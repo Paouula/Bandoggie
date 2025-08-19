@@ -1,181 +1,260 @@
 // src/hooks/OrderInformation/useOrderInfo.js
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const useOrderInfo = () => {
+  const [orders, setOrders] = useState([]);
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [stats, setStats] = useState(null);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [currentFilter, setCurrentFilter] = useState('all');
 
-  // Datos mock para simular la respuesta de la API
-  const mockOrderData = {
-    '2025024': {
-      id: '2025024',
-      date: '2025-01-15T10:30:00Z',
-      status: 'Completado',
-      product: {
-        id: 'prod-001',
-        name: 'Bandanas celeste con diseño',
-        image: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&h=200&fit=crop&crop=center',
-        size: 'XL',
-        quantity: 3,
-        color: '#87CEEB',
-        price: 19.99
-      },
-      pet: {
-        name: 'Fido'
-      },
-      delivery: {
-        region: 'Mejicanos',
-        address: 'Calle 12, avenida 14',
-        reference: 'Hospital Zacamil'
-      },
-      customer: {
-        firstName: 'María',
-        lastName: 'Rosales',
-        phone: '76964567',
-        email: 'maria.rosales@example.com'
-      }
-    },
-    '2025025': {
-      id: '2025025',
-      date: '2025-01-16T14:20:00Z',
-      status: 'Enviado',
-      product: {
-        id: 'prod-002',
-        name: 'Collar ajustable premium',
-        image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=200&h=200&fit=crop&crop=center',
-        size: 'M',
-        quantity: 1,
-        color: '#FF6B6B',
-        price: 24.99
-      },
-      pet: {
-        name: 'Luna'
-      },
-      delivery: {
-        region: 'San Salvador',
-        address: 'Colonia Escalón, Pasaje 3, Casa #15',
-        reference: 'Frente al Parque Central'
-      },
-      customer: {
-        firstName: 'Carlos',
-        lastName: 'Mendoza',
-        phone: '72345678',
-        email: 'carlos.mendoza@example.com'
-      }
-    },
-    '2025026': {
-      id: '2025026',
-      date: '2025-01-17T09:15:00Z',
-      status: 'Pendiente',
-      product: {
-        id: 'prod-003',
-        name: 'Arnés deportivo reflectante',
-        image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop&crop=center',
-        size: 'L',
-        quantity: 2,
-        color: '#4ECDC4',
-        price: 35.00
-      },
-      pet: {
-        name: 'Max'
-      },
-      delivery: {
-        region: 'Soyapango',
-        address: 'Reparto San José, Block B, Casa 24',
-        reference: 'Cerca del mercado municipal'
-      },
-      customer: {
-        firstName: 'Ana',
-        lastName: 'García',
-        phone: '78901234',
-        email: 'ana.garcia@example.com'
-      }
-    }
+  // URL base de la API
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+
+  // Función para manejar errores de la API
+  const handleApiError = (error, defaultMessage) => {
+    console.error('API Error:', error);
+    const message = error.response?.data?.message || error.message || defaultMessage;
+    setError(message);
+    throw new Error(message);
   };
 
-  // Simular llamada a API para obtener información del pedido
-  const fetchOrder = useCallback(async (orderId) => {
-    if (!orderId) {
-      setError('ID de pedido requerido');
+  // Obtener todas las órdenes
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders`);
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setOrders(data);
+      setFilteredOrders(data); // Inicialmente, filteredOrders es igual a orders
+      return data;
+    } catch (error) {
+      return handleApiError(error, 'Error al obtener las órdenes');
+    } finally {
+      setLoading(false);
+    }
+  }, [API_BASE_URL]);
+
+  // Filtrar órdenes localmente
+  const filterOrders = useCallback((filterType, filterValue = null) => {
+    setCurrentFilter(filterType);
+    
+    let filtered = [...orders];
+    
+    switch (filterType) {
+      case 'payment':
+        filtered = orders.filter(order => 
+          order.paymentMethod?.toLowerCase() === filterValue?.toLowerCase()
+        );
+        break;
+        
+      case 'status':
+        // Asumiendo que tienes un campo status en tus órdenes
+        filtered = orders.filter(order => 
+          order.status?.toLowerCase() === filterValue?.toLowerCase()
+        );
+        break;
+        
+      case 'date':
+        if (filterValue && filterValue.from && filterValue.to) {
+          filtered = orders.filter(order => {
+            const orderDate = new Date(order.createdAt || order.date);
+            return orderDate >= new Date(filterValue.from) && 
+                   orderDate <= new Date(filterValue.to);
+          });
+        }
+        break;
+        
+      case 'search':
+        if (filterValue) {
+          const searchTerm = filterValue.toLowerCase();
+          filtered = orders.filter(order => 
+            order._id?.toLowerCase().includes(searchTerm) ||
+            order.addressClient?.toLowerCase().includes(searchTerm) ||
+            order.paymentMethod?.toLowerCase().includes(searchTerm)
+          );
+        }
+        break;
+        
+      case 'all':
+      default:
+        // No filtrar, mostrar todas
+        break;
+    }
+    
+    setFilteredOrders(filtered);
+    return filtered;
+  }, [orders]);
+
+  // Limpiar filtros
+  const clearFilters = useCallback(() => {
+    setFilteredOrders(orders);
+    setCurrentFilter('all');
+  }, [orders]);
+
+  // Obtener una orden por ID
+  const fetchOrderById = useCallback(async (id) => {
+    if (!id) {
+      setError('ID de orden requerido');
       return;
     }
 
     setLoading(true);
     setError(null);
-
+    
     try {
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Buscar el pedido en los datos mock
-      const orderData = mockOrderData[orderId.toString()];
-
-      if (!orderData) {
-        throw new Error(`No se encontró el pedido con ID: ${orderId}`);
+      const response = await fetch(`${API_BASE_URL}/orders/${id}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Orden no encontrada');
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
-
-      setOrder(orderData);
-      return orderData;
-
-    } catch (err) {
-      const errorMessage = err.message || 'Error al buscar el pedido';
-      setError(errorMessage);
-      setOrder(null);
-      throw new Error(errorMessage);
+      
+      const data = await response.json();
+      setOrder(data);
+      return data;
+    } catch (error) {
+      return handleApiError(error, 'Error al obtener la orden');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [API_BASE_URL]);
+
+  // Obtener órdenes por método de pago (desde API)
+  const fetchOrdersByPaymentMethod = useCallback(async (paymentMethod) => {
+    if (!paymentMethod) {
+      setError('Método de pago requerido');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders/payment/${paymentMethod}`);
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setOrders(data);
+      setFilteredOrders(data);
+      setCurrentFilter('payment');
+      return data;
+    } catch (error) {
+      return handleApiError(error, 'Error al obtener órdenes por método de pago');
+    } finally {
+      setLoading(false);
+    }
+  }, [API_BASE_URL]);
+
+  // Obtener órdenes por rango de fechas (desde API)
+  const fetchOrdersByDateRange = useCallback(async (startDate, endDate) => {
+    if (!startDate || !endDate) {
+      setError('Fechas de inicio y fin requeridas');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/orders/date-range?startDate=${startDate}&endDate=${endDate}`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setOrders(data);
+      setFilteredOrders(data);
+      setCurrentFilter('date');
+      return data;
+    } catch (error) {
+      return handleApiError(error, 'Error al obtener órdenes por rango de fechas');
+    } finally {
+      setLoading(false);
+    }
+  }, [API_BASE_URL]);
+
+  // Obtener estadísticas de órdenes
+  const fetchOrdersStats = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders/stats`);
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setStats(data);
+      return data;
+    } catch (error) {
+      return handleApiError(error, 'Error al obtener estadísticas de órdenes');
+    } finally {
+      setLoading(false);
+    }
+  }, [API_BASE_URL]);
 
   // Limpiar error
   const clearError = useCallback(() => {
     setError(null);
   }, []);
 
-  // Limpiar pedido
+  // Limpiar orden seleccionada
   const clearOrder = useCallback(() => {
     setOrder(null);
   }, []);
 
-  // Función para verificar si un pedido existe
-  const checkOrderExists = useCallback(async (orderId) => {
-    try {
-      const orderData = mockOrderData[orderId.toString()];
-      return !!orderData;
-    } catch {
-      return false;
-    }
+  // Limpiar todas las órdenes
+  const clearOrders = useCallback(() => {
+    setOrders([]);
+    setFilteredOrders([]);
   }, []);
 
-  // Obtener estadísticas del pedido
-  const getOrderStats = useCallback((orderData) => {
-    if (!orderData) return null;
-
-    return {
-      totalItems: orderData.product.quantity,
-      totalPrice: orderData.product.price * orderData.product.quantity,
-      estimatedDelivery: orderData.status === 'Completado' 
-        ? 'Entregado' 
-        : orderData.status === 'Enviado' 
-          ? '2-3 días hábiles' 
-          : 'Pendiente de procesamiento',
-      canTrack: orderData.status !== 'Pendiente'
-    };
-  }, []);
+  // Efecto para sincronizar filteredOrders cuando orders cambia
+  useEffect(() => {
+    setFilteredOrders(orders);
+  }, [orders]);
 
   return {
     // Estado
+    orders,
+    filteredOrders, // Órdenes filtradas
     order,
     loading,
     error,
+    stats,
+    currentFilter,
     
     // Acciones
-    fetchOrder,
+    fetchOrders,
+    filterOrders,    // ← Nueva función de filtrado
+    clearFilters,    // ← Nueva función para limpiar filtros
+    fetchOrderById,
+    fetchOrdersByPaymentMethod,
+    fetchOrdersByDateRange,
+    fetchOrdersStats,
     clearError,
     clearOrder,
-    checkOrderExists,
-    getOrderStats
+    clearOrders
   };
 };
 
