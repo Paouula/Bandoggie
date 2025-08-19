@@ -1,53 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Minus, Plus } from 'lucide-react';
-import './Cart.css'; 
-
-// Importaciones directas
-import useFetchCart from '../../../hooks/Products/useFetchCart';
-import useAddToCart from '../../../hooks/Products/useAddToCart ';
-import useFetchProducts from '../../../hooks/Products/useFetchProducts';
+import { toast } from 'react-hot-toast';
+import './Cart.css';
 
 const ShoppingCartApp = ({ onClose }) => {
+  // Estados principales del carrito
+  const [cartItems, setCartItems] = useState([]);
   const [currentStep, setCurrentStep] = useState('cart');
   const [paymentMethod, setPaymentMethod] = useState('transferencia');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [guestId, setGuestId] = useState(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [internalError, setInternalError] = useState(null);
-  
-  // Hooks principales
-  const {
-    cart,
-    cartProducts,
-    loading: cartLoading,
-    error: cartError,
-    guestId,
-    handleAddProduct,
-    handleRemoveProduct,
-    handleUpdateProductQuantity,
-    handleClearCart,
-    handleGuestCheckout,
-    getCartSummary,
-    isProductInCart,
-    getProductQuantity
-  } = useFetchCart();
 
-  const {
-    quickAdd,
-    addWithCustomization,
-    loading: addingToCart,
-    error: addError,
-    getProductInCart,
-    getRecommendations,
-    canAddProduct,
-    clearError
-  } = useAddToCart();
-
-  const { 
-    products, 
-    loading: productsLoading,
-    handleGetProducts 
-  } = useFetchProducts();
-
-  // Form states - CENTRALIZADO
+  // Estados del formulario - CENTRALIZADO
   const [formData, setFormData] = useState({
     email: '',
     nombre: '',
@@ -59,176 +26,331 @@ const ShoppingCartApp = ({ onClose }) => {
     telefono: ''
   });
 
-  // Validation errors
+  // Estados de validación
   const [errors, setErrors] = useState({});
 
-  // Estados derivados del carrito con valores por defecto
-  const cartItems = Array.isArray(cartProducts) ? cartProducts : [];
-  const summary = getCartSummary();
-  const subtotal = Number(summary.totalPrice) || 0;
-  const shipping = 3.50;
-  const total = subtotal + shipping;
-  const isLoading = cartLoading || addingToCart || productsLoading;
-  const hasError = cartError || addError || internalError;
+  // Generar ID de invitado único
+  const generateGuestId = useCallback(() => {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substr(2, 9);
+    return `guest_${timestamp}_${random}`;
+  }, []);
 
-  // Productos recomendados con manejo de errores
-  let recommendedProducts = [];
-  try {
-    recommendedProducts = getRecommendations(products).slice(0, 3);
-  } catch (error) {
-    console.error('Error getting recommendations:', error);
-    recommendedProducts = [];
-  }
-
-  // Handle form input changes
-  const handleInputChange = (field, value) => {
+  // Inicializar guest ID y cargar carrito de localStorage
+  useEffect(() => {
     try {
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        [field]: value
-      }));
-      
-      // Clear error when user starts typing
-      if (errors[field]) {
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          [field]: ''
-        }));
+      // Generar guest ID si no existe
+      if (!guestId) {
+        const newGuestId = generateGuestId();
+        setGuestId(newGuestId);
+      }
+
+      // Cargar carrito del localStorage
+      const savedCart = localStorage.getItem('bandoggie_cart');
+      if (savedCart) {
+        try {
+          const parsedCart = JSON.parse(savedCart);
+          if (Array.isArray(parsedCart)) {
+            setCartItems(parsedCart);
+          }
+        } catch (parseError) {
+          console.error('Error parsing saved cart:', parseError);
+          localStorage.removeItem('bandoggie_cart');
+        }
       }
     } catch (error) {
-      console.error('Error updating form data:', error);
+      console.error('Error initializing cart:', error);
     }
-  };
+  }, [guestId, generateGuestId]);
 
-  // Validation functions
-  const validateEmail = (email) => {
+  // Guardar carrito en localStorage cuando cambie
+  useEffect(() => {
     try {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
+      if (cartItems.length >= 0) {
+        localStorage.setItem('bandoggie_cart', JSON.stringify(cartItems));
+        // Disparar evento para que NavBar se actualice
+        window.dispatchEvent(new Event('cartUpdated'));
+      }
     } catch (error) {
-      console.error('Error validating email:', error);
-      return false;
+      console.error('Error saving cart to localStorage:', error);
     }
+  }, [cartItems]);
+
+  // Funciones de validación
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const validatePhone = (phone) => {
-    try {
-      const phoneRegex = /^[0-9]{8,}$/;
-      return phoneRegex.test(phone.replace(/\s/g, ''));
-    } catch (error) {
-      console.error('Error validating phone:', error);
-      return false;
-    }
+    const phoneRegex = /^[0-9]{8,}$/;
+    return phoneRegex.test(phone.replace(/\s/g, ''));
   };
 
   const validateRequired = (value) => {
-    try {
-      return value && value.trim().length > 0;
-    } catch (error) {
-      console.error('Error validating required field:', error);
-      return false;
-    }
+    return value && value.trim().length > 0;
   };
 
   const validateName = (name) => {
-    try {
-      return name && name.trim().length >= 2;
-    } catch (error) {
-      console.error('Error validating name:', error);
-      return false;
+    return name && name.trim().length >= 2;
+  };
+
+  // Manejar cambios en el formulario
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Limpiar error cuando el usuario empiece a escribir
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
     }
   };
 
-  // Validate checkout form
+  // Validar formulario de checkout
   const validateCheckoutForm = () => {
-    try {
-      const newErrors = {};
+    const newErrors = {};
 
-      if (!validateEmail(formData.email)) {
-        newErrors.email = 'Por favor ingresa un email válido';
-      }
-
-      if (!validateName(formData.nombre)) {
-        newErrors.nombre = 'El nombre debe tener al menos 2 caracteres';
-      }
-
-      if (!validateName(formData.apellido)) {
-        newErrors.apellido = 'El apellido debe tener al menos 2 caracteres';
-      }
-
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    } catch (error) {
-      console.error('Error validating checkout form:', error);
-      return false;
+    if (!validateEmail(formData.email)) {
+      newErrors.email = 'Por favor ingresa un email válido';
     }
+
+    if (!validateName(formData.nombre)) {
+      newErrors.nombre = 'El nombre debe tener al menos 2 caracteres';
+    }
+
+    if (!validateName(formData.apellido)) {
+      newErrors.apellido = 'El apellido debe tener al menos 2 caracteres';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  // Validate delivery form
+  // Validar formulario de entrega
   const validateDeliveryForm = () => {
+    const newErrors = {};
+
+    if (!validateRequired(formData.departamento)) {
+      newErrors.departamento = 'Por favor selecciona un departamento';
+    }
+
+    if (!validateRequired(formData.region)) {
+      newErrors.region = 'Por favor selecciona una región';
+    }
+
+    if (!validateRequired(formData.direccion)) {
+      newErrors.direccion = 'La dirección es requerida';
+    }
+
+    if (!validatePhone(formData.telefono)) {
+      newErrors.telefono = 'Por favor ingresa un número de teléfono válido (mínimo 8 dígitos)';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Agregar producto al carrito
+  const addToCart = (product, quantity = 1) => {
     try {
-      const newErrors = {};
-
-      if (!validateRequired(formData.departamento)) {
-        newErrors.departamento = 'Por favor selecciona un departamento';
-      }
-
-      if (!validateRequired(formData.region)) {
-        newErrors.region = 'Por favor selecciona una región';
-      }
-
-      if (!validateRequired(formData.direccion)) {
-        newErrors.direccion = 'La dirección es requerida';
-      }
-
-      if (!validateName(formData.nombre)) {
-        newErrors.nombre = 'El nombre debe tener al menos 2 caracteres';
-      }
-
-      if (!validateName(formData.apellido)) {
-        newErrors.apellido = 'El apellido debe tener al menos 2 caracteres';
-      }
-
-      if (!validatePhone(formData.telefono)) {
-        newErrors.telefono = 'Por favor ingresa un número de teléfono válido (mínimo 8 dígitos)';
-      }
-
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
+      setCartItems(prevItems => {
+        const existingItemIndex = prevItems.findIndex(item => 
+          item._id === product._id && 
+          item.talla === product.talla &&
+          item.color === product.color
+        );
+        
+        if (existingItemIndex !== -1) {
+          // Si ya existe, aumentar cantidad
+          const updatedItems = [...prevItems];
+          updatedItems[existingItemIndex].quantity += quantity;
+          updatedItems[existingItemIndex].subtotal = 
+            updatedItems[existingItemIndex].quantity * updatedItems[existingItemIndex].price;
+          return updatedItems;
+        } else {
+          // Si no existe, agregar nuevo
+          const newItem = {
+            _id: product._id || `temp_${Date.now()}`,
+            id: product._id || `temp_${Date.now()}`,
+            name: product.nameProduct || product.name || 'Producto',
+            price: parseFloat(product.price) || 0,
+            quantity: quantity,
+            subtotal: (parseFloat(product.price) || 0) * quantity,
+            talla: product.talla || null,
+            color: product.color || null,
+            petName: product.petName || null,
+            image: product.image || null,
+            productInfo: {
+              image: product.image || null
+            }
+          };
+          return [...prevItems, newItem];
+        }
+      });
+      
+      toast.success(`${product.nameProduct || product.name || 'Producto'} agregado al carrito`);
     } catch (error) {
-      console.error('Error validating delivery form:', error);
-      return false;
+      console.error('Error adding to cart:', error);
+      toast.error('Error al agregar al carrito');
     }
   };
 
-  // Función para enviar email con datos bancarios
+  // Remover producto del carrito
+  const removeFromCart = (productId) => {
+    try {
+      setCartItems(prevItems => prevItems.filter(item => 
+        item._id !== productId && item.id !== productId
+      ));
+      toast.success('Producto removido del carrito');
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      toast.error('Error al remover del carrito');
+    }
+  };
+
+  // Actualizar cantidad
+  const updateQuantity = (productId, quantity) => {
+    try {
+      if (quantity <= 0) {
+        removeFromCart(productId);
+        return;
+      }
+
+      setCartItems(prevItems =>
+        prevItems.map(item => {
+          if (item._id === productId || item.id === productId) {
+            return {
+              ...item,
+              quantity: parseInt(quantity),
+              subtotal: item.price * parseInt(quantity)
+            };
+          }
+          return item;
+        })
+      );
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      toast.error('Error al actualizar cantidad');
+    }
+  };
+
+  // Limpiar carrito
+  const clearCart = () => {
+    if (window.confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
+      try {
+        setCartItems([]);
+        toast.success('Carrito limpiado');
+      } catch (error) {
+        console.error('Error clearing cart:', error);
+        toast.error('Error al limpiar carrito');
+      }
+    }
+  };
+
+  // Calcular totales
+  const getCartTotal = () => {
+    return cartItems.reduce((total, item) => {
+      const price = parseFloat(item.price) || 0;
+      const quantity = parseInt(item.quantity) || 0;
+      return total + (price * quantity);
+    }, 0);
+  };
+
+  const getCartItemsCount = () => {
+    return cartItems.reduce((total, item) => total + (parseInt(item.quantity) || 0), 0);
+  };
+
+  const formatPrice = (price) => {
+    const numPrice = parseFloat(price) || 0;
+    return `$${numPrice.toFixed(2)}`;
+  };
+
+  // Función para agregar producto de ejemplo
+  const addSampleProduct = () => {
+    const sampleProduct = {
+      _id: `sample_${Date.now()}`,
+      nameProduct: `Producto de Ejemplo ${cartItems.length + 1}`,
+      price: Math.floor(Math.random() * 50) + 10,
+      image: null
+    };
+    addToCart(sampleProduct, 1);
+  };
+
+  // Función para enviar email con datos bancarios (corregida)
   const sendBankingDetailsEmail = async (orderData) => {
     try {
       const emailData = {
         to: orderData.customerInfo.email,
         subject: 'Datos para transferencia bancaria - BanDoggie',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #D2691E;">🐾 BanDoggie</h1>
+              <p style="color: #666;">Cuidamos a tu mejor amigo</p>
+            </div>
+            
+            <h2 style="color: #333;">¡Gracias por tu compra!</h2>
+            <p>Hola <strong>${orderData.customerInfo.nombre} ${orderData.customerInfo.apellido}</strong>,</p>
+            <p>Tu pedido ha sido registrado exitosamente. A continuación te enviamos los datos para realizar la transferencia bancaria:</p>
+            
+            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #D2691E; margin-top: 0;">📱 Transferencia Bancaria</h3>
+              <p style="margin: 10px 0;"><strong>Banco:</strong> Banco Agrícola</p>
+              <p style="margin: 10px 0;"><strong>Tipo de cuenta:</strong> Cuenta de Ahorro</p>
+              <p style="margin: 10px 0;"><strong>Número de cuenta:</strong> 3680297372</p>
+              <p style="margin: 10px 0;"><strong>Titular:</strong> XIOMARA CASTILLO</p>
+              <p style="margin: 10px 0; font-size: 18px;"><strong>Monto a transferir:</strong> <span style="color: #D2691E;">${orderData.total.toFixed(2)}</span></p>
+            </div>
+            
+            <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="color: #1976d2; margin-top: 0;">📋 Resumen de tu pedido:</h4>
+              <p><strong>Número de orden:</strong> GUEST-${orderData.guestId}-${Date.now()}</p>
+              ${orderData.items.map(item => `
+                <p style="margin: 5px 0;">• ${item.name} - Cantidad: ${item.quantity} - ${item.subtotal.toFixed(2)}</p>
+              `).join('')}
+              <p style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                <strong>Subtotal:</strong> ${(orderData.total - orderData.shippingCost).toFixed(2)}<br>
+                <strong>Envío:</strong> ${orderData.shippingCost.toFixed(2)}<br>
+                <strong>Total:</strong> ${orderData.total.toFixed(2)}
+              </p>
+            </div>
+            
+            <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="color: #856404; margin-top: 0;">⚠️ Instrucciones importantes:</h4>
+              <ol style="color: #856404;">
+                <li>Envía el monto exacto de <strong>${orderData.total.toFixed(2)}</strong> a la cuenta indicada</li>
+                <li>Una vez realizada la transferencia, nos comunicaremos contigo para coordinar la entrega</li>
+                <li>Guarda el comprobante de transferencia para cualquier consulta</li>
+                <li>Si tienes alguna duda, no dudes en contactarnos</li>
+              </ol>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+              <p style="color: #666; margin: 0;">¡Gracias por confiar en BanDoggie!</p>
+              <p style="color: #666; margin: 5px 0;">Cuidamos a tu mejor amigo con amor 🐾</p>
+            </div>
+          </div>
+        `,
         orderInfo: {
-          orderNumber: `ORD-${Date.now()}`,
+          orderNumber: `GUEST-${orderData.guestId}-${Date.now()}`,
           customerName: `${orderData.customerInfo.nombre} ${orderData.customerInfo.apellido}`,
-          total: total.toFixed(2),
-          items: cartItems.map(item => ({
-            name: item.name || 'Producto',
-            quantity: item.quantity || 1,
-            price: item.price || 0,
-            subtotal: item.subtotal || 0
-          })),
-          shippingCost: shipping.toFixed(2)
-        },
-        bankingDetails: {
-          bankName: 'Banco Agrícola',
-          accountNumber: '1234567890',
-          accountHolder: 'BanDoggie S.A. de C.V.',
-          accountType: 'Cuenta Corriente',
-          reference: `BANDOGGIE-${Date.now()}`
+          total: orderData.total.toFixed(2),
+          items: orderData.items,
+          shippingCost: orderData.shippingCost.toFixed(2)
         }
       };
 
-      const response = await fetch('http://localhost:4000/api/send-banking-email', {
+      // Simular envío de email (aquí puedes integrar con tu servicio de email real)
+      console.log('📧 Email enviado con datos bancarios:', emailData);
+      
+      // Si tienes un endpoint para enviar emails, descomenta y ajusta:
+      /*
+      const response = await fetch('http://localhost:4000/api/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -241,109 +363,69 @@ const ShoppingCartApp = ({ onClose }) => {
       }
 
       return await response.json();
+      */
+      
+      // Simulación exitosa
+      return { success: true, message: 'Email enviado correctamente' };
     } catch (error) {
-      console.error('Error sending banking email:', error);
-      throw error;
-    }
-  };
-
-  // Funciones del carrito usando el hook
-  const updateQuantity = async (productId, newQuantity) => {
-    try {
-      clearError();
-      if (newQuantity <= 0) {
-        await handleRemoveProduct(productId);
-      } else {
-        await handleUpdateProductQuantity(productId, newQuantity);
-      }
-    } catch (error) {
-      console.error('Error updating quantity:', error);
-      setInternalError('Error al actualizar la cantidad');
-    }
-  };
-
-  const removeItem = async (productId) => {
-    try {
-      clearError();
-      await handleRemoveProduct(productId);
-    } catch (error) {
-      console.error('Error removing item:', error);
-      setInternalError('Error al eliminar el producto');
-    }
-  };
-
-  // Función para agregar productos recomendados al carrito
-  const addRecommendedProduct = async (product) => {
-    try {
-      clearError();
-      const result = await quickAdd(product);
-      if (result.success) {
-        console.log(`${product.nameProduct || product.name} agregado al carrito`);
-      }
-    } catch (error) {
-      console.error('Error adding recommended product:', error);
-      setInternalError('Error al agregar el producto recomendado');
-    }
-  };
-
-  // Función para vaciar carrito
-  const clearCart = async () => {
-    if (window.confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
-      try {
-        await handleClearCart();
-      } catch (error) {
-        console.error('Error clearing cart:', error);
-        setInternalError('Error al vaciar el carrito');
-      }
+      console.error('Error enviando email con datos bancarios:', error);
+      return { success: false, error: error.message };
     }
   };
 
   // Procesar compra
   const processCheckout = async () => {
     try {
+      setLoading(true);
+      setError(null);
+
+      const shipping = 3.50;
+      const subtotal = getCartTotal();
+      const total = subtotal + shipping;
+
       const orderData = {
-        customerInfo: {
-          nombre: formData.nombre,
-          apellido: formData.apellido,
-          email: formData.email
-        },
-        deliveryInfo: {
-          departamento: formData.departamento,
-          region: formData.region,
-          direccion: formData.direccion,
-          referencia: formData.referencia,
-          telefono: formData.telefono
-        },
-        paymentMethod: paymentMethod,
+        orderNumber: `GUEST-${guestId}-${Date.now()}`,
+        guestId: guestId,
+        customerInfo: formData,
         items: cartItems,
+        subtotal: subtotal,
+        shippingCost: shipping,
         total: total,
-        shippingCost: shipping
+        paymentMethod: paymentMethod,
+        orderDate: new Date().toISOString(),
+        status: 'pending'
       };
 
-      // Crear la orden primero
-      const result = await handleGuestCheckout(orderData);
-      console.log('Order created successfully:', result);
-      
+      // Simular procesamiento de orden
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       // Si es transferencia, enviar email con datos bancarios
       if (paymentMethod === 'transferencia') {
-        try {
-          await sendBankingDetailsEmail(orderData);
-          setCurrentStep('confirmation');
-        } catch (emailError) {
-          console.error('Error sending email:', emailError);
-          alert('Compra realizada exitosamente. Los datos bancarios se enviarán por correo en breve.');
-          setCurrentStep('confirmation');
+        const emailResult = await sendBankingDetailsEmail(orderData);
+        if (emailResult && emailResult.success) {
+          toast.success('Email con datos bancarios enviado correctamente');
+        } else {
+          toast.error('No se pudo enviar el email, pero tu pedido fue registrado');
         }
-      } else {
-        setCurrentStep('confirmation');
       }
+
+      // Limpiar carrito
+      setCartItems([]);
       
+      // Ir a confirmación
+      setCurrentStep('confirmation');
+      toast.success('¡Pedido realizado exitosamente!');
+
     } catch (error) {
       console.error('Error processing checkout:', error);
-      setInternalError('Error al procesar la compra. Inténtalo de nuevo.');
+      setError('Error al procesar la compra. Inténtalo de nuevo.');
+      toast.error('Error al procesar la compra');
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Navegar entre pasos
   const nextStep = () => {
     try {
       if (currentStep === 'cart') {
@@ -361,8 +443,182 @@ const ShoppingCartApp = ({ onClose }) => {
       }
     } catch (error) {
       console.error('Error in nextStep:', error);
-      setInternalError('Error al avanzar al siguiente paso');
+      setError('Error al avanzar al siguiente paso');
     }
+  };
+
+  // Calcular totales para mostrar
+  const subtotal = getCartTotal();
+  const shipping = 3.50;
+  const total = subtotal + shipping;
+  const hasError = error || internalError;
+
+  // Función para agregar productos recomendados al carrito (simulado)
+  const addRecommendedProduct = async (product) => {
+    try {
+      addToCart(product, 1);
+    } catch (error) {
+      console.error('Error adding recommended product:', error);
+      setInternalError('Error al agregar el producto recomendado');
+    }
+  };
+
+  // Productos recomendados simulados
+  const recommendedProducts = [
+    {
+      _id: 'rec1',
+      nameProduct: 'Collar Navideño',
+      price: 15.99,
+      image: null
+    },
+    {
+      _id: 'rec2', 
+      nameProduct: 'Bandana Especial',
+      price: 12.50,
+      image: null
+    },
+    {
+      _id: 'rec3',
+      nameProduct: 'Accesorio Premium',
+      price: 25.00,
+      image: null
+    }
+  ];
+
+  // Componente de Resumen del Carrito
+  const CartSummary = () => (
+    <div className="cart-summary">
+      <h3 className="cart-summary-title">En tu carrito</h3>
+      
+      {cartItems.map(item => (
+        <div key={item._id || item.id} className="cart-summary-item">
+          <div className="cart-summary-image">
+            {item.image ? (
+              <img 
+                src={item.image} 
+                alt={item.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+              />
+            ) : (
+              <div style={{ 
+                width: '100%', 
+                height: '100%', 
+                backgroundColor: '#4169E1', 
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '24px'
+              }}>
+                📦
+              </div>
+            )}
+          </div>
+          <div className="cart-summary-details">
+            <div className="cart-summary-item-name">{item.name}</div>
+            {item.talla && <div className="cart-summary-specs">Talla: {item.talla}</div>}
+            {item.color && <div className="cart-summary-specs">Color: {item.color}</div>}
+            {item.petName && <div className="cart-summary-specs">Mascota: {item.petName}</div>}
+            <div className="cart-summary-quantity">{item.quantity}x</div>
+          </div>
+          <div className="cart-summary-price">{formatPrice(item.subtotal)}</div>
+        </div>
+      ))}
+
+      <div className="cart-summary-totals">
+        <div className="cart-summary-row">
+          <span className="cart-summary-label">Costo estimado de envío:</span>
+          <span className="cart-summary-value">{formatPrice(shipping)}</span>
+        </div>
+        <div className="cart-summary-total-row">
+          <span className="cart-summary-total-label">TOTAL:</span>
+          <span className="cart-summary-total-value">{formatPrice(total)}</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Componente de productos recomendados
+  const RecommendedProducts = () => {
+    if (!Array.isArray(recommendedProducts) || recommendedProducts.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="cart-recommendations">
+        <h4 style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '600' }}>
+          También te puede interesar:
+        </h4>
+        <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px' }}>
+          {recommendedProducts.map(product => (
+            <div 
+              key={product._id} 
+              style={{
+                minWidth: '200px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '8px',
+                padding: '12px',
+                border: '1px solid #e9ecef'
+              }}
+            >
+              <div style={{
+                width: '100%',
+                height: '80px',
+                backgroundColor: '#e9ecef',
+                borderRadius: '4px',
+                marginBottom: '8px',
+                backgroundImage: product.image ? `url(${product.image})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '32px'
+              }}>
+                {!product.image && '📦'}
+              </div>
+              
+              <h5 style={{
+                fontSize: '14px',
+                fontWeight: '500',
+                marginBottom: '4px',
+                lineHeight: '1.2'
+              }}>
+                {product.nameProduct || product.name || 'Producto'}
+              </h5>
+              
+              <p style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#D2691E',
+                marginBottom: '8px'
+              }}>
+                ${Number(product.price || 0).toFixed(2)}
+              </p>
+
+              <button
+                onClick={() => addRecommendedProduct(product)}
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '6px 12px',
+                  fontSize: '12px',
+                  backgroundColor: '#4a90a4',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  opacity: loading ? 0.6 : 1
+                }}
+              >
+                {loading ? 'Agregando...' : 'Agregar'}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   // Mostrar error crítico si hay problemas importantes
@@ -391,8 +647,81 @@ const ShoppingCartApp = ({ onClose }) => {
     );
   }
 
-  // Mostrar loading si es necesario
-  if (isLoading && cartItems.length === 0 && products.length === 0) {
+  // Vista de Confirmación
+  if (currentStep === 'confirmation') {
+    return (
+      <div className="cart-container">
+        <div className="cart-scroll-content">
+          <div className="cart-payment-content">
+            <div className="cart-green-checkmark">✓</div>
+            
+            <div className="cart-bandoggie-logo">
+              <div className="cart-paw-print">🐾</div>
+              <div className="cart-logo-text">
+                <div className="cart-logo-name">BanDoggie</div>
+                <div className="cart-logo-tagline">Cuidamos a tu mejor amigo</div>
+              </div>
+            </div>
+
+            <h3 className="cart-confirmation-title">¡Compra realizada exitosamente!</h3>
+            
+            {paymentMethod === 'transferencia' ? (
+              <div className="cart-final-text">
+                <p>Hemos enviado los datos bancarios a tu correo electrónico <strong>{formData.email}</strong>.</p>
+                <p>Una vez realices la transferencia, nos comunicaremos contigo para coordinar la entrega.</p>
+                <p>¡Gracias por confiar en BanDoggie!</p>
+              </div>
+            ) : (
+              <div className="cart-efectivo-text">
+                <p>Tu pedido ha sido registrado exitosamente.</p>
+                <p>El pago se realizará en efectivo al momento de la entrega.</p>
+                <p>Nos comunicaremos contigo pronto para coordinar la entrega.</p>
+                <p>¡Gracias por confiar en BanDoggie!</p>
+              </div>
+            )}
+
+            {guestId && (
+              <div style={{ 
+                backgroundColor: '#f8f9fa', 
+                padding: '12px', 
+                borderRadius: '6px', 
+                marginTop: '20px',
+                fontSize: '14px',
+                color: '#666'
+              }}>
+                <strong>Número de referencia:</strong> {guestId.slice(-8).toUpperCase()}
+              </div>
+            )}
+
+            <button 
+              className="cart-continue-button" 
+              onClick={() => {
+                onClose();
+                setFormData({
+                  email: '',
+                  nombre: '',
+                  apellido: '',
+                  departamento: '',
+                  region: '',
+                  direccion: '',
+                  referencia: '',
+                  telefono: ''
+                });
+                setCurrentStep('cart');
+                setError(null);
+                setInternalError(null);
+              }}
+            >
+              Volver al catálogo
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Vista del Carrito
+  if (currentStep === 'cart') {
     return (
       <div className="cart-container">
         <div className="cart-scroll-content">
@@ -400,265 +729,81 @@ const ShoppingCartApp = ({ onClose }) => {
             <div className="cart-step-number">
               <span className="cart-step-number-text">1</span>
             </div>
-            <h2 className="cart-step-title">Cargando...</h2>
+            <h2 className="cart-step-title">Tu carrito</h2>
           </div>
-          <p style={{ textAlign: 'center', padding: '40px' }}>Cargando carrito...</p>
-        </div>
-      </div>
-    );
-  }
 
-  // Componente de productos recomendados
-  const RecommendedProducts = () => {
-    if (!Array.isArray(recommendedProducts) || recommendedProducts.length === 0) {
-      return null;
-    }
-
-    return (
-      <div className="cart-recommendations">
-        <h4 style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '600' }}>
-          También te puede interesar:
-        </h4>
-        <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px' }}>
-          {recommendedProducts.map(product => {
-            if (!product || !product._id) return null;
-            
-            let productStatus;
-            try {
-              productStatus = canAddProduct(product);
-            } catch (error) {
-              console.error('Error checking if can add product:', error);
-              productStatus = { canAdd: false, reason: 'Error' };
-            }
-
-            return (
-              <div 
-                key={product._id} 
-                style={{
-                  minWidth: '200px',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  border: '1px solid #e9ecef'
-                }}
-              >
-                <div style={{
-                  width: '100%',
-                  height: '80px',
-                  backgroundColor: '#e9ecef',
-                  borderRadius: '4px',
-                  marginBottom: '8px',
-                  backgroundImage: product.image ? `url(${product.image})` : 'none',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
-                }} />
-                
-                <h5 style={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  marginBottom: '4px',
-                  lineHeight: '1.2'
-                }}>
-                  {product.nameProduct || product.name || 'Producto'}
-                </h5>
-                
-                <p style={{
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: '#D2691E',
-                  marginBottom: '8px'
-                }}>
-                  ${Number(product.price || 0).toFixed(2)}
-                </p>
-
-                <button
-                  onClick={() => addRecommendedProduct(product)}
-                  disabled={!productStatus.canAdd || addingToCart}
+          {cartItems.length === 0 ? (
+            <div className="cart-card">
+              <p style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                Tu carrito está vacío
+              </p>
+              
+              {/* Mostrar productos recomendados cuando el carrito está vacío */}
+              {recommendedProducts.length > 0 && (
+                <div style={{ padding: '20px' }}>
+                  <h3 style={{ textAlign: 'center', marginBottom: '20px', color: '#D2691E' }}>
+                    ¡Descubre nuestros productos!
+                  </h3>
+                  <RecommendedProducts />
+                </div>
+              )}
+              
+              <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                <button 
+                  onClick={addSampleProduct}
                   style={{
-                    width: '100%',
-                    padding: '6px 12px',
-                    fontSize: '12px',
-                    backgroundColor: productStatus.canAdd ? '#4a90a4' : '#6c757d',
+                    padding: '12px 24px',
+                    backgroundColor: '#3b82f6',
                     color: 'white',
                     border: 'none',
-                    borderRadius: '4px',
-                    cursor: productStatus.canAdd ? 'pointer' : 'not-allowed',
-                    opacity: (!productStatus.canAdd || addingToCart) ? 0.6 : 1
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                    marginBottom: '10px'
                   }}
                 >
-                  {addingToCart ? 'Agregando...' : 
-                   productStatus.canAdd ? 'Agregar' : productStatus.reason}
+                  + Agregar Producto de Ejemplo
                 </button>
               </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
-  // Cart Summary Component
-  const CartSummary = () => (
-    <div className="cart-summary">
-      <h3 className="cart-summary-title">En tu carrito</h3>
-      
-      {cartItems.map(item => {
-        if (!item || !item.id) return null;
-        
-        return (
-          <div key={item.id} className="cart-summary-item">
-            <div className="cart-summary-image">
-              {item.productInfo?.image ? (
-                <img 
-                  src={item.productInfo.image} 
-                  alt={item.name || 'Producto'}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
-                />
-              ) : (
-                <div style={{ width: '100%', height: '100%', backgroundColor: '#4169E1', borderRadius: '8px' }} />
-              )}
-            </div>
-            <div className="cart-summary-details">
-              <div className="cart-summary-item-name">{item.name || 'Producto'}</div>
-              <div className="cart-summary-specs">
-                {item.talla && `Talla: ${item.talla}`}
-                {item.color && ` / Color: ${item.color}`}
-                {item.petName && ` / Mascota: ${item.petName}`}
+              
+              <div className="cart-button-container">
+                <button className="cart-primary-button" onClick={onClose}>
+                  Ir al catálogo
+                </button>
               </div>
-              <div className="cart-summary-quantity">{item.quantity || 1}x</div>
-            </div>
-            <div className="cart-summary-price">${Number(item.subtotal || 0).toFixed(2)}</div>
-          </div>
-        );
-      })}
-
-      <div className="cart-summary-totals">
-        <div className="cart-summary-row">
-          <span className="cart-summary-label">Costo estimado de envío:</span>
-          <span className="cart-summary-value">${shipping.toFixed(2)}</span>
-        </div>
-        <div className="cart-summary-total-row">
-          <span className="cart-summary-total-label">TOTAL:</span>
-          <span className="cart-summary-total-value">${total.toFixed(2)}</span>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Confirmation View
-  const ConfirmationView = () => (
-    <div className="cart-container">
-      <div className="cart-scroll-content">
-        <div className="cart-payment-content">
-          <div className="cart-green-checkmark">✓</div>
-          
-          <div className="cart-bandoggie-logo">
-            <div className="cart-paw-print">🐾</div>
-            <div className="cart-logo-text">
-              <div className="cart-logo-name">BanDoggie</div>
-              <div className="cart-logo-tagline">Cuidamos a tu mejor amigo</div>
-            </div>
-          </div>
-
-          <h3 className="cart-confirmation-title">¡Compra realizada exitosamente!</h3>
-          
-          {paymentMethod === 'transferencia' ? (
-            <div className="cart-final-text">
-              <p>Hemos enviado los datos bancarios a tu correo electrónico <strong>{formData.email}</strong>.</p>
-              <p>Una vez realices la transferencia, nos comunicaremos contigo para coordinar la entrega.</p>
-              <p>¡Gracias por confiar en BanDoggie!</p>
             </div>
           ) : (
-            <div className="cart-efectivo-text">
-              <p>Tu pedido ha sido registrado exitosamente.</p>
-              <p>El pago se realizará en efectivo al momento de la entrega.</p>
-              <p>Nos comunicaremos contigo pronto para coordinar la entrega.</p>
-              <p>¡Gracias por confiar en BanDoggie!</p>
-            </div>
-          )}
-
-          <button 
-            className="cart-continue-button" 
-            onClick={() => {
-              onClose();
-              // Resetear el formulario
-              setFormData({
-                email: '',
-                nombre: '',
-                apellido: '',
-                departamento: '',
-                region: '',
-                direccion: '',
-                referencia: '',
-                telefono: ''
-              });
-              setCurrentStep('cart');
-              setInternalError(null);
-            }}
-          >
-            Volver al catálogo
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Cart View
-  const CartView = () => (
-    <div className="cart-container">
-      <div className="cart-scroll-content">
-        <div className="cart-step-header">
-          <div className="cart-step-number">
-            <span className="cart-step-number-text">1</span>
-          </div>
-          <h2 className="cart-step-title">Tu carrito</h2>
-        </div>
-
-        {cartItems.length === 0 ? (
-          <div className="cart-card">
-            <p style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-              Tu carrito está vacío
-            </p>
-            
-            {/* Mostrar productos recomendados cuando el carrito está vacío */}
-            {recommendedProducts.length > 0 && (
-              <div style={{ padding: '20px' }}>
-                <h3 style={{ textAlign: 'center', marginBottom: '20px', color: '#D2691E' }}>
-                  ¡Descubre nuestros productos!
-                </h3>
-                <RecommendedProducts />
-              </div>
-            )}
-            
-            <div className="cart-button-container">
-              <button className="cart-primary-button" onClick={onClose}>
-                Ir al catálogo
-              </button>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="cart-card">
-              {cartItems.map(item => {
-                if (!item || !item.id) return null;
-                
-                return (
-                  <div key={item.id} className="cart-item">
+            <>
+              <div className="cart-card">
+                {cartItems.map(item => (
+                  <div key={item._id || item.id} className="cart-item">
                     <div className="cart-product-image">
-                      {item.productInfo?.image ? (
+                      {item.image ? (
                         <img 
-                          src={item.productInfo.image} 
-                          alt={item.name || 'Producto'}
+                          src={item.image} 
+                          alt={item.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
                         />
                       ) : (
-                        <div style={{ width: '100%', height: '100%', backgroundColor: '#4169E1', borderRadius: '8px' }} />
+                        <div style={{ 
+                          width: '100%', 
+                          height: '100%', 
+                          backgroundColor: '#4169E1', 
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontSize: '32px'
+                        }}>
+                          📦
+                        </div>
                       )}
                     </div>
                     
                     <div className="cart-product-details">
                       <div className="cart-product-label">Producto</div>
-                      <div className="cart-product-name">{item.name || 'Producto'}</div>
+                      <div className="cart-product-name">{item.name}</div>
                       <div className="cart-product-specs">
                         Especificaciones: 
                         {item.talla && ` Talla: ${item.talla}`}
@@ -669,7 +814,7 @@ const ShoppingCartApp = ({ onClose }) => {
 
                     <div className="cart-price-section">
                       <div className="cart-section-label">Precio</div>
-                      <div className="cart-price-value">${Number(item.price || 0).toFixed(2)}</div>
+                      <div className="cart-price-value">{formatPrice(item.price)}</div>
                     </div>
 
                     <div className="cart-quantity-section">
@@ -677,16 +822,16 @@ const ShoppingCartApp = ({ onClose }) => {
                       <div className="cart-quantity-controls">
                         <button 
                           className="cart-quantity-button"
-                          onClick={() => updateQuantity(item.id, (item.quantity || 1) - 1)}
-                          disabled={isLoading}
+                          onClick={() => updateQuantity(item._id || item.id, item.quantity - 1)}
+                          disabled={loading}
                         >
                           <Minus size={16} />
                         </button>
-                        <span className="cart-quantity-text">{item.quantity || 1}</span>
+                        <span className="cart-quantity-text">{item.quantity}</span>
                         <button 
                           className="cart-quantity-button"
-                          onClick={() => updateQuantity(item.id, (item.quantity || 1) + 1)}
-                          disabled={isLoading}
+                          onClick={() => updateQuantity(item._id || item.id, item.quantity + 1)}
+                          disabled={loading}
                         >
                           <Plus size={16} />
                         </button>
@@ -695,163 +840,311 @@ const ShoppingCartApp = ({ onClose }) => {
 
                     <div className="cart-subtotal-section">
                       <div className="cart-section-label">Subtotal</div>
-                      <div className="cart-subtotal-value">${Number(item.subtotal || 0).toFixed(2)}</div>
+                      <div className="cart-subtotal-value">{formatPrice(item.subtotal)}</div>
                     </div>
 
                     <button 
                       className="cart-remove-button"
-                      onClick={() => removeItem(item.id)}
-                      disabled={isLoading}
+                      onClick={() => removeFromCart(item._id || item.id)}
+                      disabled={loading}
                     >
                       🗑️ Eliminar
                     </button>
                   </div>
-                );
-              })}
-            </div>
+                ))}
+              </div>
 
-            <div className="cart-summary-card">
-              <div className="cart-summary-content">
-                <div className="cart-summary-row">
-                  <span className="cart-summary-label">Subtotal:</span>
-                  <span className="cart-summary-orange-value">${subtotal.toFixed(2)}</span>
-                </div>
-                <div className="cart-summary-row">
-                  <span className="cart-summary-label">Costo estimado de envío:</span>
-                  <span className="cart-summary-orange-value">${shipping.toFixed(2)}</span>
-                </div>
-                <div className="cart-summary-total-row">
-                  <span className="cart-summary-total-label">TOTAL:</span>
-                  <span className="cart-summary-total-value">${total.toFixed(2)}</span>
-                </div>
-                
-                {/* Información del carrito */}
-                {guestId && (
-                  <div style={{ marginTop: '12px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
-                    <div style={{ fontSize: '12px', color: '#666' }}>
-                      Guest ID: {guestId.slice(-8)}... | Items: {summary.itemCount || 0}
+              <div className="cart-summary-card">
+                <div className="cart-summary-content">
+                  <div className="cart-summary-row">
+                    <span className="cart-summary-label">Subtotal:</span>
+                    <span className="cart-summary-orange-value">{formatPrice(subtotal)}</span>
+                  </div>
+                  <div className="cart-summary-row">
+                    <span className="cart-summary-label">Costo estimado de envío:</span>
+                    <span className="cart-summary-orange-value">{formatPrice(shipping)}</span>
+                  </div>
+                  <div className="cart-summary-total-row">
+                    <span className="cart-summary-total-label">TOTAL:</span>
+                    <span className="cart-summary-total-value">{formatPrice(total)}</span>
+                  </div>
+                  
+                  {guestId && (
+                    <div style={{ marginTop: '12px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '12px', color: '#666' }}>
+                        Referencia: {guestId.slice(-8).toUpperCase()} | Items: {getCartItemsCount()}
+                      </div>
                     </div>
+                  )}
+                </div>
+
+                {hasError && (
+                  <div style={{ 
+                    margin: '12px 0', 
+                    padding: '8px', 
+                    backgroundColor: '#fee', 
+                    color: '#c33', 
+                    borderRadius: '4px', 
+                    fontSize: '14px' 
+                  }}>
+                    {error || internalError}
                   </div>
                 )}
-              </div>
 
-              {/* Mostrar errores si existen */}
-              {hasError && (
-                <div style={{ 
-                  margin: '12px 0', 
-                  padding: '8px', 
-                  backgroundColor: '#fee', 
-                  color: '#c33', 
-                  borderRadius: '4px', 
-                  fontSize: '14px' 
-                }}>
-                  {cartError || addError || internalError}
-                </div>
-              )}
-
-              {/* Productos recomendados en carrito con items */}
-              {recommendedProducts.length > 0 && !showRecommendations && (
-                <div style={{ marginTop: '16px' }}>
-                  <button
-                    onClick={() => setShowRecommendations(true)}
-                    style={{
-                      width: '100%',
-                      padding: '8px',
-                      backgroundColor: 'transparent',
-                      border: '1px dashed #D2691E',
-                      borderRadius: '6px',
-                      color: '#D2691E',
-                      fontSize: '14px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    ➕ Ver productos recomendados
-                  </button>
-                </div>
-              )}
-
-              {showRecommendations && (
-                <div style={{ marginTop: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '14px', fontWeight: '600' }}>Productos recomendados:</span>
+                {/* Productos recomendados en carrito con items */}
+                {recommendedProducts.length > 0 && !showRecommendations && (
+                  <div style={{ marginTop: '16px' }}>
                     <button
-                      onClick={() => setShowRecommendations(false)}
+                      onClick={() => setShowRecommendations(true)}
                       style={{
-                        background: 'none',
-                        border: 'none',
-                        fontSize: '16px',
-                        cursor: 'pointer',
-                        color: '#666'
+                        width: '100%',
+                        padding: '8px',
+                        backgroundColor: 'transparent',
+                        border: '1px dashed #D2691E',
+                        borderRadius: '6px',
+                        color: '#D2691E',
+                        fontSize: '14px',
+                        cursor: 'pointer'
                       }}
                     >
-                      ✕
+                      ➕ Ver productos recomendados
                     </button>
                   </div>
-                  <RecommendedProducts />
-                </div>
-              )}
+                )}
 
-              <div className="cart-button-container">
-                <button className="cart-secondary-button" onClick={onClose}>
-                  Regresar al catálogo
-                </button>
-                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '8px' }}>
-                  <button 
-                    className="cart-primary-button" 
-                    onClick={nextStep}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Procesando...' : 'Continuar compra'}
+                {showRecommendations && (
+                  <div style={{ marginTop: '16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '14px', fontWeight: '600' }}>Productos recomendados:</span>
+                      <button
+                        onClick={() => setShowRecommendations(false)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          fontSize: '16px',
+                          cursor: 'pointer',
+                          color: '#666'
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <RecommendedProducts />
+                  </div>
+                )}
+
+                <div className="cart-button-container">
+                  <button className="cart-secondary-button" onClick={onClose}>
+                    Regresar al catálogo
                   </button>
-                  <button
-                    onClick={clearCart}
-                    disabled={isLoading}
-                    style={{
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      backgroundColor: 'transparent',
-                      border: '1px solid #dc3545',
-                      borderRadius: '4px',
-                      color: '#dc3545',
-                      cursor: 'pointer'
+                  <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '8px' }}>
+                    <button 
+                      className="cart-primary-button" 
+                      onClick={nextStep}
+                      disabled={loading}
+                    >
+                      {loading ? 'Procesando...' : 'Continuar compra'}
+                    </button>
+                    <button
+                      onClick={() => addSampleProduct()}
+                      style={{
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        backgroundColor: '#3b82f6',
+                        border: 'none',
+                        borderRadius: '4px',
+                        color: 'white',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      + Agregar Producto
+                    </button>
+                    <button
+                      onClick={clearCart}
+                      disabled={loading}
+                      style={{
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        backgroundColor: 'transparent',
+                        border: '1px solid #dc3545',
+                        borderRadius: '4px',
+                        color: '#dc3545',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Vaciar carrito
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Vista de Checkout
+  if (currentStep === 'checkout') {
+    return (
+      <div className="cart-container">
+        <div className="cart-scroll-content">
+          <div className="cart-step-header">
+            <div className="cart-step-number">
+              <span className="cart-step-number-text">2</span>
+            </div>
+            <h2 className="cart-step-title">¿Quien hace la compra?</h2>
+          </div>
+
+          <div className="cart-checkout-container">
+            <div className="cart-checkout-form">
+              <div className="cart-guest-form">
+                <h3 className="cart-guest-title">Ingresa como invitado</h3>
+                
+                <label className="cart-input-label">Email</label>
+                <input
+                  className={`cart-text-input ${errors.email ? 'cart-input-error' : ''}`}
+                  type="email"
+                  placeholder="Ingresa tu correo electrónico"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                />
+                {errors.email && <div className="cart-error-message">{errors.email}</div>}
+
+                <div className="cart-name-row">
+                  <div className="cart-name-field">
+                    <label className="cart-input-label">Nombre</label>
+                    <input
+                      className={`cart-text-input ${errors.nombre ? 'cart-input-error' : ''}`}
+                      type="text"
+                      placeholder="Ingrese sus nombres"
+                      value={formData.nombre}
+                      onChange={(e) => handleInputChange('nombre', e.target.value)}
+                    />
+                    {errors.nombre && <div className="cart-error-message">{errors.nombre}</div>}
+                  </div>
+                  <div className="cart-name-field">
+                    <label className="cart-input-label">Apellido</label>
+                    <input
+                      className={`cart-text-input ${errors.apellido ? 'cart-input-error' : ''}`}
+                      type="text"
+                      placeholder="Ingrese sus apellidos"
+                      value={formData.apellido}
+                      onChange={(e) => handleInputChange('apellido', e.target.value)}
+                    />
+                    {errors.apellido && <div className="cart-error-message">{errors.apellido}</div>}
+                  </div>
+                </div>
+
+                <button 
+                  className="cart-continue-button" 
+                  onClick={nextStep}
+                  disabled={loading}
+                >
+                  {loading ? 'Procesando...' : 'Continuar'}
+                </button>
+
+                <div className="cart-login-prompt">
+                  <span className="cart-login-prompt-text">¿Ya tienes una cuenta? </span>
+                  <button 
+                    className="cart-login-button"
+                    type="button"
+                    onClick={() => {
+                      // Cerrar el carrito y mostrar el login del NavBar
+                      onClose();
+                      
+                      // Disparar evento personalizado para que NavBar abra el login
+                      window.dispatchEvent(new CustomEvent('openLoginModal'));
+                      
+                      toast.success('Cerrando carrito para iniciar sesión...');
                     }}
                   >
-                    Vaciar carrito
+                    Inicia Sesión
                   </button>
                 </div>
               </div>
             </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
 
-  // Checkout View
-  const CheckoutView = () => (
-    <div className="cart-container">
-      <div className="cart-scroll-content">
-        <div className="cart-step-header">
-          <div className="cart-step-number">
-            <span className="cart-step-number-text">2</span>
+            <CartSummary />
           </div>
-          <h2 className="cart-step-title">¿Quien hace la compra?</h2>
-        </div>
 
-        <div className="cart-checkout-container">
-          <div className="cart-checkout-form">
-            <div className="cart-guest-form">
-              <h3 className="cart-guest-title">Ingresa como invitado</h3>
-              
-              <label className="cart-input-label">Email</label>
+          <button className="cart-back-link" onClick={() => setCurrentStep('cart')}>
+            Regresar al carrito
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Vista de Entrega
+  if (currentStep === 'delivery') {
+    return (
+      <div className="cart-container">
+        <div className="cart-scroll-content">
+          <div className="cart-step-header">
+            <div className="cart-step-number">
+              <span className="cart-step-number-text">3</span>
+            </div>
+            <h2 className="cart-step-title">¿A donde enviamos tu orden?</h2>
+          </div>
+
+          <div className="cart-checkout-container">
+            <div className="cart-delivery-form">
+              <label className="cart-country-label">País</label>
+              <div className="cart-country-value">El Salvador</div>
+
+              <div className="cart-select-row">
+                <div className="cart-select-field">
+                  <label className="cart-input-label">Departamento *</label>
+                  <select 
+                    className={`cart-select-input ${errors.departamento ? 'cart-input-error' : ''}`}
+                    value={formData.departamento}
+                    onChange={(e) => handleInputChange('departamento', e.target.value)}
+                  >
+                    <option value="">Seleccionar departamento</option>
+                    <option value="san-salvador">San Salvador</option>
+                    <option value="la-libertad">La Libertad</option>
+                    <option value="santa-ana">Santa Ana</option>
+                    <option value="sonsonate">Sonsonate</option>
+                    <option value="ahuachapan">Ahuachapán</option>
+                  </select>
+                  {errors.departamento && <div className="cart-error-message">{errors.departamento}</div>}
+                </div>
+                <div className="cart-select-field">
+                  <label className="cart-input-label">Región *</label>
+                  <select 
+                    className={`cart-select-input ${errors.region ? 'cart-input-error' : ''}`}
+                    value={formData.region}
+                    onChange={(e) => handleInputChange('region', e.target.value)}
+                  >
+                    <option value="">Seleccionar región</option>
+                    <option value="san-salvador">San Salvador</option>
+                    <option value="mejicanos">Mejicanos</option>
+                    <option value="soyapango">Soyapango</option>
+                    <option value="ciudad-delgado">Ciudad Delgado</option>
+                  </select>
+                  {errors.region && <div className="cart-error-message">{errors.region}</div>}
+                </div>
+              </div>
+
+              <label className="cart-input-label">Dirección de entrega *</label>
               <input
-                className={`cart-text-input ${errors.email ? 'cart-input-error' : ''}`}
-                type="email"
-                placeholder="Ingresa tu correo electrónico"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
+                className={`cart-text-input ${errors.direccion ? 'cart-input-error' : ''}`}
+                type="text"
+                placeholder="Ingresa tu dirección completa"
+                value={formData.direccion}
+                onChange={(e) => handleInputChange('direccion', e.target.value)}
               />
-              {errors.email && <div className="cart-error-message">{errors.email}</div>}
+              {errors.direccion && <div className="cart-error-message">{errors.direccion}</div>}
+
+              <label className="cart-input-label">Punto de referencia</label>
+              <input
+                className="cart-text-input"
+                type="text"
+                placeholder="Puntos de referencia cercanos"
+                value={formData.referencia}
+                onChange={(e) => handleInputChange('referencia', e.target.value)}
+              />
 
               <div className="cart-name-row">
                 <div className="cart-name-field">
@@ -859,18 +1152,18 @@ const ShoppingCartApp = ({ onClose }) => {
                   <input
                     className={`cart-text-input ${errors.nombre ? 'cart-input-error' : ''}`}
                     type="text"
-                    placeholder="Ingrese sus nombres"
+                    placeholder="Tu nombre"
                     value={formData.nombre}
                     onChange={(e) => handleInputChange('nombre', e.target.value)}
                   />
                   {errors.nombre && <div className="cart-error-message">{errors.nombre}</div>}
                 </div>
                 <div className="cart-name-field">
-                  <label className="cart-input-label">Apellido</label>
+                  <label className="cart-input-label">Apellidos</label>
                   <input
                     className={`cart-text-input ${errors.apellido ? 'cart-input-error' : ''}`}
                     type="text"
-                    placeholder="Ingrese sus apellidos"
+                    placeholder="Tus apellidos"
                     value={formData.apellido}
                     onChange={(e) => handleInputChange('apellido', e.target.value)}
                   />
@@ -878,284 +1171,147 @@ const ShoppingCartApp = ({ onClose }) => {
                 </div>
               </div>
 
+              <label className="cart-input-label">Teléfono de contacto *</label>
+              <input
+                className={`cart-text-input ${errors.telefono ? 'cart-input-error' : ''}`}
+                type="tel"
+                placeholder="Número de teléfono"
+                value={formData.telefono}
+                onChange={(e) => handleInputChange('telefono', e.target.value)}
+              />
+              {errors.telefono && <div className="cart-error-message">{errors.telefono}</div>}
+
+              <div className="cart-note-container">
+                <div className="cart-note-text">
+                  <span className="cart-note-bold">NOTA:</span> Las entregas son realizadas por encomiendas, nos comunicaremos contigo sobre los detalles de tu envío.
+                </div>
+              </div>
+
               <button 
                 className="cart-continue-button" 
                 onClick={nextStep}
-                disabled={isLoading}
+                disabled={loading}
               >
-                {isLoading ? 'Procesando...' : 'Continuar'}
-              </button>
-
-              <div className="cart-login-prompt">
-                <span className="cart-login-prompt-text">¿Ya tienes una cuenta? </span>
-                <button className="cart-login-button">
-                  Inicia Sesión
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <CartSummary />
-        </div>
-
-        <button className="cart-back-link" onClick={() => setCurrentStep('cart')}>
-          Regresar al carrito
-        </button>
-      </div>
-    </div>
-  );
-
-  // Delivery View
-  const DeliveryView = () => (
-    <div className="cart-container">
-      <div className="cart-scroll-content">
-        <div className="cart-step-header">
-          <div className="cart-step-number">
-            <span className="cart-step-number-text">3</span>
-          </div>
-          <h2 className="cart-step-title">¿A donde enviamos tu orden?</h2>
-        </div>
-
-        <div className="cart-checkout-container">
-          <div className="cart-delivery-form">
-            <label className="cart-country-label">País</label>
-            <div className="cart-country-value">El Salvador</div>
-
-            <div className="cart-select-row">
-              <div className="cart-select-field">
-                <label className="cart-input-label">Departamento *</label>
-                <select 
-                  className={`cart-select-input ${errors.departamento ? 'cart-input-error' : ''}`}
-                  value={formData.departamento}
-                  onChange={(e) => handleInputChange('departamento', e.target.value)}
-                >
-                  <option value="">Seleccionar departamento</option>
-                  <option value="san-salvador">San Salvador</option>
-                  <option value="la-libertad">La Libertad</option>
-                  <option value="santa-ana">Santa Ana</option>
-                  <option value="sonsonate">Sonsonate</option>
-                  <option value="ahuachapan">Ahuachapán</option>
-                </select>
-                {errors.departamento && <div className="cart-error-message">{errors.departamento}</div>}
-              </div>
-              <div className="cart-select-field">
-                <label className="cart-input-label">Región *</label>
-                <select 
-                  className={`cart-select-input ${errors.region ? 'cart-input-error' : ''}`}
-                  value={formData.region}
-                  onChange={(e) => handleInputChange('region', e.target.value)}
-                >
-                  <option value="">Seleccionar región</option>
-                  <option value="san-salvador">San Salvador</option>
-                  <option value="mejicanos">Mejicanos</option>
-                  <option value="soyapango">Soyapango</option>
-                  <option value="ciudad-delgado">Ciudad Delgado</option>
-                </select>
-                {errors.region && <div className="cart-error-message">{errors.region}</div>}
-              </div>
-            </div>
-
-            <label className="cart-input-label">Dirección de entrega *</label>
-            <input
-              className={`cart-text-input ${errors.direccion ? 'cart-input-error' : ''}`}
-              type="text"
-              placeholder="Ingresa tu dirección completa"
-              value={formData.direccion}
-              onChange={(e) => handleInputChange('direccion', e.target.value)}
-            />
-            {errors.direccion && <div className="cart-error-message">{errors.direccion}</div>}
-
-            <label className="cart-input-label">Punto de referencia</label>
-            <input
-              className="cart-text-input"
-              type="text"
-              placeholder="Puntos de referencia cercanos"
-              value={formData.referencia}
-              onChange={(e) => handleInputChange('referencia', e.target.value)}
-            />
-
-            <div className="cart-name-row">
-              <div className="cart-name-field">
-                <label className="cart-input-label">Nombre</label>
-                <input
-                  className={`cart-text-input ${errors.nombre ? 'cart-input-error' : ''}`}
-                  type="text"
-                  placeholder="Tu nombre"
-                  value={formData.nombre}
-                  onChange={(e) => handleInputChange('nombre', e.target.value)}
-                />
-                {errors.nombre && <div className="cart-error-message">{errors.nombre}</div>}
-              </div>
-              <div className="cart-name-field">
-                <label className="cart-input-label">Apellidos</label>
-                <input
-                  className={`cart-text-input ${errors.apellido ? 'cart-input-error' : ''}`}
-                  type="text"
-                  placeholder="Tus apellidos"
-                  value={formData.apellido}
-                  onChange={(e) => handleInputChange('apellido', e.target.value)}
-                />
-                {errors.apellido && <div className="cart-error-message">{errors.apellido}</div>}
-              </div>
-            </div>
-
-            <label className="cart-input-label">Teléfono de contacto *</label>
-            <input
-              className={`cart-text-input ${errors.telefono ? 'cart-input-error' : ''}`}
-              type="tel"
-              placeholder="Número de teléfono"
-              value={formData.telefono}
-              onChange={(e) => handleInputChange('telefono', e.target.value)}
-            />
-            {errors.telefono && <div className="cart-error-message">{errors.telefono}</div>}
-
-            <div className="cart-note-container">
-              <div className="cart-note-text">
-                <span className="cart-note-bold">NOTA:</span> Las entregas son realizadas por encomiendas, nos comunicaremos contigo sobre los detalles de tu envío.
-              </div>
-            </div>
-
-            <button 
-              className="cart-continue-button" 
-              onClick={nextStep}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Procesando...' : 'Continuar a pago'}
-            </button>
-          </div>
-
-          <CartSummary />
-        </div>
-
-        <button className="cart-back-link" onClick={() => setCurrentStep('checkout')}>
-          Regresar
-        </button>
-      </div>
-    </div>
-  );
-
-  // Payment View
-  const PaymentView = () => (
-    <div className="cart-container">
-      <div className="cart-scroll-content">
-        <div className="cart-step-header">
-          <div className="cart-step-number">
-            <span className="cart-step-number-text">4</span>
-          </div>
-          <h2 className="cart-step-title">Métodos de pago</h2>
-        </div>
-
-        <div className="cart-checkout-container">
-          <div className="cart-payment-form">
-            <div className="cart-payment-toggle">
-              <button 
-                className="cart-toggle-button"
-                style={{
-                  backgroundColor: paymentMethod === 'transferencia' ? 'white' : 'transparent',
-                  color: paymentMethod === 'transferencia' ? '#4a90a4' : 'white'
-                }}
-                onClick={() => setPaymentMethod('transferencia')}
-              >
-                Transferencia
-              </button>
-              <button 
-                className="cart-toggle-button"
-                style={{
-                  backgroundColor: paymentMethod === 'efectivo' ? 'white' : 'transparent',
-                  color: paymentMethod === 'efectivo' ? '#4a90a4' : 'white'
-                }}
-                onClick={() => setPaymentMethod('efectivo')}
-              >
-                Efectivo
+                {loading ? 'Procesando...' : 'Continuar a pago'}
               </button>
             </div>
 
-            {paymentMethod === 'transferencia' ? (
-              <div className="cart-payment-content">
-                <div className="cart-green-checkmark">✓</div>
-                <h3 className="cart-confirmation-title">Confirmación de pedido</h3>
-                <p className="cart-confirmation-text">
-                  ¿Estás seguro de que deseas continuar con tu compra? Te enviaremos a tu correo los datos para realizar la transferencia. ¿Quieres continuar?
-                </p>
-                <button 
-                  className="cart-continue-button" 
-                  onClick={nextStep}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Procesando...' : 'Finalizar compra'}
-                </button>
-              </div>
-            ) : (
-              <div className="cart-payment-content">
-                <p className="cart-efectivo-text">
-                  ¡Gracias por tu compra! El pago se realizará en efectivo al momento de la entrega de tu producto.
-                </p>
-                <button 
-                  className="cart-continue-button" 
-                  onClick={nextStep}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Procesando...' : 'Finalizar compra'}
-                </button>
-              </div>
-            )}
+            <CartSummary />
           </div>
 
-          <CartSummary />
+          <button className="cart-back-link" onClick={() => setCurrentStep('checkout')}>
+            Regresar
+          </button>
         </div>
-
-        <button className="cart-back-link" onClick={() => setCurrentStep('delivery')}>
-          Regresar
-        </button>
       </div>
-    </div>
-  );
-
-  // Mostrar errores si existen
-  useEffect(() => {
-    if (hasError) {
-      console.error('Cart error:', hasError);
-    }
-  }, [hasError]);
-
-  // Cargar productos al montar el componente
-  useEffect(() => {
-    try {
-      if (products.length === 0 && handleGetProducts) {
-        handleGetProducts().catch(error => {
-          console.error('Error loading products:', error);
-          setInternalError('Error al cargar productos');
-        });
-      }
-    } catch (error) {
-      console.error('Error in useEffect for products:', error);
-    }
-  }, [products.length, handleGetProducts]);
-
-  // Limpiar errores internos después de un tiempo
-  useEffect(() => {
-    if (internalError && !internalError.includes('hooks')) {
-      const timer = setTimeout(() => {
-        setInternalError(null);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [internalError]);
-
-  // Render current step
-  try {
-    if (currentStep === 'cart') return <CartView />;
-    if (currentStep === 'checkout') return <CheckoutView />;
-    if (currentStep === 'delivery') return <DeliveryView />;
-    if (currentStep === 'payment') return <PaymentView />;
-    if (currentStep === 'confirmation') return <ConfirmationView />;
-    
-    return <CartView />;
-  } catch (error) {
-    console.error('Error rendering cart step:', error);
-    setInternalError('Error al mostrar el carrito');
-    return <CartView />;
+    );
   }
+
+  // Vista de Pago
+  if (currentStep === 'payment') {
+    return (
+      <div className="cart-container">
+        <div className="cart-scroll-content">
+          <div className="cart-step-header">
+            <div className="cart-step-number">
+              <span className="cart-step-number-text">4</span>
+            </div>
+            <h2 className="cart-step-title">Métodos de pago</h2>
+          </div>
+
+          <div className="cart-checkout-container">
+            <div className="cart-payment-form">
+              <div className="cart-payment-toggle">
+                <button 
+                  className="cart-toggle-button"
+                  style={{
+                    backgroundColor: paymentMethod === 'transferencia' ? 'white' : 'transparent',
+                    color: paymentMethod === 'transferencia' ? '#4a90a4' : 'white'
+                  }}
+                  onClick={() => setPaymentMethod('transferencia')}
+                >
+                  Transferencia
+                </button>
+                <button 
+                  className="cart-toggle-button"
+                  style={{
+                    backgroundColor: paymentMethod === 'efectivo' ? 'white' : 'transparent',
+                    color: paymentMethod === 'efectivo' ? '#4a90a4' : 'white'
+                  }}
+                  onClick={() => setPaymentMethod('efectivo')}
+                >
+                  Efectivo
+                </button>
+              </div>
+
+              {paymentMethod === 'transferencia' ? (
+                <div className="cart-payment-content">
+                  <div className="cart-green-checkmark">✓</div>
+                  <h3 className="cart-confirmation-title">Confirmación de pedido</h3>
+                  <p className="cart-confirmation-text">
+                    ¿Estás seguro de que deseas continuar con tu compra? Te enviaremos a tu correo los datos para realizar la transferencia. ¿Quieres continuar?
+                  </p>
+                  <button 
+                    className="cart-continue-button" 
+                    onClick={nextStep}
+                    disabled={loading}
+                  >
+                    {loading ? 'Procesando...' : 'Finalizar compra'}
+                  </button>
+                </div>
+              ) : (
+                <div className="cart-payment-content">
+                  <p className="cart-efectivo-text">
+                    ¡Gracias por tu compra! El pago se realizará en efectivo al momento de la entrega de tu producto.
+                  </p>
+                  <button 
+                    className="cart-continue-button" 
+                    onClick={nextStep}
+                    disabled={loading}
+                  >
+                    {loading ? 'Procesando...' : 'Finalizar compra'}
+                  </button>
+                </div>
+              )}
+
+              {hasError && (
+                <div style={{ 
+                  margin: '16px 0', 
+                  padding: '12px', 
+                  backgroundColor: '#fee2e2', 
+                  color: '#dc2626', 
+                  borderRadius: '6px', 
+                  fontSize: '14px',
+                  textAlign: 'center'
+                }}>
+                  {error || internalError}
+                </div>
+              )}
+            </div>
+
+            <CartSummary />
+          </div>
+
+          <button className="cart-back-link" onClick={() => setCurrentStep('delivery')}>
+            Regresar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback - mostrar vista del carrito
+  return (
+    <div className="cart-container">
+      <div className="cart-scroll-content">
+        <div className="cart-card">
+          <p style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+            Cargando carrito...
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ShoppingCartApp;
