@@ -31,6 +31,8 @@ import RequestCode from "../pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import Profile from "../pages/Public/Profile/Profile.jsx";
+import NotFound from "../pages/NotFound/NotFound.jsx";  
+import Forbidden from "../pages/Forbidden/Forbidden.jsx"
 import LoginModal from "../components/LoginModal/Login.jsx";
 
 //Paginas de productos sitio público
@@ -60,8 +62,8 @@ const EmployeeLayout = () => (
         <Route path="reseñas" element={<Reseñas />} />
         <Route path="empleados" element={<Empleados />} />
         <Route path="clientes" element={<Clientes />} />
+        <Route path="graphics" element={<Graphics />} />
         <Route path="*" element={<Navigate to="/admin/productos" replace />} />
-        <Route path="graphics" element={<Graphics/>}/>
       </Routes>
     </div>
   </>
@@ -139,7 +141,7 @@ function Navegation() {
           }
         />
 
-        {/* Rutas públicas publicas */}
+        {/* Rutas públicas */}
         <Route path="/mainPage" element={<MainPage />} />
         <Route path="/bandanas" element={<Bandanas />} />
         <Route path="/collars" element={<Collars />} />
@@ -153,21 +155,22 @@ function Navegation() {
         <Route path="/birthday" element={<Birthday />} />
         <Route path="/aboutus" element={<AboutUS />} />
         <Route path="/profile" element={<Profile />} />
-      
 
         {/* Área privada para empleados */}
         <Route element={<EmployeeRoute />}>
           <Route path="/admin/*" element={<EmployeeLayout />} />
         </Route>
 
-        {/* Ruta por defecto */}
-        <Route path="*" element={<Navigate to="/mainPage" replace />} />
+        {/* Ruta por defecto (404) */}
+        <Route path="*" element={<NotFound />} />   
+
+        {/* Registir acceso (403) */}
+        <Route path="/forbidden" element={<Forbidden />} />
+
       </Routes>
 
-      <>
-      .<Footer /></>
-      </>
-    
+      <Footer />
+    </>
   );
 }
 
