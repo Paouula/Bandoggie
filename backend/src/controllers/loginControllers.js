@@ -1,5 +1,5 @@
 // controllers/loginController.js
-import clientsModel from "../models/clients";
+import clientsModel from "../models/client.js";
 import Employees from "../models/Employees.js";
 import VetModel from "../models/Vets.js";
 import bcryptjs from "bcryptjs";

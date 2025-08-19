@@ -2,7 +2,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import crypto from 'crypto';
 import bcryptjs from 'bcryptjs';
 import vetModel from '../models/Vets.js';
-import clientsModel from '../models/Clients.js';
+import clientsModel from '../models/client.js';
 import { config } from '../config.js';
 import cloudinary from 'cloudinary';
 import sendVerificationEmail from '../utils/verificationCode.js';
