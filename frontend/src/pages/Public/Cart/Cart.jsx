@@ -364,7 +364,7 @@ const ShoppingCartApp = ({ onClose }) => {
         );
         return newItems;
       });
-      toast.success('Producto removido del carrito');
+      toast.success('Producto eliminado del carrito');
     } catch (error) {
       console.error('Error removing from cart:', error);
       toast.error('Error al remover del carrito');

@@ -5,6 +5,7 @@ import useProductData from "../../../components/Public/SelectedProduct/hooks/use
 import Reviews from "../../../components/Public/SelectedProduct/Reviews.jsx";
 import RelatedProducts from "../../../components/Public/SelectedProduct/RelatedProduct.jsx";
 import { useAuth } from "../../../Context/AuthContext.jsx"; 
+import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 import "./SelectedProduct.css";
 
@@ -17,7 +18,7 @@ const SelectedProduct = () => {
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
-  const [includeName, setIncludeName] = useState(true);
+  const [includeName, setIncludeName] = useState(false); 
 
   const sizes = ["XS", "S", "M", "L", "XL"];
 
@@ -128,24 +129,6 @@ const SelectedProduct = () => {
     }
   };
 
-  // Función para verificar el estado del carrito (para debugging)
-  const checkCartStatus = () => {
-    const cart = localStorage.getItem('bandoggie_cart');
-    console.log('Estado actual del carrito:', cart);
-    if (cart) {
-      try {
-        const parsedCart = JSON.parse(cart);
-        console.log('Carrito parseado:', parsedCart);
-        toast.success(`Carrito tiene ${parsedCart.length} productos diferentes`);
-      } catch (e) {
-        console.error('Error al parsear carrito:', e);
-        toast.error('Error al leer el carrito');
-      }
-    } else {
-      toast.info('El carrito está vacío');
-    }
-  };
-
   // Unimos todas las imágenes en un solo array
   const allImages = [
     product.image,
@@ -181,6 +164,7 @@ const SelectedProduct = () => {
 
   return (
     <div className="product-page">
+       <Toaster position="top-right" reverseOrder={false} />
       {/* Breadcrumb */}
       <div className="breadcrumb">
         <Link to="/">Inicio</Link>
@@ -242,7 +226,7 @@ const SelectedProduct = () => {
           <div className="section">
             <h4>Talla</h4>
             <div className="sizes">
-              {sizes.map((size) => (
+                            {sizes.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -301,7 +285,6 @@ const SelectedProduct = () => {
               </button>
             </div>
             <button className="btn buy-now">Comprar ahora</button>
-            
           </div>
         </div>
       </div>
