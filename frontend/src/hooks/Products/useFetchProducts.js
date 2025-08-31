@@ -1,36 +1,9 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
+//Importo las funciones globales para realizar el fetch
+import { API_FETCH_FORM, API_FETCH_JSON } from '../../config';
 
-// Configuración de la API
-const API_BASE_URL = 'http://localhost:4000/api';
-
-// Función helper para realizar peticiones HTTP
-const apiRequest = async (endpoint, options = {}) => {
-    const url = `${API_BASE_URL}/${endpoint}`;
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers,
-        },
-        ...options,
-    };
-
-    // Para FormData, remover Content-Type para que el navegador lo establezca automáticamente
-    if (options.body instanceof FormData) {
-        delete config.headers['Content-Type'];
-    }
-
-    const response = await fetch(url, config);
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-};
-
-// Función para construir FormData
+// Función reutilizable para construir el FormData
 const buildFormData = (productData) => {
     const {
         nameProduct,
@@ -42,428 +15,310 @@ const buildFormData = (productData) => {
         idCategory
     } = productData;
 
-    // Validaciones
-    if (!nameProduct?.trim()) throw new Error('El nombre del producto es requerido');
-    if (!price || isNaN(price) || parseFloat(price) <= 0) throw new Error('El precio debe ser un número válido mayor a 0');
-    if (!description?.trim()) throw new Error('La descripción es requerida');
-    if (!idCategory) throw new Error('La categoría es requerida');
-    if (!idHolidayProduct) throw new Error('La festividad es requerida');
-
     const formData = new FormData();
-    formData.append('nameProduct', nameProduct.trim());
-    formData.append('price', parseFloat(price));
-    formData.append('description', description.trim());
-    formData.append('idHolidayProduct', idHolidayProduct);
-    formData.append('idCategory', idCategory);
+    formData.append('nameProduct', nameProduct);
+    formData.append('price', price);
+    formData.append('description', description);
 
-    // Manejar imagen principal
-    if (image instanceof File) {
+    if (image) {
         formData.append('image', image);
     }
 
-    // Manejar imágenes de diseño
-    if (designImages && Array.isArray(designImages)) {
-        if (designImages.length < 3) {
-            throw new Error('Se requieren mínimo 3 imágenes de diseño');
-        }
-        if (designImages.length > 10) {
-            throw new Error('Máximo 10 imágenes de diseño permitidas');
-        }
-        
-        designImages.forEach(file => {
-            if (file instanceof File) {
-                formData.append('designImages', file);
-            }
+    if (Array.isArray(designImages)) {
+        designImages.forEach((file, index) => {
+            formData.append('designImages', file);
         });
+    }
+
+    formData.append('idHolidayProduct', idHolidayProduct);
+    formData.append('idCategory', idCategory);
+
+    for (let pair of formData.entries()) {
+        console.log(pair[0] + ':', pair[1]);
     }
 
     return formData;
 };
 
-// Función para limpiar y validar productos
-const validateAndCleanProducts = (products) => {
-    if (!Array.isArray(products)) {
-        console.warn('Products data is not an array:', products);
-        return [];
-    }
-
-    return products.filter(product => {
-        // Validaciones básicas
-        if (!product || typeof product !== 'object') return false;
-        if (!product._id) return false;
-        if (!product.nameProduct || typeof product.nameProduct !== 'string') return false;
-        
-        // Filtrar productos de prueba
-        const name = product.nameProduct.toLowerCase().trim();
-        const isTestProduct = name.includes('prueba') || 
-                            name.includes('test') || 
-                            name.includes('demo') ||
-                            name.includes('ejemplo');
-        
-        // Validar precio
-        const price = parseFloat(product.price);
-        const hasValidPrice = !isNaN(price) && price > 0;
-        
-        return !isTestProduct && hasValidPrice;
-    }).map(product => ({
-        ...product,
-        nameProduct: product.nameProduct.trim(),
-        price: parseFloat(product.price) || 0,
-        description: product.description?.trim() || '',
-    })).sort((a, b) => {
-        // Ordenar por fecha de creación (más recientes primero)
-        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
-    });
-};
-
-// Función para limpiar y validar categorías
-const validateAndCleanCategories = (categories) => {
-    if (!Array.isArray(categories)) {
-        console.warn('Categories data is not an array:', categories);
-        return [];
-    }
-
-    const validCategories = categories.filter(category => {
-        if (!category || typeof category !== 'object') return false;
-        if (!category._id) return false;
-        if (!category.nameCategory || typeof category.nameCategory !== 'string') return false;
-        
-        const name = category.nameCategory.toLowerCase().trim();
-        
-        // Filtrar categorías de prueba
-        const isTestCategory = name.includes('prueba') || 
-                             name.includes('test') || 
-                             name.includes('demo') ||
-                             name.includes('ejemplo');
-        
-        const hasValidName = name.length > 0 && name.length < 100;
-        
-        return !isTestCategory && hasValidName;
-    });
-
-    // Remover duplicados
-    const uniqueCategories = [];
-    const seenNames = new Set();
-    
-    validCategories.forEach(category => {
-        const normalizedName = category.nameCategory.toLowerCase().trim();
-        if (!seenNames.has(normalizedName)) {
-            seenNames.add(normalizedName);
-            uniqueCategories.push({
-                ...category,
-                nameCategory: category.nameCategory.trim()
-            });
-        }
-    });
-
-    // Ordenar alfabéticamente
-    return uniqueCategories.sort((a, b) => 
-        a.nameCategory.localeCompare(b.nameCategory, 'es', { sensitivity: 'base' })
-    );
-};
-
-// Hook principal
+//Constante que contendrá los métodos
 const useFetchProducts = () => {
-    // Estados
+    //Estados para productos y categorías
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    
-    // Referencias para control
-    const isInitialized = useRef(false);
-    const abortControllerRef = useRef(null);
 
-    // Manejo centralizado de errores
-    const handleError = useCallback((error, customMessage) => {
-        const message = customMessage || error.message || 'Ha ocurrido un error';
-        console.error('Error:', error);
-        setError(message);
-        toast.error(message);
-        setLoading(false);
-    }, []);
+    //Declaro el endpoint
+    const endpoint = 'products';
+    const categoriesEndpoint = 'categories';
 
-    // Limpiar error
-    const clearError = useCallback(() => {
-        setError(null);
-    }, []);
-
-    // Obtener todos los productos
-    const getProducts = useCallback(async () => {
+    //Obtiene todos los productos
+    const handleGetProducts = async () => {
         try {
             setLoading(true);
-            clearError();
+            setError(null);
             
-            const data = await apiRequest('products');
-            const cleanedProducts = validateAndCleanProducts(data);
-            
-            setProducts(cleanedProducts);
-            console.log(`Productos cargados: ${cleanedProducts.length} de ${data.length} originales`);
-            
-            return cleanedProducts;
+            const data = await API_FETCH_JSON(endpoint);
+            setProducts(data);
+            console.log("data de productos", data);
+            return data;
         } catch (error) {
-            handleError(error, 'Error al obtener los productos');
+            setError('Error al obtener los productos');
+            toast.error('Error al obtener los productos');
+            console.log(error);
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [handleError, clearError]);
+    };
 
-    // Obtener todas las categorías
-    const getCategories = useCallback(async () => {
+    //Obtiene todas las categorías
+    const handleGetCategories = async () => {
         try {
             setLoading(true);
-            clearError();
+            setError(null);
             
-            const data = await apiRequest('categories');
-            const cleanedCategories = validateAndCleanCategories(data);
-            
-            setCategories(cleanedCategories);
-            console.log(`Categorías cargadas: ${cleanedCategories.length} de ${data.length} originales`);
-            
-            return cleanedCategories;
+            const data = await API_FETCH_JSON(categoriesEndpoint);
+            setCategories(data);
+            console.log("data de categorias", data);
+            return data;
         } catch (error) {
-            handleError(error, 'Error al obtener las categorías');
+            setError('Error al obtener las categorías');
+            toast.error('Error al obtener las categorías');
+            console.log(error);
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [handleError, clearError]);
+    };
 
-    // Obtener producto por ID
-    const getProductById = useCallback(async (id) => {
-        if (!id) throw new Error('ID del producto es requerido');
-        
+    // Función alternativa usando fetch directo (como en el .jsx)
+    const getProducts = async () => {
         try {
             setLoading(true);
-            clearError();
-            
-            const product = await apiRequest(`products/${id}`);
-            return product;
+            const response = await fetch('http://localhost:4000/api/products');
+
+            if (!response.ok) {
+                toast.error("Error al traer los productos");
+                throw new Error('Error al traer los productos');
+            }
+
+            const data = await response.json();
+            setProducts(data);
+            console.log("data de productos", data);
+            return data;
+
         } catch (error) {
-            handleError(error, 'Error al obtener el producto');
+            setError(error.message);
+            console.log(error);
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [handleError, clearError]);
+    };
 
-    // Crear nuevo producto
-    const createProduct = useCallback(async (productData) => {
+    // Función alternativa usando fetch directo para categorías
+    const getCategories = async () => {
         try {
             setLoading(true);
-            clearError();
+            const response = await fetch('http://localhost:4000/api/categories');
+
+            if (!response.ok) {
+                toast.error("Error al traer las categorias");
+                throw new Error('Error al traer las categorías');
+            }
+
+            const data = await response.json();
+            setCategories(data);
+            console.log("data de categorias", data);
+            return data;
+
+        } catch (error) {
+            setError(error.message);
+            console.log(error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    //Crea un nuevo producto
+    const handlePostProducts = async (productData) => {
+        try {
+            setLoading(true);
+            setError(null);
             
             const formData = buildFormData(productData);
-            const response = await apiRequest('products', {
+            const data = await API_FETCH_FORM(endpoint, formData, {
                 method: 'POST',
-                body: formData,
             });
 
-            // Actualizar lista local
-            const newProduct = response.product || response;
-            setProducts(prevProducts => {
-                const updatedProducts = [newProduct, ...prevProducts];
-                return validateAndCleanProducts(updatedProducts);
-            });
+            // Actualizar la lista de productos localmente
+            setProducts(prevProducts => [...prevProducts, data]);
             
-            toast.success('Producto creado exitosamente');
-            return newProduct;
+            toast.success('Producto creado correctamente');
+            return data;
+
         } catch (error) {
-            handleError(error, 'Error al crear el producto');
+            setError('Error al crear el producto');
+            toast.error('Error al crear el producto');
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [handleError, clearError]);
+    };
 
-    // Actualizar producto
-    const updateProduct = useCallback(async (id, productData) => {
-        if (!id) throw new Error('ID del producto es requerido');
-        
+    //Actualiza un producto ya existente
+    const handlePutProducts = async (id, productData) => {
         try {
             setLoading(true);
-            clearError();
+            setError(null);
             
             const formData = buildFormData(productData);
-            const response = await apiRequest(`products/${id}`, {
+            const data = await API_FETCH_FORM(`${endpoint}/${id}`, formData, {
                 method: 'PUT',
-                body: formData,
             });
 
-            // Actualizar lista local
-            const updatedProduct = response.product || response;
-            setProducts(prevProducts => {
-                const updatedProducts = prevProducts.map(product => 
-                    product._id === id ? { ...product, ...updatedProduct } : product
-                );
-                return validateAndCleanProducts(updatedProducts);
-            });
-            
-            toast.success('Producto actualizado exitosamente');
-            return updatedProduct;
+            // Actualizar la lista de productos localmente
+            setProducts(prevProducts => 
+                prevProducts.map(product => 
+                    product._id === id ? data : product
+                )
+            );
+
+            toast.success('Producto actualizado correctamente');
+            return data;
         } catch (error) {
-            handleError(error, 'Error al actualizar el producto');
+            setError('Error al actualizar el producto');
+            toast.error('Error al actualizar el producto');
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [handleError, clearError]);
+    };
 
-    // Eliminar producto
-    const deleteProduct = useCallback(async (id) => {
-        if (!id) throw new Error('ID del producto es requerido');
-        
+    //Elimina un producto
+    const handleDeleteProducts = async (id) => {
         try {
             setLoading(true);
-            clearError();
+            setError(null);
             
-            await apiRequest(`products/${id}`, {
+            await API_FETCH_JSON(`${endpoint}/${id}`, {
                 method: 'DELETE',
             });
 
-            // Actualizar lista local
+            // Actualizar la lista de productos localmente
             setProducts(prevProducts => 
                 prevProducts.filter(product => product._id !== id)
             );
-            
-            toast.success('Producto eliminado exitosamente');
+
+            toast.success('Producto eliminado correctamente');
         } catch (error) {
-            handleError(error, 'Error al eliminar el producto');
+            setError('Error al eliminar el producto');
+            toast.error('Error al eliminar el producto');
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [handleError, clearError]);
+    };
 
-    // Obtener productos por categoría
-    const getProductsByCategory = useCallback(async (categoryId) => {
-        if (!categoryId) throw new Error('ID de categoría es requerido');
-        
+    //Obtener producto por ID
+    const handleGetProductById = async (id) => {
         try {
             setLoading(true);
-            clearError();
+            setError(null);
             
-            const data = await apiRequest(`products/category/${categoryId}`);
-            const cleanedProducts = validateAndCleanProducts(data);
-            
-            return cleanedProducts;
+            const data = await API_FETCH_JSON(`${endpoint}/${id}`);
+            return data;
         } catch (error) {
-            handleError(error, 'Error al obtener productos por categoría');
+            setError('Error al obtener el producto');
+            toast.error('Error al obtener el producto');
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [handleError, clearError]);
+    };
 
-    // Buscar productos (si tienes endpoint de búsqueda)
-    const searchProducts = useCallback(async (searchTerm) => {
-        if (!searchTerm?.trim()) throw new Error('Término de búsqueda es requerido');
-        
+    //Buscar productos por categoría
+    const handleGetProductsByCategory = async (categoryId) => {
         try {
             setLoading(true);
-            clearError();
+            setError(null);
             
-            // Si no tienes endpoint de búsqueda, buscar localmente
-            const filtered = products.filter(product => 
-                product.nameProduct.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.description.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            
-            return filtered;
+            const data = await API_FETCH_JSON(`${endpoint}/category/${categoryId}`);
+            return data;
         } catch (error) {
-            handleError(error, 'Error al buscar productos');
+            setError('Error al obtener productos por categoría');
+            toast.error('Error al obtener productos por categoría');
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [products, handleError, clearError]);
+    };
 
-    // Funciones de filtrado memoizadas
-    const productionProducts = useMemo(() => {
-        return products.filter(product => {
-            if (!product?.nameProduct) return false;
-            const name = product.nameProduct.toLowerCase();
-            return !name.includes('prueba') && !name.includes('test') && !name.includes('demo');
-        });
-    }, [products]);
-
-    const productionCategories = useMemo(() => {
-        return categories.filter(category => {
-            if (!category?.nameCategory) return false;
-            const name = category.nameCategory.toLowerCase();
-            return !name.includes('prueba') && !name.includes('test') && !name.includes('demo');
-        });
-    }, [categories]);
-
-    // Estadísticas memoizadas
-    const stats = useMemo(() => {
-        const activeProducts = products.filter(p => p?.image).length;
-        const productsWithDesigns = products.filter(p => p?.designImages?.length >= 3).length;
-        
-        return {
-            totalProducts: products.length,
-            totalCategories: categories.length,
-            activeProducts,
-            productsWithDesigns,
-            productionProducts: productionProducts.length,
-            productionCategories: productionCategories.length,
-        };
-    }, [products, categories, productionProducts, productionCategories]);
-
-    // Recargar todos los datos
-    const refreshData = useCallback(async () => {
+    //Buscar productos por nombre
+    const handleSearchProducts = async (searchTerm) => {
         try {
-            clearError();
-            await Promise.all([getProducts(), getCategories()]);
+            setLoading(true);
+            setError(null);
+            
+            const data = await API_FETCH_JSON(`${endpoint}/search?q=${encodeURIComponent(searchTerm)}`);
+            return data;
+        } catch (error) {
+            setError('Error al buscar productos');
+            toast.error('Error al buscar productos');
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    //Recargar datos
+    const refreshData = async () => {
+        try {
+            await Promise.all([
+                handleGetProducts(),
+                handleGetCategories()
+            ]);
         } catch (error) {
             console.error('Error refreshing data:', error);
         }
-    }, [getProducts, getCategories, clearError]);
+    };
 
-    // Inicialización - Solo una vez
+    // Cargar datos al inicializar el hook
     useEffect(() => {
-        if (!isInitialized.current) {
-            isInitialized.current = true;
-            refreshData();
-        }
-
-        return () => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-        };
+        refreshData();
     }, []);
 
     return {
         // Estados
         products,
+        setProducts,
         categories,
+        setCategories,
         loading,
         error,
-        
-        // Datos filtrados
-        productionProducts,
-        productionCategories,
-        stats,
 
-        // Funciones CRUD
+        // Funciones CRUD para productos
+        handlePostProducts,
+        handleGetProducts,
+        handlePutProducts,
+        handleDeleteProducts,
+        handleGetProductById,
+        handleGetProductsByCategory,
+        handleSearchProducts,
+
+        // Funciones para categorías
+        handleGetCategories,
+
+        // Funciones alternativas con fetch directo
         getProducts,
         getCategories,
-        getProductById,
-        createProduct,
-        updateProduct,
-        deleteProduct,
-        getProductsByCategory,
-        searchProducts,
 
         // Utilidades
         refreshData,
-        clearError,
-        setProducts,
-        setCategories,
-        setLoading,
         setError,
+        setLoading
     };
 };
 

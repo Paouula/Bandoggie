@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import useFetchLogin from "../hooks/Login/useFetchLogin.js";
 import { API_FETCH_JSON } from "../config.js";
+import toast from "react-hot-toast";
 
 const AuthContext = createContext();
 
@@ -10,6 +11,10 @@ export const AuthProvider = ({ children }) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [pendingVerification, setPendingVerification] = useState(false);
   const [loadingVerification, setLoadingVerification] = useState(true);
+  const [verificationInfo, setVerificationInfo] = useState({
+    email: "",
+    role: "",
+  });
 
   const { handleLogin } = useFetchLogin();
 
@@ -26,6 +31,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
 
+      // Limpiar información de verificación al hacer login exitoso
+      localStorage.removeItem("verificationInfo");
+      setVerificationInfo({ email: "", role: "" });
+
       return {
         success: true,
         message: data.message,
@@ -35,13 +44,6 @@ export const AuthProvider = ({ children }) => {
       return { success: false, message: error.message };
     }
   };
-
-  /*  const logout = () => {
-    Cookies.remove("authToken");
-    localStorage.removeItem("user");
-    setUser(null);
-  };
-*/
 
   const logout = async () => {
     try {
@@ -55,36 +57,61 @@ export const AuthProvider = ({ children }) => {
     }
 
     localStorage.removeItem("user");
+    localStorage.removeItem("verificationInfo");
     setUser(null);
+    setVerificationInfo({ email: "", role: "" });
+    setPendingVerification(false);
   };
 
-  // Funciones de tipo de usuario
-  /*useEffect(() => {
-    API_FETCH_JSON(`${endpoint}/auth/me`, {
-      credentials: 'include', 
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("No autenticado");
-        return res.json();
-      })
-      .then((data) => {
-        setUser(data.user);
-        localStorage.setItem("user", JSON.stringify(data.user));
-      })
-      .catch(() => {
-        setUser(null);
-      })
-  }, []);*/
+  //  Función para actualizar verificationInfo de forma persistente
+  const updateVerificationInfo = (info) => {
+    setVerificationInfo(info);
+    localStorage.setItem("verificationInfo", JSON.stringify(info));
+  };
+
+  //  Función para limpiar verificationInfo
+  const clearVerificationInfo = () => {
+    setVerificationInfo({ email: "", role: "" });
+    localStorage.removeItem("verificationInfo");
+    setPendingVerification(false);
+  };
 
   useEffect(() => {
+    //  Recuperar usuario del localStorage
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+      } catch (error) {
+        toast.error(
+          error.message ||
+            "Error al parsear el usuario guardado en el localStorage"
+        );
+        localStorage.removeItem("user");
+      }
     }
 
+    //  Recuperar verificationInfo del localStorage
+    const storedVerificationInfo = localStorage.getItem("verificationInfo");
+    if (storedVerificationInfo) {
+      try {
+        const verificationData = JSON.parse(storedVerificationInfo);
+        console.log(
+          " VerificationInfo recuperado del localStorage:",
+          verificationData
+        );
+        setVerificationInfo(verificationData);
+      } catch (error) {
+        console.error(
+          " Error al parsear verificationInfo del localStorage:",
+          error
+        );
+        localStorage.removeItem("verificationInfo");
+      }
+    }
+
+    //  Verificar autenticación con el backend
     API_FETCH_JSON(`${endpoint[0]}/auth/me`, {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -95,23 +122,29 @@ export const AuthProvider = ({ children }) => {
       })
       .then((data) => {
         if (data?.user) {
+          toast.success("Usuario autentificado");
           setUser(data.user);
           localStorage.setItem("user", JSON.stringify(data.user));
+
+          // Si el usuario está autenticado, limpiar verificationInfo
+          if (storedVerificationInfo) {
+            clearVerificationInfo();
+          }
         }
       })
       .catch((err) => {
-        // console.warn("Fallo en login/auth/me:", err.message);
+        toast.error("Usuario no autentificado: "+ err);
       })
       .finally(() => {
         setLoadingUser(false);
       });
 
+    //  Verificar estado de verificación pendiente
     API_FETCH_JSON(endpoint[2], {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
-        console.log("Respuesta completa de API_FETCH_JSON:", res);
         if (typeof res === "object") {
           return res;
         }
@@ -121,18 +154,45 @@ export const AuthProvider = ({ children }) => {
         return res;
       })
       .then((data) => {
-        console.log("Pending verification data:", data);
-        setPendingVerification(data.pending);
+        console.log("Verificación pendiente:", data);
+
+        const hasPendingVerification = data.pending || false;
+        setPendingVerification(hasPendingVerification);
+
+        // Si no hay verificación pendiente pero tenemos verificationInfo guardado, limpiarlo
+        if (!hasPendingVerification && storedVerificationInfo) {
+          console.log("No hay verificación pendiente");
+          clearVerificationInfo();
+        }
+
+        // Si hay verificación pendiente pero no tenemos verificationInfo, es un caso edge
+        if (hasPendingVerification && !storedVerificationInfo) {
+          console.warn(
+            "No se han encontrado los datos de verificacion necesarios"
+          );
+          toast.error(
+            "No se han encontrado los datos de verificacion necesarios"
+          );
+        }
       })
       .catch((error) => {
-        console.error("Error al obtener estado de verificación:", error);
+        console.error("Error al obtener estado de verificación: ", error);
+        toast.error(
+          "Error al obtener estado de verificación: ", error
+        );
+
         setPendingVerification(false);
       })
       .finally(() => {
-        //Marcar que terminó la carga de verificación
         setLoadingVerification(false);
       });
   }, []);
+
+  // Muestrar los cambios en verificationInfo
+  useEffect(() => {}, [verificationInfo]);
+
+  //  Muestrar los cambios en pendingVerification
+  useEffect(() => {}, [pendingVerification]);
 
   const isEmployee = () => user?.userType === "employee";
   const isVet = () => user?.userType === "vet";
@@ -152,7 +212,11 @@ export const AuthProvider = ({ children }) => {
         pendingVerification,
         setPendingVerification,
         loadingVerification,
-        setLoadingVerification
+        setLoadingVerification,
+        verificationInfo,
+        setVerificationInfo,
+        updateVerificationInfo,
+        clearVerificationInfo,
       }}
     >
       {children}

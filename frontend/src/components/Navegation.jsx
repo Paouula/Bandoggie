@@ -31,12 +31,15 @@ import RequestCode from "../pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import Profile from "../pages/Public/Profile/Profile.jsx";
+import NotFound from "../pages/NotFound/NotFound.jsx";  
+import Forbidden from "../pages/Forbidden/Forbidden.jsx"
 import LoginModal from "../components/LoginModal/Login.jsx";
 
 //Paginas de productos sitio público
 import Bandanas from "../pages/Public/Bandanas/Bandanas.jsx";
-import Necklaces from "../pages/Public/Collars/Collars.jsx";
+import Collars from "../pages/Public/Collars/Collars.jsx";
 import Accessories from "../pages/Public/Accessories/Accessories.jsx";
+import SelectedProduct from "../pages/Public/SelectedProduct/SelectedProduct.jsx";
 
 // Componentes privados
 import Home from "../pages/Private/MainPage/MainPage.jsx";
@@ -44,6 +47,7 @@ import Productos from "../pages/Private/Products/Products.jsx";
 import Reseñas from "../pages/Private/Reviews/Reviews.jsx";
 import Empleados from "../pages/Private/Employee/Employee.jsx";
 import Clientes from "../pages/Private/Clients/Clients.jsx";
+import Graphics from "../pages/Private/Graphics/Graphics.jsx";
 
 // Rutas protegidas
 import { PrivateRoute, EmployeeRoute } from "./PrivateRoute.jsx";
@@ -58,6 +62,7 @@ const EmployeeLayout = () => (
         <Route path="reseñas" element={<Reseñas />} />
         <Route path="empleados" element={<Empleados />} />
         <Route path="clientes" element={<Clientes />} />
+        <Route path="graphics" element={<Graphics />} />
         <Route path="*" element={<Navigate to="/admin/productos" replace />} />
       </Routes>
     </div>
@@ -136,11 +141,12 @@ function Navegation() {
           }
         />
 
-        {/* Rutas públicas publicas */}
+        {/* Rutas públicas */}
         <Route path="/mainPage" element={<MainPage />} />
         <Route path="/bandanas" element={<Bandanas />} />
-        <Route path="/necklaces" element={<Necklaces />} />
+        <Route path="/collars" element={<Collars />} />
         <Route path="/accessories" element={<Accessories />} />
+        <Route path="/products/:id" element={<SelectedProduct />} />
         <Route path="/holidays" element={<Holidays />} />
         <Route path="/halloween" element={<Halloween />} />
         <Route path="/valentine" element={<Valentine />} />
@@ -149,21 +155,22 @@ function Navegation() {
         <Route path="/birthday" element={<Birthday />} />
         <Route path="/aboutus" element={<AboutUS />} />
         <Route path="/profile" element={<Profile />} />
-      
 
         {/* Área privada para empleados */}
         <Route element={<EmployeeRoute />}>
           <Route path="/admin/*" element={<EmployeeLayout />} />
         </Route>
 
-        {/* Ruta por defecto */}
-        <Route path="*" element={<Navigate to="/mainPage" replace />} />
+        {/* Ruta por defecto (404) */}
+        <Route path="*" element={<NotFound />} />   
+
+        {/* Registir acceso (403) */}
+        <Route path="/forbidden" element={<Forbidden />} />
+
       </Routes>
 
-      <>
-      .<Footer /></>
-      </>
-    
+      <Footer />
+    </>
   );
 }
 

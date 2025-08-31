@@ -34,8 +34,17 @@ const vetSchema = new Schema(
       trim: true,
     },
     emailVerified: { 
-        type: Boolean, 
-        default: false 
+      type: Boolean, 
+      default: false 
+    },
+
+    // Segurdad para intentos fallidos
+    loginAttempts: { 
+      type: Number, 
+      default: 0 
+    },
+    lockUntil: { 
+      type: Date 
     }
   },
   {
@@ -44,5 +53,5 @@ const vetSchema = new Schema(
   }
 );
 
-// ✅ Evita el OverwriteModelError
+// Evita el OverwriteModelError si ya está declarado
 export default mongoose.models.Vet || model("Vet", vetSchema);

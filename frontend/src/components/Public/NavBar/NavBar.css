@@ -112,11 +112,13 @@
 /* Texto en el navbar*/
 .navbar-nav-link {
   color: #1b1b1b;
+  text-decoration: none;
   font-weight: 500;
   white-space: nowrap;
   font-size: 16px;
   font-family: Inter;
-  margin-top: 4%;
+  margin-top: 1%;
+  margin-bottom: 2.7%;
 }
 
 .navbar-nav-link:hover {

@@ -58,6 +58,7 @@ reviewsController.getReviewById = async (req, res) => {
 
 // INSERT - Crear nueva reseña
 reviewsController.insertReview = async (req, res) => {
+    
     try {
         const { qualification, comment, idClient, idProduct } = req.body;
         let designImages = [];
@@ -98,9 +99,9 @@ reviewsController.insertReview = async (req, res) => {
         // Subir imágenes a Cloudinary si existen (opcional)
         if (req.files && req.files.length > 0) {
             // Validar cantidad de imágenes
-            if (req.files.length < 3) {
+            if (req.files.length < 1) {
                 return res.status(400).json({
-                    message: "Se requieren mínimo 3 imágenes de diseño si se incluyen"
+                    message: "Se requieren mínimo 1 imágenes de diseño si se incluyen"
                 });
             }
 
