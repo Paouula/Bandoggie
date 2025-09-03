@@ -1,36 +1,41 @@
 import React from 'react';
+import { Pencil, Trash2 } from 'lucide-react';
 import './CardProduct.css';
-import DeleteButton from '../DeleteButton.jsx';
-import EditButton from '../EditButton.jsx';
 
 const CardProduct = ({ product, onEdit, onDelete }) => {
-
-
   return (
     <div className="product-card">
-      {/* Parte superior: imagen + acciones */}
+      {/* Parte superior: imagen */}
       <div className="product-top-section">
         <img 
-          src={product.image} 
+          src={product.image}
           className="product-image"
+          alt={product.nameProduct}
         />
+      </div>
 
-        <div className="product-main-info">
-          <div className="product-title-actions">
-            <h3 className="product-name">{product.nameProduct}</h3>
-            <div className="product-actions">
-              <EditButton 
-                title="Editar los detalles del producto" 
-                onClick={() => onEdit(product)} 
-              />
-              <DeleteButton 
-                title="Eliminar el producto" 
-                onClick={() => onDelete(product)} 
-              />
-            </div>
-          </div>
-          <p className="product-price">{product.price}</p>
-        </div>
+      {/* Botones debajo de la imagen */}
+      <div className="product-actions">
+        <button 
+          className="btn-action edit"
+          onClick={() => onEdit && onEdit(product)}
+          title="Editar producto"
+        >
+          <Pencil size={18} color="currentColor" />
+        </button>
+        <button 
+          className="btn-action delete"
+          onClick={() => onDelete && onDelete(product)}
+          title="Eliminar producto"
+        >
+          <Trash2 size={18} color="currentColor" />
+        </button>
+      </div>
+
+      {/* Info principal */}
+      <div className="product-main-info">
+        <h3 className="product-name">{product.nameProduct}</h3>
+        <p className="product-price">${product.price}</p>
       </div>
 
       {/* Parte inferior: descripción y datos*/}
@@ -54,7 +59,7 @@ const CardProduct = ({ product, onEdit, onDelete }) => {
               <span className="info-value">{product.idHolidayProduct?.nameHoliday || 'Valor no disponible'}</span>
             </div>
           </div>
-
+          
           <div className="info-column">
             <div className="info-row">
               <span className="info-label">Descripción:</span>

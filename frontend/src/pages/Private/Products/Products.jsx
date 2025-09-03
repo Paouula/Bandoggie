@@ -24,7 +24,6 @@ import TextArea from "../../../components/TextArea/TextArea.jsx";
 import ImageUploader from "../../../components/ImageUploader/ImageUploader.jsx";
 import MultiImageUploader from "../../../components/MultiImageUploader/MultiImageUploader.jsx";
 import InputSelect from "../../../components/InputSelect/InputSelect.jsx";
-import { da, se } from "date-fns/locale";
 
 //Importacion de componente de recarga
 import Loading from "../../../components/LoadingScreen/LoadingScreen.jsx";
@@ -40,7 +39,6 @@ const Products = () => {
   } = useForm();
 
   const formCategory = useForm();
-
   const formHoliday = useForm();
 
   useEffect(() => {
@@ -58,17 +56,13 @@ const Products = () => {
 
   //Estados para manejar el modal de edición y eliminacion de productos
   const [selectedProduct, setSelectedProduct] = useState(null);
-
-  const [showCreateModal, setShowCreateModal] = useState(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false);
   const [showCreateHolidayModal, setShowCreateHolidayModal] = useState(false);
   const [image, setImage] = useState(null);
-
   const [loading, setLoading] = useState(false);
-
   const [createDesignImages, setCreateDesignImages] = useState([]);
   const [editDesignImages, setEditDesignImages] = useState([]);
 
@@ -79,7 +73,6 @@ const Products = () => {
   const [holidays, setHolidays] = useState([]);
 
   // Hooks personalizados para manejar las operaciones de productos
-  // Estos hooks encapsulan la lógica de las peticiones a la API
   const {
     handleGetProducts,
     handlePostProducts,
@@ -88,14 +81,12 @@ const Products = () => {
   } = useFetchProducts();
 
   const { handleGetCategories, handlePostCategory } = useFetchCategory();
-
   const { handleGetHolidays, handlePostHoliday } = useFetchHolidays();
 
-  // Efecto para cargar los productos al montar el componente
+  // Función para cargar los productos
   const loadProducts = async () => {
     try {
       const data = await handleGetProducts();
-      //console.log("Productos cargados:", data);
       setProducts(data);
     } catch (error) {
       console.error(error);
@@ -103,11 +94,10 @@ const Products = () => {
     }
   };
 
-  // Efecto para cargar las categorías
+  // Función para cargar las categorías
   const loadCategories = async () => {
     try {
       const data = await handleGetCategories();
-      //console.log("Categorías cargadas:", data);
       setCategories(data);
     } catch (error) {
       console.error(error);
@@ -115,11 +105,10 @@ const Products = () => {
     }
   };
 
-  // Efecto para cargar las festividades
+  // Función para cargar las festividades
   const loadHolidays = async () => {
     try {
       const data = await handleGetHolidays();
-      //console.log("Festividades cargadas:", data);
       setHolidays(data);
     } catch (error) {
       console.error(error);
@@ -139,7 +128,7 @@ const Products = () => {
     init();
   }, []);
 
-  // Funciones para abrir los modales de creación, edición y eliminación
+  // Funciones para abrir los modales
   const handleOpenCreate = () => {
     setSelectedProduct(null);
     reset({
@@ -158,6 +147,16 @@ const Products = () => {
 
   const handleOpenEdit = (product) => {
     setSelectedProduct(product);
+    // Llenar el formulario con los datos del producto
+    reset({
+      nameProduct: product.nameProduct || "",
+      price: product.price || "",
+      description: product.description || "",
+      idCategory: product.idCategory?._id || "",
+      idHolidayProduct: product.idHolidayProduct?._id || "",
+    });
+    setImage(product.image || null);
+    setEditDesignImages(product.designImages || []);
     setShowEditModal(true);
   };
 
@@ -166,11 +165,22 @@ const Products = () => {
     setShowDeleteModal(true);
   };
 
-  // Función para manejar el envío del formulario al crear un producto
-  const onCreateProduct = async (data) => {
-    console.log("Images:", image);
-    console.log("designImages:", data.designImages);
+  // Función para cerrar todos los modales
+  const handleCloseModal = () => {
+    setShowEditModal(false);
+    setShowDeleteModal(false);
+    setShowCreateModal(false);
+    setShowCreateCategoryModal(false);
+    setShowCreateHolidayModal(false);
+    setSelectedProduct(null);
+    reset();
+    setImage(null);
+    setCreateDesignImages([]);
+    setEditDesignImages([]);
+  };
 
+  // Función para crear un producto
+  const onCreateProduct = async (data) => {
     if (!image || image.length === 0) {
       toast.error("Debes subir al menos una imagen principal");
       return;
@@ -194,8 +204,7 @@ const Products = () => {
 
       setLoading(true);
       await handlePostProducts(productData);
-      setShowCreateModal(false);
-      reset();
+      handleCloseModal();
       await loadProducts();
     } catch (error) {
       console.error(error);
@@ -205,21 +214,8 @@ const Products = () => {
     }
   };
 
-  // Función para manejar el envío del formulario al actualizar
-  const onSubmit = async (data) => {
-    /*if (
-      !data.nameProduct ||
-      !data.price ||
-      !data.description ||
-      !image ||
-      !designImages.length < 3 ||
-      !data.idCategory ||
-      !data.idHolidayProduct
-    ) {
-      toast.dismiss();
-      toast.error("Por favor, ingresa todos los datos.", { id: "fields" });
-      return;
-    }*/
+  // Función para editar un producto
+  const onEditProduct = async (data) => {
     try {
       const productData = {
         nameProduct: data.nameProduct,
@@ -233,9 +229,7 @@ const Products = () => {
 
       setLoading(true);
       await handlePutProducts(selectedProduct._id, productData);
-      setShowEditModal(false);
-      setSelectedProduct(null);
-      reset();
+      handleCloseModal();
       await loadProducts();
     } catch (error) {
       console.error(error);
@@ -245,103 +239,56 @@ const Products = () => {
     }
   };
 
-  // Función para manejar la eliminación de un producto
-  const handleDelete = async (id) => {
+  // Función para eliminar un producto
+  const handleDelete = async () => {
     try {
       setLoading(true);
-      setProducts(products.filter((p) => p._id !== id));
-      await handleDeleteProducts(id);
-      setShowDeleteModal(false);
-      setSelectedProduct(null);
+      await handleDeleteProducts(selectedProduct._id);
+      handleCloseModal();
+      await loadProducts();
     } catch (error) {
       console.error(error);
+      toast.error("Error al eliminar el producto");
     } finally {
       setLoading(false);
     }
   };
 
-  // Funciones para manejar el envío de formularios de categorías
+  // Funciones para crear categorías y festividades
   const onSubmitCategory = async (data) => {
     if (!data.nameCategory) {
-      toast.dismiss();
-      toast.error("Por favor, ingresa todos los datos.", { id: "fields" });
+      toast.error("Por favor, ingresa todos los datos.");
       return;
     }
     try {
       const categoryData = {
         nameCategory: data.nameCategory,
       };
-      const response = await handlePostCategory(categoryData);
-
-      if (response) {
-        setShowCreateCategoryModal(false);
-        reset();
-        await loadCategories();
-      }
+      await handlePostCategory(categoryData);
+      handleCloseModal();
+      await loadCategories();
     } catch (error) {
       console.error(error);
       toast.error("Hubo un error al crear la categoría");
     }
   };
 
-  // Funciones para manejar el envío de formularios de festividades
   const onSubmitHoliday = async (data) => {
     if (!data.nameHoliday) {
-      toast.dismiss();
-      toast.error("Por favor, ingresa todos los datos.", { id: "fields" });
+      toast.error("Por favor, ingresa todos los datos.");
       return;
     }
     try {
       const holidayData = {
         nameHoliday: data.nameHoliday,
       };
-
-      const response = await handlePostHoliday(holidayData);
-
-      if (response) {
-        setShowCreateHolidayModal(false);
-        reset();
-        await loadHolidays();
-      }
+      await handlePostHoliday(holidayData);
+      handleCloseModal();
+      await loadHolidays();
     } catch (error) {
       console.error(error);
       toast.error("Hubo un error al crear la festividad");
     }
-  };
-
-  // Función para manejar el envío del formulario de edición
-
-  const selectedProductData = async () => {
-    if (selectedProduct) {
-      reset({
-        nameProduct: selectedProduct.nameProduct || "",
-        price: selectedProduct.price || "",
-        description: selectedProduct.description || "",
-        image: selectedProduct.image || null,
-        designImages: selectedProduct.designImages || [],
-        idCategory: selectedProduct.idCategory?._id || "",
-        idHolidayProduct: selectedProduct.idHolidayProduct?._id || "",
-      });
-
-      setImage(selectedProduct.image || null);
-      setEditDesignImages(selectedProduct.designImages || []);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await selectedProductData();
-    };
-    fetchData();
-  }, [selectedProduct, reset]);
-
-  // Función para cerrar el modal de edición y limpiar los campos
-  const handleCloseModal = () => {
-    setShowEditModal(false);
-    setShowDeleteModal(false);
-    setSelectedProduct(null);
-    setShowCreateModal(false);
-    reset(); // limpia el formulario
   };
 
   // Filtrar productos según el término de búsqueda
@@ -359,6 +306,7 @@ const Products = () => {
         </div>
       )}
 
+      {/* Modal para crear producto */}
       {showCreateModal && (
         <Modal
           title="Crear nuevo producto"
@@ -403,7 +351,6 @@ const Products = () => {
                 }
               }}
             />
-
             {errors.price && (
               <span className="form-error">{errors.price.message}</span>
             )}
@@ -419,7 +366,6 @@ const Products = () => {
                   !/\n/.test(value) || "No se permiten saltos de línea",
               })}
               placeholder="Descripción"
-              id="description"
               maxLength={235}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -449,15 +395,13 @@ const Products = () => {
               onImagesSelect={(files) => {
                 setCreateDesignImages(files);
                 setValue("designImages", files, { shouldValidate: true });
-                //trigger("designImages"); // ← fuerza la validación visual
               }}
               error={errors.designImages}
               accept="image/*"
             />
-
             {errors.designImages && (
               <span className="form-error">
-                Debes subir al menos una imagen de diseño
+                Debes subir al menos 3 imágenes de diseño
               </span>
             )}
 
@@ -490,33 +434,43 @@ const Products = () => {
         </Modal>
       )}
 
-      {/* Modal para editar un producto */}
+      {/* Modal para editar producto */}
       {showEditModal && (
         <Modal
           title="Editar producto"
           onClose={handleCloseModal}
-          actions={<Button onClick={handleSubmit(onSubmit)}>Guardar</Button>}
+          actions={<Button onClick={handleSubmit(onEditProduct)}>Guardar</Button>}
         >
           <form className="form-edit-generic">
             <Input
-              {...register("nameProduct")}
+              {...register("nameProduct", {
+                required: "El nombre del producto es obligatorio",
+              })}
               placeholder="Nombre del producto"
             />
             {errors.nameProduct && (
-              <span className="error">{errors.nameProduct.message}</span>
+              <span className="form-error">{errors.nameProduct.message}</span>
             )}
 
             <Input
               type="number"
-              {...register("price", { min: 0 })}
+              step="0.01"
+              {...register("price", {
+                required: "El precio es obligatorio",
+                min: {
+                  value: 0,
+                  message: "El precio no puede ser negativo",
+                },
+              })}
               placeholder="Precio"
             />
             {errors.price && (
-              <span className="error">{errors.price.message}</span>
+              <span className="form-error">{errors.price.message}</span>
             )}
 
             <TextArea
               {...register("description", {
+                required: "La descripción es obligatoria",
                 maxLength: {
                   value: 235,
                   message: "Has alcanzado el límite de 235 caracteres",
@@ -525,7 +479,6 @@ const Products = () => {
                   !/\n/.test(value) || "No se permiten saltos de línea",
               })}
               placeholder="Descripción"
-              id="description"
               maxLength={235}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -543,7 +496,6 @@ const Products = () => {
                 setImage(file);
                 setValue("image", file, { shouldValidate: true });
               }}
-              error={errors.image}
               accept="image/*"
             />
 
@@ -553,7 +505,6 @@ const Products = () => {
                 setEditDesignImages(files);
                 setValue("designImages", files, { shouldValidate: true });
               }}
-              error={errors.designImages}
               accept="image/*"
             />
 
@@ -563,9 +514,10 @@ const Products = () => {
                 value: cat._id,
                 label: cat.nameCategory,
               }))}
-              register={register("idCategory")}
+              register={register("idCategory", {
+                required: "Selecciona una categoría",
+              })}
               defaultOptionLabel="Selecciona una categoría"
-              error={errors.idCategory}
             />
 
             <InputSelect
@@ -574,52 +526,46 @@ const Products = () => {
                 value: hol._id,
                 label: hol.nameHoliday,
               }))}
-              register={register("idHolidayProduct")}
+              register={register("idHolidayProduct", {
+                required: "Selecciona una festividad",
+              })}
               defaultOptionLabel="Selecciona una festividad"
-              error={errors.idHolidayProduct}
             />
           </form>
         </Modal>
       )}
 
-      {/* Modal para eliminar un producto */}
+      {/* Modal para eliminar producto */}
       {showDeleteModal && (
         <Modal
           title="Eliminar producto"
           onClose={handleCloseModal}
           actions={
             <>
-              <Button onClick={() => handleDelete(selectedProduct?._id)}>
-                Eliminar
-              </Button>
+              <Button onClick={handleDelete}>Eliminar</Button>
               <Button onClick={handleCloseModal}>Cancelar</Button>
             </>
           }
         >
-          <p>¿Estás seguro de que deseas eliminar este producto?</p>
+          <p>
+            ¿Estás seguro de que deseas eliminar el producto{" "}
+            <strong>{selectedProduct?.nameProduct}</strong>?
+          </p>
         </Modal>
       )}
 
-      {/* Modal para crear una categoría */}
+      {/* Modal para crear categoría */}
       {showCreateCategoryModal && (
         <Modal
           title="Crear nueva categoría"
-          onClose={() => setShowCreateCategoryModal(false)}
+          onClose={handleCloseModal}
           actions={
-            <Button
-              onClick={formCategory.handleSubmit(onSubmitCategory)}
-              type="submit"
-              form="form-create-category"
-            >
+            <Button onClick={formCategory.handleSubmit(onSubmitCategory)}>
               Guardar
             </Button>
           }
         >
-          <form
-            id="form-create-category"
-            onSubmit={formCategory.handleSubmit(onSubmitCategory)}
-            className="form-create-category"
-          >
+          <form className="form-create-category">
             <Input
               {...formCategory.register("nameCategory", {
                 required: "El nombre de la categoría es obligatorio",
@@ -630,33 +576,27 @@ const Products = () => {
               })}
               placeholder="Nombre de la categoría"
             />
-            {errors.nameCategory && (
-              <span className="form-error">{errors.nameCategory.message}</span>
+            {formCategory.formState.errors.nameCategory && (
+              <span className="form-error">
+                {formCategory.formState.errors.nameCategory.message}
+              </span>
             )}
           </form>
         </Modal>
       )}
 
-      {/* Modal para crear una festividad */}
+      {/* Modal para crear festividad */}
       {showCreateHolidayModal && (
         <Modal
           title="Crear nueva festividad"
-          onClose={() => setShowCreateHolidayModal(false)}
+          onClose={handleCloseModal}
           actions={
-            <Button
-              onClick={formHoliday.handleSubmit(onSubmitHoliday)}
-              type="submit"
-              form="form-create-holiday"
-            >
+            <Button onClick={formHoliday.handleSubmit(onSubmitHoliday)}>
               Guardar
             </Button>
           }
         >
-          <form
-            id="form-create-holiday"
-            onSubmit={formHoliday.handleSubmit(onSubmitHoliday)}
-            className="form-create-holiday"
-          >
+          <form className="form-create-holiday">
             <Input
               {...formHoliday.register("nameHoliday", {
                 required: "El nombre de la festividad es obligatorio",
@@ -667,14 +607,16 @@ const Products = () => {
               })}
               placeholder="Nombre de la festividad"
             />
-            {errors.nameHoliday && (
-              <span className="form-error">{errors.nameHoliday.message}</span>
+            {formHoliday.formState.errors.nameHoliday && (
+              <span className="form-error">
+                {formHoliday.formState.errors.nameHoliday.message}
+              </span>
             )}
           </form>
         </Modal>
       )}
 
-      {/*Cuerpo principal de la página de productos*/}
+      {/* Cuerpo principal de la página */}
       <div className="banner-private-container">
         <BannerPrivate
           title="Productos"

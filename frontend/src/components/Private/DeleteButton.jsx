@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Tooltip } from "@mui/material";
 
-// Recibe el mensaje como prop: title
-function DeleteButton({ title = "Eliminar empleado", onClick }) {
+function DeleteButton({ title = "Eliminar", onClick }) {
   const [hovered, setHovered] = useState(false);
 
   const buttonStyle = {
@@ -20,6 +19,7 @@ function DeleteButton({ title = "Eliminar empleado", onClick }) {
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
     transform: hovered ? "scale(1.1)" : "scale(1)",
     boxShadow: hovered ? "0 4px 12px rgba(0, 0, 0, 0.2)" : "none",
+    zIndex: 1000, // Asegurar que esté por encima
   };
 
   return (
