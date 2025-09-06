@@ -239,7 +239,8 @@ export default function RegisterEmployee({
                       validate: validateBirthDate,
                     }}
                     render={({ field }) => (
-                      <DatePickerInput
+                      <DatePickerInput 
+                      className="form-input"
                         {...field}
                         error={errors.dateOfBirth}
                         onChange={(date) =>
@@ -271,6 +272,7 @@ export default function RegisterEmployee({
                     }}
                     render={({ field }) => (
                       <DatePickerInput
+                      className="form-input"
                         {...field}
                         error={errors.hireDateEmployee}
                         onChange={(date) =>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FiCalendar } from "react-icons/fi";
+import classNames from "classnames";
 import DatePickerComponent from "./DatePicker";
 import "./InputDataPicker.css";
 
@@ -49,11 +50,13 @@ const DatePickerInput = ({
   };
 
   return (
-    <div className={`input-group ${className}`}>
+    <div className="input-group">
       <div className="input-date-group">
         <input
           type="text"
-          className={`input-date-trigger ${error ? "input-error" : ""}`}
+          className={classNames(className ,"input-date-trigger", {
+            "input-error": error,
+          })}
           value={displayDate}
           readOnly
           onClick={() => setOpen(true)}
@@ -61,7 +64,6 @@ const DatePickerInput = ({
           onBlur={onBlur}
           name={name}
         />
-
         <button
           type="button"
           className="calendar-toggle-btn"
@@ -69,7 +71,6 @@ const DatePickerInput = ({
         >
           <FiCalendar className="calendar-icon" />
         </button>
-
         <DatePickerComponent
           value={currentDate}
           onChange={handleChange}
