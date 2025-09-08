@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import { config } from "../config.js";
 
+// CREAR EL TRANSPORTER IGUAL QUE EN passwordRecovery.js
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -11,10 +12,11 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendMail = async (to, subject, text, html) => {
+// FUNCIÓN CORREGIDA PARA ENVIAR EMAIL
+export const sendMail = async (to, subject, text, html) => {
     try {
         const info = await transporter.sendMail({
-            from: '"BanDoggie - Cuidamos a tu mejor amigo" <' + config.email.email_user + '>',
+            from: '"BanDoggie" <' + config.email.email_user + '>',
             to,
             subject,
             text,
@@ -27,344 +29,371 @@ const sendMail = async (to, subject, text, html) => {
     }
 };
 
-const HTMLBankingEmail = (orderData) => {
+// FUNCIÓN PARA GENERAR EL HTML DEL EMAIL BANCARIO - SIMPLIFICADA Y CORREGIDA
+export const HTMLSimpleBankingEmail = (customerName, totalAmount, orderNumber = null) => {
+    // Validar parámetros
+    if (!customerName || !totalAmount) {
+        throw new Error('customerName y totalAmount son requeridos para generar el email');
+    }
+
+    // Formatear el monto
+    const formattedAmount = parseFloat(totalAmount).toFixed(2);
+    
+    // Generar referencia corta si no existe
+    const reference = orderNumber || `REF${Date.now().toString().slice(-6)}`;
+
+    // TEMPLATE SIMPLIFICADO BASADO EN EL QUE FUNCIONA (passwordRecovery.js)
     return `
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <title>Datos para Transferencia Bancaria - BanDoggie</title>
-      <style>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Datos para Transferencia - BanDoggie</title>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&family=Raleway:wght@400;600&display=swap');
 
         body {
-          font-family: 'Baloo Bhaijaan 2', 'Raleway', sans-serif;
-          margin: 0;
-          padding: 0;
-          background-color: #f6f9fc;
-          color: #333;
+            font-family: 'Baloo Bhaijaan 2', 'Raleway', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f9fc;
+            color: #333;
         }
 
         .container {
-          max-width: 600px;
-          margin: 20px auto;
-          background-color: #fffdfa;
-          border-radius: 18px;
-          overflow: hidden;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-          border: 2px solid #D2691E;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fffdfa;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #D2691E;
         }
 
         .header {
-          background: linear-gradient(90deg, #D2691E 0%, #ff9800 100%);
-          color: white;
-          text-align: center;
-          padding: 24px 0 12px;
-          font-size: 28px;
-          font-weight: bold;
-          letter-spacing: 1px;
+            background: linear-gradient(90deg, #D2691E 0%, #FF8C00 100%);
+            color: white;
+            text-align: center;
+            padding: 24px 0 12px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .paw-icon {
-          font-size: 40px;
-          margin-bottom: 10px;
+            font-size: 48px;
+            margin-bottom: 10px;
         }
 
         .content {
-          padding: 28px 32px 16px;
+            padding: 28px 32px 16px;
         }
 
         .greeting {
-          font-size: 18px;
-          font-weight: bold;
-          color: #D2691E;
-          margin-bottom: 18px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #D2691E;
+            margin-bottom: 18px;
         }
 
         p {
-          font-size: 15px;
-          margin-bottom: 16px;
-          color: #4a4a4a;
-          line-height: 1.6;
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #4a4a4a;
+            line-height: 1.6;
         }
 
-        .banking-info {
-          margin: 24px auto;
-          padding: 20px;
-          background: linear-gradient(135deg, #D2691E, #B8860B);
-          color: white;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgba(210, 105, 30, 0.3);
-        }
-
-        .banking-title {
-          font-size: 20px;
-          font-weight: bold;
-          margin-bottom: 15px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
+        .amount-box {
+            margin: 24px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #D2691E, #FF8C00);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 12px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .banking-details {
-          background-color: rgba(255,255,255,0.1);
-          padding: 15px;
-          border-radius: 8px;
-          margin-top: 15px;
+            background-color: #f8f9fa;
+            border: 3px solid #D2691E;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
         }
 
-        .banking-item {
-          margin: 8px 0;
-          font-size: 16px;
+        .banking-title {
+            color: #D2691E;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #D2691E;
+            padding-bottom: 10px;
         }
 
-        .amount-highlight {
-          margin: 12px 0;
-          font-size: 20px;
-          background-color: rgba(255,255,255,0.2);
-          padding: 10px;
-          border-radius: 6px;
-          text-align: center;
-          font-weight: bold;
+        .bank-info {
+            display: table;
+            width: 100%;
+            margin-bottom: 15px;
         }
 
-        .order-summary {
-          background-color: #e3f2fd;
-          border-radius: 12px;
-          padding: 20px;
-          margin: 25px 0;
+        .bank-info-row {
+            display: table-row;
         }
 
-        .summary-title {
-          color: #1976d2;
-          font-size: 18px;
-          font-weight: bold;
-          margin-bottom: 15px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
+        .bank-info-cell {
+            display: table-cell;
+            padding: 15px;
+            background-color: white;
+            border: 2px solid rgba(210, 105, 30, 0.3);
+            border-radius: 8px;
+            text-align: center;
+            width: 48%;
+            vertical-align: top;
         }
 
-        .summary-content {
-          background-color: white;
-          padding: 15px;
-          border-radius: 8px;
-          margin-top: 15px;
+        .bank-info-cell.highlighted {
+            background-color: #fff3e0;
+            border: 3px solid #D2691E;
         }
 
-        .order-number {
-          font-weight: bold;
-          color: #333;
-          margin: 8px 0;
+        .bank-info-cell + .bank-info-cell {
+            margin-left: 4%;
         }
 
-        .item-list {
-          margin: 15px 0;
+        .bank-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
         }
 
-        .item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 8px 0;
-          border-bottom: 1px solid #eee;
+        .bank-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
-        .totals-section {
-          border-top: 2px solid #ddd;
-          padding-top: 15px;
-          margin-top: 15px;
+        .bank-value {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
         }
 
-        .total-row {
-          display: flex;
-          justify-content: space-between;
-          margin: 5px 0;
+        .bank-value.account {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            color: #D2691E;
+            letter-spacing: 1px;
         }
 
-        .final-total {
-          font-size: 18px;
-          color: #D2691E;
-          font-weight: bold;
+        .reference-box {
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .reference-label {
+            font-size: 14px;
+            color: #1976d2;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .reference-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0d47a1;
+            font-family: 'Courier New', monospace;
         }
 
         .instructions {
-          background-color: #fff3cd;
-          border-left: 4px solid #ffc107;
-          border-radius: 8px;
-          padding: 20px;
-          margin: 25px 0;
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
         }
 
         .instructions-title {
-          color: #856404;
-          font-size: 18px;
-          font-weight: bold;
-          margin-bottom: 10px;
+            color: #856404;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+            text-align: center;
+            border-bottom: 1px solid #ffc107;
+            padding-bottom: 8px;
         }
 
-        .instructions ol {
-          color: #856404;
-          line-height: 1.8;
-          margin: 0;
-          padding-left: 20px;
+        .instruction-item {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.4;
         }
 
-        .instructions li {
-          margin-bottom: 5px;
+        .security-note {
+            background-color: #d1ecf1;
+            border: 2px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #0c5460;
         }
 
         .footer {
-          text-align: center;
-          padding: 25px;
-          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-          border-radius: 12px;
-          margin-top: 40px;
-        }
-
-        .footer-icon {
-          font-size: 30px;
-          margin-bottom: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-top: 3px solid #D2691E;
         }
 
         .footer p {
-          margin: 5px 0;
-          color: #666;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
 
-        .footer-divider {
-          margin-top: 20px;
-          padding-top: 15px;
-          border-top: 1px solid #ddd;
-        }
-
-        .footer-small {
-          font-size: 12px;
-          color: #999;
-          margin: 0;
+        .footer small {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #999;
+            line-height: 1.4;
         }
 
         @media only screen and (max-width: 600px) {
-          .container {
-            border-radius: 0;
-            margin: 0;
-          }
-
-          .content {
-            padding: 20px 16px;
-          }
-
-          .item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 5px;
-          }
-
-          .banking-details {
-            padding: 10px;
-          }
-
-          .banking-item {
-            font-size: 14px;
-          }
+            .container {
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .bank-info {
+                display: block;
+            }
+            
+            .bank-info-cell {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .bank-info-cell + .bank-info-cell {
+                margin-left: 0;
+            }
         }
-      </style>
-    </head>
-    <body>
-      <div class="container">
+    </style>
+</head>
+<body>
+    <div class="container">
         <div class="header">
-          <div class="paw-icon">🐾</div>
-          BanDoggie
-          <div style="font-size: 14px; font-weight: normal; margin-top: 5px;">
-            Cuidamos a tu mejor amigo
-          </div>
+            <div class="paw-icon">🐾</div>
+            BanDoggie
+            <div style="font-size: 14px; opacity: 0.9; margin-top: 8px;">Cuidamos a tu mejor amigo</div>
         </div>
 
         <div class="content">
-          <div class="greeting">¡Gracias por tu compra!</div>
-          <p>Hola <strong>${orderData.customerInfo.nombre} ${orderData.customerInfo.apellido}</strong>,</p>
-          <p>Tu pedido ha sido registrado exitosamente. A continuación te enviamos los datos para realizar la transferencia bancaria:</p>
+            <div class="greeting">¡Hola ${customerName}!</div>
+            
+            <p>Gracias por tu compra en BanDoggie. Hemos recibido tu pedido y estamos emocionados de poder ayudar a cuidar a tu mascota.</p>
 
-          <div class="banking-info">
-            <div class="banking-title">
-              📱 Transferencia Bancaria
+            <div class="amount-box">
+                💰 Monto a transferir: $${formattedAmount}
             </div>
+
             <div class="banking-details">
-              <div class="banking-item"><strong>Banco:</strong> Banco Agrícola</div>
-              <div class="banking-item"><strong>Tipo de cuenta:</strong> Cuenta de Ahorro</div>
-              <div class="banking-item"><strong>Número de cuenta:</strong> 3680297372</div>
-              <div class="banking-item"><strong>Titular:</strong> XIOMARA CASTILLO</div>
-              <div class="amount-highlight">
-                <strong>Monto a transferir: $${orderData.total.toFixed(2)}</strong>
-              </div>
-            </div>
-          </div>
-
-          <div class="order-summary">
-            <div class="summary-title">
-              📋 Resumen de tu pedido:
-            </div>
-            <div class="summary-content">
-              <div class="order-number">
-                <strong>Número de orden:</strong> ${orderData.orderNumber}
-              </div>
-              <div class="item-list">
-                ${orderData.items.map(item => `
-                  <div class="item">
-                    <span>• ${item.name} (Cantidad: ${item.quantity})</span>
-                    <span style="color: #D2691E; font-weight: bold;">$${item.subtotal.toFixed(2)}</span>
-                  </div>
-                `).join('')}
-              </div>
-              <div class="totals-section">
-                <div class="total-row">
-                  <span><strong>Subtotal:</strong></span>
-                  <span><strong>$${(orderData.total - orderData.shippingCost).toFixed(2)}</strong></span>
+                <div class="banking-title">
+                    🏦 Datos para transferencia bancaria
                 </div>
-                <div class="total-row">
-                  <span><strong>Envío:</strong></span>
-                  <span><strong>$${orderData.shippingCost.toFixed(2)}</strong></span>
+                
+                <div class="bank-info">
+                    <div class="bank-info-row">
+                        <div class="bank-info-cell">
+                            <div class="bank-icon">🏛️</div>
+                            <div class="bank-label">BANCO</div>
+                            <div class="bank-value">Banco Agrícola</div>
+                        </div>
+                        <div class="bank-info-cell">
+                            <div class="bank-icon">💰</div>
+                            <div class="bank-label">TIPO DE CUENTA</div>
+                            <div class="bank-value">Cuenta de Ahorro</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="total-row final-total">
-                  <span><strong>TOTAL:</strong></span>
-                  <span><strong>$${orderData.total.toFixed(2)}</strong></span>
+                
+                <div class="bank-info" style="margin-top: 15px;">
+                    <div class="bank-info-row">
+                        <div class="bank-info-cell highlighted">
+                            <div class="bank-icon">🔢</div>
+                            <div class="bank-label">NÚMERO DE CUENTA</div>
+                            <div class="bank-value account">3680297372</div>
+                        </div>
+                        <div class="bank-info-cell">
+                            <div class="bank-icon">👤</div>
+                            <div class="bank-label">TITULAR</div>
+                            <div class="bank-value">XIOMARA CASTILLO</div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
 
-          <div class="instructions">
-            <div class="instructions-title">⚠️ Instrucciones importantes:</div>
-            <ol>
-              <li>Envía el monto exacto de <strong>$${orderData.total.toFixed(2)}</strong> a la cuenta indicada</li>
-              <li>Una vez realizada la transferencia, nos comunicaremos contigo para coordinar la entrega</li>
-              <li>Guarda el comprobante de transferencia para cualquier consulta</li>
-              <li>Si tienes alguna duda, no dudes en contactarnos</li>
-            </ol>
-          </div>
-
-          <div class="footer">
-            <div class="footer-icon">🐾</div>
-            <p style="font-weight: 500; font-size: 16px;">¡Gracias por confiar en BanDoggie!</p>
-            <p style="font-size: 14px;">Cuidamos a tu mejor amigo con amor</p>
-            <div class="footer-divider">
-              <p class="footer-small">
-                Este es un email automático, por favor no responder a este mensaje.
-              </p>
-              <p class="footer-small">
-                &copy; ${new Date().getFullYear()} BanDoggie. Todos los derechos reservados.
-              </p>
-              <p class="footer-small">
-                BanDoggie Inc. | San Salvador, El Salvador
-              </p>
+            <div class="reference-box">
+                <div class="reference-label">📋 Número de referencia del pedido:</div>
+                <div class="reference-value">${reference}</div>
             </div>
-          </div>
+
+            <div class="instructions">
+                <div class="instructions-title">
+                    📋 Instrucciones importantes
+                </div>
+                
+                <div class="instruction-item">
+                    💵 Realiza la transferencia por el monto exacto mostrado arriba
+                </div>
+                <div class="instruction-item">
+                    🧾 Conserva el comprobante de transferencia
+                </div>
+                <div class="instruction-item">
+                    📞 Una vez realizada la transferencia, nos comunicaremos contigo
+                </div>
+                <div class="instruction-item">
+                    ⏰ El tiempo de procesamiento es de 24-48 horas hábiles
+                </div>
+            </div>
+
+            <div class="security-note">
+                <strong>🔒 Nota de seguridad:</strong> Este email contiene información bancaria sensible. 
+                No compartas estos datos con terceros y verifica siempre que estés realizando la transferencia 
+                a los datos correctos mostrados arriba.
+            </div>
         </div>
-      </div>
-    </body>
-    </html>
-    `;
+
+        <div class="footer">
+            <p>Una vez realizada la transferencia, nuestro equipo verificará el pago y se comunicará contigo para coordinar la entrega de tu pedido.</p>
+            
+            <small>&copy; ${new Date().getFullYear()} BanDoggie. Todos los derechos reservados.</small>
+            <small>Este email fue enviado porque realizaste una compra en nuestra tienda.</small>
+        </div>
+    </div>
+</body>
+</html>`;
 };
 
-export { sendMail, HTMLBankingEmail };
+// Función para testing
+export const previewBankingEmail = (customerName = "Juan Pérez", totalAmount = 25.99, orderNumber = "TEST-123") => {
+    return HTMLSimpleBankingEmail(customerName, totalAmount, orderNumber);
+};
