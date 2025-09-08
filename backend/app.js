@@ -17,7 +17,6 @@ import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
 import cartRoutes from './src/routes/carts.js';
 import resendVerifyCode from './src/routes/resendVerifyCode.js'
 
-import cartRoutes from './src/routes/Cart.js';
 import emailRoutes from './src/routes/email.js';
 
 

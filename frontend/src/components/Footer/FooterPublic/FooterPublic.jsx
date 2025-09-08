@@ -1,9 +1,9 @@
 import React from 'react';
-import './Footer.css';
-import LogoFooter from '../../img/Footer/LogoFooter.png';
-import CollarFooter from '../../img/Footer/CollarFooter.png';
+import './FooterPublic.css';
+import LogoFooter from '../../../img/Footer/LogoFooter.png';
+import CollarFooter from '../../../img/Footer/CollarFooter.png';
 
-function Footer() {
+function FooterPublic() {
   return (
 <footer className="text-white text-center text-lg-start">
   <div className="container p-4">
@@ -66,4 +66,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default FooterPublic;

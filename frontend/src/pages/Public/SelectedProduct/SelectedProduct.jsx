@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronRight, Star, ChevronLeft, ChevronRight as ChevronRightIcon } from "lucide-react";
+import { ChevronRight, Star, ChevronLeft, ChevronRight as ChevronRightIcon, X } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import useProductData from "../../../components/Public/SelectedProduct/hooks/useProductData.jsx";
 import Reviews from "../../../components/Public/SelectedProduct/Reviews.jsx";
@@ -18,7 +18,8 @@ const SelectedProduct = () => {
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
-  const [includeName, setIncludeName] = useState(false); 
+  const [includeName, setIncludeName] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false); // Nuevo estado para el modal
 
   const sizes = ["XS", "S", "M", "L", "XL"];
 
@@ -226,7 +227,7 @@ const SelectedProduct = () => {
           <div className="section">
             <h4>Talla</h4>
             <div className="sizes">
-                            {sizes.map((size) => (
+              {sizes.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -237,9 +238,13 @@ const SelectedProduct = () => {
               ))}
             </div>
             <p className="size-guide">
-              <a href="/docs/guia-de-tallas.pdf" target="_blank" rel="noopener noreferrer">
+              <button 
+                onClick={() => setShowSizeGuide(true)}
+                className="size-guide-button"
+                type="button"
+              >
                 Guía de tallas
-              </a>
+              </button>
             </p>
           </div>
 
@@ -288,6 +293,40 @@ const SelectedProduct = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de Guía de Tallas */}
+      {showSizeGuide && (
+        <div className="size-guide-modal-overlay" onClick={() => setShowSizeGuide(false)}>
+          <div className="size-guide-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="size-guide-header">
+              <h3>Guía de Tallas</h3>
+              <button 
+                className="size-guide-close"
+                onClick={() => setShowSizeGuide(false)}
+                aria-label="Cerrar guía de tallas"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="size-guide-content">
+              <img 
+                src="/src/img/SelectedProduct/size-guide.png" // Cambia esta ruta por tu imagen de guía de tallas
+                alt="Guía de tallas para mascotas"
+                className="size-guide-image"
+              />
+              <div className="size-guide-instructions">
+                <h4>Cómo medir a tu mascota:</h4>
+                <ul>
+                  <li><strong>Cuello:</strong> Mide alrededor del cuello donde normalmente va el collar</li>
+                  <li><strong>Pecho:</strong> Mide la parte más ancha del pecho, justo detrás de las patas delanteras</li>
+                  <li><strong>Espalda:</strong> Mide desde la base del cuello hasta la base de la cola</li>
+                </ul>
+                <p><em>Consejo:</em> Si tu mascota está entre dos tallas, elige la talla más grande para mayor comodidad.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Reseñas */}
       <Reviews reviews={reviews} productId={product._id} />
