@@ -33,10 +33,10 @@ class CartErrorBoundary extends React.Component {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <h2 style={{ color: '#dc3545', marginBottom: '20px' }}>
-            🛒 Error en el Carrito
+            ðŸ›’ Error en el Carrito
           </h2>
           <p style={{ color: '#666', marginBottom: '20px' }}>
-            Lo sentimos, ocurrió un error inesperado en el carrito de compras.
+            Lo sentimos, ocurriÃ³ un error inesperado en el carrito de compras.
           </p>
           
           {/* Mostrar detalles del error solo en desarrollo */}
@@ -97,7 +97,7 @@ class CartErrorBoundary extends React.Component {
           </div>
 
           <p style={{ fontSize: '14px', color: '#666', marginTop: '20px' }}>
-            Si el problema persiste, por favor contacta al soporte técnico.
+            Si el problema persiste, por favor contacta al soporte tÃ©cnico.
           </p>
         </div>
       );

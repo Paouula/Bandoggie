@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import jsonwebtoken from 'jsonwebtoken';
-import clientsModel from '../models/Clients.js';
+import clientsModel from '../models/client.js';
 import vetModel from '../models/Vets.js';
 import { config } from '../config.js';
 import sendVerificationEmail from '../utils/verificationCode.js'

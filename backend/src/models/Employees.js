@@ -1,49 +1,59 @@
-import { Schema, model} from "mongoose";
+import { Schema, model } from "mongoose";
 
 const employeeSchema = new Schema({
     nameEmployees: {
         type: String,
-        require: true,
+        required: true,
         trim: true
     },
-    email : {
+    email: {
         type: String,
-        require: true,
+        required: true,
+        unique: true, // 👈 recomendable para login
         trim: true
     },
     phoneEmployees: {
         type: String,
-        require: true,
+        required: true,
         trim: true
     },
     dateOfBirth: {
         type: Date,
-        require: true,
+        required: true,
         trim: true
     },
     addressEmployees: {
         type: String,
-        require: true,
+        required: true,
         trim: true
     },
     password: {
         type: String,
-        require: true,
+        required: true,
         trim: true
     },
-    hireDateEmployee : {
+    hireDateEmployee: {
         type: Date,
-        require: true,
+        required: true,
         trim: true
     },
-    duiEmployees : {
+    duiEmployees: {
         type: String,
-        require: true,
+        required: true,
         trim: true
+    },
+
+    //Seguridad para intentos fallidos
+    loginAttempts: {
+        type: Number,
+        default: 0
+    },
+    lockUntil: {
+        type: Date
     }
 }, {
     timestamps: true,
     strict: false
-})
+});
 
-export default model('Employees', employeeSchema)
+export default model("Employees", employeeSchema);

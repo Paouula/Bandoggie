@@ -15,7 +15,8 @@ import AuthenticatedNavBar from "../components/Public/NavBar/NavBar.jsx";
 import PrivateNavBar from "../components/Private/NavBar/NavBar.jsx";
 
 //Footer
-import Footer from "../components/Footer/Footer.jsx";
+import FooterPublic from "./Footer/FooterPublic/FooterPublic.jsx";
+import FooterPrivate from "./Footer/FooterPrivate/FooterPrivate.jsx"
 
 // Componentes Públicos
 import AboutUS from "../pages/Public/AboutUs/AboutUs.jsx";
@@ -31,6 +32,8 @@ import RequestCode from "../pages/Public/PasswordRecovery/RequestCode.jsx";
 import VerifyCode from "../pages/Public/PasswordRecovery/verifyCode.jsx";
 import NewPassword from "../pages/Public/PasswordRecovery/newPassword.jsx";
 import Profile from "../pages/Public/Profile/Profile.jsx";
+import NotFound from "../pages/NotFound/NotFound.jsx";  
+import Forbidden from "../pages/Forbidden/Forbidden.jsx"
 import LoginModal from "../components/LoginModal/Login.jsx";
 
 //Paginas de productos sitio público
@@ -60,8 +63,8 @@ const EmployeeLayout = () => (
         <Route path="reseñas" element={<Reseñas />} />
         <Route path="empleados" element={<Empleados />} />
         <Route path="clientes" element={<Clientes />} />
+        <Route path="graphics" element={<Graphics />} />
         <Route path="*" element={<Navigate to="/admin/productos" replace />} />
-        <Route path="graphics" element={<Graphics/>}/>
       </Routes>
     </div>
   </>
@@ -93,6 +96,42 @@ function NavBarHandler({ currentPath, user }) {
   if (user.userType === "vet" || user.userType === "client")
     return <AuthenticatedNavBar />;
   return <Nav />;
+}
+
+// Manejo dinámico del Footer
+function FooterHandler({ currentPath, user }) {
+  const authRoutes = [
+    "/verification-code",
+    "/request-code",
+    "/verify-code",
+    "/new-password",
+    "/reviews",
+  ];
+
+  const adminRoutes = ["/admin"];
+
+  const shouldHideFooter = authRoutes.some(
+    (route) => currentPath === route || currentPath.startsWith(route + "/")
+  );
+
+  const isAdminRoute = adminRoutes.some((route) =>
+    currentPath.startsWith(route)
+  );
+
+  if (shouldHideFooter) return null;
+  
+  // Si es ruta de admin o usuario empleado, mostrar footer privado
+  if (isAdminRoute || user?.userType === "employee") {
+    return <FooterPrivate />;
+  }
+  
+  // Para usuarios sin sesión, veterinarios y clientes, mostrar footer público
+  if (!user || user.userType === "vet" || user.userType === "client") {
+    return <FooterPublic />;
+  }
+  
+  // Por defecto, mostrar footer público
+  return <FooterPublic />;
 }
 
 function Navegation() {
@@ -139,7 +178,7 @@ function Navegation() {
           }
         />
 
-        {/* Rutas públicas publicas */}
+        {/* Rutas públicas */}
         <Route path="/mainPage" element={<MainPage />} />
         <Route path="/bandanas" element={<Bandanas />} />
         <Route path="/collars" element={<Collars />} />
@@ -153,21 +192,22 @@ function Navegation() {
         <Route path="/birthday" element={<Birthday />} />
         <Route path="/aboutus" element={<AboutUS />} />
         <Route path="/profile" element={<Profile />} />
-      
 
         {/* Área privada para empleados */}
         <Route element={<EmployeeRoute />}>
           <Route path="/admin/*" element={<EmployeeLayout />} />
         </Route>
 
-        {/* Ruta por defecto */}
-        <Route path="*" element={<Navigate to="/mainPage" replace />} />
+        {/* Ruta por defecto (404) */}
+        <Route path="*" element={<NotFound />} />   
+
+        {/* Registir acceso (403) */}
+        <Route path="/forbidden" element={<Forbidden />} />
+
       </Routes>
 
-      <>
-      .<Footer /></>
-      </>
-    
+      <FooterHandler currentPath={currentPath} user={user} />
+    </>
   );
 }
 

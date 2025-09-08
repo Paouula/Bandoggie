@@ -67,6 +67,44 @@ function AppContent() {
     return <Nav />;
   };
 
+
+// Manejo dinámico del Footer
+function FooterHandler({ currentPath, user }) {
+  const authRoutes = [
+    "/verification-code",
+    "/request-code",
+    "/verify-code",
+    "/new-password",
+    "/reviews",
+  ];
+
+  const adminRoutes = ["/admin"];
+
+  const shouldHideFooter = authRoutes.some(
+    (route) => currentPath === route || currentPath.startsWith(route + "/")
+  );
+
+  const isAdminRoute = adminRoutes.some((route) =>
+    currentPath.startsWith(route)
+  );
+
+  if (shouldHideFooter) return null;
+  
+  // Si es ruta de admin o usuario empleado, mostrar footer privado
+  if (isAdminRoute || user?.userType === "employee") {
+    return <FooterPrivate />;
+  }
+  
+  // Para usuarios sin sesión, veterinarios y clientes, mostrar footer público
+  if (!user || user.userType === "vet" || user.userType === "client") {
+    return <FooterPublic />;
+  }
+  
+  // Por defecto, mostrar footer público
+  return <FooterPublic />;
+}
+
+
   return (
     <>
       {renderNavbar()}

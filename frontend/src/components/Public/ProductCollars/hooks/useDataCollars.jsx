@@ -8,7 +8,7 @@ const useDataCollars = () => {
   const fetchCollars = async () => {
     try {
       
-      const categoryId = "68a147776b65e3a7962662a7";  
+      const categoryId = "68a1476c6b65e3a7962662a5";  
 
       const response = await fetch(`http://localhost:4000/api/products/category/${categoryId}`);
       if (!response.ok) throw new Error(`Error ${response.status}`);

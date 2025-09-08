@@ -13,27 +13,27 @@ import { Schema, model } from 'mongoose';
 const clientSchema = new Schema({
     name: {
         type: String,
-        require: true,
+        required: true,
         trim: true
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true,
         trim: true
     },
     phone: {
         type: String,
-        require: true,
+        required: true,
         trim: true
     },
     birthday: {
         type: Date,
-        require: true
+        required: true
     },
     password: {
         type: String,
-        require: true,
+        required: true,
         trim: true
     },
     image: {
@@ -43,10 +43,19 @@ const clientSchema = new Schema({
     emailVerified: { 
         type: Boolean, 
         default: false 
+    },
+
+    // Seuridad para intentos fallidos
+    loginAttempts: { 
+        type: Number, 
+        default: 0 
+    },
+    lockUntil: { 
+        type: Date 
     }
 }, {
     timestamps: true,
     strict: true
-})
+});
 
 export default model('Clients', clientSchema);

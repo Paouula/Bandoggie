@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { User, Star, Plus, Minus, Image as ImageIcon } from "lucide-react";
+import { User, Star, Plus, Minus } from "lucide-react";
+import ReviewForm from "../../../components/Public/SelectedProduct/ReviewsForm/ReviewForm.jsx";
+import { useAuth } from "../../../Context/AuthContext.jsx";
 import "./Reviews.css";
 
-const Reviews = ({ reviews }) => {
-  const [expandedReview, setExpandedReview] = useState(null);
+const Reviews = ({ reviews, productId }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [loginMessage, setLoginMessage] = useState(""); 
+  const { user } = useAuth();
 
+  /* control del rating de estrellas */
   const renderStars = (rating) =>
     [...Array(5)].map((_, i) => (
       <Star
@@ -14,62 +20,86 @@ const Reviews = ({ reviews }) => {
       />
     ));
 
-  if (!reviews || reviews.length === 0) {
-    return <p>¡Aún no hay reseñas para este producto!</p>;
-  }
+  const handleAddReviewClick = () => {
+    if (!user) {
+      setLoginMessage(" ¡Debes iniciar sesión para dejar una reseña!");
+      return;
+    }
+    setLoginMessage(""); // limpiar mensaje si ahora sí hay usuario
+    setShowForm((prev) => !prev); // Alternar mostrar/ocultar formulario
+  };
 
   return (
     <div className="reviews">
       <div className="review-header">
-      <p className="review-tittle">Comentarios y reseñas</p>
+        <button
+          type="button"
+          className="toggle-reviews-btn"
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? <Minus size={19} /> : <Plus size={19} />}
+        </button>
+        <p className="review-title">Comentarios y reseñas</p>
       </div>
-      {reviews.map((review) => (
-        <div key={review._id} className="review">
-          {/* Cabecera */}
-          <div className="review-user">
-            <User size={20} />
-            <h4>
-              {review.idClient?.name || "Usuario"} {/* si backend popula */}
-            </h4>
-            <span>
-              {new Date(review.publicationDate).toLocaleDateString("es-ES")}
-            </span>
-          </div>
 
-          {/* Estrellas */}
-          <div className="review-stars">
-            {renderStars(review.qualification)}
-          </div>
+      {expanded && (
+        <div className="review-body">
+          {/* Mostrar reseñas */}
+          {reviews && reviews.length > 0 ? (
+            reviews.map((review) => (
+              <div key={review._id} className="review">
+                <div className="review-user">
+                  <User size={20} />
+                  <h4>{review.idClient?.name || "Usuario"}</h4>
+                  <span>
+                    {new Date(review.publicationDate).toLocaleDateString(
+                      "es-ES"
+                    )}
+                  </span>
+                </div>
 
-          {/* Comentario */}
-          <p>{review.comment}</p>
+                <div className="review-stars">
+                  {renderStars(review.qualification)}
+                </div>
 
-          {/* Galería de imágenes opcional */}
-          {review.designImages && review.designImages.length > 0 && (
-            <div className="review-images">
-              {review.designImages.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={img}
-                  alt={`Imagen reseña ${idx + 1}`}
-                  className="review-image"
-                />
-              ))}
-            </div>
-          )}
+                <p>{review.comment}</p>
 
-          {/* Botón expandir/ocultar */}
-          {expandedReview === review._id ? (
-            <button onClick={() => setExpandedReview(null)}>
-              <Minus size={14} /> Ocultar
-            </button>
+                {review.designImages && review.designImages.length > 0 && (
+                  <div className="review-images">
+                    {review.designImages.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`Imagen reseña ${idx + 1}`}
+                        className="review-image"
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
           ) : (
-            <button onClick={() => setExpandedReview(review._id)}>
-              <Plus size={14} /> Leer más
-            </button>
+            <p>¡Aún no hay reseñas para este producto!</p>
           )}
+
+          {/* Botón Agregar reseña */}
+          <div className="add-review-wrapper">
+            <button
+              type="button"
+              className="btn-add-review"
+              onClick={handleAddReviewClick}
+            >
+              {showForm ? "Cancelar" : "Agregar reseña"}
+            </button>
+
+            {/* Mensaje si no hay sesión */}
+            {loginMessage && <p className="login-warning">{loginMessage}</p>}
+
+            {/* Formulario solo si hay sesión */}
+            {showForm && <ReviewForm productId={productId} user={user && user._id ? user : { ...user, _id: user.email }} />}
+          </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };

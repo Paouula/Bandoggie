@@ -13,8 +13,12 @@ import loginRoutes from './src/routes/login.js';
 import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
+
 import cartRoutes from './src/routes/carts.js';
 import resendVerifyCode from './src/routes/resendVerifyCode.js'
+
+import emailRoutes from './src/routes/email.js';
+
 
 // Rutas de CRUDs
 import holidayRoutes from './src/routes/holidays.js';
@@ -22,7 +26,7 @@ import clientsRoutes from './src/routes/clients.js';
 import vetsRoutes from './src/routes/vets.js'
 import adminRoutes from './src/routes/admin.js';
 import productsRoutes from './src/routes/product.js';
-import reviewsRoutes from './src/routes/reviews.js';
+import reviewsRoutes from './src/routes/review.js';
 import employeesRoutes from "./src/routes/employees.js";
 import categoriesRoutes from "./src/routes/categories.js";
 import ordersRoutes from "./src/routes/orders.js";
@@ -48,7 +52,11 @@ app.use('/api/logout', logoutRoutes);
 app.use('/api/passwordRecovery', passwordRecoveryRoutes);
 app.use('/api/registerVet', registerVetRoutes);
 app.use('/api/auth/pending-verification', checkVerificationRoutes);
+
 app.use('/api/resend-code', resendVerifyCode);
+
+app.use('/api/email', emailRoutes);
+
 
 // Rutas de CRUDs y Graficas
 app.use('/api/clients', clientsRoutes);
