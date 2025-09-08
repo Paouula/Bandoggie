@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import "./RegisterEmployee.css";
 import DatePickerInput from "../../InputDataPicker/InputDataPicker.jsx";
 import Button from '../../Button/Button.jsx'
 import Input from '../../Input/Input.jsx'
-import InputPassword from '../../InputPassword/InputPassword.jsx'
 
 import {
   Camera,
@@ -18,18 +17,23 @@ import {
   CreditCard,
 } from "lucide-react";
 
-export default function RegisterEmployee({
-  onClose,
-  employeeToEdit = null,
-  onSave,
-}) {
+const RegisterEmployees = ({ onClose, onSave, isSubmitting, employeeToEdit = null }) => {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true); // Activa la animación de cierre
+    setTimeout(() => {
+      onClose(); // Llama a la función de cierre después de la animación
+    }, 300); // Duración de la animación (0.3s)
+  };
+
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     control,
-    formState: { errors, isSubmitting, touchedFields },
+    formState: { errors, touchedFields },
     reset,
     trigger,
   } = useForm({
@@ -141,13 +145,13 @@ export default function RegisterEmployee({
 
   return (
     <div
-      className="modal-overlay"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
+      className={`modal-overlay ${isClosing ? "fade-out" : ""}`}
+      onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
       <div className="modal-content">
         <button
           className="modal-close"
-          onClick={onClose}
+          onClick={handleClose}
           disabled={isSubmitting}
         >
           <X size={20} />
@@ -386,7 +390,7 @@ export default function RegisterEmployee({
                     Contraseña{" "}
                     {employeeToEdit && "(dejar vacío para mantener la actual)"}
                   </label>
-                  <InputPassword
+                  <Input
                     type="password"
                     placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número"
                     {...register("password", {
@@ -407,7 +411,7 @@ export default function RegisterEmployee({
             <div className="modal-actions">
               <Button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="modal-btn cancel-btn"
                 disabled={isSubmitting}
               >
@@ -430,4 +434,6 @@ export default function RegisterEmployee({
       </div>
     </div>
   );
-}
+};
+
+export default RegisterEmployees;

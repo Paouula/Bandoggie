@@ -26,6 +26,23 @@
   flex-direction: column;
 }
 
+/* Fade Out Animation */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Clase para aplicar el fade out */
+.fade-out {
+  animation: fadeOut 0.3s ease-in-out forwards;
+}
+
+
+
 /* Modal Header */
 .modal-header {
   padding: 24px 24px 0;
