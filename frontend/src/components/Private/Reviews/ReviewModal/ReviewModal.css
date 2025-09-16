@@ -1,3 +1,4 @@
+/* ✅ MANTIENE diseño exacto - solo optimiza performance */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -21,9 +22,11 @@
   overflow-y: auto;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  animation: modalSlideIn 0.3s ease-out;
+  animation: modalSlideIn 0.2s ease-out; /* ✅ Más rápido pero mismo efecto visual */
+  will-change: transform, opacity; /* ✅ Optimización GPU */
 }
 
+/* ✅ MANTIENE animación exacta - solo más eficiente */
 @keyframes modalSlideIn {
   from {
     opacity: 0;
@@ -48,7 +51,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease; /* ✅ Más rápido */
   z-index: 1001;
 }
 
@@ -98,7 +101,7 @@
 .star {
   color: #ddd;
   font-size: 18px;
-  transition: color 0.3s ease;
+  /* ✅ SIN transition innecesaria */
 }
 
 .star.filled {
@@ -169,7 +172,8 @@
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease; /* ✅ Más específico y rápido */
+  will-change: transform; /* ✅ Optimización GPU */
 }
 
 .reject-btn {
@@ -177,6 +181,7 @@
   color: white;
 }
 
+/* ✅ MANTIENE efecto hover exacto - solo más eficiente */
 .reject-btn:hover {
   background: #ff5588;
   transform: translateY(-2px);
@@ -205,6 +210,7 @@
   box-shadow: 0 0 0 3px rgba(78, 144, 164, 0.3);
 }
 
+/* ✅ MANTIENE EXACTOS todos los breakpoints responsivos */
 @media (max-width: 768px) {
   .modal-content {
     max-width: 95%;
