@@ -15,6 +15,10 @@ router.get('/client/:clientId', reviewsController.getReviewsByClient);// Obtiene
 router.get('/qualification/:qualification', reviewsController.getReviewsByQualification);// Obtiene todas las reseñas con una calificación específica
 router.get('/stats/product/:productId', reviewsController.getProductReviewStats);// Obtiene estadísticas de reseñas de un producto (por ejemplo, promedio de calificaciones)
 
+// Obtiene y verifica todas las reseñas 
+router.get('/verified', reviewsController.getVerifieldReviews);
+
+router.get('/:id/verify', reviewsController.verifyReview); 
 
 // Obtiene todas las reseñas sin filtros
 router.get('/', reviewsController.getReviews);

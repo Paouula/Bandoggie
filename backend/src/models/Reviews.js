@@ -44,6 +44,10 @@ const ReviewsSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Products",
     required: true
+  },
+  isVerifieldReview: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true,
