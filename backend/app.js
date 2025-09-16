@@ -37,7 +37,7 @@ import guestClients from './src/routes/retailsPurchase.js';
 
 const corsOptions = {
     origin: 'http://localhost:5173',
-    credentials: true,
+    credentials: true,  
 };
 
 const app = express();

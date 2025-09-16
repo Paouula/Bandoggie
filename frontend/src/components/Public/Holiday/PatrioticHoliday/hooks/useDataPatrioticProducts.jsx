@@ -8,7 +8,7 @@ const useDataPatrioticProducts = () => {
   const fetchPatrioticProducts = async () => {
     try {
       const holidayId = "68a4c746a2099a968645d546";  
-      const response = await fetch(`http://localhost:4000/api/products/holiday/${holidayId}`);
+      const response = await fetch(`https://bandoggie.onrender.com/api/products/holiday/${holidayId}`);
       
       if (!response.ok) throw new Error(`Error ${response.status}`);
       

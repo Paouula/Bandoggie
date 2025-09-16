@@ -2,7 +2,7 @@ import axios from "axios";
 
 const useDataReviews = () => {
   const submitReview = async (data) => {
-    const response = await axios.post("http://localhost:4000/api/reviews", data);
+    const response = await axios.post("https://bandoggie.onrender.com/api/reviews", data);
     return response.data;
   };
 

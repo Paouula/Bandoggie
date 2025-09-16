@@ -23,7 +23,7 @@ const useFetchUser = () => {
   const [error, setError] = useState(null);
 
   // 🔧 CORREGIDO: Configuración de la API para Vite
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001/api";
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "https://bandoggie.onrender.com/api"; 
 
   // Función para obtener el token de autenticación
   const getAuthToken = useCallback(() => {

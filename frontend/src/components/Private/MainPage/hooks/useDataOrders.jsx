@@ -8,7 +8,7 @@ const useDataCarts = () => {
 
 const fetchCarts = async () => {
   try {
-    const response = await fetch("http://localhost:4000/api/cart");
+    const response = await fetch("https://bandoggie.onrender.com/api/cart");
     if (!response.ok) throw new Error(`Error ${response.status}`);
     const data = await response.json();
 
