@@ -56,8 +56,54 @@ reviewsController.getReviewById = async (req, res) => {
     }
 };
 
+// SELECT - Obtener todas las reseñas verificadas
+reviewsController.getVerifieldReviews = async (req, res) => {
+    try {
+
+        const Reviews = await reviewsModel.find({ isVerifieldReview: true });
+
+        if (!Reviews) {
+            return res.status(404).json({ message: "No se encontraron reseñas verificadas" })
+        }
+    } catch (error) {
+        console.error("Error fetching verified reviews:", error);
+        res.status(500).json({
+            message: "Error al obtener las reseñas verificadas",
+            error: error.message
+        });
+    }
+}
+
+// UPDATE - Verificar reseña (solo admin)
+reviewsController.verifyReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isVerifieldReview } = req.body; 
+
+    const updatedReview = await reviewsModel.findByIdAndUpdate(
+      id,
+      { isVerifieldReview: true },
+      { new: true }
+    );
+
+    if (!updatedReview) {
+      return res.status(404).json({ message: "Reseña no encontrada" });
+    }
+
+    res.status(200).json(updatedReview);
+  } catch (error) {
+    console.error("Error al actualizar la reseña:", error);
+    res.status(500).json({
+      message: "Error al actualizar la reseña",
+      error: error.message
+    });
+  }
+};
+
+
 // INSERT - Crear nueva reseña
 reviewsController.insertReview = async (req, res) => {
+    
     try {
         const { qualification, comment, idClient, idProduct } = req.body;
         let designImages = [];
@@ -98,9 +144,9 @@ reviewsController.insertReview = async (req, res) => {
         // Subir imágenes a Cloudinary si existen (opcional)
         if (req.files && req.files.length > 0) {
             // Validar cantidad de imágenes
-            if (req.files.length < 3) {
+            if (req.files.length < 1) {
                 return res.status(400).json({
-                    message: "Se requieren mínimo 3 imágenes de diseño si se incluyen"
+                    message: "Se requieren mínimo 1 imágenes de diseño si se incluyen"
                 });
             }
 

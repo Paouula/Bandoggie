@@ -34,11 +34,13 @@ const RegisterModal = ({
   const { handleRegister } = useFetchRegister();
   const phoneValue = watch("phone", "");
 
+  //Funcion para el cierre del modal
   const handleClose = () => {
     modalRef.current?.classList.add("fade-out");
     setTimeout(() => onClose(), 250);
   };
 
+  //Funcion para la navegacion entre modales
   const handleBack = () => {
     modalRef.current?.classList.add("fade-out");
     setTimeout(() => {
@@ -47,6 +49,7 @@ const RegisterModal = ({
     }, 250);
   };
 
+  //Funcion para la validacion de numero telefonico
   const handlePhoneChange = (e) => {
     let value = e.target.value.replace(/\D/g, "");
     if (value.length > 4) value = value.slice(0, 4) + "-" + value.slice(4, 8);
@@ -54,6 +57,7 @@ const RegisterModal = ({
     setValue("phone", value);
   };
 
+  //Funcion para el envio de la informacion
   const onSubmit = async (data) => {
     if (isSubmitting) return;
     if (!profileImage) {
@@ -64,6 +68,7 @@ const RegisterModal = ({
     setIsSubmitting(true);
     toast.success("La información se ha enviado. Por favor, espera...");
 
+    //Envio de los datos
     try {
       const response = await handleRegister(
         data.name,
@@ -75,7 +80,7 @@ const RegisterModal = ({
       );
       if (response) {
         reset();
-        onRegisterSuccess?.();
+        onRegisterSuccess?.(data.email, "client");
       }
     } catch (error) {
       toast.error(error.message || "Registro fallido. Verifica tus datos.");
@@ -123,6 +128,8 @@ const RegisterModal = ({
         </a>
 
         <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
+
+          {/*Campo de imagen */}
           <div className="register-profile-image-container">
             <ImageLoader id="image" onImageChange={setProfileImage} />
           </div>
@@ -150,6 +157,7 @@ const RegisterModal = ({
             )}
           </div>
 
+          {/*Campo del correo electronico */}
           <div className="register-input-group">
             <label htmlFor="email">Correo Electrónico</label>
             <InputComponent
@@ -170,6 +178,7 @@ const RegisterModal = ({
             )}
           </div>
 
+          {/*Campo para la fecha de nacimiento */}
           <div style={{ display: "flex", gap: "10px" }}>
             <div className="register-input-group" style={{ flex: 1 }}>
               <label htmlFor="birthday">Fecha de nacimiento</label>
@@ -207,6 +216,7 @@ const RegisterModal = ({
               )}
             </div>
 
+          {/*Campo del numero telefonico */}
             <div className="register-input-group" style={{ flex: 1 }}>
               <label htmlFor="phone">Teléfono</label>
               <InputComponent
@@ -233,6 +243,7 @@ const RegisterModal = ({
             </div>
           </div>
 
+          {/*Campo de la contraseña */}
           <div className="register-input-group">
             <label htmlFor="password">Contraseña</label>
             <PasswordInput
@@ -255,8 +266,11 @@ const RegisterModal = ({
             )}
           </div>
 
+          {/*Recuperacion de contraseña*/}
           <div className="register-forgot">
-            <a className="register-small-links" href="/request-code">¿Olvidaste tu contraseña?</a>
+            <a className="register-small-links" href="/request-code">
+              ¿Olvidaste tu contraseña?
+            </a>
           </div>
 
           <Button

@@ -103,7 +103,7 @@ const LoginModal = ({ onClose, openChoose }) => {
 
         <div className="logo-container">
           <div className="logo">
-            <img src={logo} alt="HUELLITAS Logo" />
+            <img src={logo} alt="Bandoggie Logo" />
           </div>
         </div>
 

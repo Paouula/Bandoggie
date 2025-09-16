@@ -1,0 +1,1926 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Simple Inventory API",
+    "description": "This is a simple API",
+    "contact": {
+      "email": "you@your-company.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/ricaldone-81c/Bandoggie/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "tags": [
+    {
+      "name": "admins",
+      "description": "Secured Admin-only calls"
+    },
+    {
+      "name": "developers",
+      "description": "Operations available to regular developers"
+    }
+  ],
+  "paths": {
+    "/Cart": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtiene la lista completa de carritos disponibles en el sistema",
+        "operationId": "get",
+        "responses": {
+          "200": {
+            "description": "Lista de carritos obtenida exitosamente"
+          },
+          "500": {
+            "description": "Error al obtener la lista de carrito"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualiza un carrito existente identificándolo por su ID",
+        "operationId": "put-cart",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cart_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Carrito actualizado exitosamente"
+          },
+          "400": {
+            "description": "Error en los datos enviados (validación fallida)"
+          },
+          "500": {
+            "description": "Error interno del servidor\r\n"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Crea un nuevo carrito con los productos especificados",
+        "operationId": "post-cart",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cart_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Carrito creado exitosamente"
+          },
+          "400": {
+            "description": "Error en los datos enviados (validación fallida)"
+          },
+          "409": {
+            "description": " Conflicto el carrito ya existe o hay un conflicto con los datos enviados"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Elimina un carrito existente identificándolo por su ID",
+        "operationId": "delete-cart",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrito eliminado exitosamente"
+          },
+          "404": {
+            "description": "Carrito no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/Holiday": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtiene la lista completa de las festividades registrados",
+        "operationId": "get-api-Holiday",
+        "responses": {
+          "200": {
+            "description": "Feriado actualizado exitosamente"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "404": {
+            "description": "Festividad no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualiza una Festividad existente identificándolo por su ID",
+        "operationId": "put-api-Holiday",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Holiday_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Festividad actualizada exitosamente"
+          },
+          "404": {
+            "description": "Festividad no encontrada"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Crea una nueva Festivida",
+        "operationId": "post-api-Holiday",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Holiday_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Festividad creado exitosamente"
+          },
+          "404": {
+            "description": "Festividad no encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Elimina un Festividad existente identificándolo por su ID",
+        "operationId": "delete-api-Holiday",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Festividad eliminada exitosamente"
+          },
+          "404": {
+            "description": "Festividad no encontrado"
+          }
+        }
+      }
+    },
+    "/Products": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtiene la lista completa de los productos registrados",
+        "operationId": "get-api-Products",
+        "responses": {
+          "404": {
+            "description": "Producto no encontrado"
+          },
+          "500": {
+            "description": "Error en el servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualizar producto por ID",
+        "operationId": "put-api-Products",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Products_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": " ID inválido o datos incorrectos"
+          },
+          "404": {
+            "description": "Producto no encontrado"
+          },
+          "500": {
+            "description": "Error en el servidor"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Crear un nuevo producto",
+        "operationId": "post-api-Products",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Products_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Producto creado exitosamente"
+          },
+          "400": {
+            "description": "Datos inválidos o incompletos"
+          },
+          "500": {
+            "description": "Error en el servidor\r\n"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Elimina producto por ID",
+        "operationId": "delete-api-Products",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto eliminado"
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "404": {
+            "description": "Producto no encontrado"
+          },
+          "500": {
+            "description": "Error en el servidor"
+          }
+        }
+      }
+    },
+    "/Reviews": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtener todas las reseñas",
+        "operationId": "get-api-Reviews",
+        "responses": {
+          "200": {
+            "description": "Obtiene toda la lista de reseñas"
+          },
+          "500": {
+            "description": "Error en el servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualizar solo el comentario de una reseña",
+        "operationId": "put-api-Reviews",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Reviews_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comentario actualizado correctamente"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "404": {
+            "description": "Reseña no encontrada"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Crear nueva reseña",
+        "operationId": "post-api-Reviews",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Reviews_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lista de reseñas obtenida exitosamente"
+          },
+          "404": {
+            "description": "Reseña no encontrada"
+          },
+          "500": {
+            "description": "Error en el servidor\r\n\r\n"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Eliminar reseña por ID",
+        "operationId": "delete-api-Reviews",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reseña eliminada correctamente"
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "404": {
+            "description": "Reseña no encontrada"
+          },
+          "500": {
+            "description": "Error en el servidor"
+          }
+        }
+      }
+    },
+    "/admin": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtener todos los administradores",
+        "operationId": "get-api-admin",
+        "responses": {
+          "200": {
+            "description": "Obtiene toda la lista de administradores"
+          },
+          "500": {
+            "description": "Error del servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualizar un administrador existente",
+        "operationId": "put-api-admin",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/admin_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Administrador actualizado correctamente"
+          },
+          "400": {
+            "description": " Error de validación o conflicto de email"
+          },
+          "500": {
+            "description": "Error al actualizar datos\r\n"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Registrar un nuevo administrador",
+        "operationId": "post-api-admin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/admin_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Administrador registrado correctamente"
+          },
+          "400": {
+            "description": "Error de validación o usuario ya existente"
+          },
+          "500": {
+            "description": "Error al insertar datos"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Eliminar un administrador",
+        "operationId": "delete-api-admin",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Administrador eliminado correctamente"
+          },
+          "500": {
+            "description": "Error al eliminar el administrador"
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtener todas las categorías",
+        "operationId": "get-api-categories",
+        "responses": {
+          "200": {
+            "description": "Lista de categorías"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualizar una categoría existente",
+        "operationId": "put-api-categories",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/categories_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Categoría actualizada correctamente"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Crear una nueva categoría",
+        "operationId": "post-api-categories",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/categories_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Categoría creada correctamente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Eliminar una categoría por ID",
+        "operationId": "delete-api-categories",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Categoría no encontrada"
+          }
+        }
+      }
+    },
+    "/clients": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtener todos los clientes",
+        "operationId": "get-api-clients",
+        "responses": {
+          "200": {
+            "description": "Lista de clientes obtenida correctamente"
+          },
+          "500": {
+            "description": "Error en el servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualizar un cliente existente",
+        "operationId": "put-api-clients",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clients_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "ID inválido o datos inválidos"
+          },
+          "404": {
+            "description": "Cliente no encontrado"
+          },
+          "500": {
+            "description": "Error en el servidor"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Crear un cliente nuevo",
+        "operationId": "post-api-clients",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clients_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente creado exitosamente"
+          },
+          "400": {
+            "description": "Datos inválidos o faltantes en la solicitud"
+          },
+          "500": {
+            "description": "Error creando el cliente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Eliminar un cliente",
+        "operationId": "delete-api-clients",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "ID inválido para eliminación"
+          },
+          "404": {
+            "description": "Cliente no encontrado para borrar"
+          },
+          "500": {
+            "description": "Error eliminando cliente"
+          }
+        }
+      }
+    },
+    "/employees": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Recupera una lista completa de todos los empleados almacenados en la base de datos",
+        "operationId": "get-api-employees",
+        "responses": {
+          "200": {
+            "description": "Lista de empleados obtenida con éxito"
+          },
+          "500": {
+            "description": "Error al obtener datos de empleados"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualiza la información de un empleado existente identificado por su ID",
+        "operationId": "put-api-employees",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/employees_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Empleado actualizado correctamente"
+          },
+          "400": {
+            "description": "Datos inválidos o correo ya registrado en otro empleado"
+          },
+          "500": {
+            "description": "Error al actualizar datos del empleado"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Registra un nuevo empleado en el sistema después de validar que todos los campos\r\ncumplen con los formatos ",
+        "operationId": "post-api-employees",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/employees_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Empleado registrado correctamente"
+          },
+          "400": {
+            "description": "Datos inválidos o empleado ya existente"
+          },
+          "500": {
+            "description": "Error al insertar datos del empleado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Elimina un empleado existente del sistema buscando por su ID",
+        "operationId": "delete-api-employees",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Administrador eliminado"
+          },
+          "500": {
+            "description": "Error al eliminar empleado\r\n"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Recuperar la lista completa de todas las órdenes registradas en el sistema.",
+        "operationId": "get-api-orders",
+        "responses": {
+          "200": {
+            "description": "Lista de órdenes obtenida correctamente"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualizar los datos de una orden existente identificada por su ID.",
+        "operationId": "put-api-orders",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/orders_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Orden actualizada exitosamente"
+          },
+          "400": {
+            "description": "ID inválido o datos inválidos"
+          },
+          "404": {
+            "description": "Orden no encontrada"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Registrar una nueva orden con todos los datos requeridos en el sistema.",
+        "operationId": "post-api-orders",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/orders_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Orden creada exitosamente"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "404": {
+            "description": "Orden no encontrada"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Eliminar permanentemente una orden del sistema usando su ID.",
+        "operationId": "delete-api-orders",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orden eliminada correctamente"
+          },
+          "400": {
+            "description": "ID inválido "
+          },
+          "404": {
+            "description": "Orden no encontrada"
+          },
+          "500": {
+            "description": "Error al eliminar la orden"
+          }
+        }
+      }
+    },
+    "/retailsPurchase": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtiene la lista completa de clientes invitados registrados en el sistema.",
+        "operationId": "get-api-retailsPurchase",
+        "responses": {
+          "200": {
+            "description": "Lista de Clientes invitados obtenida correctamente"
+          },
+          "500": {
+            "description": "Error encontrando clientes invitados"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualiza los datos de un cliente invitado existente verificando duplicados de email y formato correcto.",
+        "operationId": "put-api-retailsPurchase",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/retailsPurchase_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cliente invitado actualizado exitosamente."
+          },
+          "400": {
+            "description": "Error de validación o cliente invitado no encontrado."
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Crea un nuevo cliente invitado ",
+        "operationId": "post-api-retailsPurchase",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/retailsPurchase_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cliente invitado creado exitosamente."
+          },
+          "400": {
+            "description": "Error de validación o email duplicado."
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Elimina un cliente invitado de la base de datos usando su ID.",
+        "operationId": "delete-api-retailsPurchase",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente invitado eliminado exitosamente"
+          },
+          "400": {
+            "description": "Cliente invitado no encontrado"
+          }
+        }
+      }
+    },
+    "/wholesalersPurchase": {
+      "get": {
+        "tags": [],
+        "summary": "GET",
+        "description": "Obtiene la lista completa de mayoristas invitados registrados en el sistema",
+        "operationId": "get-api-wholesalersPurchase",
+        "responses": {
+          "200": {
+            "description": "Lista de mayoristas invitados obtenida exitosamente."
+          },
+          "500": {
+            "description": "Error al obtener los registros"
+          }
+        }
+      },
+      "put": {
+        "tags": [],
+        "summary": "PUT",
+        "description": "Actualiza la información de un mayorista invitado existente",
+        "operationId": "put-api-wholesalersPurchase",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/wholesalersPurchase_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mayorista invitado actualizado exitosamente"
+          },
+          "400": {
+            "description": "Validación fallida o registro no encontrado."
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "summary": "POST",
+        "description": "Crea un nuevo registro de mayorista invitado con validaciones de datos ",
+        "operationId": "post-api-wholesalersPurchase",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/wholesalersPurchase_body_1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Error de validación o email duplicado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "summary": "DELETE",
+        "description": "Elimina un mayorista invitado de la base de datos por su ID.",
+        "operationId": "delete-api-wholesalersPurchase",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mayorista invitado eliminado exitosamente."
+          },
+          "400": {
+            "description": "Registro no encontrado."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Manufacturer": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "ACME Corporation"
+          },
+          "homePage": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.acme-corp.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "408-867-5309"
+          }
+        }
+      },
+      "Cart_body": {
+        "type": "object",
+        "properties": {
+          "idClient": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "wrjvivfp42m75"
+            }
+          },
+          "idProduct": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "8djzvi8q0f3p2"
+            }
+          },
+          "quantity": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "zr5u8rlz112zw"
+            }
+          },
+          "subtotal": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "zz81q0l9i63u0"
+            }
+          },
+          "talla": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "5nzzyxpgmi1kz"
+            }
+          },
+          "total": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "k81wvhp6wy6xe"
+            }
+          },
+          "status": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "tr7a4d7eyaybs"
+            }
+          }
+        }
+      },
+      "Cart_body_1": {
+        "type": "object",
+        "properties": {
+          "idClient": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "etchx51dkwmy4"
+            }
+          },
+          "idProduct": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "7ater7zvqfql3"
+            }
+          },
+          "quantity": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "y5t339c12j9my"
+            }
+          },
+          "subtotal": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "0mi81wkezrfn4"
+            }
+          },
+          "talla": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "nd22a7z0ptdih"
+            }
+          },
+          "total": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "pxf7odqk4t12l"
+            }
+          },
+          "status": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "sa2h0cs7nzo5o"
+            }
+          }
+        }
+      },
+      "Holiday_body": {
+        "type": "object",
+        "properties": {
+          "nameHoliday": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "4ztyacse7q8ir"
+            }
+          }
+        }
+      },
+      "Holiday_body_1": {
+        "type": "object",
+        "properties": {
+          "nameHoliday": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "iq4mqmgtmqc6p"
+            }
+          }
+        }
+      },
+      "Products_body": {
+        "type": "object",
+        "properties": {
+          "nameProduct": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "v3cs665hl7cl9"
+            }
+          },
+          "price": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "j15alvfnknvee"
+            }
+          },
+          "description": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "sc0c5n6xvlnp4"
+            }
+          },
+          "image": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "v8rb5bucb6qg1"
+            }
+          },
+          "designImages": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "49vg3w2vr1tdg"
+            }
+          },
+          "idHolidayProduct": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "jmcn5tndxx1on"
+            }
+          },
+          "idCategory": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "itz7lb792syr6"
+            }
+          }
+        }
+      },
+      "Products_body_1": {
+        "type": "object",
+        "properties": {
+          "nameProduct": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "v8x4gw0wrt28q"
+            }
+          },
+          " price": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "aot47uz5jrhtj"
+            }
+          },
+          "description": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "8tp3k32o6xtxu"
+            }
+          },
+          " image": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "r75i9mwjw49xm"
+            }
+          },
+          "designImages": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "2uilxu6ng6hr0"
+            }
+          },
+          "idHolidayProduct": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "yoro7utypl719"
+            }
+          },
+          "idCategory": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "13v5f2r5c243f"
+            }
+          }
+        }
+      },
+      "Reviews_body": {
+        "type": "object",
+        "properties": {
+          "qualification": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "wd1pyf5efskwy"
+            }
+          },
+          "comment": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "uw0i844mfymsk"
+            }
+          },
+          "publicationDate": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "cos1xdlew8uw8"
+            }
+          },
+          "designImages": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "1hiqwm0b5ruj1"
+            }
+          },
+          "idClient": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "jellc4m7j8av2"
+            }
+          },
+          "idProduct": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "y63g9qur331ti"
+            }
+          }
+        }
+      },
+      "Reviews_body_1": {
+        "type": "object",
+        "properties": {
+          "qualification": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "slfx0j8m4t1fh"
+            }
+          },
+          "comment": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "70f5eeejamu69"
+            }
+          },
+          "publicationDate": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "nq5zs6y2jh5mq"
+            }
+          },
+          "designImages": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "wk7nq85nkv8ha"
+            }
+          },
+          "idClient": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "zgpetgokxnum9"
+            }
+          },
+          "idProduct": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "kgfrenjl96qcj"
+            }
+          }
+        }
+      },
+      "admin_body": {
+        "type": "object",
+        "properties": {
+          "nameAdmin": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "i7osl5ya4yhep"
+            }
+          },
+          "emailAdmin": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "0xqmzia3an33v"
+            }
+          },
+          "phoneAdmin": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "p32xyromdsc8p"
+            }
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "jb756y87bvzvu"
+            }
+          },
+          "password": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "dclugq2gv7uy2"
+            }
+          }
+        }
+      },
+      "admin_body_1": {
+        "type": "object",
+        "properties": {
+          "nameAdmin": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "a5k37weabddmt"
+            }
+          },
+          "emailAdmin": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "p34dnmlli2pqm"
+            }
+          },
+          "phoneAdmin": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "2f01wo76w234h"
+            }
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "94enhqq6ykr2q"
+            }
+          },
+          "password": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "c1zvef66ced0s"
+            }
+          }
+        }
+      },
+      "categories_body": {
+        "type": "object",
+        "properties": {
+          "nameCategory ": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "9nisksg23ulcm"
+            }
+          }
+        }
+      },
+      "categories_body_1": {
+        "type": "object",
+        "properties": {
+          "nameCategory ": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "sop4cl33zvsc3"
+            }
+          }
+        }
+      },
+      "clients_body": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "j6tszyi1e37wz"
+            }
+          },
+          "email": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "r63sg4gbagt3f"
+            }
+          },
+          "phone": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "0mop65p6d8uyg"
+            }
+          },
+          "birthday": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "mkvsyovbaku8b"
+            }
+          },
+          "password": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "m4yd5t0t9ctq3"
+            }
+          },
+          "image": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "evw8m536igd9z"
+            }
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "tizmi1t3p0qgz"
+            }
+          }
+        }
+      },
+      "clients_body_1": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "xwth10ievxu57"
+            }
+          },
+          "email": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "ml9nh9qvtl0y7"
+            }
+          },
+          "phone": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "dy8ls20lp6ktn"
+            }
+          },
+          "birthday": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "propdt5w2yiwg"
+            }
+          },
+          "password": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "ylyc0d4mmzbgq"
+            }
+          },
+          "image": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "qi6jqqs6dq41f"
+            }
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "4ukrtenbp985u"
+            }
+          }
+        }
+      },
+      "employees_body": {
+        "type": "object",
+        "properties": {
+          "nameEmployees": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "nd03jlbtvnrbx"
+            }
+          },
+          "email": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "27atgo9zf860t"
+            }
+          },
+          "phoneEmployees": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "q6ctpf9a27m45"
+            }
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "yxtk89v5j5svl"
+            }
+          },
+          "addressEmployees": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "wcf06e6z5wrjm"
+            }
+          },
+          "password": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "dimaoxoau5n3e"
+            }
+          },
+          "hireDateEmployee": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "ogfz2xe19fqzv"
+            }
+          },
+          "duiEmployees": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "mrf4cvoztttst"
+            }
+          }
+        }
+      },
+      "employees_body_1": {
+        "type": "object",
+        "properties": {
+          "nameEmployees": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "lcbs492itjs8j"
+            }
+          },
+          "email": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "22759b2oey0w1"
+            }
+          },
+          "phoneEmployees": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "gy3hcl2z7fyox"
+            }
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "leodnu3kkxb62"
+            }
+          },
+          "addressEmployees": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "9wjony6rbfc4g"
+            }
+          },
+          "password": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "mldbsh0kwdf3s"
+            }
+          },
+          "hireDateEmployee": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "13bn5mcjar92o"
+            }
+          },
+          "duiEmployees": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "srbigqqu12alx"
+            }
+          }
+        }
+      },
+      "orders_body": {
+        "type": "object",
+        "properties": {
+          "idCart": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "nhnxtlap6wyx6"
+            }
+          },
+          "addressClient": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "knfuxwoz9aoxi"
+            }
+          },
+          " paymentMethod:": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "o9kc1a5l2r396"
+            }
+          }
+        }
+      },
+      "orders_body_1": {
+        "type": "object",
+        "properties": {
+          "idCart": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "zhlo31n5o6xuj"
+            }
+          },
+          "addressClient": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "00umsne49ocug"
+            }
+          },
+          " paymentMethod:": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "vcb1gz552o3ls"
+            }
+          }
+        }
+      },
+      "retailsPurchase_body": {
+        "type": "object",
+        "properties": {
+          "emailGuestClients": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "rfl1r03mxl7mt"
+            }
+          },
+          "nameGuestClients": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "e8hn9slxv2yfq"
+            }
+          },
+          "lastNameGuestClients": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "l6oni2bywjt2v"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "uqwfwe7fiv0zd"
+            }
+          }
+        }
+      },
+      "retailsPurchase_body_1": {
+        "type": "object",
+        "properties": {
+          "emailGuestClients": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "u87ebwlz3sg9e"
+            }
+          },
+          "nameGuestClients": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "ptig1txyfw85q"
+            }
+          },
+          "lastNameGuestClients": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "tnr0yyowb774b"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "qcqngx3fxsger"
+            }
+          }
+        }
+      },
+      "wholesalersPurchase_body": {
+        "type": "object",
+        "properties": {
+          "emailGuestWholesalers": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "br0w1sn0cxk5e"
+            }
+          },
+          "nameGuestWholesalers": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "bfd5v93lkokia"
+            }
+          },
+          "lastNameGuestWholesalers": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "ne4ipr8tlno88"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "rwsmew6gxnwk3"
+            }
+          }
+        }
+      },
+      "wholesalersPurchase_body_1": {
+        "type": "object",
+        "properties": {
+          "emailGuestWholesalers": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "rs5w4cp73hs2s"
+            }
+          },
+          "nameGuestWholesalers": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "m1ozoumph8bvi"
+            }
+          },
+          "lastNameGuestWholesalers": {
+            "type": "string",
+            "x-stoplight": {
+              "id": "uf42ni5gx3jbu"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "lv3o6ysdlv7s1"
+            }
+          }
+        }
+      }
+    }
+  }
+}

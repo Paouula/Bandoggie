@@ -1,5 +1,5 @@
 import React from 'react';
-import DogAboutUs from '../../img/AboutUs/DogAboutUs.png';
+import DogAboutUs from '../../../img/AboutUs/DogAboutUs.png';
 
 const Banner = () => {
   return (

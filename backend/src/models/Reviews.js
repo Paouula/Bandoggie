@@ -21,9 +21,9 @@ const ReviewsSchema = new Schema({
         validator: function (images) {
           // Si no se envían imágenes, no valida (lo permite)
           if (!images || images.length === 0) return true;
-          return images.length >= 3;
+          return images.length >= 1;
         },
-        message: "Se requieren mínimo 3 imágenes de diseño si se incluyen"
+        message: "Se requieren mínimo 1 imágenes de diseño si se incluyen"
       },
       {
         validator: function (images) {
@@ -44,6 +44,10 @@ const ReviewsSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Products",
     required: true
+  },
+  isVerifieldReview: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true,

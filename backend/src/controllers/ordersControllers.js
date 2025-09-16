@@ -1,4 +1,4 @@
-import ordersModel from "../models/Orders.js"; // CORRECCIÓN: Orders con mayúscula
+import ordersModel from "../models/orders.js";
 import cartModel from "../models/Cart.js";
 import mongoose from "mongoose";
 

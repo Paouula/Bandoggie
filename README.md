@@ -1,6 +1,6 @@
-# 🐾✨ BANDOGGIE - Huellitas Pet's Shop ✨🐾
+# BANDOGGIE - Huellitas Pet's Shop 
 
-¡Bienvenidos a **Bandoggie**, donde el amor por las mascotas se encuentra con el poder de la tecnología! 🐶🐾
+¡Bienvenidos a **Bandoggie**, donde el amor por las mascotas se encuentra con el poder de la tecnología! 
 
 **Bandoggie**, anteriormente conocida como *Huellitas Pet's Shop*, es una tienda en línea especializada en la **venta de accesorios personalizados y por encargo para mascotas**. Nació como una respuesta a la necesidad de modernizar y expandir el alcance de un emprendimiento local con gran potencial, dando el salto hacia el entorno digital con una propuesta fresca, amigable y pensada para las nuevas generaciones de consumidores.
 

@@ -725,7 +725,7 @@ const Reviews = () => {
                         style={styles.productInput}
                         onFocus={(e) => {
                           e.target.style.backgroundColor = 'white';
-                          e.target.style.boxShadow = '0 0 0 2px #3b82f6';
+                          e.target.style.boxShadow = '0 0 0 2px #F5A02D';
                         }}
                         onBlur={(e) => {
                           e.target.style.backgroundColor = '#e5e7eb';
@@ -748,7 +748,7 @@ const Reviews = () => {
                       rows="6"
                       onFocus={(e) => {
                         e.target.style.backgroundColor = 'white';
-                        e.target.style.boxShadow = '0 0 0 2px #3b82f6';
+                        e.target.style.boxShadow = '0 0 0 2px #F5A02D';
                       }}
                       onBlur={(e) => {
                         e.target.style.backgroundColor = '#e5e7eb';

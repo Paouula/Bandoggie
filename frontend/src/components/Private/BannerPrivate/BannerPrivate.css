@@ -58,12 +58,12 @@
 }
 
 /*imagen del banner*/
-.main-image {
+.main-image-banner {
     position: relative;
     z-index: 2;
 }
 
-.main-image img {
+.main-image-banner img {
     width: 300px;
     height: 300px;
     border-radius: 50%;
@@ -73,7 +73,7 @@
     transition: transform 0.3s ease;
 }
 
-.main-image img:hover {
+.main-image-banner img:hover {
     transform: scale(1.05);
 }
 

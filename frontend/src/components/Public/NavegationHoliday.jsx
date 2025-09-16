@@ -8,22 +8,22 @@ const NavigationHoliday = () => {
   // Definir las rutas y sus nombres para el breadcrumb y navegación
   const routeMap = {
     '/': 'Inicio',
-    '/Holiday': 'Navidad',
-    '/HalloweenHoliday': 'Halloween',
-    '/ValentineHoliday': 'San Valentín',
-    '/PatrioticHoliday': 'Días Patrios',
-    '/NewYearHoliday': 'Año Nuevo',
-    '/BirthdayHoliday': 'Cumpleaños'
+    '/holidays': 'Navidad',
+    '/halloween': 'Halloween',
+    '/valentine': 'San Valentín',
+    '/patriotic': 'Días Patrios',
+    '/newyear': 'Año Nuevo',
+    '/birthday': 'Cumpleaños'
   };
 
-  // Categorías principales de fiestas
+  // Categorías principales de fiestas con iconos
   const holidayCategories = [
-    { name: 'Navidad', route: '/Holiday' },
-    { name: 'Halloween', route: '/HalloweenHoliday' },
-    { name: 'San Valentín', route: '/ValentineHoliday' },
-    { name: 'Días Patrios', route: '/PatrioticHoliday' },
-    { name: 'Año Nuevo', route: '/NewYearHoliday' },
-    { name: 'Cumpleaños', route: '/BirthdayHoliday' }
+    { name: 'Navidad', route: '/holidays' },
+    { name: 'Halloween', route: '/halloween'},
+    { name: 'San Valentín', route: '/valentine' },
+    { name: 'Días Patrios', route: '/patriotic'},
+    { name: 'Año Nuevo', route: '/newyear'},
+    { name: 'Cumpleaños', route: '/birthday'}
   ];
 
   // Generar breadcrumbs basado en la ruta actual
@@ -31,7 +31,7 @@ const NavigationHoliday = () => {
     const currentPath = location.pathname;
     
     // Solo mostrar breadcrumbs si estamos en una página Holiday
-    const holidayRoutes = ['/Holiday', '/HalloweenHoliday', '/ValentineHoliday', '/PatrioticHoliday', '/NewYearHoliday', '/BirthdayHoliday'];
+    const holidayRoutes = ['/holidays', '/halloween', '/valentine', '/patriotic', '/newyear', '/birthday'];
     
     if (holidayRoutes.includes(currentPath)) {
       return ['Inicio', routeMap[currentPath]];
@@ -45,6 +45,7 @@ const NavigationHoliday = () => {
 
   // Función para manejar la navegación
   const handleNavigate = (route) => {
+    console.log('Navegando a:', route); // Para debugging
     if (route !== location.pathname) {
       navigate(route);
     }
@@ -68,42 +69,7 @@ const NavigationHoliday = () => {
         .header {
           background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
           padding: 16px;
-          border-bottom: 2px solid #e2e8f0;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .breadcrumbs {
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          justify-content: center;
-          font-size: 14px;
-          color: #6b7280;
-          margin-bottom: 16px;
-        }
-
-        .breadcrumb-item {
-          transition: color 0.2s ease;
-          user-select: none;
-        }
-
-        .breadcrumb-item.clickable {
-          cursor: pointer;
-        }
-
-        .breadcrumb-item.clickable:hover {
-          color: #f97316;
-        }
-
-        .breadcrumb-item.active {
-          color: #f97316;
-          font-weight: 500;
-          cursor: default;
-        }
-
-        .breadcrumb-separator {
-          margin: 0 8px;
-          color: #9ca3af;
+          
         }
 
         /* Holiday Menu Navigation */
@@ -241,6 +207,7 @@ const NavigationHoliday = () => {
                 <button
                   className={`menu-item ${isActive ? 'active' : ''}`}
                   onClick={() => handleNavigate(category.route)}
+                  type="button"
                 >
                   <span className="menu-icon">{category.icon}</span>
                   <span className="menu-text">{category.name}</span>
