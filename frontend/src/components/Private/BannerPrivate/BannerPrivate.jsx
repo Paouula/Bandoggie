@@ -26,7 +26,7 @@ const BannerPrivate = ({ title, subtitle, mainImage }) => {
               <img src={PawBlue} alt="Paw Icon" className="paw-icon" />
             </div>
           </div>
-          <div className="main-image">
+          <div className="main-image-banner">
             <img src={mainImage} alt="Header principal" />
           </div>
         </div>

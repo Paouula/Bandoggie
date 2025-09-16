@@ -1,9 +1,9 @@
 import React from 'react';
-import './Footer.css';
-import LogoFooter from '../../img/Footer/LogoFooter.png';
-import CollarFooter from '../../img/Footer/CollarFooter.png';
+import './FooterPublic.css';
+import LogoFooter from '../../../img/Footer/LogoFooter.png';
+import CollarFooter from '../../../img/Footer/CollarFooter.png';
 
-function Footer() {
+function FooterPublic() {
   return (
 <footer className="text-white text-center text-lg-start">
   <div className="container p-4">
@@ -42,10 +42,13 @@ function Footer() {
       <div className="col-lg-2 col-6 col-contact">
         <h5 className="title">Contacto</h5>
         <ul className="list-unstyled">
-          <li><a href="#!" className="text-white">CHAT</a></li>
-          <li><a className="text-white">bandoggie@gmail.com</a></li>
+          <li><a href="#!" className="text-white no-hover">CHAT</a></li>
+          <li><a className="text-white no-hover">Correo: huellitas.petshop2024@gmail.com</a></li>
+          <li><a className="text-white no-hover"> WhatsApp:</a></li>
+          <li><a className="text-white no-hover">+ 503 7209-7103</a></li>
         </ul>
       </div>
+
 
       {/* Imagen de collar */}
       <div className="col-lg-2 col-6 d-flex justify-content-center">
@@ -63,4 +66,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default FooterPublic;

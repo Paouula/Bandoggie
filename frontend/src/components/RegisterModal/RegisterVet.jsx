@@ -29,11 +29,13 @@ const RegisterVetModal = ({
   const [profileImage, setProfileImage] = useState(null); 
   const { handleRegister } = useFetchRegisterVet();
 
+  //Funcion para el cierre del modal
   const handleClose = () => {
     modalRef.current?.classList.add("fade-out");
     setTimeout(() => onClose?.(), 250);
   };
 
+  //Funcion para la navegacion entre modales
   const handleBack = () => {
     modalRef.current?.classList.add("fade-out");
     setTimeout(() => {
@@ -42,9 +44,11 @@ const RegisterVetModal = ({
     }, 250);
   };
 
+  //Funcion para el envio de los datos para el registro
   const onSubmit = async (data) => {
     if (isSubmitting) return;
 
+    //Verifica que haya una imagen de perfil
     if (!profileImage) {
       toast.error("Por favor, sube una imagen de perfil.");
       return;
@@ -53,6 +57,7 @@ const RegisterVetModal = ({
     setIsSubmitting(true);
     toast.success("Enviando información...");
 
+    //Envio de los datos
     try {
       const response = await handleRegister(
         data.nameVet,
@@ -115,7 +120,7 @@ const RegisterVetModal = ({
         </a>
 
         <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
-          {/* ✅ Campo de imagen */}
+          {/*Campo de imagen */}
           <div className="register-profile-image-container">
             <ImageLoader id="image" onImageChange={setProfileImage} />
           </div>
@@ -142,6 +147,7 @@ const RegisterVetModal = ({
             )}
           </div>
 
+          {/*Campo para el Correo */}
           <div className="register-input-group">
             <label htmlFor="email">Correo Electrónico</label>
             <InputComponent
@@ -162,6 +168,7 @@ const RegisterVetModal = ({
             )}
           </div>
 
+          {/*Campo para la contraseña */}
           <div className="register-input-group">
             <label htmlFor="password">Contraseña</label>
             <PasswordInput
@@ -184,6 +191,7 @@ const RegisterVetModal = ({
             )}
           </div>
 
+          {/*Campo para la ubicacion */}
           <div className="register-input-group">
             <label htmlFor="locationVet">Ubicación</label>
             <InputComponent
@@ -200,6 +208,7 @@ const RegisterVetModal = ({
             )}
           </div>
 
+          {/*Campo para el ingreso del nit */}
           <div className="register-input-group">
             <label htmlFor="nitVet">NIT</label>
             <InputComponent
@@ -220,6 +229,7 @@ const RegisterVetModal = ({
             )}
           </div>
 
+          {/* Recuperacion de contraseña */}
           <div className="register-forgot">
             <a className="register-small-links" href="/request-code">
               ¿Olvidaste tu contraseña?
