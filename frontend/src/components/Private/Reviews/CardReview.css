@@ -3,13 +3,13 @@
   background-image: url('../../../img/Products/CardBackground.png');
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Reducido para mejor rendimiento */
   transition: transform 0.2s ease, box-shadow 0.2s ease; /* ✅ Más específico y rápido */
   position: relative;
   overflow: hidden;
   cursor: pointer;
   min-height: 280px;
-  will-change: transform; /* ✅ Optimización GPU sin cambiar diseño */
+  will-change: transform, box-shadow; /* ✅ Optimización GPU */
 }
 
 .review-card.expanded {
@@ -18,12 +18,13 @@
   min-height: auto;
 }
 
-/* ✅ MANTIENE mismo hover visual - solo optimiza */
+/* ✅ Hover optimizado */
 .review-card:hover {
   transform: translateY(-5px) translateZ(0); /* ✅ Agrego translateZ para GPU */
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Reducido para mejor rendimiento */
 }
 
+/* ✅ Barra superior optimizada */
 .review-card::before {
   content: '';
   position: absolute;
@@ -32,10 +33,12 @@
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, #ff6b9d, #ffa726);
+  will-change: background; /* ✅ Optimización GPU */
 }
 
 .review-header {
   display: flex;
+  align-items: center;
   gap: 15px;
   margin-bottom: 15px;
 }
@@ -43,9 +46,9 @@
 .review-image {
   width: 80px;
   height: 80px;
-  border-radius: 12px;
+  border-radius: 10px;
   object-fit: cover;
-  border: 3px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para mejor rendimiento */
 }
 
 .review-info {
@@ -63,6 +66,7 @@
   font-size: 16px;
   color: #ff6b9d;
   font-weight: bold;
+  margin: 0;
 }
 
 .review-actions {

@@ -21,8 +21,8 @@
   max-height: 80vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  animation: modalSlideIn 0.2s ease-out; /* ✅ Más rápido pero mismo efecto visual */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Reducido para mejor rendimiento */
+  animation: modalSlideIn 0.15s ease-out; /* Duración más corta */
   will-change: transform, opacity; /* ✅ Optimización GPU */
 }
 
@@ -30,7 +30,7 @@
 @keyframes modalSlideIn {
   from {
     opacity: 0;
-    transform: translateY(-20px) scale(0.95);
+    transform: translateY(-10px) scale(0.98); /* Menor desplazamiento */
   }
   to {
     opacity: 1;
@@ -51,8 +51,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease; /* ✅ Más rápido */
-  z-index: 1001;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .modal-close:hover {

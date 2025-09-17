@@ -1,4 +1,4 @@
-/* ✅ Reset optimizado - SIN CAMBIOS VISUALES */
+/* ✅ Reset optimizado */
 * {
   margin: 0;
   padding: 0;
@@ -9,24 +9,18 @@ body, html {
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-x: hidden; /* ✅ Mantengo el diseño original */
+  overflow-x: hidden;
 }
 
-/* ✅ MANTIENE diseño original pero optimiza posicionamiento interno */
+/* ✅ Optimización del contenedor principal */
 .reviews-listing {
   min-height: 100vh;
   font-family: 'Arial', sans-serif;
   padding: 0;
-  margin: 0;
-  width: 100vw;
-  max-width: 100vw;
+  margin: 0 auto; /* Centrado automático */
+  max-width: 100%; /* Elimina márgenes negativos */
   box-sizing: border-box;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  transform: translateZ(0); /* ✅ Solo optimización GPU, mismo diseño */
+  transform: translateZ(0); /* Optimización GPU */
 }
 
 .banner-private-wrapper {
@@ -40,9 +34,8 @@ body, html {
 .reviews-content {
   background-color: #FEE3EE;
   width: 100%;
-  max-width: 100%;
   padding: 40px 20px;
-  margin: 0;
+  margin: 0 auto;
   box-sizing: border-box;
   overflow-x: hidden;
 }
@@ -61,7 +54,7 @@ body, html {
   gap: 15px;
 }
 
-/* ✅ Solo optimizo transiciones - mismo diseño visual */
+/* ✅ Optimización de transiciones */
 .filter-btn {
   display: flex;
   align-items: center;
@@ -72,8 +65,8 @@ body, html {
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  transition: border-color 0.2s ease, background-color 0.2s ease; /* ✅ Más específico */
-  will-change: border-color, background-color; /* ✅ Optimización GPU */
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  will-change: border-color, background-color; /* Optimización GPU */
 }
 
 .filter-btn:hover {
@@ -88,7 +81,7 @@ body, html {
   background: white;
   font-size: 14px;
   cursor: pointer;
-  transition: border-color 0.2s ease; /* ✅ Más específico */
+  transition: border-color 0.2s ease;
 }
 
 .sort-select:focus {
@@ -109,7 +102,7 @@ body, html {
   border-radius: 25px;
   font-size: 14px;
   background: white;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease; /* ✅ Más específico */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-input:focus {
@@ -118,23 +111,7 @@ body, html {
   box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
 }
 
-.expand-indicator {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  background: #ff6b9d;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-/* ✅ MANTIENE todos los breakpoints originales */
+/* ✅ Optimización de breakpoints */
 @media (max-width: 1200px) {
   .reviews-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -153,18 +130,5 @@ body, html {
 
   .reviews-grid {
     grid-template-columns: 1fr;
-  }
-
-  .review-content {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .review-details {
-    min-width: auto;
-  }
-
-  .review-card.expanded {
-    grid-column: 1;
   }
 }
