@@ -25,7 +25,7 @@ const Reviewslisting = () => {
   const [error, setError] = useState(null);
 
   //Estos hook encapsula la logica de las peticiones a la API
-  const { handleGetReviews, handleDeleteReviews } = useFetchReviews();
+  const { handleGetReviews, handleDeleteReviews, handleVerifyReviews } = useFetchReviews();
 
   const loadReviews = async () => {
     try {
@@ -139,24 +139,26 @@ const Reviewslisting = () => {
           </div>
 
           <ListReviews
-            reviews={reviews}
-            selectedReviews={selectedReviews}
-            onApprove={handleApprove}
-            onReject={handleReject}
-            onOpenModal={openModal}
-          />
+        reviews={reviews}
+        selectedReviews={selectedReviews}
+        onApprove={handleApprove}
+        onReject={handleReject}
+        onOpenModal={openModal}
+        onVerify={handleVerifyReviews} 
+      />
 
           <Paginacion />
         </div>
 
         <ReviewModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          review={selectedReviewModal} 
-          onApprove={() => handleApprove(selectedReviewModal?._id)}
-          onReject={() => handleReject(selectedReviewModal?._id)}
-          isApproved={selectedReviews.has(selectedReviewModal?._id)}
-        />
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        review={selectedReviewModal}
+        onApprove={() => handleApprove(selectedReviewModal?._id)}
+        onReject={() => handleReject(selectedReviewModal?._id)}
+        onVerify={() => handleVerifyReviews(selectedReviewModal?._id)} 
+        isApproved={selectedReviews.has(selectedReviewModal?._id)}
+      />
       </div>
     </>
   );

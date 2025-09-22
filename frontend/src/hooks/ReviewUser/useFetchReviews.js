@@ -100,7 +100,31 @@ const useFetchReviews = () => {
     }
   };
 
-  return { handlePostReviews, handleGetReviews, handlePutReviews, handleDeleteReviews };
+  const handleGetVerifyReviews = async () => {
+    try {
+      const data = await API_FETCH_JSON(`${endpoint}/verified`);
+      return data;
+    } catch (error) {
+      toast.error('Error al obtener las reviews');
+      throw error;
+    }
+  }
+
+  const handleVerifyReviews = async (id) => {
+    try {
+      const data = await API_FETCH_JSON(`${endpoint}/${id}/verify`, {
+        method: 'PUT',
+      })
+      toast.success('Review verificada correctamente');
+      return data;
+
+    } catch (error) {
+      toast.error('Error al verificar la review');
+      throw error;
+    }
+  }
+
+  return { handlePostReviews, handleGetReviews, handlePutReviews, handleDeleteReviews, handleGetVerifyReviews, handleVerifyReviews };
 };
 
 export default useFetchReviews;
