@@ -1,6 +1,7 @@
 /* ✅ MANTIENE diseño exacto - solo optimiza rendimiento */
 .review-card {
-  background-image: url('../../../img/Products/CardBackground.png');
+ /* background-image: url('../../../img/Products/CardBackground.png');*/
+  background-color: #f0f0f0;
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Reducido para mejor rendimiento */

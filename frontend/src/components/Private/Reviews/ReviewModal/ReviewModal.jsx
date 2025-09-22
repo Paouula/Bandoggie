@@ -1,34 +1,78 @@
-import React from 'react';
-import './ReviewModal.css'
-import { X } from 'lucide-react';
+import React, {useRef, useState, useEffect} from "react";
+import "./ReviewModal.css";
+import { X } from "lucide-react";
+import { set } from "react-hook-form";
+import classNames from "classnames";
 
-const ReviewModal = ({ isOpen, onClose, review, onApprove, onReject, isApproved }) => {
-  if (!isOpen || !review) return null;
+const ReviewModal = ({
+  isOpen,
+  onClose,
+  review,
+  className = "", 
+  onApprove,
+  onReject,
+  isApproved,
+}) => {
+  const modalRef = useRef(null);
+  const overlayRef = useRef(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+      setIsClosing(false);
+    }
+  }, [isOpen]);
+
+  if (!isVisible || !review) return null;
+
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <span key={i} className={`star ${i < rating ? 'filled' : ''}`}>
+      <span key={i} className={`star ${i < rating ? "filled" : ""}`}>
         ★
       </span>
     ));
   };
 
+  const handleClose = () => {
+
+    setIsClosing(true);
+
+    if (overlayRef.current) {
+      overlayRef.current.classList.add("fade-out");
+    }
+
+    if (modalRef.current) {
+      modalRef.current.classList.add("fade-out");
+    }
+
+    setTimeout(() => {
+      setIsVisible(false);
+      onClose();
+    }, 300);
+  }
+
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      handleClose();
     }
   };
 
+
+
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className="modal-content">
-        <button className="modal-close" onClick={onClose}>
+    <div ref={overlayRef} className={`modal-overlay ${isClosing ? "fade-out" : "" }`} onClick={handleOverlayClick}>
+      <div className={`modal-content ${className} ${isClosing ? "fade-out" : ""}`}>
+        <button className="modal-close" onClick={handleClose}>
           <X size={20} />
         </button>
-        
+
         <div className="modal-header">
-          <img 
-            src={review.designImages?.[0]} 
+          <img
+            src={review.designImages?.[0]}
             alt={review.idProduct?.nameProduct}
             className="modal-image"
           />
@@ -48,33 +92,36 @@ const ReviewModal = ({ isOpen, onClose, review, onApprove, onReject, isApproved 
           </div>
           <div className="detail-row">
             <span className="detail-label">Producto:</span>
-            <span className="detail-value">{review.idProduct?.nameProduct}</span>
+            <span className="detail-value">
+              {review.idProduct?.nameProduct}
+            </span>
           </div>
-          <div className="detail-row">
-            <span className="detail-label">Fecha de publicación:</span>
-            <span className="detail-value">{review.createdAt}</span>
-          </div>
+          <span className="detail-label">Fecha de publicación:</span>
+          <span className="detail-value">
+            {new Date(review.createdAt).toLocaleDateString("es-ES", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
         </div>
 
         <div className="modal-comment-section">
           <h3 className="comment-title">Comentario de la reseña:</h3>
-          <div className="modal-comment">
-            {review.comment}
-          </div>
+          <div className="modal-comment">{review.comment}</div>
         </div>
 
         <div className="modal-actions">
-          <button 
-            className="modal-btn reject-btn"
-            onClick={onReject}
-          >
+          <button className="modal-btn reject-btn" onClick={onReject}>
             Rechazar Reseña
           </button>
-          <button 
-            className={`modal-btn approve-btn ${isApproved ? 'approved' : ''}`}
+          <button
+            className={`modal-btn approve-btn ${isApproved ? "approved" : ""}`}
             onClick={onApprove}
           >
-            {isApproved ? 'Reseña Aprobada' : 'Aprobar Reseña'}
+            {isApproved ? "Reseña Aprobada" : "Aprobar Reseña"}
           </button>
         </div>
       </div>

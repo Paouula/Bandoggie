@@ -4,7 +4,7 @@ import './CardProduct.css';
 
 const CardProduct = ({ product, onEdit, onDelete }) => {
   return (
-    <div className="product-card">
+    <div className="product-card-private">
       {/* Parte superior: imagen */}
       <div className="product-top-section">
         <img 

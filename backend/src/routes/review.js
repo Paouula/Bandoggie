@@ -18,7 +18,7 @@ router.get('/stats/product/:productId', reviewsController.getProductReviewStats)
 // Obtiene y verifica todas las reseñas 
 router.get('/verified', reviewsController.getVerifieldReviews);
 
-router.get('/:id/verify', reviewsController.verifyReview); 
+router.put('/:id/verify', reviewsController.verifyReview); 
 
 // Obtiene todas las reseñas sin filtros
 router.get('/', reviewsController.getReviews);

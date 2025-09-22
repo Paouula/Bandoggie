@@ -1,16 +1,64 @@
-/* ✅ MANTIENE diseño exacto - solo optimiza performance */
+/* ✅ Animaciones para Overlay */
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes overlayFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* ✅ Animaciones para Modal Content */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+}
+
+/* ✅ Overlay con animaciones */
+.modal-overlay.fade-in {
+  animation: overlayFadeIn 0.2s ease-out forwards;
+}
+
+.modal-overlay.fade-out {
+  animation: overlayFadeOut 0.2s ease-in forwards;
+}
+
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+}
+
+/* ✅ Modal con animaciones */
+.modal-content.fade-in {
+  animation: modalFadeIn 0.2s ease-out forwards;
+}
+
+.modal-content.fade-out {
+  animation: modalFadeOut 0.2s ease-in forwards;
 }
 
 .modal-content {
@@ -21,23 +69,11 @@
   max-height: 80vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Reducido para mejor rendimiento */
-  animation: modalSlideIn 0.15s ease-out; /* Duración más corta */
-  will-change: transform, opacity; /* ✅ Optimización GPU */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  will-change: transform, opacity;
 }
 
-/* ✅ MANTIENE animación exacta - solo más eficiente */
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.98); /* Menor desplazamiento */
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
+/* Botón de cierre */
 .modal-close {
   position: absolute;
   top: 15px;
@@ -59,6 +95,7 @@
   transform: scale(1.1);
 }
 
+/* Encabezado */
 .modal-header {
   display: flex;
   gap: 20px;
@@ -100,13 +137,13 @@
 .star {
   color: #ddd;
   font-size: 18px;
-  /* ✅ SIN transition innecesaria */
 }
 
 .star.filled {
   color: #ffa726;
 }
 
+/* Detalles */
 .modal-details {
   padding: 20px 30px;
   background: #f8f9fa;
@@ -135,6 +172,7 @@
   max-width: 60%;
 }
 
+/* Comentarios */
 .modal-comment-section {
   padding: 30px;
 }
@@ -156,6 +194,7 @@
   border-left: 4px solid #ff6b9d;
 }
 
+/* Acciones */
 .modal-actions {
   display: flex;
   gap: 15px;
@@ -171,8 +210,8 @@
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease; /* ✅ Más específico y rápido */
-  will-change: transform; /* ✅ Optimización GPU */
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  will-change: transform;
 }
 
 .reject-btn {
@@ -180,7 +219,6 @@
   color: white;
 }
 
-/* ✅ MANTIENE efecto hover exacto - solo más eficiente */
 .reject-btn:hover {
   background: #ff5588;
   transform: translateY(-2px);
@@ -209,7 +247,7 @@
   box-shadow: 0 0 0 3px rgba(78, 144, 164, 0.3);
 }
 
-/* ✅ MANTIENE EXACTOS todos los breakpoints responsivos */
+/* Responsive */
 @media (max-width: 768px) {
   .modal-content {
     max-width: 95%;
