@@ -432,7 +432,7 @@ const ShoppingCartApp = ({ onClose }) => {
       console.log('📤 Payload del email:', emailPayload);
 
       // FIXED: URL corregida para coincidir con tu backend
-      const response = await fetch('https://bandoggie.onrender.com/api/email/send-simple-banking-email', {
+      const response = await fetch('https://bandoggie-production.up.railway.app/api/email/send-simple-banking-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

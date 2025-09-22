@@ -10,7 +10,7 @@ const useDataCollars = () => {
       
       const categoryId = "68a1476c6b65e3a7962662a5";  
 
-      const response = await fetch(`https://bandoggie.onrender.com/api/products/category/${categoryId}`);
+      const response = await fetch(`https://bandoggie-production.up.railway.app/api/products/category/${categoryId}`);
       if (!response.ok) throw new Error(`Error ${response.status}`);
       
       const data = await response.json();

@@ -96,7 +96,7 @@ const useFetchProducts = () => {
     const getProducts = async () => {
         try {
             setLoading(true);
-            const response = await fetch('https://bandoggie.onrender.com/api/products');
+            const response = await fetch('https://bandoggie-production.up.railway.app/api/products');
 
             if (!response.ok) {
                 toast.error("Error al traer los productos");
