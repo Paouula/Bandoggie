@@ -19,7 +19,6 @@ const ReviewModal = ({
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
@@ -29,7 +28,6 @@ const ReviewModal = ({
 
   if (!isVisible || !review) return null;
 
-
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <span key={i} className={`star ${i < rating ? "filled" : ""}`}>
@@ -38,10 +36,8 @@ const ReviewModal = ({
     ));
   };
 
+  // Función para cerrar el modal SIN ejecutar acciones
   const handleClose = async () => {
-
-    await onVerify() || onReject();
-
     setIsClosing(true);
 
     if (overlayRef.current) {
@@ -58,17 +54,37 @@ const ReviewModal = ({
     }, 300);
   }
 
+  // Función específica para aprobar
+  const handleApprove = async (e) => {
+    e.stopPropagation(); // Prevenir propagación
+    
+    if (onVerify) {
+      await onVerify(); // Ejecutar la función de verificar/aprobar
+    }
+    
+    handleClose(); // Cerrar modal después de la acción
+  };
+
+  // Función específica para rechazar
+  const handleReject = async (e) => {
+    e.stopPropagation(); // Prevenir propagación
+    
+    if (onReject) {
+      await onReject(); // Ejecutar la función de rechazar
+    }
+    
+    handleClose(); // Cerrar modal después de la acción
+  };
+
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       handleClose();
     }
   };
 
-
-
   return (
     <div ref={overlayRef} className={`modal-overlay ${isClosing ? "fade-out" : "" }`} onClick={handleOverlayClick}>
-      <div className={`modal-content ${className} ${isClosing ? "fade-out" : ""}`}>
+      <div ref={modalRef} className={`modal-content ${className} ${isClosing ? "fade-out" : ""}`}>
         <button className="modal-close" onClick={handleClose}>
           <X size={20} />
         </button>
@@ -117,12 +133,15 @@ const ReviewModal = ({
         </div>
 
         <div className="modal-actions">
-          <button className="modal-btn reject-btn" onClick={onReject && handleClose}>
+          <button 
+            className="modal-btn reject-btn" 
+            onClick={handleReject}
+          >
             Rechazar Reseña
           </button>
           <button
             className={`modal-btn approve-btn ${isApproved ? "approved" : ""}`}
-            onClick={onVerify && handleClose}
+            onClick={handleApprove}
           >
             {isApproved ? "Reseña Aprobada" : "Aprobar Reseña"}
           </button>

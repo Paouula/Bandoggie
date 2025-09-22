@@ -19,13 +19,13 @@
   min-height: auto;
 }
 
-/* ✅ Hover optimizado */
+/*  Hover optimizado */
 .review-card:hover {
-  transform: translateY(-5px) translateZ(0); /* ✅ Agrego translateZ para GPU */
+  transform: translateY(-5px) translateZ(0); /*  Agrego translateZ para GPU */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Reducido para mejor rendimiento */
 }
 
-/* ✅ Barra superior optimizada */
+/*  Barra superior optimizada */
 .review-card::before {
   content: '';
   position: absolute;
@@ -33,8 +33,16 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #ff6b9d, #ffa726);
-  will-change: background; /* ✅ Optimización GPU */
+  background: linear-gradient(90deg, #0099ff, #00ccff);
+  will-change: background; /*  Optimización GPU */
+}
+
+.review-card.aceptado::before {
+  background: linear-gradient(90deg, #00ffb3, #07c010); /* Verde para aceptado */
+}
+
+.review-card.rechazado::before {
+  background: linear-gradient(90deg, #ff0077, #e57373); /* Rojo para rechazado */
 }
 
 .review-header {

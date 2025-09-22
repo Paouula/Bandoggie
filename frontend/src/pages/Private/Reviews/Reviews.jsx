@@ -18,6 +18,7 @@ import { set } from "react-hook-form";
 const Reviewslisting = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedReviews, setSelectedReviews] = useState(new Set());
+  const [rejectedReviews, setRejectedReviews] = useState(new Set()); // Nuevo estado para reviews rechazadas
   const [selectedReviewModal, setSelectedReviewModal] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reviews, setReviews] = useState([]);
@@ -55,17 +56,37 @@ const Reviewslisting = () => {
     init();
   }, []);
 
-  /*const filteredReviews = reviews.filter((review) =>
-    review.idProduct?.nameProduct
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );*/
-
   const toggleReviewSelection = (reviewId) => {
     const newSelected = new Set(selectedReviews);
-    newSelected.has(reviewId)
-      ? newSelected.delete(reviewId)
-      : newSelected.add(reviewId);
+    const newRejected = new Set(rejectedReviews);
+    
+    // Si está seleccionado, lo deselecciona
+    if (newSelected.has(reviewId)) {
+      newSelected.delete(reviewId);
+    } else {
+      // Si no está seleccionado, lo selecciona y lo quita de rechazados
+      newSelected.add(reviewId);
+      newRejected.delete(reviewId);
+    }
+    
+    setSelectedReviews(newSelected);
+    setRejectedReviews(newRejected);
+  };
+
+  const toggleReviewRejection = (reviewId) => {
+    const newRejected = new Set(rejectedReviews);
+    const newSelected = new Set(selectedReviews);
+    
+    // Si está rechazado, lo quita del rechazo
+    if (newRejected.has(reviewId)) {
+      newRejected.delete(reviewId);
+    } else {
+      // Si no está rechazado, lo rechaza y lo quita de seleccionados
+      newRejected.add(reviewId);
+      newSelected.delete(reviewId);
+    }
+    
+    setRejectedReviews(newRejected);
     setSelectedReviews(newSelected);
   };
 
@@ -86,7 +107,28 @@ const Reviewslisting = () => {
 
   const handleReject = (id) => {
     console.log("Rechazar reseña:", id);
+    toggleReviewRejection(id);
     closeModal();
+  };
+
+  // Función para manejar verificación (aprobar)
+  const handleVerifyWrapper = async (id) => {
+    try {
+      await handleVerifyReviews(id);
+      toggleReviewSelection(id);
+    } catch (error) {
+      toast.error("Error al aprobar reseña");
+    }
+  };
+
+  // Función para manejar rechazo
+  const handleRejectWrapper = async (id) => {
+    try {
+      await handleRejectReviews(id);
+      toggleReviewRejection(id);
+    } catch (error) {
+      toast.error("Error al rechazar reseña");
+    }
   };
 
   if (error) {
@@ -146,24 +188,25 @@ const Reviewslisting = () => {
           <ListReviews
             reviews={reviews}
             selectedReviews={selectedReviews}
+            rejectedReviews={rejectedReviews} // Nueva prop
             onApprove={handleApprove}
-            onReject={handleRejectReviews}
+            onReject={handleRejectWrapper} // Usar wrapper con lógica de API
             onOpenModal={openModal}
-            onVerify={handleVerifyReviews}
+            onVerify={handleVerifyWrapper} // Usar wrapper con lógica de API
           />
 
           <Paginacion />
         </div>
 
         <ReviewModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        review={selectedReviewModal}
-        onApprove={() => handleApprove(selectedReviewModal?._id)}
-        onReject={() => handleRejectReviews(selectedReviewModal?._id)} 
-        onVerify={() => handleVerifyReviews(selectedReviewModal?._id)} 
-        isApproved={selectedReviews.has(selectedReviewModal?._id)}
-      />
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          review={selectedReviewModal}
+          onApprove={() => handleApprove(selectedReviewModal?._id)}
+          onReject={() => handleRejectWrapper(selectedReviewModal?._id)} 
+          onVerify={() => handleVerifyWrapper(selectedReviewModal?._id)} 
+          isApproved={selectedReviews.has(selectedReviewModal?._id)}
+        />
       </div>
     </>
   );

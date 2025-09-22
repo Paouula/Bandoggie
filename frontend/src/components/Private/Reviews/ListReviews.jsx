@@ -4,6 +4,7 @@ import CardReview from "./CardReview";
 const ListReviews = ({
   reviews,
   selectedReviews,
+  rejectedReviews, // Nueva prop para manejar reviews rechazadas
   onApprove,
   onReject,
   onVerify,
@@ -12,7 +13,7 @@ const ListReviews = ({
   if (!reviews || reviews.length === 0) {
     return (
       <div className="no-reviews">
-        <div className="no-reviews-icon">📝</div>
+        <div className="no-reviews-icon">📋</div>
         <div>No hay reseñas pendientes</div>
       </div>
     );
@@ -25,6 +26,7 @@ const ListReviews = ({
           key={review._id}
           review={review}
           isApproved={selectedReviews.has(review._id)}
+          isRejected={rejectedReviews?.has(review._id)} // Nueva prop
           onApprove={onApprove}
           onReject={onReject}
           onVerify={onVerify}

@@ -6,6 +6,7 @@ import AproveButton from "../../../components/Private/AproveButton.jsx";
 const CardReview = ({
   review,
   isApproved,
+  isRejected, // Nueva prop para manejar el estado rechazado
   onApprove,
   onReject,
   onOpenModal,
@@ -18,9 +19,23 @@ const CardReview = ({
       </span>
     ));
 
+  // Determinar las clases CSS basadas en el estado
+  const getCardClasses = () => {
+    let classes = "review-card";
+    
+    if (isApproved) {
+      classes += " aceptado";
+    } else if (isRejected) {
+      classes += " rechazado";
+    }
+    // Si no está ni aprobado ni rechazado, mantiene el color por defecto (azul)
+    
+    return classes;
+  };
+
   return (
     <div
-      className="review-card"
+      className={getCardClasses()}
       onClick={() => {
         onOpenModal(review);
       }}
