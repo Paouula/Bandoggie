@@ -38,7 +38,9 @@ const ReviewModal = ({
     ));
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
+
+    await onVerify() || onReject();
 
     setIsClosing(true);
 
@@ -115,12 +117,12 @@ const ReviewModal = ({
         </div>
 
         <div className="modal-actions">
-          <button className="modal-btn reject-btn" onClick={onReject}>
+          <button className="modal-btn reject-btn" onClick={onReject && handleClose}>
             Rechazar Reseña
           </button>
           <button
             className={`modal-btn approve-btn ${isApproved ? "approved" : ""}`}
-            onClick={onVerify}
+            onClick={onVerify && handleClose}
           >
             {isApproved ? "Reseña Aprobada" : "Aprobar Reseña"}
           </button>
