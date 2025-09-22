@@ -6,6 +6,7 @@ const ListReviews = ({
   selectedReviews,
   onApprove,
   onReject,
+  onVerify,
   onOpenModal,
 }) => {
   if (!reviews || reviews.length === 0) {
@@ -26,6 +27,7 @@ const ListReviews = ({
           isApproved={selectedReviews.has(review._id)}
           onApprove={onApprove}
           onReject={onReject}
+          onVerify={onVerify}
           onOpenModal={onOpenModal}
         />
       ))}

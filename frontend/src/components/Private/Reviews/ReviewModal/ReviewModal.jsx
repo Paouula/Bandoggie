@@ -12,6 +12,7 @@ const ReviewModal = ({
   onApprove,
   onReject,
   isApproved,
+  onVerify,
 }) => {
   const modalRef = useRef(null);
   const overlayRef = useRef(null);
@@ -119,7 +120,7 @@ const ReviewModal = ({
           </button>
           <button
             className={`modal-btn approve-btn ${isApproved ? "approved" : ""}`}
-            onClick={onApprove}
+            onClick={onVerify}
           >
             {isApproved ? "Reseña Aprobada" : "Aprobar Reseña"}
           </button>

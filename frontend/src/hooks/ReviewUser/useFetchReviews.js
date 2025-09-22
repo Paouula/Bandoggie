@@ -100,6 +100,7 @@ const useFetchReviews = () => {
     }
   };
 
+  // Obtener reviews verificadas
   const handleGetVerifyReviews = async () => {
     try {
       const data = await API_FETCH_JSON(`${endpoint}/verified`);
@@ -110,6 +111,7 @@ const useFetchReviews = () => {
     }
   }
 
+  // Verificar una review
   const handleVerifyReviews = async (id) => {
     try {
       const data = await API_FETCH_JSON(`${endpoint}/${id}/verify`, {
@@ -124,12 +126,13 @@ const useFetchReviews = () => {
     }
   }
 
+  // Rechazar una review
   const handleRejectReviews = async (id) => {
     try {
-      const data = await API_FETCH_JSON(`${endpoint}/${id}/verify`, {
+      const data = await API_FETCH_JSON(`${endpoint}/${id}/reject`, {
         method: 'PUT',
       })
-      toast.success('Review verificada correctamente');
+      toast.success('Review rechazada correctamente');
       return data;
 
     } catch (error) {

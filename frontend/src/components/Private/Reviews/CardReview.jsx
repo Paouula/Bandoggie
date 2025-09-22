@@ -9,6 +9,7 @@ const CardReview = ({
   onApprove,
   onReject,
   onOpenModal,
+  onVerify,
 }) => {
   const renderStars = (rating) =>
     Array.from({ length: 5 }, (_, i) => (
@@ -37,7 +38,7 @@ const CardReview = ({
         <div className="review-actions" onClick={(e) => e.stopPropagation()}>
           <DeleteButton size={18} onClick={() => onReject(review._id)} />
           <AproveButton
-            onClick={() => onApprove(review._id)}
+            onClick={() => onVerify(review._id)}
             selected={isApproved}
           />
         </div>
