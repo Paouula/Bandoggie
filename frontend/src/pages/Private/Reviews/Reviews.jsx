@@ -25,7 +25,7 @@ const Reviewslisting = () => {
   const [error, setError] = useState(null);
 
   //Estos hook encapsula la logica de las peticiones a la API
-  const { handleGetReviews, handleDeleteReviews, handleVerifyReviews } = useFetchReviews();
+  const { handleGetReviews, handleDeleteReviews, handleVerifyReviews, handleRejectReviews } = useFetchReviews();
 
   const loadReviews = async () => {
     try {

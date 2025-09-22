@@ -95,7 +95,7 @@ reviewsController.rejectReview = async (req, res) => {
         }
     
         res.status(200).json(updatedReview);
-        console.log("Reseña actualizada:");
+        console.log("Reseña rechazada");
       } catch (error) {
         console.error("Error al actualizar la reseña:", error);
         res.status(500).json({
@@ -122,7 +122,7 @@ reviewsController.verifyReview = async (req, res) => {
     }
 
     res.status(200).json(updatedReview);
-    console.log("Reseña actualizada:");
+    console.log("Reseña aceptada");
   } catch (error) {
     console.error("Error al actualizar la reseña:", error);
     res.status(500).json({
