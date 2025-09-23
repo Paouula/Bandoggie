@@ -52,3 +52,4 @@ const ProductsSchema = new Schema({
 })
 
 export default model("Products", ProductsSchema)
+

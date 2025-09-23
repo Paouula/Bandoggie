@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Package, MessageCircle, Star, Users, BarChart3, Settings, Shield, Stethoscope } from 'lucide-react';
-import RoleSelector from '../../../components/Profile/RoleSelector';
 import ProfileCard from '../../../components/Profile/ProfileCard';
-import WelcomeSection from '../../../components/Profile/WelcomeSection';
-import useFetchProfile from '../../../hooks/Profile/useFetchProfileCard';
+// CORRECCIÓN: Importación del hook correcto
+import useFetchUser from '../../../hooks/Profile/useFetchProfileCard';
 
 const UserProfile = () => {
+  // Desestructuración correcta del hook
   const {
     userInfo,
     isLoading,
     isAuthenticated,
     handleInputChange,
     updateUserData,
-    refreshUserData
-  } = useFetchProfile();
+    fetchUserData, // Cambié refreshUserData por fetchUserData que es lo que retorna el hook
+    // Agregando propiedades de debug si están disponibles
+    debugInfo,
+    hasToken,
+    apiBaseUrl
+  } = useFetchUser();
 
   const [isEditing, setIsEditing] = useState(false);
 
   // El rol se obtiene automáticamente del usuario autenticado
-  const currentRole = userInfo.userType || 'client';
+  const currentRole = userInfo?.userType || 'client';
 
   const menuConfig = {
     client: [
@@ -51,19 +55,11 @@ const UserProfile = () => {
 
   // Refrescar datos cuando se detecte un cambio en la autenticación
   useEffect(() => {
-    // Escuchar eventos de login/logout globales si los tienes implementados
     const handleAuthChange = () => {
-      refreshUserData();
+      fetchUserData(); // Corregido el nombre de la función
     };
-
-    // Si tienes un event listener global para cambios de autenticación
-    // window.addEventListener('authStateChange', handleAuthChange);
-
-    // Cleanup
-    // return () => {
-    //   window.removeEventListener('authStateChange', handleAuthChange);
-    // };
-  }, [refreshUserData]);
+    // Cleanup logic aquí si es necesario
+  }, [fetchUserData]);
 
   const getWelcomeMessage = () => {
     if (!isAuthenticated) {
@@ -71,24 +67,157 @@ const UserProfile = () => {
     }
 
     const roleMessages = {
-      client: `¡Hola${userInfo.name ? `, ${userInfo.name}` : ''}! Bienvenido a tu perfil de cliente`,
-      employee: `¡Hola${userInfo.name ? `, ${userInfo.name}` : ''}! Panel de empleado`,
-      vet: `¡Hola${userInfo.name ? `, Dr. ${userInfo.name}` : ''}! Panel veterinario`
+      // CORRECCIÓN: Template literals arreglados
+      client: `¡Hola${userInfo?.name ? `, ${userInfo.name}` : ''}! Bienvenido a tu perfil de cliente`,
+      employee: `¡Hola${userInfo?.name ? `, ${userInfo.name}` : ''}! Panel de empleado`,
+      vet: `¡Hola${userInfo?.name ? `, Dr. ${userInfo.name}` : ''}! Panel veterinario`
     };
 
-    return roleMessages[currentRole] || `¡Hola${userInfo.name ? `, ${userInfo.name}` : ''}!`;
+    return roleMessages[currentRole] || `¡Hola${userInfo?.name ? `, ${userInfo.name}` : ''}!`;
   };
+
+  // Debug component (temporal para diagnosticar)
+  const DebugPanel = () => {
+    if (!debugInfo) return null;
+    
+    return (
+      <div style={{ 
+        position: 'fixed', 
+        bottom: 10, 
+        right: 10, 
+        background: 'rgba(0,0,0,0.9)', 
+        color: 'white', 
+        padding: '15px',
+        borderRadius: '8px',
+        maxWidth: '400px',
+        maxHeight: '300px',
+        overflow: 'auto',
+        fontSize: '12px',
+        zIndex: 9999,
+        fontFamily: 'monospace'
+      }}>
+        <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#4CAF50' }}>
+          🐛 Debug Panel
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <strong>API:</strong> {apiBaseUrl}
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <strong>Token:</strong> {hasToken ? '✅ Presente' : '❌ Ausente'}
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <strong>Autenticado:</strong> {isAuthenticated ? '✅ Sí' : '❌ No'}
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <strong>Cargando:</strong> {isLoading ? '⏳ Sí' : '✅ No'}
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <strong>UserType:</strong> {userInfo?.userType || 'Sin tipo'}
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <strong>UserName:</strong> {userInfo?.name || 'Sin nombre'}
+        </div>
+        <hr style={{ margin: '8px 0', borderColor: '#333' }} />
+        <div style={{ maxHeight: '150px', overflow: 'auto' }}>
+          {debugInfo.slice(-5).map((debug, i) => (
+            <div key={i} style={{ marginBottom: '4px', fontSize: '11px' }}>
+              <span style={{ color: '#FFB74D' }}>[{debug.timestamp}]</span>{' '}
+              <span style={{ color: '#E1F5FE' }}>{debug.message}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Mostrar loading mientras se cargan los datos
+  if (isLoading) {
+    return (
+      <div className="user-profile">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando perfil...</p>
+        </div>
+        <DebugPanel />
+        <style jsx>{`
+          .user-profile {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ECF2F9 0%, #E3F2FD 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .loading-container {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          }
+          .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e3f2fd;
+            border-top: 4px solid #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  // Mostrar mensaje si no está autenticado
+  if (!isAuthenticated) {
+    return (
+      <div className="user-profile">
+        <div className="auth-placeholder">
+          <h2>Por favor, inicia sesión para ver tu perfil</h2>
+          <p>Necesitas estar autenticado para acceder a esta página.</p>
+          <button 
+            onClick={fetchUserData}
+            style={{
+              marginTop: '1rem',
+              padding: '0.5rem 1rem',
+              background: '#2196F3',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Reintentar
+          </button>
+        </div>
+        <DebugPanel />
+        <style jsx>{`
+          .user-profile {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ECF2F9 0%, #E3F2FD 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+          .auth-placeholder {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="user-profile">
-      {/* Solo mostrar el selector de rol si el usuario está autenticado y es necesario */}
-      {isAuthenticated && false && ( // Desactivado porque el rol se obtiene del login
-        <RoleSelector 
-          currentRole={currentRole} 
-          onRoleChange={() => {}} // Disabled porque el rol viene del backend
-        />
-      )}
-      
       <div className="profile-container">
         <ProfileCard 
           userInfo={userInfo}
@@ -100,14 +229,17 @@ const UserProfile = () => {
           isAuthenticated={isAuthenticated}
         />
         
-        {isAuthenticated && (
-          <WelcomeSection 
-            userName={userInfo.name}
-            welcomeMessage={getWelcomeMessage()}
-            menuItems={menuConfig[currentRole] || menuConfig.client}
-          />
-        )}
-      </div>
+        {/*<WelcomeSection 
+          userName={userInfo?.name}
+          welcomeMessage={getWelcomeMessage()}
+          menuItems={menuConfig[currentRole] || menuConfig.client}
+        />*/}
+  </div>
+
+      
+      
+      {/* Panel de debug temporal */}
+      <DebugPanel />
       
       <style jsx>{`
         .user-profile { 
@@ -165,13 +297,6 @@ const UserProfile = () => {
             max-width: 600px;
             margin: 0 auto;
           }
-        }
-
-        /* Estado no autenticado */
-        .profile-container:has(.auth-placeholder) {
-          justify-content: center;
-          align-items: center;
-          min-height: 60vh;
         }
       `}</style>
     </div>
