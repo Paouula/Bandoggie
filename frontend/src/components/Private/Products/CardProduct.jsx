@@ -3,6 +3,25 @@ import { Pencil, Trash2 } from 'lucide-react';
 import './CardProduct.css';
 
 const CardProduct = ({ product, onEdit, onDelete }) => {
+  
+  const handleEdit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Edit clicked for product:', product);
+    if (onEdit) {
+      onEdit(product);
+    }
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Delete clicked for product:', product);
+    if (onDelete) {
+      onDelete(product);
+    }
+  };
+
   return (
     <div className="product-card">
       {/* Parte superior: imagen */}
@@ -17,18 +36,20 @@ const CardProduct = ({ product, onEdit, onDelete }) => {
       {/* Botones debajo de la imagen */}
       <div className="product-actions">
         <button 
-          className="btn-action edit"
-          onClick={() => onEdit && onEdit(product)}
+          className="btn-action-product edit-product"
+          onClick={handleEdit}
           title="Editar producto"
+          type="button"
         >
-          <Pencil size={18} color="currentColor" />
+          <Pencil size={18} strokeWidth={2.5} />
         </button>
         <button 
-          className="btn-action delete"
-          onClick={() => onDelete && onDelete(product)}
+          className="btn-action-product delete-product"
+          onClick={handleDelete}
           title="Eliminar producto"
+          type="button"
         >
-          <Trash2 size={18} color="currentColor" />
+          <Trash2 size={18} strokeWidth={2.5} />
         </button>
       </div>
 

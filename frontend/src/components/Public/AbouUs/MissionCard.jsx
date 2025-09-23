@@ -10,7 +10,13 @@ const MissionCard = () => {
             <div className="mission-text">
               <h2>Misión</h2>
               <p>
-                Diseñar y ofrecer productos de alta calidad como bandanas, ropa, collares y accesorios para perros, combinando estilo, funcionalidad y confort para que disfruten junto a sus mascotas y fortalecer el vínculo con sus familias.
+              En Huellitas Pet Shop, nuestra misión es ofrecer productos y servicios de primera calidad que mejoren la 
+              vida de las mascotas, respaldados por una asesoría cercana y experta. Nos esforzamos por ser un puente entre los cuidadores 
+              —dueños, clínicas veterinarias y groomers— Inspirados por valores como el compromiso y ternura: tratamos a cada mascota 
+              como si fuera nuestra. Con calidad y confiabilidad, brindamos productos que tus aliados de cuidado pueden recomendar 
+              con confianza. Colaboración profesional: trabajamos de la mano con veterinarios y groomers para asegurar que cada 
+              peludo reciba lo mejor.Nuestro enfoque busca fortalecer la comunidad pet‑friendly, promoviendo el cuidado informado, 
+              responsable y lleno de cariño.
               </p>
             </div>
             <div className="mission-image">
@@ -65,6 +71,7 @@ const MissionCard = () => {
           font-size: 1rem;
           line-height: 1.6;
           color: #374151;
+          font-weight: 500;
         }
 
         .mission-image {

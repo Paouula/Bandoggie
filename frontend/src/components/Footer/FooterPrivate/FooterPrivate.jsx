@@ -23,7 +23,7 @@ function FooterPublic() {
 
 
       <div className="col-lg-2 col-6 col-siguenos">
-        <h5 className="title">Redes Sociales</h5>
+        <h5 className="title-footer">Redes Sociales</h5>
         <ul className="list-unstyled">
           <li><a href="#!" className="text-white">Instagram</a></li>
           <li><a href="#!" className="text-white">Facebook</a></li>
@@ -31,7 +31,7 @@ function FooterPublic() {
       </div>
 
       <div className="col-lg-2 col-6 col-contact">
-        <h5 className="title">Contacto</h5>
+        <h5 className="title-footer">Contacto</h5>
         <ul className="list-unstyled">
           <li><a href="#!" className="text-white no-hover">CHAT</a></li>
           <li><a className="text-white no-hover">Correo: huellitas.petshop2024@gmail.com</a></li>

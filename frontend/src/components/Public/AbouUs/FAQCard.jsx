@@ -18,13 +18,11 @@ const FAQCard = ({ faq, index }) => {
   return (
     <>
       <div className="faq-card">
-        <div className="faq-card-bubble"></div>
-        <div className="faq-icon">
+        <div className="faq-card-bubble">
           {getIcon(index)}
         </div>
         <h3 className="faq-question">{faq.question}</h3>
         <p className="faq-answer">{faq.answer}</p>
-        <button className="faq-button">Leer más →</button>
       </div>
 
       <style jsx>{`
@@ -37,7 +35,7 @@ const FAQCard = ({ faq, index }) => {
           overflow: hidden;
         }
 
-        .faq-icon {
+        .faq-card-bubble {
           width: 4rem;
           height: 4rem;
           background-color: #fdba74;
@@ -48,7 +46,7 @@ const FAQCard = ({ faq, index }) => {
           margin-bottom: 1rem;
         }
 
-        .faq-icon :global(.icon) {
+        .faq-card-bubble :global(.icon) {
           width: 2rem;
           height: 2rem;
           color: white;
@@ -65,20 +63,6 @@ const FAQCard = ({ faq, index }) => {
           color: #4b5563;
           font-size: 0.875rem;
           line-height: 1.5;
-        }
-
-        .faq-button {
-          margin-top: 1rem;
-          background: none;
-          border: none;
-          color: #f97316;
-          font-weight: 500;
-          cursor: pointer;
-          transition: color 0.3s ease;
-        }
-
-        .faq-button:hover {
-          color: #ea580c;
         }
       `}</style>
     </>
