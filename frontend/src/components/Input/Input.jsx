@@ -1,14 +1,18 @@
 import React from 'react';
 import "./Input.css"; 
+import classNames from "classnames";
 
-const InputComponent = ({ type, id, placeholder, register = {}, className = "", ...props }) => { //En esta parte el componente recibe varios props para su uso
+
+const InputComponent = ({ type, id, placeholder, error, register = {}, className = "", ...props }) => { //En esta parte el componente recibe varios props para su uso
     return (
         <div className="input-group">
             <input
                 type={type}
                 id={id}
                 placeholder={placeholder}
-                className={`custom-input ${className}`}
+                className={classNames(className ,"custom-input", {
+                    "input-error": error,
+                  })}
                 {...register}
                 {...props}
             />
@@ -19,3 +23,4 @@ const InputComponent = ({ type, id, placeholder, register = {}, className = "", 
 };
 
 export default InputComponent;
+    

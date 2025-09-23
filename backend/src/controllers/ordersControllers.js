@@ -7,10 +7,11 @@ const ordersController = {};
 // SELECT - Obtener todas las órdenes
 ordersController.getOrders = async (req, res) => {
   try {
+    // Sin populate por ahora, solo obtenemos los datos básicos
     const orders = await ordersModel.find()
-      .populate('idCart', 'products totalAmount')
-      .sort({ createdAt: -1 }); // Ordenar por más recientes
+      .sort({ dateOrders: -1 }); // Ordenar por fecha de orden
     
+    console.log("Orders fetched:", orders); // Para debug
     res.status(200).json(orders);
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -31,8 +32,7 @@ ordersController.getOrderById = async (req, res) => {
       return res.status(400).json({ message: "ID de orden inválido" });
     }
 
-    const order = await ordersModel.findById(id)
-      .populate('idCart', 'products totalAmount');
+    const order = await ordersModel.findById(id);
     
     if (!order) {
       return res.status(404).json({ message: "Orden no encontrada" });
@@ -79,24 +79,37 @@ ordersController.createOrder = async (req, res) => {
       return res.status(400).json({ message: "ID del carrito inválido" });
     }
 
-    // Verificar que el carrito existe (opcional, dependiendo de tu lógica)
+    // Verificar que el carrito existe
     const cartExists = await cartModel.findById(idCart);
     if (!cartExists) {
-    return res.status(404).json({ message: "Carrito no encontrado" });
-     }
+      return res.status(404).json({ message: "Carrito no encontrado" });
+    }
 
-    // Crear nueva orden
+    // Usar el modelo tal como está definido
     const newOrder = new ordersModel({ 
       idCart, 
       addressClient: addressClient.trim(), 
-      PaymentMethod: PaymentMethod.toLowerCase()
+      paymentMethod: PaymentMethod.toLowerCase() // Usar paymentMethod del modelo
     });
     
     await newOrder.save();
 
-    // Popultar la orden recién creada antes de responder
+    // Popular la orden recién creada antes de responder
     const populatedOrder = await ordersModel.findById(newOrder._id)
-      .populate('idCart', 'products totalAmount');
+      .populate({
+        path: 'idCart',
+        select: 'products total status idClient',
+        populate: [
+          {
+            path: 'products.idProduct',
+            select: 'name price image images color description'
+          },
+          {
+            path: 'idClient',
+            select: 'firstName lastName names surnames phone phoneNumber email'
+          }
+        ]
+      });
 
     res.status(201).json({ 
       message: "Orden creada exitosamente", 
@@ -148,11 +161,11 @@ ordersController.updateOrder = async (req, res) => {
       return res.status(400).json({ message: "La dirección del cliente no puede estar vacía" });
     }
 
-    // Preparar datos para actualización
+    // Preparar datos para actualización usando el nombre del campo del modelo
     const updateData = {};
     if (idCart) updateData.idCart = idCart;
     if (addressClient) updateData.addressClient = addressClient.trim();
-    if (PaymentMethod) updateData.PaymentMethod = PaymentMethod.toLowerCase();
+    if (PaymentMethod) updateData.paymentMethod = PaymentMethod.toLowerCase(); // Usar paymentMethod del modelo
 
     // Verificar que hay datos para actualizar
     if (Object.keys(updateData).length === 0) {
@@ -164,7 +177,20 @@ ordersController.updateOrder = async (req, res) => {
       id,
       updateData,
       { new: true, runValidators: true }
-    ).populate('idCart', 'products totalAmount');
+    ).populate({
+      path: 'idCart',
+      select: 'products total status idClient',
+      populate: [
+        {
+          path: 'products.idProduct',
+          select: 'name price image images color description'
+        },
+        {
+          path: 'idClient',
+          select: 'firstName lastName names surnames phone phoneNumber email'
+        }
+      ]
+    });
 
     res.status(200).json({ 
       message: "Orden actualizada exitosamente", 
@@ -227,9 +253,22 @@ ordersController.getOrdersByPaymentMethod = async (req, res) => {
     }
 
     const orders = await ordersModel.find({ 
-      PaymentMethod: paymentMethod.toLowerCase() 
+      paymentMethod: paymentMethod.toLowerCase() // Usar paymentMethod del modelo
     })
-    .populate('idCart', 'products totalAmount')
+    .populate({
+      path: 'idCart',
+      select: 'products total status idClient',
+      populate: [
+        {
+          path: 'products.idProduct',
+          select: 'name price image images color description'
+        },
+        {
+          path: 'idClient',
+          select: 'firstName lastName names surnames phone phoneNumber email'
+        }
+      ]
+    })
     .sort({ createdAt: -1 });
 
     // Si no hay órdenes, devolver array vacío con 200
@@ -270,13 +309,8 @@ ordersController.getOrdersByDateRange = async (req, res) => {
       });
     }
 
-    // Validar que las fechas no sean futuras (opcional)
-    const now = new Date();
-    if (start > now || end > now) {
-      return res.status(400).json({ 
-        message: "No se pueden consultar fechas futuras" 
-      });
-    }
+    // Ajustar las fechas para incluir todo el día
+    end.setHours(23, 59, 59, 999);
 
     const orders = await ordersModel.find({
       createdAt: {
@@ -284,7 +318,20 @@ ordersController.getOrdersByDateRange = async (req, res) => {
         $lte: end
       }
     })
-    .populate('idCart', 'products totalAmount')
+    .populate({
+      path: 'idCart',
+      select: 'products totalAmount status idClient',
+      populate: [
+        {
+          path: 'products.idProduct',
+          select: 'name price image images color description'
+        },
+        {
+          path: 'idClient',
+          select: 'firstName lastName names surnames phone phoneNumber email'
+        }
+      ]
+    })
     .sort({ createdAt: -1 });
     
     res.status(200).json(orders);
@@ -305,33 +352,27 @@ ordersController.getOrdersStats = async (req, res) => {
         $group: {
           _id: null,
           totalOrders: { $sum: 1 },
-          ordersByPaymentMethod: {
-            $push: {
-              paymentMethod: "$PaymentMethod",
-              count: 1
-            }
+          paymentMethodStats: {
+            $push: "$paymentMethod" // Usar paymentMethod del modelo
           }
         }
       },
       {
         $project: {
           totalOrders: 1,
-          paymentMethodStats: {
-            $arrayToObject: {
-              $map: {
-                input: ["transferencia", "efectivo"],
-                as: "method",
-                in: {
-                  k: "$method",
-                  v: {
-                    $size: {
-                      $filter: {
-                        input: "$ordersByPaymentMethod",
-                        cond: { $eq: ["$this.paymentMethod", "$method"] }
-                      }
-                    }
-                  }
-                }
+          transferencia: {
+            $size: {
+              $filter: {
+                input: "$paymentMethodStats",
+                cond: { $eq: ["$this", "transferencia"] }
+              }
+            }
+          },
+          efectivo: {
+            $size: {
+              $filter: {
+                input: "$paymentMethodStats",
+                cond: { $eq: ["$this", "efectivo"] }
               }
             }
           }
@@ -347,7 +388,14 @@ ordersController.getOrdersStats = async (req, res) => {
       });
     }
 
-    res.status(200).json(stats[0]);
+    const result = stats[0];
+    res.status(200).json({
+      totalOrders: result.totalOrders,
+      paymentMethodStats: {
+        transferencia: result.transferencia,
+        efectivo: result.efectivo
+      }
+    });
   } catch (error) {
     console.error("Error fetching orders stats:", error);
     res.status(500).json({ 

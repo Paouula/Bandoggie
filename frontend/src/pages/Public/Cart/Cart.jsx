@@ -39,7 +39,7 @@ const ShoppingCartApp = ({ onClose }) => {
   // FUNCIÓN MEJORADA PARA CARGAR EL CARRITO DE LOCALSTORAGE
   const loadCartFromStorage = useCallback(() => {
     try {
-      console.log('🔄 Cargando carrito desde localStorage...');
+      console.log('📄 Cargando carrito desde localStorage...');
       
       const savedCart = localStorage.getItem('bandoggie_cart');
       console.log('📦 Carrito raw desde localStorage:', savedCart);
@@ -60,14 +60,14 @@ const ShoppingCartApp = ({ onClose }) => {
       }
 
       if (parsedCart.length === 0) {
-        console.log('📭 El carrito está vacío');
+        console.log('🔭 El carrito está vacío');
         setCartItems([]);
         return;
       }
 
       // Normalizar cada item del carrito para asegurar consistencia
       const normalizedCart = parsedCart.map((item, index) => {
-        console.log(`📝 Normalizando item ${index}:`, item);
+        console.log(`🔍 Normalizando item ${index}:`, item);
         
         const normalizedItem = {
           _id: item._id || item.id || `temp_${Date.now()}_${index}`,
@@ -199,35 +199,6 @@ const ShoppingCartApp = ({ onClose }) => {
       console.error('❌ Error saving cart to localStorage:', error);
     }
   }, [cartItems, loading]);
-
-  // Función para recargar manualmente el carrito
-  const reloadCart = () => {
-    console.log('🔄 Recargando carrito manualmente...');
-    loadCartFromStorage();
-    toast.success('Carrito recargado');
-  };
-
-  // Función para debuggar el carrito
-  const debugCart = () => {
-    console.log('🐛 DEBUG CART INFO:');
-    console.log('- cartItems:', cartItems);
-    console.log('- cartItems.length:', cartItems.length);
-    console.log('- localStorage content:', localStorage.getItem('bandoggie_cart'));
-    console.log('- loading:', loading);
-    console.log('- currentStep:', currentStep);
-    
-    const savedCart = localStorage.getItem('bandoggie_cart');
-    if (savedCart) {
-      try {
-        const parsed = JSON.parse(savedCart);
-        toast.success(`Debug: ${parsed.length} items en localStorage`);
-      } catch (e) {
-        toast.error('Debug: Error parseando localStorage');
-      }
-    } else {
-      toast.info('Debug: No hay datos en localStorage');
-    }
-  };
 
   // Funciones de validación
   const validateEmail = (email) => {
@@ -364,7 +335,7 @@ const ShoppingCartApp = ({ onClose }) => {
         );
         return newItems;
       });
-      toast.success('Producto removido del carrito');
+      toast.success('Producto eliminado del carrito');
     } catch (error) {
       console.error('Error removing from cart:', error);
       toast.error('Error al remover del carrito');
@@ -442,75 +413,85 @@ const ShoppingCartApp = ({ onClose }) => {
     addToCart(sampleProduct, 1);
   };
 
-  // [Resto del código permanece igual - sendBankingDetailsEmail, processCheckout, etc.]
+  // FUNCIÓN CORREGIDA PARA ENVIAR EMAIL BANCARIO
   const sendBankingDetailsEmail = async (orderData) => {
     try {
-      const emailData = {
-        to: orderData.customerInfo.email,
-        subject: 'Datos para transferencia bancaria - BanDoggie',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #D2691E;">🐾 BanDoggie</h1>
-              <p style="color: #666;">Cuidamos a tu mejor amigo</p>
-            </div>
-            
-            <h2 style="color: #333;">¡Gracias por tu compra!</h2>
-            <p>Hola <strong>${orderData.customerInfo.nombre} ${orderData.customerInfo.apellido}</strong>,</p>
-            <p>Tu pedido ha sido registrado exitosamente. A continuación te enviamos los datos para realizar la transferencia bancaria:</p>
-            
-            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h3 style="color: #D2691E; margin-top: 0;">📱 Transferencia Bancaria</h3>
-              <p style="margin: 10px 0;"><strong>Banco:</strong> Banco Agrícola</p>
-              <p style="margin: 10px 0;"><strong>Tipo de cuenta:</strong> Cuenta de Ahorro</p>
-              <p style="margin: 10px 0;"><strong>Número de cuenta:</strong> 3680297372</p>
-              <p style="margin: 10px 0;"><strong>Titular:</strong> XIOMARA CASTILLO</p>
-              <p style="margin: 10px 0; font-size: 18px;"><strong>Monto a transferir:</strong> <span style="color: #D2691E;">$${orderData.total.toFixed(2)}</span></p>
-            </div>
-            
-            <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
-              <h4 style="color: #1976d2; margin-top: 0;">📋 Resumen de tu pedido:</h4>
-              <p><strong>Número de orden:</strong> GUEST-${orderData.guestId}-${Date.now()}</p>
-              ${orderData.items.map(item => `
-                <p style="margin: 5px 0;">• ${item.name} - Cantidad: ${item.quantity} - $${item.subtotal.toFixed(2)}</p>
-              `).join('')}
-              <p style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
-                <strong>Subtotal:</strong> $${(orderData.total - orderData.shippingCost).toFixed(2)}<br>
-                <strong>Envío:</strong> $${orderData.shippingCost.toFixed(2)}<br>
-                <strong>Total:</strong> $${orderData.total.toFixed(2)}
-              </p>
-            </div>
-            
-            <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
-              <h4 style="color: #856404; margin-top: 0;">⚠️ Instrucciones importantes:</h4>
-              <ol style="color: #856404;">
-                <li>Envía el monto exacto de <strong>$${orderData.total.toFixed(2)}</strong> a la cuenta indicada</li>
-                <li>Una vez realizada la transferencia, nos comunicaremos contigo para coordinar la entrega</li>
-                <li>Guarda el comprobante de transferencia para cualquier consulta</li>
-                <li>Si tienes alguna duda, no dudes en contactarnos</li>
-              </ol>
-            </div>
-            
-            <div style="text-align: center; margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
-              <p style="color: #666; margin: 0;">¡Gracias por confiar en BanDoggie!</p>
-              <p style="color: #666; margin: 5px 0;">Cuidamos a tu mejor amigo con amor 🐾</p>
-            </div>
-          </div>
-        `,
-        orderInfo: {
-          orderNumber: `GUEST-${orderData.guestId}-${Date.now()}`,
-          customerName: `${orderData.customerInfo.nombre} ${orderData.customerInfo.apellido}`,
-          total: orderData.total.toFixed(2),
-          items: orderData.items,
-          shippingCost: orderData.shippingCost.toFixed(2)
-        }
+      // Mostrar toast de loading
+      const loadingToast = toast.loading('Enviando datos bancarios...');
+
+      console.log('📧 Enviando email bancario para:', orderData.customerInfo.email);
+
+      // Preparar datos para el email
+      const emailPayload = {
+        customerName: `${orderData.customerInfo.nombre} ${orderData.customerInfo.apellido}`,
+        email: orderData.customerInfo.email,
+        totalAmount: orderData.total,
+        orderNumber: orderData.orderNumber
       };
 
-      console.log('📧 Email enviado con datos bancarios:', emailData);
-      return { success: true, message: 'Email enviado correctamente' };
+      console.log('📤 Payload del email:', emailPayload);
+
+      // FIXED: URL corregida para coincidir con tu backend
+      const response = await fetch('http://localhost:4000/api/email/send-simple-banking-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailPayload)
+      });
+
+      console.log('📡 Respuesta del servidor:', response.status, response.statusText);
+
+      // Ocultar loading toast
+      toast.dismiss(loadingToast);
+
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          errorData = { error: `Error HTTP ${response.status}` };
+        }
+        
+        console.error('❌ Error del servidor:', errorData);
+        throw new Error(errorData.error || `Error del servidor: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('✅ Email enviado exitosamente:', result);
+
+      toast.success('Email con datos bancarios enviado correctamente');
+      
+      return { 
+        success: true, 
+        message: 'Email enviado correctamente',
+        data: result
+      };
+
     } catch (error) {
-      console.error('Error enviando email con datos bancarios:', error);
-      return { success: false, error: error.message };
+      console.error('❌ Error completo:', error);
+      
+      // Manejo específico de errores
+      let errorMessage = 'Error al enviar el email con datos bancarios';
+      
+      if (error.message.includes('fetch')) {
+        errorMessage = 'Error de conexión con el servidor';
+      } else if (error.message.includes('401')) {
+        errorMessage = 'Error de autenticación';
+      } else if (error.message.includes('404')) {
+        errorMessage = 'Servicio de email no encontrado';
+      } else if (error.message.includes('500')) {
+        errorMessage = 'Error interno del servidor';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage);
+      
+      return { 
+        success: false, 
+        error: errorMessage 
+      };
     }
   };
 
@@ -537,16 +518,13 @@ const ShoppingCartApp = ({ onClose }) => {
         status: 'pending'
       };
 
-      // Simular procesamiento de orden
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       // Si es transferencia, enviar email con datos bancarios
       if (paymentMethod === 'transferencia') {
-        const emailResult = await sendBankingDetailsEmail(orderData);
-        if (emailResult && emailResult.success) {
-          toast.success('Email con datos bancarios enviado correctamente');
-        } else {
-          toast.error('No se pudo enviar el email, pero tu pedido fue registrado');
+        try {
+          await sendBankingDetailsEmail(orderData);
+        } catch (emailError) {
+          console.error('Error enviando email:', emailError);
+          toast.warning('Pedido creado, pero hubo un problema enviando el email. Contacta soporte.');
         }
       }
 
@@ -906,7 +884,6 @@ const ShoppingCartApp = ({ onClose }) => {
               <span className="cart-step-number-text">1</span>
             </div>
             <h2 className="cart-step-title">Tu carrito</h2>
-            
           </div>
 
           {cartItems.length === 0 ? (

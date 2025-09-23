@@ -1,38 +1,9 @@
-/* Modal Overlay */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 20px;
-}
+/* Importar estilos base del modal */
+@import '../../Modal/Modal.css';
 
-/* Modal Content */
-.modal-content {
-  background: white;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
-  position: relative;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  display: flex;
-  flex-direction: column;
-}
+/* Estilos específicos para RegisterEmployee que extienden los genéricos */
 
-/* Modal Header */
-.modal-header {
-  padding: 24px 24px 0;
-  text-align: center;
-  flex-shrink: 0;
-}
-*/
+/* Avatar específico para RegisterEmployee */
 .avatar-container {
   position: relative;
   display: inline-block;
@@ -43,7 +14,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background:  #6e6861 ;
+  background: #6e6861;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,20 +41,66 @@
   background: #c37e1d;
 }
 
-.modal-title {
+/* Header específico del RegisterEmployee */
+.modal-header.register-employee {
+  padding: 24px 24px 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.modal-title.register-employee {
   font-size: 24px;
   font-weight: 600;
   color: #1f2937;
   margin: 0 0 8px 0;
 }
 
-.modal-subtitle {
+.modal-subtitle.register-employee {
   color: #6b7280;
   margin: 0 0 16px 0;
   font-size: 14px;
 }
 
-/* Modal Body - Con Scroll */
+/* Usar las clases genéricas como base y extender si es necesario */
+.modal-overlay {
+  /* Heredar de .modal-overlay-generic */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: overlayFadeIn 0.3s ease-in-out;
+}
+
+.modal-overlay.fade-out {
+  animation: overlayFadeOut 0.3s ease-in-out forwards;
+}
+
+.modal-content {
+  /* Heredar de .modal-container-generic */
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  animation: modalFadeIn 0.3s ease-in-out;
+}
+
+.modal-content.fade-out {
+  animation: modalFadeOut 0.3s ease-in-out forwards;
+}
+
+/* Mantener estilos específicos del modal body para RegisterEmployee */
 .modal-body {
   flex: 1;
   overflow-y: auto;
@@ -112,7 +129,7 @@
   background: #94a3b8;
 }
 
-/* Modal Close Button */
+/* Close button específico */
 .modal-close {
   position: absolute;
   top: 16px;
@@ -140,7 +157,7 @@
   cursor: not-allowed;
 }
 
-/* Error Message */
+/* Error Messages */
 .error-message {
   background: #fef2f2;
   border: 1px solid #fecaca;
@@ -154,7 +171,7 @@
   gap: 8px;
 }
 
-/* Form Sections */
+/* Form Sections específicas */
 .form-section {
   margin-bottom: 32px;
 }
@@ -209,7 +226,7 @@
 .form-input:focus {
   outline: none;
   border-color: #F5A02D;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(245, 160, 45, 0.1);
 }
 
 .form-input:disabled {
@@ -284,7 +301,7 @@
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: #998e80;
+  background: #d89127;
   transform: translateY(-1px);
 }
 

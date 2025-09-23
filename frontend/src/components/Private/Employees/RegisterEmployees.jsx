@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import "./RegisterEmployee.css";
 import DatePickerInput from "../../InputDataPicker/InputDataPicker.jsx";
+import Button from '../../Button/Button.jsx'
+import Input from '../../Input/Input.jsx'
+
 import {
   Camera,
   X,
@@ -14,18 +17,23 @@ import {
   CreditCard,
 } from "lucide-react";
 
-export default function RegisterEmployee({
-  onClose,
-  employeeToEdit = null,
-  onSave,
-}) {
+const RegisterEmployees = ({ onClose, onSave, isSubmitting, employeeToEdit = null }) => {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true); // Activa la animación de cierre
+    setTimeout(() => {
+      onClose(); // Llama a la función de cierre después de la animación
+    }, 300); // Duración de la animación (0.3s)
+  };
+
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     control,
-    formState: { errors, isSubmitting, touchedFields },
+    formState: { errors, touchedFields },
     reset,
     trigger,
   } = useForm({
@@ -137,13 +145,13 @@ export default function RegisterEmployee({
 
   return (
     <div
-      className="modal-overlay"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
+      className={`modal-overlay ${isClosing ? "fade-out" : ""}`}
+      onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
       <div className="modal-content">
         <button
           className="modal-close"
-          onClick={onClose}
+          onClick={handleClose}
           disabled={isSubmitting}
         >
           <X size={20} />
@@ -181,7 +189,7 @@ export default function RegisterEmployee({
                   <label className="form-label">
                     <User size={16} color="#6b7280" /> Nombre
                   </label>
-                  <input
+                  <Input
                     type="text"
                     placeholder="Ingresa el nombre"
                     {...register("nameEmployees", {
@@ -201,7 +209,7 @@ export default function RegisterEmployee({
                   <label className="form-label">
                     <CreditCard size={16} color="#6b7280" /> DUI
                   </label>
-                  <input
+                  <Input
                     type="text"
                     placeholder="00000000-0"
                     maxLength={10}
@@ -239,7 +247,8 @@ export default function RegisterEmployee({
                       validate: validateBirthDate,
                     }}
                     render={({ field }) => (
-                      <DatePickerInput
+                      <DatePickerInput 
+                      className="form-input"
                         {...field}
                         error={errors.dateOfBirth}
                         onChange={(date) =>
@@ -271,6 +280,7 @@ export default function RegisterEmployee({
                     }}
                     render={({ field }) => (
                       <DatePickerInput
+                      className="form-input"
                         {...field}
                         error={errors.hireDateEmployee}
                         onChange={(date) =>
@@ -301,7 +311,7 @@ export default function RegisterEmployee({
                   <label className="form-label">
                     <Mail size={16} color="#6b7280" /> Correo Electrónico
                   </label>
-                  <input
+                  <Input
                     type="email"
                     placeholder="ejemplo@correo.com"
                     {...register("email", {
@@ -321,7 +331,7 @@ export default function RegisterEmployee({
                   <label className="form-label">
                     <Phone size={16} color="#6b7280" /> Teléfono
                   </label>
-                  <input
+                  <Input
                     type="tel"
                     placeholder="0000-0000"
                     maxLength={9}
@@ -350,7 +360,7 @@ export default function RegisterEmployee({
                   <label className="form-label">
                     <MapPin size={16} color="#6b7280" /> Dirección
                   </label>
-                  <input
+                  <Input
                     type="text"
                     placeholder="Calle, colonia, ciudad"
                     {...register("addressEmployees", {
@@ -380,7 +390,7 @@ export default function RegisterEmployee({
                     Contraseña{" "}
                     {employeeToEdit && "(dejar vacío para mantener la actual)"}
                   </label>
-                  <input
+                  <Input
                     type="password"
                     placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número"
                     {...register("password", {
@@ -399,15 +409,15 @@ export default function RegisterEmployee({
             </div>
 
             <div className="modal-actions">
-              <button
+              <Button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="modal-btn cancel-btn"
                 disabled={isSubmitting}
               >
                 Cancelar
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 className="modal-btn submit-btn"
                 disabled={isSubmitting}
@@ -417,11 +427,13 @@ export default function RegisterEmployee({
                   : employeeToEdit
                   ? "Actualizar Empleado"
                   : "Agregar Empleado"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default RegisterEmployees;

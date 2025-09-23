@@ -5,203 +5,218 @@ import './OrderCard.css';
 const OrderCard = ({ order }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const getStatusClass = (status) => {
-    switch (status.toLowerCase()) {
-      case 'completado':
-        return 'status-completed';
-      case 'pendiente':
-        return 'status-pending';
-      case 'enviado':
-        return 'status-shipped';
-      case 'cancelado':
-        return 'status-cancelled';
-      default:
-        return 'status-default';
-    }
-  };
-
   const formatPrice = (price) => {
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
     return new Intl.NumberFormat('es-SV', {
       style: 'currency',
       currency: 'USD'
-    }).format(price);
+    }).format(numPrice || 0);
   };
 
-  const handleToggleExpand = () => {
-    setIsExpanded(!isExpanded);
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Fecha no disponible';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-SV', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      return dateString;
+    }
   };
 
-  const handlePrintOrder = () => {
-    window.print();
-  };
-
-  const handleDownloadPDF = () => {
-    // Implementar descarga de PDF
-    console.log('Descargar PDF del pedido:', order.id);
-  };
-
-  return (
-    <div className={`order-card ${isExpanded ? 'order-card-expanded' : ''}`}>
-      <div className="order-header">
-        <div className="order-number">
-          Pedido n°: {order.id}
+  // Validar que el objeto order tenga la estructura esperada
+  if (!order || !order.product) {
+    return (
+      <div className="order-card-professional">
+        <div className="order-header-professional">
+          <h1 className="main-title">Historial Pedidos</h1>
+          <p className="order-id">Pedido n°: {order?.id || 'N/A'}</p>
         </div>
-        <div className="order-actions">
-          <span className={`order-status ${getStatusClass(order.status)}`}>
-            {order.status}
-          </span>
-          <div className="action-buttons">
-            <button 
-              className="btn-icon"
-              onClick={handleToggleExpand}
-              title={isExpanded ? 'Contraer' : 'Expandir'}
-            >
-              {isExpanded ? '▲' : '▼'}
-            </button>
-            <button 
-              className="btn-icon"
-              onClick={handlePrintOrder}
-              title="Imprimir"
-            >
-              🖨️
-            </button>
-            <button 
-              className="btn-icon"
-              onClick={handleDownloadPDF}
-              title="Descargar PDF"
-            >
-              📄
-            </button>
-          </div>
+        <div className="error-message">
+          <p>Error: Datos del pedido incompletos</p>
         </div>
       </div>
+    );
+  }
 
-      <div className="order-content">
-        <div className="product-section">
+  return (
+    <div className="order-card-professional">
+      {/* Header con título y número de pedido */}
+      <div className="order-header-professional">
+        <p className="order-id">Pedido n°: {order.id}</p>
+      </div>
+
+      {/* Contenido principal */}
+      <div className="order-main-content">
+        
+        {/* Columna 1: Producto */}
+        <div className="product-column">
           <div className="product-image-container">
             <img 
               src={order.product.image} 
               alt={order.product.name}
-              className="product-image"
+              className="product-image-pro"
               onError={(e) => {
-                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjNjY3ZWVhIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNzY0YmEyIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIHJ4PSIxNSIgZmlsbD0idXJsKCNncmFkKSIvPjx0ZXh0IHg9Ijc1IiB5PSI4MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+🐕</3RleHQ+PC9zdmc+';
+                e.target.src = '/api/placeholder/150/150';
               }}
             />
-            <div className="product-badge">
-              {order.product.quantity}x
-            </div>
           </div>
-          
-          <h3 className="product-title">{order.product.name}</h3>
-          
-          <div className="product-details">
-            <div className="detail-item">
-              <span className="detail-label">Talla:</span>
-              <span className="detail-value">{order.product.size}</span>
-            </div>
-            <div className="detail-item">
-              <span className="detail-label">Cantidad:</span>
-              <span className="detail-value">{order.product.quantity}</span>
-            </div>
-          </div>
+          <h3 className="product-name">{order.product.name}</h3>
+        </div>
 
-          <div className="color-section">
-            <p className="color-label">Color:</p>
-            <div 
-              className="color-indicator"
-              style={{ backgroundColor: order.product.color }}
-              title={`Color: ${order.product.color}`}
-            ></div>
-          </div>
+        {/* Columna 2: Información del Pedido */}
+        <div className="order-details-column">
+          <h3 className="column-title">Información del Pedido</h3>
+          
+          <div className="details-container">
+            <div className="detail-line">
+              <span className="label">Nombre de la mascota</span>
+              <div className="underline">
+                <span className="value">{order.pet?.name || 'Fido'}</span>
+              </div>
+            </div>
 
-          <div className="total-price">
-            {formatPrice(order.product.price)}
+            <div className="detail-grid">
+              <div className="detail-line half-width">
+                <span className="label">Talla</span>
+                <div className="underline">
+                  <span className="value">{order.product.size}</span>
+                </div>
+              </div>
+              <div className="detail-line half-width">
+                <span className="label">Cantidad</span>
+                <div className="underline">
+                  <span className="value">{order.product.quantity}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="color-section-pro">
+              <span className="label">Color</span>
+              <div className="color-indicator-pro">
+                <div 
+                  className="color-circle-pro"
+                  style={{ backgroundColor: order.product.color || '#87CEEB' }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="price-section">
+              <span className="label">Precio Total</span>
+              <div className="underline">
+                <span className="value price-value">{formatPrice(order.product.price)}</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="order-info">
-          <div className="info-section delivery-info">
-            <h3 className="info-title">
-              <span className="info-icon">📍</span>
-              Información de Entrega
-            </h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <span className="info-label">Ciudad:</span>
-                <span className="info-value">{order.delivery.city}</span>
+        {/* Columna 3: Información de Entrega y Cliente */}
+        <div className="delivery-customer-column">
+          
+          {/* Información básica */}
+          <div className="basic-info-grid">
+            <div className="info-item">
+              <span className="info-label">Talla</span>
+              <span className="info-value">{order.product.size}</span>
+            </div>
+            <div className="info-item">
+              <span className="info-label">Región</span>
+              <span className="info-value">{order.delivery.region}</span>
+            </div>
+          </div>
+
+          {/* Dirección de entrega */}
+          <div className="address-group">
+            <div className="address-field">
+              <span className="field-label">Dirección de Entrega</span>
+              <div className="field-box">
+                {order.delivery.address}
               </div>
-              <div className="info-item">
-                <span className="info-label">Región:</span>
-                <span className="info-value">{order.delivery.region}</span>
-              </div>
-              <div className="info-item full-width">
-                <span className="info-label">Dirección:</span>
-                <span className="info-value">{order.delivery.address}</span>
-              </div>
-              <div className="info-item full-width">
-                <span className="info-label">Referencia:</span>
-                <span className="info-value">{order.delivery.reference}</span>
+            </div>
+            
+            <div className="address-field">
+              <span className="field-label">Punto de Referencia</span>
+              <div className="field-box">
+                {order.delivery.reference}
               </div>
             </div>
           </div>
 
-          <div className="info-section customer-info">
-            <h3 className="info-title">
-              <span className="info-icon">👤</span>
-              Información del Cliente
-            </h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <span className="info-label">Nombres:</span>
-                <span className="info-value">{order.customer.firstName}</span>
+          {/* Información del cliente */}
+          <div className="client-info-section">
+            <div className="client-name-grid">
+              <div className="name-field">
+                <span className="field-label">Nombres</span>
+                <span className="field-value">{order.customer.firstName}</span>
               </div>
-              <div className="info-item">
-                <span className="info-label">Apellidos:</span>
-                <span className="info-value">{order.customer.lastName}</span>
-              </div>
-              <div className="info-item full-width">
-                <span className="info-label">Teléfono:</span>
-                <span className="info-value">
-                  <a href={`tel:${order.customer.phone}`}>
-                    {order.customer.phone}
-                  </a>
-                </span>
+              <div className="name-field">
+                <span className="field-label">Apellidos</span>
+                <span className="field-value">{order.customer.lastName}</span>
               </div>
             </div>
+            
+            <div className="contact-field">
+              <span className="field-label">Teléfono de contacto</span>
+              <span className="field-value contact-value">{order.customer.phone}</span>
+            </div>
           </div>
+
         </div>
       </div>
 
+      {/* Timeline expandible (opcional) */}
       {isExpanded && (
-        <div className="order-timeline">
-          <h4 className="timeline-title">Estado del Pedido</h4>
-          <div className="timeline">
-            <div className="timeline-item completed">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
-                <h5>Pedido Confirmado</h5>
-                <p>25 de Enero, 10:30 AM</p>
+        <div className="order-timeline-pro">
+          <h3 className="timeline-title-pro">Seguimiento del Pedido</h3>
+          <div className="timeline-pro">
+            <div className="timeline-step completed">
+              <div className="step-marker"></div>
+              <div className="step-content">
+                <h5>Pedido Recibido</h5>
+                <p>{formatDate(order.date)}</p>
               </div>
             </div>
-            <div className="timeline-item completed">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
-                <h5>En Producción</h5>
-                <p>26 de Enero, 2:15 PM</p>
+            
+            <div className={`timeline-step ${order.status !== 'Pendiente' ? 'completed' : ''}`}>
+              <div className="step-marker"></div>
+              <div className="step-content">
+                <h5>En Proceso</h5>
+                <p>
+                  {order.status !== 'Pendiente' 
+                    ? 'Pedido confirmado y en preparación'
+                    : 'Esperando confirmación'
+                  }
+                </p>
               </div>
             </div>
-            <div className="timeline-item completed">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
+            
+            <div className={`timeline-step ${order.status === 'Enviado' || order.status === 'Completado' ? 'completed' : ''}`}>
+              <div className="step-marker"></div>
+              <div className="step-content">
                 <h5>Enviado</h5>
-                <p>28 de Enero, 9:00 AM</p>
+                <p>
+                  {order.status === 'Enviado' || order.status === 'Completado'
+                    ? 'Pedido en camino'
+                    : 'Pendiente de envío'
+                  }
+                </p>
               </div>
             </div>
-            <div className="timeline-item completed">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
+            
+            <div className={`timeline-step ${order.status === 'Completado' ? 'completed' : ''}`}>
+              <div className="step-marker"></div>
+              <div className="step-content">
                 <h5>Entregado</h5>
-                <p>30 de Enero, 3:45 PM</p>
+                <p>
+                  {order.status === 'Completado'
+                    ? 'Pedido entregado exitosamente'
+                    : 'Pendiente de entrega'
+                  }
+                </p>
               </div>
             </div>
           </div>

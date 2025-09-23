@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { ChevronRight, Star, ChevronLeft, ChevronRight as ChevronRightIcon } from "lucide-react";
+import { ChevronRight, Star, ChevronLeft, ChevronRight as ChevronRightIcon, X } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import useProductData from "../../../components/Public/SelectedProduct/hooks/useProductData.jsx";
 import Reviews from "../../../components/Public/SelectedProduct/Reviews.jsx";
 import RelatedProducts from "../../../components/Public/SelectedProduct/RelatedProduct.jsx";
 import { useAuth } from "../../../Context/AuthContext.jsx"; 
+import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 import "./SelectedProduct.css";
 
@@ -17,7 +18,8 @@ const SelectedProduct = () => {
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
-  const [includeName, setIncludeName] = useState(true);
+  const [includeName, setIncludeName] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false); // Nuevo estado para el modal
 
   const sizes = ["XS", "S", "M", "L", "XL"];
 
@@ -128,24 +130,6 @@ const SelectedProduct = () => {
     }
   };
 
-  // Función para verificar el estado del carrito (para debugging)
-  const checkCartStatus = () => {
-    const cart = localStorage.getItem('bandoggie_cart');
-    console.log('Estado actual del carrito:', cart);
-    if (cart) {
-      try {
-        const parsedCart = JSON.parse(cart);
-        console.log('Carrito parseado:', parsedCart);
-        toast.success(`Carrito tiene ${parsedCart.length} productos diferentes`);
-      } catch (e) {
-        console.error('Error al parsear carrito:', e);
-        toast.error('Error al leer el carrito');
-      }
-    } else {
-      toast.info('El carrito está vacío');
-    }
-  };
-
   // Unimos todas las imágenes en un solo array
   const allImages = [
     product.image,
@@ -181,6 +165,7 @@ const SelectedProduct = () => {
 
   return (
     <div className="product-page">
+       <Toaster position="top-right" reverseOrder={false} />
       {/* Breadcrumb */}
       <div className="breadcrumb">
         <Link to="/">Inicio</Link>
@@ -253,9 +238,13 @@ const SelectedProduct = () => {
               ))}
             </div>
             <p className="size-guide">
-              <a href="/docs/guia-de-tallas.pdf" target="_blank" rel="noopener noreferrer">
+              <button 
+                onClick={() => setShowSizeGuide(true)}
+                className="size-guide-button"
+                type="button"
+              >
                 Guía de tallas
-              </a>
+              </button>
             </p>
           </div>
 
@@ -301,10 +290,43 @@ const SelectedProduct = () => {
               </button>
             </div>
             <button className="btn buy-now">Comprar ahora</button>
-            
           </div>
         </div>
       </div>
+
+      {/* Modal de Guía de Tallas */}
+      {showSizeGuide && (
+        <div className="size-guide-modal-overlay" onClick={() => setShowSizeGuide(false)}>
+          <div className="size-guide-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="size-guide-header">
+              <h3>Guía de Tallas</h3>
+              <button 
+                className="size-guide-close"
+                onClick={() => setShowSizeGuide(false)}
+                aria-label="Cerrar guía de tallas"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="size-guide-content">
+              <img 
+                src="/src/img/SelectedProduct/size-guide.png" // Cambia esta ruta por tu imagen de guía de tallas
+                alt="Guía de tallas para mascotas"
+                className="size-guide-image"
+              />
+              <div className="size-guide-instructions">
+                <h4>Cómo medir a tu mascota:</h4>
+                <ul>
+                  <li><strong>Cuello:</strong> Mide alrededor del cuello donde normalmente va el collar</li>
+                  <li><strong>Pecho:</strong> Mide la parte más ancha del pecho, justo detrás de las patas delanteras</li>
+                  <li><strong>Espalda:</strong> Mide desde la base del cuello hasta la base de la cola</li>
+                </ul>
+                <p><em>Consejo:</em> Si tu mascota está entre dos tallas, elige la talla más grande para mayor comodidad.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Reseñas */}
       <Reviews reviews={reviews} productId={product._id} />

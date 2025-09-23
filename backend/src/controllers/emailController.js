@@ -1,200 +1,139 @@
-// emailController.js
-import nodemailer from 'nodemailer';
-import { config } from '../config.js'; // Ajusta según tu estructura
+import { sendMail, HTMLSimpleBankingEmail } from '../utils/BankingEmail.js';
+import validator from 'validator';
 
+// Crear el objeto emailController
 const emailController = {};
 
-// Configuración del transportador de email
-const createTransporter = () => {
+// Método simplificado para envío de email bancario
+emailController.sendSimpleBankingEmail = async (req, res) => {
   try {
-    // Configuración para Gmail (puedes cambiar según tu proveedor)
-    return nodemailer.createTransporter({
-      service: 'gmail',
-      auth: {
-        user: config.email?.user || process.env.EMAIL_USER, // tu-email@gmail.com
-        pass: config.email?.password || process.env.EMAIL_PASSWORD // tu-contraseña-de-aplicación
-      },
-      // Para otros proveedores como Outlook, Yahoo, etc:
-      /*
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-      }
-      */
-    });
-  } catch (error) {
-    console.error('Error creating email transporter:', error);
-    throw error;
-  }
-};
+    console.log('📧 Iniciando envío de email bancario simplificado...');
+    console.log('📥 Request body:', req.body);
+    
+    const { customerName, email, totalAmount, orderNumber } = req.body;
 
-// Enviar email con datos bancarios
-emailController.sendBankingEmail = async (req, res) => {
-  try {
-    const { to, subject, html, orderInfo } = req.body;
-
-    // Validaciones
-    if (!to || !subject || !html) {
+    // Validaciones mejoradas
+    if (!customerName || !email || !totalAmount) {
+      console.error('❌ Datos faltantes:', { customerName, email, totalAmount });
       return res.status(400).json({
         success: false,
-        message: 'Faltan campos requeridos: to, subject, html'
+        error: 'Faltan datos requeridos: customerName, email, totalAmount'
       });
     }
 
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(to)) {
+    // Validar email
+    if (!validator.isEmail(email)) {
+      console.error('❌ Email inválido:', email);
       return res.status(400).json({
         success: false,
-        message: 'Formato de email inválido'
+        error: 'Formato de email inválido'
       });
     }
 
-    console.log(`📧 Preparando envío de email a: ${to}`);
+    // Validar totalAmount
+    const amount = parseFloat(totalAmount);
+    if (isNaN(amount) || amount <= 0) {
+      console.error('❌ Monto inválido:', totalAmount);
+      return res.status(400).json({
+        success: false,
+        error: 'El monto debe ser un número mayor a cero'
+      });
+    }
 
-    // Crear transportador
-    const transporter = createTransporter();
+    console.log('📤 Enviando email a:', email);
+    console.log('💰 Monto:', amount);
+    console.log('📋 Referencia:', orderNumber);
 
-    // Verificar conexión
-    await transporter.verify();
-    console.log('✅ Conexión de email verificada');
+    // Generar referencia corta si no existe
+    const shortReference = orderNumber || `REF${Date.now().toString().slice(-6)}`;
 
-    // Configurar email
-    const mailOptions = {
-      from: {
-        name: 'BanDoggie',
-        address: config.email?.user || process.env.EMAIL_USER
-      },
-      to: to,
-      subject: subject,
-      html: html,
-      // Email alternativo en texto plano
-      text: `
-Hola ${orderInfo?.customerName || 'Cliente'},
+    // Texto plano del email (MEJORADO)
+    const textContent = `
+Hola ${customerName},
 
-Tu pedido ha sido registrado exitosamente.
+¡Gracias por tu compra en BanDoggie!
 
-Datos para transferencia bancaria:
-- Banco: Banco Agrícola
-- Tipo de cuenta: Cuenta de Ahorro
-- Número de cuenta: 3680297372
-- Titular: XIOMARA CASTILLO
-- Monto a transferir: $${orderInfo?.total || '0.00'}
+DATOS PARA TRANSFERENCIA BANCARIA:
+=====================================
+Banco: Banco Agrícola
+Tipo de cuenta: Cuenta de Ahorro
+Número de cuenta: 3680297372
+Titular: XIOMARA CASTILLO
+Monto a transferir: $${amount.toFixed(2)}
 
-Número de orden: ${orderInfo?.orderNumber || 'N/A'}
+Número de referencia: ${shortReference}
 
-Una vez realices la transferencia, nos comunicaremos contigo para coordinar la entrega.
+INSTRUCCIONES:
+- Realiza la transferencia por el monto exacto
+- Conserva el comprobante de transferencia
+- Una vez realizada, nos comunicaremos contigo para coordinar la entrega
+- Tiempo de procesamiento: 24-48 horas hábiles
 
 ¡Gracias por confiar en BanDoggie!
-Cuidamos a tu mejor amigo con amor 🐾
-      `
-    };
 
-    // Enviar email
-    const info = await transporter.sendEmail(mailOptions);
+---
+© 2024 BanDoggie - Cuidamos a tu mejor amigo
+    `.trim();
+
+    // Generar HTML del email
+    console.log('🎨 Generando template HTML...');
+    const htmlContent = HTMLSimpleBankingEmail(customerName, amount, shortReference);
     
-    console.log('✅ Email enviado exitosamente:', info.messageId);
+    console.log('📮 Configuración del email preparada');
+    console.log('📧 Destinatario:', email);
+    console.log('📝 Asunto: Datos para transferencia bancaria - BanDoggie');
+    console.log('🎨 HTML generado:', htmlContent.length, 'caracteres');
 
-    // Respuesta exitosa
+    // Enviar el email usando la función importada
+    const info = await sendMail(
+      email,
+      'Datos para transferencia bancaria - BanDoggie',
+      textContent,
+      htmlContent
+    );
+
+    console.log('✅ Email enviado exitosamente:', {
+      messageId: info.messageId,
+      to: email,
+      timestamp: new Date().toISOString()
+    });
+
     res.status(200).json({
       success: true,
-      message: 'Email enviado correctamente',
-      data: {
-        messageId: info.messageId,
-        to: to,
-        orderNumber: orderInfo?.orderNumber,
-        sentAt: new Date().toISOString()
-      }
+      message: 'Email con datos bancarios enviado correctamente',
+      messageId: info.messageId,
+      timestamp: new Date().toISOString(),
+      reference: shortReference
     });
 
   } catch (error) {
-    console.error('❌ Error enviando email:', error);
+    console.error('❌ Error enviando email bancario:', error);
+    
+    let errorMessage = 'Error interno del servidor';
+    let statusCode = 500;
 
-    // Respuesta de error
-    res.status(500).json({
-      success: false,
-      message: 'Error al enviar el email',
-      error: error.message,
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-};
-
-// Enviar email genérico
-emailController.sendGenericEmail = async (req, res) => {
-  try {
-    const { to, subject, html, text } = req.body;
-
-    if (!to || !subject || (!html && !text)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Faltan campos requeridos'
-      });
+    // Manejo específico de errores de nodemailer
+    if (error.code === 'EAUTH') {
+      errorMessage = 'Error de autenticación con Gmail. Verificar credenciales.';
+      statusCode = 401;
+    } else if (error.code === 'ECONNECTION') {
+      errorMessage = 'Error de conexión con el servidor de Gmail';
+      statusCode = 503;
+    } else if (error.responseCode === 550) {
+      errorMessage = 'Email del destinatario no válido o rechazado';
+      statusCode = 400;
+    } else if (error.message && error.message.includes('HTMLSimpleBankingEmail')) {
+      errorMessage = 'Error en el template del email';
+      statusCode = 500;
     }
 
-    const transporter = createTransporter();
-    await transporter.verify();
-
-    const mailOptions = {
-      from: {
-        name: 'BanDoggie',
-        address: config.email?.user || process.env.EMAIL_USER
-      },
-      to: to,
-      subject: subject,
-      html: html,
-      text: text
-    };
-
-    const info = await transporter.sendEmail(mailOptions);
-
-    res.status(200).json({
-      success: true,
-      message: 'Email enviado correctamente',
-      data: {
-        messageId: info.messageId,
-        to: to,
-        sentAt: new Date().toISOString()
-      }
-    });
-
-  } catch (error) {
-    console.error('Error enviando email genérico:', error);
-    res.status(500).json({
+    res.status(statusCode).json({
       success: false,
-      message: 'Error al enviar el email',
-      error: error.message
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };
 
-// Verificar configuración de email
-emailController.verifyEmailConfig = async (req, res) => {
-  try {
-    const transporter = createTransporter();
-    await transporter.verify();
-
-    res.status(200).json({
-      success: true,
-      message: 'Configuración de email verificada correctamente',
-      config: {
-        service: 'gmail',
-        user: config.email?.user || process.env.EMAIL_USER,
-        configured: !!(config.email?.user || process.env.EMAIL_USER)
-      }
-    });
-
-  } catch (error) {
-    console.error('Error verificando configuración de email:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error en la configuración de email',
-      error: error.message
-    });
-  }
-};
-
+// EXPORTACIÓN POR DEFECTO - ESTO ES CRUCIAL
 export default emailController;

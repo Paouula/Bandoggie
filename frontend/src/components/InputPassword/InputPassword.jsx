@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import "./InputPassword.css";
+import classNames from "classnames";
 
 const PasswordInput = ({ register, error, className = "", ...props }) => {
   const [show, setShow] = useState(false); // Controla si se muestra el texto o la contraseña
@@ -17,7 +18,9 @@ const PasswordInput = ({ register, error, className = "", ...props }) => {
         <input
           type={show ? "text" : "password"} // Alterna entre ver y ocultar contraseña
           onInput={handleLimit}             // Límite manual de caracteres (alternativa rápida a validation)
-          className={`custom-input input-login ${className}`}
+          className={classNames(className ,"custom-input ", {
+            "input-error": error,
+          })}
           {...register}                     // Registro del campo con react-hook-form
           {...props}
         />

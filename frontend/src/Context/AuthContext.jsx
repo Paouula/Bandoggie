@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
         const userData = JSON.parse(storedUser);
         setUser(userData);
       } catch (error) {
-        toast.error(
+        console.error(
           error.message ||
             "Error al parsear el usuario guardado en el localStorage"
         );
@@ -116,25 +116,23 @@ export const AuthProvider = ({ children }) => {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("No autenticado");
-        return res.json();
-      })
-      .then((data) => {
-        if (data?.user) {
-          toast.success("Usuario autentificado");
-          setUser(data.user);
-          localStorage.setItem("user", JSON.stringify(data.user));
+    .then((data) => {
+    if (data?.user) {
+      console.log("Usuario autentificado:", data.user);
+      setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-          // Si el usuario está autenticado, limpiar verificationInfo
-          if (storedVerificationInfo) {
-            clearVerificationInfo();
-          }
-        }
-      })
-      .catch((err) => {
-        toast.error("Usuario no autentificado: "+ err);
-      })
+      // limpiar verificationInfo si había
+      if (storedVerificationInfo) {
+        clearVerificationInfo();
+      }
+    } else {
+      throw new Error("No autenticado (sin user en la respuesta)");
+    }
+  })
+  .catch((err) => {
+    console.error("Usuario no autentificado:", err);
+  })
       .finally(() => {
         setLoadingUser(false);
       });
@@ -177,9 +175,7 @@ export const AuthProvider = ({ children }) => {
       })
       .catch((error) => {
         console.error("Error al obtener estado de verificación: ", error);
-        toast.error(
-          "Error al obtener estado de verificación: ", error
-        );
+        toast.error("Error al obtener estado de verificación: ", error);
 
         setPendingVerification(false);
       })
