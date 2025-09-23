@@ -8,7 +8,7 @@ const useDataBirthdayProducts = () => {
   const fetchBirthdayProducts = async () => {
     try {
       const holidayId = "68a4ce2aa2099a968645d55f";  
-      const response = await fetch(`http://localhost:4000/api/products/holiday/${holidayId}`);
+      const response = await fetch(`https://bandoggie-production.up.railway.app/api/products/holiday/${holidayId}`);
       
       if (!response.ok) throw new Error(`Error ${response.status}`);
       
