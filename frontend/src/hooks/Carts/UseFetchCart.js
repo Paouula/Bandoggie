@@ -1,7 +1,12 @@
+import { API_FETCH_JSON } from '../../config';
+import { toast } from 'react-hot-toast';
+
 // Hook específico para emails bancarios SIN TOKEN
 const useFetchCartEmail = () => {
-    
-    // Enviar email bancario simplificado con fetch directo
+    // Endpoint para enviar email bancario
+    const endpoint = 'cart/send-simple-banking-email';
+
+    // Enviar email bancario simplificado usando API_FETCH_JSON
     const sendBankingEmail = async (orderData) => {
         try {
             const loadingToast = toast.loading('Enviando datos bancarios...');
@@ -16,23 +21,11 @@ const useFetchCartEmail = () => {
 
             console.log('📧 Enviando payload de email:', emailPayload);
 
-            // FETCH DIRECTO SIN TOKEN - para usuarios invitados
-            const response = await fetch('/api/cart/send-simple-banking-email', {
+            // Usar API_FETCH_JSON para la petición
+            const data = await API_FETCH_JSON(endpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(emailPayload)
+                body: emailPayload
             });
-
-            // Verificar si la respuesta es exitosa
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `Error HTTP: ${response.status}`);
-            }
-
-            // Parsear la respuesta exitosa
-            const data = await response.json();
 
             toast.dismiss(loadingToast);
             toast.success('Email con datos bancarios enviado correctamente');

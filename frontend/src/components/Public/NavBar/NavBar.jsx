@@ -34,8 +34,8 @@ function NavBar() {
     setPendingVerification,
     loadingVerification,
     verificationInfo,
-    updateVerificationInfo, // 🆕 Usar la función persistente
-    clearVerificationInfo,   // 🆕 Función para limpiar
+    updateVerificationInfo, //  Usar la función persistente
+    clearVerificationInfo,   //  Función para limpiar
   } = useAuth();
 
   const shouldShowVerificationModal =
@@ -158,9 +158,9 @@ function NavBar() {
             setShowLogin(true);
           }}
           onRegisterSuccess={(email, role) => {
-            console.log("✅ RegisterModal - onRegisterSuccess:", { email, role });
+            console.log(" RegisterModal - onRegisterSuccess:", { email, role });
             setShowRegister(false);
-            // 🆕 Usar updateVerificationInfo para persistir los datos
+            //  Usar updateVerificationInfo para persistir los datos
             updateVerificationInfo({ email, role });
             setPendingVerification(true);
           }}
@@ -179,9 +179,9 @@ function NavBar() {
             setShowLogin(true);
           }}
           onRegisterSuccess={(email, role) => {
-            console.log("✅ RegisterVetModal - onRegisterSuccess:", { email, role });
+            console.log(" RegisterVetModal - onRegisterSuccess:", { email, role });
             setShowRegisterVet(false);
-            // 🆕 Usar updateVerificationInfo para persistir los datos
+            //  Usar updateVerificationInfo para persistir los datos
             updateVerificationInfo({ email, role });
             setPendingVerification(true);
           }}
@@ -197,12 +197,12 @@ function NavBar() {
           email={verificationInfo.email}
           role={verificationInfo.role}
           onClose={() => {
-            console.log("🚪 Cerrando modal de verificación");
-            clearVerificationInfo(); // 🆕 Limpiar datos al cerrar
+            console.log(" Cerrando modal de verificación");
+            clearVerificationInfo(); //  Limpiar datos al cerrar
           }}
           openLogin={() => {
-            console.log("🚪 Abriendo login desde verificación");
-            clearVerificationInfo(); // 🆕 Limpiar datos al ir al login
+            console.log(" Abriendo login desde verificación");
+            clearVerificationInfo(); //  Limpiar datos al ir al login
             setShowLogin(true);
           }}
         />
@@ -271,7 +271,7 @@ function NavBar() {
           }`}
         >
           <div className="navbar-nav-links">
-            <Link className="navbar-nav-link" to="/main">Inicio</Link>
+            <Link className="navbar-nav-link" to="/mainPage">Inicio</Link>
             <Link className="navbar-nav-link" to="/Bandanas">Bandanas</Link>
             <Link className="navbar-nav-link" to="/collars">Collares</Link>
             <Link className="navbar-nav-link" to="/accessories">Accesorios</Link>

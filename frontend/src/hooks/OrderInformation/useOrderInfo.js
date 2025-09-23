@@ -1,5 +1,5 @@
-// src/hooks/OrderInformation/useOrderInfo.js
 import { useState, useEffect, useCallback } from 'react';
+import { API_FETCH_JSON } from '../../config';
 
 const useOrderInfo = () => {
   const [orders, setOrders] = useState([]);
@@ -10,8 +10,11 @@ const useOrderInfo = () => {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [currentFilter, setCurrentFilter] = useState('all');
 
-  // URL base de la API
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+  // Endpoints
+  const endpoint = 'orders';
+  const endpointPayment = 'orders/payment';
+  const endpointDateRange = 'orders/date-range';
+  const endpointStats = 'orders/stats';
 
   // Función para manejar errores de la API
   const handleApiError = (error, defaultMessage) => {
@@ -25,72 +28,65 @@ const useOrderInfo = () => {
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/orders`);
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
+      const data = await API_FETCH_JSON(endpoint);
       setOrders(data);
-      setFilteredOrders(data); // Inicialmente, filteredOrders es igual a orders
+      setFilteredOrders(data);
       return data;
     } catch (error) {
       return handleApiError(error, 'Error al obtener las órdenes');
     } finally {
       setLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   // Filtrar órdenes localmente
   const filterOrders = useCallback((filterType, filterValue = null) => {
     setCurrentFilter(filterType);
-    
+
     let filtered = [...orders];
-    
+
     switch (filterType) {
       case 'payment':
-        filtered = orders.filter(order => 
+        filtered = orders.filter(order =>
           order.paymentMethod?.toLowerCase() === filterValue?.toLowerCase()
         );
         break;
-        
+
       case 'status':
-        // Asumiendo que tienes un campo status en tus órdenes
-        filtered = orders.filter(order => 
+        filtered = orders.filter(order =>
           order.status?.toLowerCase() === filterValue?.toLowerCase()
         );
         break;
-        
+
       case 'date':
         if (filterValue && filterValue.from && filterValue.to) {
           filtered = orders.filter(order => {
             const orderDate = new Date(order.createdAt || order.date);
-            return orderDate >= new Date(filterValue.from) && 
+            return orderDate >= new Date(filterValue.from) &&
                    orderDate <= new Date(filterValue.to);
           });
         }
         break;
-        
+
       case 'search':
         if (filterValue) {
           const searchTerm = filterValue.toLowerCase();
-          filtered = orders.filter(order => 
+          filtered = orders.filter(order =>
             order._id?.toLowerCase().includes(searchTerm) ||
             order.addressClient?.toLowerCase().includes(searchTerm) ||
             order.paymentMethod?.toLowerCase().includes(searchTerm)
           );
         }
         break;
-        
+
       case 'all':
       default:
         // No filtrar, mostrar todas
         break;
     }
-    
+
     setFilteredOrders(filtered);
     return filtered;
   }, [orders]);
@@ -110,18 +106,9 @@ const useOrderInfo = () => {
 
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/orders/${id}`);
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('Orden no encontrada');
-        }
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
+      const data = await API_FETCH_JSON(`${endpoint}/${id}`);
       setOrder(data);
       return data;
     } catch (error) {
@@ -129,7 +116,7 @@ const useOrderInfo = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   // Obtener órdenes por método de pago (desde API)
   const fetchOrdersByPaymentMethod = useCallback(async (paymentMethod) => {
@@ -140,15 +127,9 @@ const useOrderInfo = () => {
 
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/orders/payment/${paymentMethod}`);
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
+      const data = await API_FETCH_JSON(`${endpointPayment}/${paymentMethod}`);
       setOrders(data);
       setFilteredOrders(data);
       setCurrentFilter('payment');
@@ -158,7 +139,7 @@ const useOrderInfo = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   // Obtener órdenes por rango de fechas (desde API)
   const fetchOrdersByDateRange = useCallback(async (startDate, endDate) => {
@@ -169,17 +150,11 @@ const useOrderInfo = () => {
 
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/orders/date-range?startDate=${startDate}&endDate=${endDate}`
+      const data = await API_FETCH_JSON(
+        `${endpointDateRange}?startDate=${startDate}&endDate=${endDate}`
       );
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
       setOrders(data);
       setFilteredOrders(data);
       setCurrentFilter('date');
@@ -189,21 +164,15 @@ const useOrderInfo = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   // Obtener estadísticas de órdenes
   const fetchOrdersStats = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/orders/stats`);
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
+      const data = await API_FETCH_JSON(endpointStats);
       setStats(data);
       return data;
     } catch (error) {
@@ -211,7 +180,7 @@ const useOrderInfo = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   // Limpiar error
   const clearError = useCallback(() => {
@@ -243,11 +212,11 @@ const useOrderInfo = () => {
     error,
     stats,
     currentFilter,
-    
+
     // Acciones
     fetchOrders,
-    filterOrders,    // ← Nueva función de filtrado
-    clearFilters,    // ← Nueva función para limpiar filtros
+    filterOrders,    
+    clearFilters,   
     fetchOrderById,
     fetchOrdersByPaymentMethod,
     fetchOrdersByDateRange,

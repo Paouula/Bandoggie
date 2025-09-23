@@ -3,10 +3,7 @@ import React from 'react';
 import CardProduct from '../Products/CardProduct.jsx';
 
 const ListProducts = ({ products, onEdit, onDelete }) => {
-  // Debug: verificar que las funciones lleguen
-  console.log('ListProducts - onEdit:', onEdit);
-  console.log('ListProducts - onDelete:', onDelete);
-  console.log('ListProducts - products:', products);
+
   
   return (
     <div className="products-grid">
