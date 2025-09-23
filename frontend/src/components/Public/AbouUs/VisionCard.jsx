@@ -8,20 +8,43 @@ const VisionCard = () => {
         <div className="vision-card">
           <div className="vision-content">
             <div className="vision-image">
-              <div className="dog-placeholder">
+              <div className="image-container">
                 <img src={VisionDog} alt="Vision Dog" />
+                <div className="floating-elements">
+                  <div className="floating-dot dot-1"></div>
+                  <div className="floating-dot dot-2"></div>
+                  <div className="floating-dot dot-3"></div>
+                </div>
               </div>
             </div>
+            
             <div className="vision-text">
-              <h2>Visión</h2>
-              <p>
-              Miramos al futuro con el propósito de ser el aliado integral líder para dueños de mascotas, clínicas 
-              veterinarias y centros de grooming en nuestra región. Queremos ser reconocidos por nuestra 
-              variedad destacada de productos (alimentos, accesorios, higiene, juguetes).Facilitadores del 
-              bienestar animal, apoyando el trabajo de clínicas y groomers con materiales confiables. Un espacio 
-              donde la experiencia humana, profesional y afectiva se entrelaza.Aspiramos a ser ese punto de encuentro 
-              que nutre no solo a las mascotas, sino también a quienes las cuidan día a día. 
+              <div className="vision-header">
+                <h2>Visión</h2>
+              </div>
+              <p className="vision-description">
+                Miramos al futuro con el propósito de ser el aliado integral líder para dueños de mascotas, clínicas 
+                veterinarias y centros de grooming en nuestra región. Queremos ser reconocidos por nuestra 
+                variedad destacada de productos (alimentos, accesorios, higiene, juguetes).Facilitadores del 
+                bienestar animal, apoyando el trabajo de clínicas y groomers con materiales confiables. Un espacio 
+                donde la experiencia humana, profesional y afectiva se entrelaza.Aspiramos a ser ese punto de encuentro 
+                que nutre no solo a las mascotas, sino también a quienes las cuidan día a día.
               </p>
+              
+              <div className="vision-stats">
+                <div className="stat-item">
+                  <span className="stat-number">15+</span>
+                  <span className="stat-label">Años Creciendo</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-number">500+</span>
+                  <span className="stat-label">Productos Únicos</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-number">50+</span>
+                  <span className="stat-label">Socios Comerciales</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -30,107 +53,244 @@ const VisionCard = () => {
       <style jsx>{`
         .vision-container {
           display: flex;
-          justify-content: flex-end;
+          justify-content: center;
+          padding: 2rem;
         }
 
         .vision-card {
           border-radius: 2rem;
-          padding: 0;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          padding: 2rem;
           overflow: hidden;
-          min-height: 280px;
-          width: 70%;
-          max-width: 600px;
+          width: 100%;
+          max-width: 1200px;
           background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+          position: relative;
         }
 
         .vision-content {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 350px 1fr;
+          min-height: 500px;
+          align-items: stretch;
+          position: relative;
+          gap: 2rem;
+        }
+
+        .vision-image {
+          padding: 1.5rem;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          position: relative;
+        }
+
+        .image-container {
+          position: relative;
+          width: 100%;
+          max-width: 280px;
+          height: auto;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+        }
+
+        .image-container img {
+          width: 100%;
+          height: auto;
+          max-height: 100%;
+          object-fit: cover;
+          border-radius: 2rem;
+          z-index: 2;
+          position: relative;
+        }
+
+        .floating-elements {
+          position: absolute;
+          width: 100%;
           height: 100%;
-          align-items: center;
+          top: 0;
+          left: 0;
+          z-index: 1;
+        }
+
+        .floating-dot {
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(219, 39, 119, 0.3);
+          animation: float 3s ease-in-out infinite;
+        }
+
+        .dot-1 {
+          width: 60px;
+          height: 60px;
+          top: 20%;
+          right: 10%;
+          animation-delay: 0s;
+        }
+
+        .dot-2 {
+          width: 40px;
+          height: 40px;
+          bottom: 30%;
+          left: 5%;
+          animation-delay: 1s;
+        }
+
+        .dot-3 {
+          width: 30px;
+          height: 30px;
+          top: 60%;
+          right: 20%;
+          animation-delay: 2s;
         }
 
         .vision-text {
-          padding: 2.5rem;
-          padding-left: 1.5rem;
-          order: 2;
+          padding: 2rem;
+          color: #1f2937;
+          z-index: 2;
           display: flex;
           flex-direction: column;
           justify-content: center;
         }
 
+        .vision-header {
+          margin-bottom: 1.5rem;
+        }
+
         .vision-text h2 {
-          font-size: 2.5rem;
+          font-size: 3rem;
           font-weight: bold;
+          margin: 0;
           margin-bottom: 1.5rem;
           color: #1f2937;
         }
 
-        .vision-text p {
-          font-size: 1rem;
+        .vision-description {
+          font-size: 1.1rem;
           line-height: 1.6;
-          color: #374151;
+          margin-bottom: 2rem;
+          opacity: 0.95;
+          font-weight: 400;
+        }
+
+        .vision-stats {
+          display: flex;
+          gap: 2rem;
+          margin-bottom: 1rem;
+          justify-content: flex-start;
+        }
+
+        .stat-item {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .stat-number {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #1f2937;
+          margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+          font-size: 0.9rem;
+          opacity: 0.85;
           font-weight: 500;
         }
 
-        .vision-image {
-          padding: 2rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          order: 1;
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
         }
 
-        .dog-placeholder {
-          width: 100%;
-          max-width: 200px;
-          height: auto;
-          border-radius: 1rem;
-          overflow: hidden;
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .dog-placeholder img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          display: block;
+        /* Background pattern */
+        .vision-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0.05;
+          background-image: radial-gradient(circle at 20% 80%, rgba(219, 39, 119, 0.2) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 20%, rgba(219, 39, 119, 0.15) 0%, transparent 50%);
         }
 
         @media (max-width: 768px) {
           .vision-container {
-            justify-content: center;
+            padding: 1rem;
           }
 
           .vision-card {
-            width: 100%;
+            padding: 1.5rem;
           }
 
           .vision-content {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-            text-align: center;
+            min-height: auto;
+            gap: 1rem;
+          }
+
+          .vision-image {
+            order: 1;
+            padding: 1rem;
           }
 
           .vision-text {
-            padding: 2rem;
+            padding: 1rem;
             order: 2;
+            text-align: center;
+          }
+
+          .vision-text h2 {
+            font-size: 2.5rem;
+          }
+
+          .vision-stats {
+            flex-direction: row;
+            gap: 1.5rem;
+            align-items: flex-start;
+            justify-content: center;
+          }
+
+          .image-container {
+            max-width: 250px;
+            height: 300px;
+          }
+
+          .dot-1 {
+            width: 40px;
+            height: 40px;
+          }
+
+          .dot-2 {
+            width: 30px;
+            height: 30px;
+          }
+
+          .dot-3 {
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .vision-text {
+            padding: 1rem;
           }
 
           .vision-text h2 {
             font-size: 2rem;
           }
 
-          .vision-image {
-            order: 1;
-            padding: 1.5rem;
+          .vision-stats {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
           }
 
-          .dog-placeholder {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto;
+          .stat-item {
+            align-items: center;
           }
         }
       `}</style>
