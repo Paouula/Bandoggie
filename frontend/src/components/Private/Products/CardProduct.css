@@ -30,7 +30,7 @@
   background-color: #f0f0f0;
 }
 
-/* Botones debajo de la imagen */
+/* Botones debajo de la imagen - ESTILOS ACTUALIZADOS */
 .product-actions {
   display: flex;
   justify-content: flex-end;
@@ -38,38 +38,70 @@
   margin-top: 12px;
 }
 
-.btn-action {
+.btn-action-product {
   border: none;
   cursor: pointer;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px; /* Cambié de círculo a rectángulo redondeado */
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.btn-action svg {
+.btn-action-product svg {
   stroke-width: 2.2;
+  width: 18px;
+  height: 18px;
 }
 
-/* Hover animado */
-.btn-action:hover {
-  transform: scale(1.1);
+/* Hover animado mejorado */
+.btn-action-product:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
-/* Botón editar */
-.btn-action.edit {
-  background-color: #ff9500; /* fondo naranja */
-  color: #fff;              /* ícono blanco */
+.btn-action-product:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-/* Botón eliminar */
-.btn-action.delete {
-  background-color: #dc3545; /* fondo rojo */
-  color: #fff;               /* ícono blanco */
+/* Botón editar - Azul vibrante */
+.btn-action-product.edit-produc {
+  background-color: #0066cc !important; /* Azul más vibrante */
+  color: #ffffff !important;
+  border: 2px solid #0066cc !important;
+}
+
+.btn-action-product.edit-produc:hover {
+  background-color: #0052a3 !important; /* Azul más oscuro en hover */
+  border-color: #0052a3 !important;
+  color: #ffffff !important;
+}
+
+/* Botón eliminar - Rojo vibrante */
+.btn-action.delete-product {
+  background-color: #dc3545 !important; /* Rojo vibrante */
+  color: #ffffff !important;
+  border: 2px solid #dc3545 !important;
+}
+
+.btn-action.delete-product:hover {
+  background-color: #c82333 !important; /* Rojo más oscuro en hover */
+  border-color: #c82333 !important;
+  color: #ffffff !important;
+}
+
+/* Asegurar que los iconos sean visibles */
+.btn-action svg {
+  stroke-width: 2.5 !important;
+  width: 18px !important;
+  height: 18px !important;
+  fill: none !important;
+  stroke: currentColor !important;
 }
 
 /* Info principal */
@@ -132,4 +164,29 @@
   color: #666;
   line-height: 1.4;
   margin: 5px 0 0 0;
+}
+
+/* Responsive para botones */
+@media (max-width: 768px) {
+  .btn-action {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .btn-action svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-action {
+    width: 34px;
+    height: 34px;
+  }
+  
+  .btn-action svg {
+    width: 14px;
+    height: 14px;
+  }
 }

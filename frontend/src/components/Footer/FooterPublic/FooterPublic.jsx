@@ -22,7 +22,7 @@ function FooterPublic() {
 
       {/* Columnas de links */}
       <div className="col-lg-2 col-6">
-        <h5 className="title">Sobre BANDOGGIE</h5>
+        <h5 className="title-footer">Sobre BANDOGGIE</h5>
         <ul className="list-unstyled">
           <li><a href="/aboutus" className="text-white">Sobre nosotros</a></li>
           <li><a href="/aboutus" className="text-white">Misión</a></li>
@@ -32,7 +32,7 @@ function FooterPublic() {
       </div>
 
       <div className="col-lg-2 col-6 col-siguenos">
-        <h5 className="title">Síguenos</h5>
+        <h5 className="title-footer">Síguenos</h5>
         <ul className="list-unstyled">
           <li><a href="#!" className="text-white">Instagram</a></li>
           <li><a href="#!" className="text-white">Facebook</a></li>
@@ -40,7 +40,7 @@ function FooterPublic() {
       </div>
 
       <div className="col-lg-2 col-6 col-contact">
-        <h5 className="title">Contacto</h5>
+        <h5 className="title-footer">Contacto</h5>
         <ul className="list-unstyled">
           <li><a href="#!" className="text-white no-hover">CHAT</a></li>
           <li><a className="text-white no-hover">Correo: huellitas.petshop2024@gmail.com</a></li>

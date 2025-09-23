@@ -15,7 +15,12 @@ const VisionCard = () => {
             <div className="vision-text">
               <h2>Visión</h2>
               <p>
-                Ser una marca reconocida de productos para perros, reconocida por su diseño innovador, comprometida con la calidad y brindando una atención personalizada, consolidándonos como la primera opción para los amantes de las mascotas.
+              Miramos al futuro con el propósito de ser el aliado integral líder para dueños de mascotas, clínicas 
+              veterinarias y centros de grooming en nuestra región. Queremos ser reconocidos por nuestra 
+              variedad destacada de productos (alimentos, accesorios, higiene, juguetes).Facilitadores del 
+              bienestar animal, apoyando el trabajo de clínicas y groomers con materiales confiables. Un espacio 
+              donde la experiencia humana, profesional y afectiva se entrelaza.Aspiramos a ser ese punto de encuentro 
+              que nutre no solo a las mascotas, sino también a quienes las cuidan día a día. 
               </p>
             </div>
           </div>
@@ -66,6 +71,7 @@ const VisionCard = () => {
           font-size: 1rem;
           line-height: 1.6;
           color: #374151;
+          font-weight: 500;
         }
 
         .vision-image {

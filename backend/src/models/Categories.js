@@ -14,3 +14,4 @@ const CategoriasSchema = new Schema(
 );
 
 export default model("Categories", CategoriasSchema);
+

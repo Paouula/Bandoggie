@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { API_FETCH_JSON } from '../../config';
 
+// Hook para obtener y manejar los datos del usuario autenticado
 const useFetchUser = () => {
   // Estado del usuario con todos los campos posibles
   const [userInfo, setUserInfo] = useState({
@@ -368,7 +369,6 @@ const useFetchUser = () => {
       window.removeEventListener('authSuccess', handleAuthSuccess);
       window.removeEventListener('authLogout', handleAuthLogout);
     };
-  }, [fetchUserData, clearAuthData]);
 
   return {
     userInfo,

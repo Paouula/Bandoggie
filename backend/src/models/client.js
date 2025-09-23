@@ -59,3 +59,5 @@ const clientSchema = new Schema({
 });
 
 export default model('Clients', clientSchema);
+
+

@@ -11,3 +11,4 @@ const HolidaySchema = new Schema({
 })
 
 export default model("Holiday", HolidaySchema)
+

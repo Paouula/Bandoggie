@@ -57,3 +57,5 @@ const employeeSchema = new Schema({
 });
 
 export default model("Employees", employeeSchema);
+
+

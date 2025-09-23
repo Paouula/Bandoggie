@@ -39,6 +39,7 @@ const Banner = () => {
         .aboutus-banner h1,
         .aboutus-banner p {
           position: relative;
+          font-weight: 600;
           z-index: 2;
         }
 
