@@ -8,7 +8,7 @@ const useDataCollars = () => {
   const fetchCollars = async () => {
     try {
       
-      const categoryId = "68a1476c6b65e3a7962662a5";  
+      const categoryId = "68a147616b65e3a7962662a3";  
 
       const response = await fetch(`https://bandoggie-production.up.railway.app/api/products/category/${categoryId}`);
       if (!response.ok) throw new Error(`Error ${response.status}`);
