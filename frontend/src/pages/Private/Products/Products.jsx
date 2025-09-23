@@ -419,6 +419,7 @@ const Products = () => {
             />
 
             <InputSelect
+            
               id="idHolidayProduct"
               options={holidays.map((hol) => ({
                 value: hol._id,
@@ -429,6 +430,7 @@ const Products = () => {
               })}
               defaultOptionLabel="Selecciona una festividad"
               error={errors.idHolidayProduct}
+              
             />
           </form>
         </Modal>

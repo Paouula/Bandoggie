@@ -277,7 +277,7 @@ function NavBar() {
             <Link className="navbar-nav-link" to="/accessories">Accesorios</Link>
             <Link className="navbar-nav-link" to="/Holidays">Festividades</Link>
             <Link className="navbar-nav-link" to="/aboutus">Sobre nosotros</Link>
-            <Link className="navbar-nav-link" to="/OrderHistory">Historial de pedidos</Link>
+           {/* <Link className="navbar-nav-link" to="/OrderHistory">Historial de pedidos</Link> */}
           </div>
 
           <div className="navbar-right-section">

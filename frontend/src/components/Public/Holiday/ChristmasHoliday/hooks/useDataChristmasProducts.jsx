@@ -7,7 +7,7 @@ const useDataChristmasProducts = () => {
 
   const fetchChristmasProducts = async () => {
     try {
-      const holidayId = "687054b2eb1f61053860409a";  
+      const holidayId = "68d2df3638119eb2888be34b";  
       const response = await fetch(`https://bandoggie-production.up.railway.app/api/products/holiday/${holidayId}`);
       
       if (!response.ok) throw new Error(`Error ${response.status}`);
