@@ -369,6 +369,7 @@ const useFetchUser = () => {
       window.removeEventListener('authSuccess', handleAuthSuccess);
       window.removeEventListener('authLogout', handleAuthLogout);
     };
+  }, [fetchUserData, clearAuthData]); // ← AGREGUÉ ESTA LÍNEA
 
   return {
     userInfo,

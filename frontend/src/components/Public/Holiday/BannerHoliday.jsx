@@ -12,7 +12,7 @@ import DogCH from '../../../img/ChristmasHoliday/DogCH.png';
 const Banner = ({ 
   title = "Navidad", 
   description = "Lindas y personalizables bandanas para tus peluditos con temática navideña",
-  buttonText = "Comprar",
+
   dogImage = DogCH,
   backgroundColor = "#default",
   textColor = "#default",
@@ -39,9 +39,7 @@ const Banner = ({
           <p className="hero-description" style={descriptionStyles}>
             {description}
           </p>
-          <button className="hero-button" style={buttonStyles}>
-            {buttonText}
-          </button>
+
         </div>
         
         {/* Imagen del perro con animación */}

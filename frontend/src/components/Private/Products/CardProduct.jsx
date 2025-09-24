@@ -28,13 +28,13 @@ const CardProduct = ({ product, onEdit, onDelete }) => {
       <div className="product-top-section">
         <img 
           src={product.image}
-          className="product-image"
+          className="product-image-private"
           alt={product.nameProduct}
         />
       </div>
 
       {/* Botones debajo de la imagen */}
-      <div className="product-actions">
+      <div className="product-actions-btn">
         <button 
           className="btn-action-product edit-product"
           onClick={handleEdit}

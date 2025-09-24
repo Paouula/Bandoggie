@@ -31,18 +31,18 @@ const VisionCard = () => {
                 que nutre no solo a las mascotas, sino también a quienes las cuidan día a día.
               </p>
               
-              <div className="vision-stats">
+              <div className="mission-stats">
                 <div className="stat-item">
-                  <span className="stat-number">15+</span>
-                  <span className="stat-label">Años Creciendo</span>
+                  <span className="stat-number-space">-</span>
+                  <span className="stat-label">Mascotas Felices</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-number">500+</span>
-                  <span className="stat-label">Productos Únicos</span>
+                  <span className="stat-number">Multiples</span>
+                  <span className="stat-label">Productos Vendidos</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-number">50+</span>
-                  <span className="stat-label">Socios Comerciales</span>
+                  <span className="stat-number-space">-</span>
+                  <span className="stat-label">Años Experiencia</span>
                 </div>
               </div>
             </div>
@@ -170,7 +170,7 @@ const VisionCard = () => {
           line-height: 1.6;
           margin-bottom: 2rem;
           opacity: 0.95;
-          font-weight: 400;
+          font-weight: 500;
         }
 
         .vision-stats {
@@ -189,6 +189,13 @@ const VisionCard = () => {
           font-size: 1.5rem;
           font-weight: bold;
           color: #1f2937;
+          margin-bottom: 0.25rem;
+        }
+
+        .stat-number-space {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #66666600;;
           margin-bottom: 0.25rem;
         }
 
