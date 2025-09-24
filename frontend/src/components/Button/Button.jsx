@@ -1,6 +1,5 @@
 import React from 'react';
 import "./Button.css";
-import classNames from 'classnames';
 
 // Botón reutilizable que acepta tipo, clases adicionales y contenido dinámico
 const ButtonComponent = ({ type = "button", error, children, className = "", onClick }) => {

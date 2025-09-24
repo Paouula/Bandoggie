@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Package, MessageCircle, Star, Users, BarChart3, Settings, Shield, Stethoscope } from 'lucide-react';
 import ProfileCard from '../../../components/Profile/ProfileCard';
 // CORRECCIÓN: Importación del hook correcto
-import useFetchUser from '../../../hooks/Profile/useFetchProfileCard';
+import useFetchProfileCard from '../../../hooks/Profile/useFetchProfileCard';
 
 const UserProfile = () => {
   // Desestructuración correcta del hook
@@ -17,7 +17,7 @@ const UserProfile = () => {
     debugInfo,
     hasToken,
     apiBaseUrl
-  } = useFetchUser();
+  } = useFetchProfileCard();
 
   const [isEditing, setIsEditing] = useState(false);
 

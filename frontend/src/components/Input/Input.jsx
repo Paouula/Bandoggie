@@ -1,6 +1,5 @@
 import React from 'react';
 import "./Input.css"; 
-import classNames from "classnames";
 
 
 const InputComponent = ({ type, id, placeholder, error, register = {}, className = "", ...props }) => { //En esta parte el componente recibe varios props para su uso

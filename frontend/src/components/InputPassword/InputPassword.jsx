@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import "./InputPassword.css";
-import classNames from "classnames";
 
 const PasswordInput = ({ register, error, className = "", ...props }) => {
   const [show, setShow] = useState(false); // Controla si se muestra el texto o la contraseña

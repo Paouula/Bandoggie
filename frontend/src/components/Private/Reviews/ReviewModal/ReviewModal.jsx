@@ -2,7 +2,6 @@ import React, {useRef, useState, useEffect} from "react";
 import "./ReviewModal.css";
 import { X } from "lucide-react";
 import { set } from "react-hook-form";
-import classNames from "classnames";
 
 const ReviewModal = ({
   isOpen,

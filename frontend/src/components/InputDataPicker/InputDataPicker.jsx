@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FiCalendar } from "react-icons/fi";
-import classNames from "classnames";
 import DatePickerComponent from "./DatePicker";
 import "./InputDataPicker.css";
 

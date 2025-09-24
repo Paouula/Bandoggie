@@ -3,20 +3,20 @@ import { toast } from 'react-hot-toast';
 import { API_FETCH_JSON } from '../../config';
 
 // Hook para obtener y manejar los datos del usuario autenticado
-const useFetchUser = () => {
+const useFetchProfileCard = () => {
   // Estado del usuario con todos los campos posibles
   const [userInfo, setUserInfo] = useState({
     _id: '',
     userType: null,
     email: '',
-    password: '', 
+    password: '',
     image: '',
     name: '',
     phone: '',
     address: '',
-    birthday: '',      
-    locationVet: '',   
-    nitVet: ''         
+    birthday: '',
+    locationVet: '',
+    nitVet: ''
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -133,7 +133,6 @@ const useFetchUser = () => {
       setError(null);
 
       const token = getAuthToken();
-      
       if (!token) {
         setIsAuthenticated(false);
         clearAuthData();
@@ -178,12 +177,11 @@ const useFetchUser = () => {
   const filterDataForUpdate = useCallback((data) => {
     const filteredData = {};
 
-    // Campos comunes para todos los usuarios
+    // Campos comunes
     if (data.email && data.email.trim()) filteredData.email = data.email.trim();
     if (data.phone && data.phone.trim()) filteredData.phone = data.phone.trim();
     if (data.address && data.address.trim()) filteredData.address = data.address.trim();
 
-    // Incluir solo campos relevantes según el tipo de usuario
     if (data.userType === "client") {
       if (data.name && data.name.trim()) filteredData.name = data.name.trim();
       if (data.birthday) filteredData.birthday = data.birthday;
@@ -199,9 +197,7 @@ const useFetchUser = () => {
     }
 
     Object.keys(filteredData).forEach(key => {
-      if (filteredData[key] === undefined || filteredData[key] === null || filteredData[key] === '') {
-        delete filteredData[key];
-      }
+      if (!filteredData[key]) delete filteredData[key];
     });
 
     return filteredData;
@@ -211,7 +207,6 @@ const useFetchUser = () => {
   const updateUserData = useCallback(async (updatedData) => {
     try {
       const dataToSend = filterDataForUpdate(updatedData);
-
       if (Object.keys(dataToSend).length === 0) {
         toast.error('No hay cambios para guardar');
         return false;
@@ -232,10 +227,7 @@ const useFetchUser = () => {
           const mappedUserData = mapUserData(response.user);
           setUserInfo(mappedUserData);
         } else {
-          setUserInfo(prevState => ({
-            ...prevState,
-            ...dataToSend
-          }));
+          setUserInfo(prev => ({ ...prev, ...dataToSend }));
         }
         toast.success('Datos actualizados correctamente');
         return true;
@@ -268,11 +260,8 @@ const useFetchUser = () => {
         body: credentials
       });
 
-      // Guardar token
       const storage = rememberMe ? localStorage : sessionStorage;
-      if (data.token) {
-        storage.setItem("authToken", data.token);
-      }
+      if (data.token) storage.setItem("authToken", data.token);
 
       if (data.user) {
         const mappedUserData = mapUserData(data.user);
@@ -299,15 +288,11 @@ const useFetchUser = () => {
     try {
       setIsLoading(true);
       try {
-        await authenticatedFetch(endpointLogout, {
-          method: 'POST'
-        });
-      } catch (logoutError) {
-        // No importa si falla el logout en el servidor
-      }
+        await authenticatedFetch(endpointLogout, { method: 'POST' });
+      } catch (_) {}
       clearAuthData();
       toast.success('Sesión cerrada correctamente');
-    } catch (error) {
+    } catch (_) {
       clearAuthData();
     } finally {
       setIsLoading(false);
@@ -316,10 +301,7 @@ const useFetchUser = () => {
 
   // Cambiar inputs del formulario
   const handleInputChange = useCallback((field, value) => {
-    setUserInfo(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setUserInfo(prev => ({ ...prev, [field]: value }));
   }, []);
 
   // Refrescar datos del usuario
@@ -327,12 +309,12 @@ const useFetchUser = () => {
     fetchUserData();
   }, [fetchUserData]);
 
-  // Cargar datos al montar el componente
+  // Cargar datos al montar
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
 
-  // Escuchar cambios en localStorage para sincronizar entre pestañas
+  // Escuchar cambios en localStorage
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === "authToken") {
@@ -343,21 +325,17 @@ const useFetchUser = () => {
         }
       }
     };
-
     window.addEventListener("storage", handleStorageChange);
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, [fetchUserData, clearAuthData]);
 
-  // Escuchar eventos de autenticación personalizados
+  // Escuchar eventos personalizados
   useEffect(() => {
-    const handleAuthSuccess = (event) => {
-      setTimeout(() => {
-        fetchUserData();
-      }, 100);
+    const handleAuthSuccess = () => {
+      setTimeout(() => fetchUserData(), 100);
     };
-
     const handleAuthLogout = () => {
       clearAuthData();
     };
@@ -369,6 +347,7 @@ const useFetchUser = () => {
       window.removeEventListener('authSuccess', handleAuthSuccess);
       window.removeEventListener('authLogout', handleAuthLogout);
     };
+  }, [fetchUserData, clearAuthData]);
 
   return {
     userInfo,
@@ -386,4 +365,4 @@ const useFetchUser = () => {
   };
 };
 
-export default useFetchUser;
+export default useFetchProfileCard;
