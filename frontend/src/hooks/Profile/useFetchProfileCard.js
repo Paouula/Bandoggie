@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
-import { API_FETCH_JSON } from '../../config.js';
+import { API_FETCH_JSON } from '../../config';
 
 // Hook para obtener y manejar los datos del usuario autenticado
 const useFetchUser = () => {
@@ -23,45 +23,35 @@ const useFetchUser = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(null);
 
-  // 🔧 CORREGIDO: Configuración de la API para Vite
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "https://bandoggie-production.up.railway.app/api"; 
+  // Endpoints
+  const endpointLogin = 'auth/login';
+  const endpointVerify = 'auth/verify';
+  const endpointProfile = 'auth/me';
+  const endpointUpdate = 'auth/me/update';
+  const endpointLogout = 'auth/logout';
 
   // Función para obtener el token de autenticación
   const getAuthToken = useCallback(() => {
     return localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   }, []);
 
-  // Función para hacer peticiones autenticadas
+  // Función para hacer peticiones autenticadas usando API_FETCH_JSON
   const authenticatedFetch = useCallback(async (endpoint, options = {}) => {
     const token = getAuthToken();
-    
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-        ...options.headers
-      },
-      credentials: 'include',
-      ...options
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...options.headers
     };
-
     try {
-      const response = await fetch(`${API_BASE_URL}/${endpoint}`, config);
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          // Token expirado o inválido
-          clearAuthData();
-          throw new Error('Sesión expirada');
-        }
-        
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error ${response.status}`);
-      }
-
-      return await response.json();
+      return await API_FETCH_JSON(endpoint, {
+        ...options,
+        headers
+      });
     } catch (error) {
-      console.error(`Error en ${endpoint}:`, error);
+      if (error.message === 'Sesión expirada' || error.message === 'Token inválido') {
+        clearAuthData();
+      }
       throw error;
     }
   }, [getAuthToken]);
@@ -93,7 +83,6 @@ const useFetchUser = () => {
     if (userData.userType === "vet") {
       base.locationVet = userData.locationVet || '';
       base.nitVet = userData.nitVet || '';
-      // Para veterinarios, el nombre puede venir como nameVet
       base.name = userData.nameVet || userData.name || '';
     }
 
@@ -124,26 +113,18 @@ const useFetchUser = () => {
   // Verificar si el token es válido
   const verifyToken = useCallback(async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+      const data = await API_FETCH_JSON(endpointVerify, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
-        },
-        credentials: 'include'
+        }
       });
-
-      if (!response.ok) {
-        throw new Error("Token inválido");
-      }
-
-      const userData = await response.json();
-      return userData;
+      return data;
     } catch (err) {
       console.error("Error verifying token:", err);
       return null;
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   // Obtener datos del usuario autenticado
   const fetchUserData = useCallback(async () => {
@@ -154,7 +135,6 @@ const useFetchUser = () => {
       const token = getAuthToken();
       
       if (!token) {
-        console.log('🔒 No hay token de autenticación');
         setIsAuthenticated(false);
         clearAuthData();
         return;
@@ -163,99 +143,247 @@ const useFetchUser = () => {
       // Primero verificar el token
       const tokenVerification = await verifyToken(token);
       if (!tokenVerification) {
-        console.log('❌ Token inválido, limpiando datos');
         clearAuthData();
         return;
       }
 
       // Intentar obtener datos del usuario desde el endpoint de perfil
       let userData = null;
-      
       try {
-        // Método 1: Endpoint específico de perfil
-        const profileResponse = await authenticatedFetch('auth/me');
+        const profileResponse = await authenticatedFetch(endpointProfile);
         userData = profileResponse.user || profileResponse;
       } catch (profileError) {
-        console.log('⚠️ Error con endpoint de perfil, intentando con verificación de token');
-        // Método 2: Usar datos del token verificado
         userData = tokenVerification.user || tokenVerification;
       }
 
       if (userData) {
         const mappedUserData = mapUserData(userData);
-        console.log('✅ Datos del usuario cargados:', mappedUserData);
         setUserInfo(mappedUserData);
         setIsAuthenticated(true);
       } else {
-        console.log('❌ No se encontraron datos de usuario');
         clearAuthData();
       }
     } catch (error) {
-      console.error('❌ Error fetching user data:', error);
-      
-      // Solo mostrar error si no es un 401 (no autenticado)
       if (error.message !== 'Sesión expirada') {
         setError('Error al cargar datos del usuario');
         toast.error('Error al cargar datos del usuario');
       }
-      
       clearAuthData();
     } finally {
       setIsLoading(false);
     }
   }, [getAuthToken, verifyToken, authenticatedFetch, mapUserData, clearAuthData]);
 
-    // Función para actualizar datos del usuario
-    const updateUserData = async (updatedData) => {
-        try {
-            const endpoint = `users/${userInfo.userType}/${userInfo.id}`; // Ajustar según tu API
-            const data = await API_FETCH_JSON(endpoint, {
-                method: 'PUT',
-                headers: { "Content-Type": "application/json" },
-                body: updatedData
-            });
+  // Filtrar datos antes de enviar actualización
+  const filterDataForUpdate = useCallback((data) => {
+    const filteredData = {};
 
-            if (data.success) {
-                setUserInfo(prevState => ({
-                    ...prevState,
-                    ...updatedData
-                }));
-                toast.success('Datos actualizados correctamente');
-                return true;
-            }
-        } catch (error) {
-            console.error('Error updating user data:', error);
-            toast.error('Error al actualizar los datos');
-            return false;
+    // Campos comunes para todos los usuarios
+    if (data.email && data.email.trim()) filteredData.email = data.email.trim();
+    if (data.phone && data.phone.trim()) filteredData.phone = data.phone.trim();
+    if (data.address && data.address.trim()) filteredData.address = data.address.trim();
+
+    // Incluir solo campos relevantes según el tipo de usuario
+    if (data.userType === "client") {
+      if (data.name && data.name.trim()) filteredData.name = data.name.trim();
+      if (data.birthday) filteredData.birthday = data.birthday;
+    } else if (data.userType === "vet") {
+      if (data.name && data.name.trim()) {
+        filteredData.name = data.name.trim();
+        filteredData.nameVet = data.name.trim();
+      }
+      if (data.locationVet && data.locationVet.trim()) filteredData.locationVet = data.locationVet.trim();
+      if (data.nitVet && data.nitVet.trim()) filteredData.nitVet = data.nitVet.trim();
+    } else if (data.userType === "employee") {
+      if (data.name && data.name.trim()) filteredData.name = data.name.trim();
+    }
+
+    Object.keys(filteredData).forEach(key => {
+      if (filteredData[key] === undefined || filteredData[key] === null || filteredData[key] === '') {
+        delete filteredData[key];
+      }
+    });
+
+    return filteredData;
+  }, []);
+
+  // Actualizar datos del usuario
+  const updateUserData = useCallback(async (updatedData) => {
+    try {
+      const dataToSend = filterDataForUpdate(updatedData);
+
+      if (Object.keys(dataToSend).length === 0) {
+        toast.error('No hay cambios para guardar');
+        return false;
+      }
+
+      const response = await authenticatedFetch(endpointUpdate, {
+        method: 'PUT',
+        body: dataToSend
+      });
+
+      if (response && (
+        response.message?.includes('actualizado') ||
+        response.message?.includes('éxito') ||
+        response.message?.includes('correctamente') ||
+        response.success
+      )) {
+        if (response.user) {
+          const mappedUserData = mapUserData(response.user);
+          setUserInfo(mappedUserData);
+        } else {
+          setUserInfo(prevState => ({
+            ...prevState,
+            ...dataToSend
+          }));
         }
+        toast.success('Datos actualizados correctamente');
+        return true;
+      } else {
+        const errorMsg = response.message || 'Error al actualizar los datos';
+        toast.error(errorMsg);
+        return false;
+      }
+    } catch (error) {
+      let errorMessage = 'Error al actualizar los datos';
+      if (error.message === 'Sesión expirada') {
+        errorMessage = 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
+        clearAuthData();
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
+      return false;
+    }
+  }, [filterDataForUpdate, authenticatedFetch, mapUserData, clearAuthData]);
+
+  // Iniciar sesión
+  const login = useCallback(async (credentials, rememberMe = false) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await API_FETCH_JSON(endpointLogin, {
+        method: "POST",
+        body: credentials
+      });
+
+      // Guardar token
+      const storage = rememberMe ? localStorage : sessionStorage;
+      if (data.token) {
+        storage.setItem("authToken", data.token);
+      }
+
+      if (data.user) {
+        const mappedUserData = mapUserData(data.user);
+        setUserInfo(mappedUserData);
+        setIsAuthenticated(true);
+        toast.success('¡Bienvenido!');
+      } else {
+        await fetchUserData();
+      }
+
+      return true;
+    } catch (err) {
+      const errorMsg = err.message || "Error al iniciar sesión";
+      setError(errorMsg);
+      toast.error(errorMsg);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [mapUserData, fetchUserData]);
+
+  // Cerrar sesión
+  const logout = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      try {
+        await authenticatedFetch(endpointLogout, {
+          method: 'POST'
+        });
+      } catch (logoutError) {
+        // No importa si falla el logout en el servidor
+      }
+      clearAuthData();
+      toast.success('Sesión cerrada correctamente');
+    } catch (error) {
+      clearAuthData();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [authenticatedFetch, clearAuthData]);
+
+  // Cambiar inputs del formulario
+  const handleInputChange = useCallback((field, value) => {
+    setUserInfo(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  }, []);
+
+  // Refrescar datos del usuario
+  const refreshUserData = useCallback(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  // Cargar datos al montar el componente
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  // Escuchar cambios en localStorage para sincronizar entre pestañas
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "authToken") {
+        if (e.newValue) {
+          fetchUserData();
+        } else {
+          clearAuthData();
+        }
+      }
     };
 
-    // Función para manejar cambios en los campos del formulario
-    const handleInputChange = (field, value) => {
-        setUserInfo(prev => ({
-            ...prev,
-            [field]: value
-        }));
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
     };
+  }, [fetchUserData, clearAuthData]);
 
-    // Cargar datos del usuario al montar el componente
-    useEffect(() => {
+  // Escuchar eventos de autenticación personalizados
+  useEffect(() => {
+    const handleAuthSuccess = (event) => {
+      setTimeout(() => {
         fetchUserData();
-    }, []);
-
-    // Función para refrescar los datos (útil después del login)
-    const refreshUserData = () => {
-        fetchUserData();
+      }, 100);
     };
 
-    return {
-        userInfo,
-        isLoading,
-        isAuthenticated,
-        handleInputChange,
-        updateUserData,
-        refreshUserData
+    const handleAuthLogout = () => {
+      clearAuthData();
     };
+
+    window.addEventListener('authSuccess', handleAuthSuccess);
+    window.addEventListener('authLogout', handleAuthLogout);
+
+    return () => {
+      window.removeEventListener('authSuccess', handleAuthSuccess);
+      window.removeEventListener('authLogout', handleAuthLogout);
+    };
+
+  return {
+    userInfo,
+    isLoading,
+    isAuthenticated,
+    error,
+    login,
+    logout,
+    handleInputChange,
+    updateUserData,
+    refreshUserData,
+    clearAuthData,
+    getAuthToken,
+    fetchUserData
+  };
 };
 
 export default useFetchUser;
