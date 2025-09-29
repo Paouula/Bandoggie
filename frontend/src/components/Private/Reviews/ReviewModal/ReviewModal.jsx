@@ -107,7 +107,7 @@ const ReviewModal = ({
         <div className="modal-details">
           <div className="detail-row">
             <span className="detail-label">Usuario:</span>
-            <span className="detail-value">{review.idClient?.name}</span>
+            <span className="detail-value">{review.email}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Producto:</span>
