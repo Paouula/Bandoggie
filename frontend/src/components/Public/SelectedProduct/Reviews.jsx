@@ -1,14 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { User, Star, Plus, Minus } from "lucide-react";
 import ReviewForm from "../../../components/Public/SelectedProduct/ReviewsForm/ReviewForm.jsx";
 import { useAuth } from "../../../Context/AuthContext.jsx";
+import useFetchReviews from "../../../hooks/ReviewUser/useFetchReviews.js";
 import "./Reviews.css";
 
-const Reviews = ({ reviews, productId }) => {
+const Reviews = ({ productId }) => {
   const [expanded, setExpanded] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [loginMessage, setLoginMessage] = useState(""); 
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { handleGetVerifyReviews } = useFetchReviews();
+
+  // Cargar reviews verificadas al montar el componente
+  useEffect(() => {
+    loadVerifiedReviews();
+  }, []);
+
+  const loadVerifiedReviews = async () => {
+    try {
+      setLoading(true);
+      const data = await handleGetVerifyReviews();
+      // Filtrar solo las reviews del producto actual
+      const productReviews = data.filter(review => 
+        review.idProduct?._id === productId || review.idProduct === productId
+      );
+      setReviews(productReviews);
+    } catch (error) {
+      console.error("Error al cargar reviews:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /* control del rating de estrellas */
   const renderStars = (rating) =>
@@ -22,11 +47,19 @@ const Reviews = ({ reviews, productId }) => {
 
   const handleAddReviewClick = () => {
     if (!user) {
-      setLoginMessage(" ¡Debes iniciar sesión para dejar una reseña!");
+      setLoginMessage("¡Debes iniciar sesión para dejar una reseña!");
       return;
     }
-    setLoginMessage(""); // limpiar mensaje si ahora sí hay usuario
-    setShowForm((prev) => !prev); // Alternar mostrar/ocultar formulario
+    setLoginMessage("");
+    setShowForm((prev) => !prev);
+  };
+
+  const handleReviewSubmitted = () => {
+    setShowForm(false);
+    // Opcional: recargar reviews después de un tiempo
+    setTimeout(() => {
+      loadVerifiedReviews();
+    }, 2000);
   };
 
   return (
@@ -44,42 +77,49 @@ const Reviews = ({ reviews, productId }) => {
 
       {expanded && (
         <div className="review-body">
-          {/* Mostrar reseñas */}
-          {reviews && reviews.length > 0 ? (
-            reviews.map((review) => (
-              <div key={review._id} className="review">
-                <div className="review-user">
-                  <User size={20} />
-                  <h4>{review.idClient?.name || "Usuario"}</h4>
-                  <span>
-                    {new Date(review.publicationDate).toLocaleDateString(
-                      "es-ES"
-                    )}
-                  </span>
-                </div>
-
-                <div className="review-stars">
-                  {renderStars(review.qualification)}
-                </div>
-
-                <p>{review.comment}</p>
-
-                {review.designImages && review.designImages.length > 0 && (
-                  <div className="review-images">
-                    {review.designImages.map((img, idx) => (
-                      <img
-                        key={idx}
-                        src={img}
-                        alt={`Imagen reseña ${idx + 1}`}
-                        className="review-image"
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))
+          {/* Mostrar estado de carga */}
+          {loading ? (
+            <p>Cargando reseñas...</p>
           ) : (
-            <p>¡Aún no hay reseñas para este producto!</p>
+            <>
+              {/* Mostrar reseñas */}
+              {reviews && reviews.length > 0 ? (
+                reviews.map((review) => (
+                  <div key={review._id} className="review">
+                    <div className="review-user">
+                      <User size={20} />
+                      <h4>{review.idClient?.name || "Usuario"}</h4>
+                      <span>
+                        {new Date(review.publicationDate).toLocaleDateString(
+                          "es-ES"
+                        )}
+                      </span>
+                    </div>
+
+                    <div className="review-stars">
+                      {renderStars(review.qualification)}
+                    </div>
+
+                    <p>{review.comment}</p>
+
+                    {review.designImages && review.designImages.length > 0 && (
+                      <div className="review-images">
+                        {review.designImages.map((img, idx) => (
+                          <img
+                            key={idx}
+                            src={img}
+                            alt={`Imagen reseña ${idx + 1}`}
+                            className="review-image"
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p>¡Aún no hay reseñas para este producto!</p>
+              )}
+            </>
           )}
 
           {/* Botón Agregar reseña */}
@@ -96,7 +136,13 @@ const Reviews = ({ reviews, productId }) => {
             {loginMessage && <p className="login-warning">{loginMessage}</p>}
 
             {/* Formulario solo si hay sesión */}
-            {showForm && <ReviewForm productId={productId} user={user && user._id ? user : { ...user, _id: user.email }} />}
+            {showForm && (
+              <ReviewForm 
+                productId={productId} 
+                user={user && user._id ? user : { ...user, _id: user.email }}
+                onReviewSubmitted={handleReviewSubmitted}
+              />
+            )}
           </div>
         </div>
       )}
