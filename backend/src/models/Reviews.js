@@ -19,7 +19,6 @@ const ReviewsSchema = new Schema({
     validate: [
       {
         validator: function (images) {
-          // Si no se envían imágenes, no valida (lo permite)
           if (!images || images.length === 0) return true;
           return images.length >= 1;
         },
@@ -35,16 +34,18 @@ const ReviewsSchema = new Schema({
     ]
   },
 
-  idClient: {
-    type: Schema.Types.ObjectId,
-    ref: "Clients",
-    required: true
+  email: {
+    type: String,
+    required: true,
+    match: [/^\S+@\S+\.\S+$/, "Formato de correo inválido"]
   },
+
   idProduct: {
     type: Schema.Types.ObjectId,
     ref: "Products",
     required: true
   },
+
   isVerifieldReview: {
     type: Boolean,
     default: false
