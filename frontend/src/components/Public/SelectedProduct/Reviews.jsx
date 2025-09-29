@@ -46,7 +46,7 @@ const Reviews = ({ productId }) => {
     ));
 
   const handleAddReviewClick = () => {
-    if (!user) {
+    if (!user || !user.email) {
       setLoginMessage("¡Debes iniciar sesión para dejar una reseña!");
       return;
     }
@@ -56,7 +56,7 @@ const Reviews = ({ productId }) => {
 
   const handleReviewSubmitted = () => {
     setShowForm(false);
-    // Opcional: recargar reviews después de un tiempo
+    // Recargar reviews después de un tiempo
     setTimeout(() => {
       loadVerifiedReviews();
     }, 2000);
@@ -88,7 +88,7 @@ const Reviews = ({ productId }) => {
                   <div key={review._id} className="review">
                     <div className="review-user">
                       <User size={20} />
-                      <h4>{review.idClient?.name || "Usuario"}</h4>
+                      <h4>{review.email || "Usuario"}</h4>
                       <span>
                         {new Date(review.publicationDate).toLocaleDateString(
                           "es-ES"
@@ -135,11 +135,11 @@ const Reviews = ({ productId }) => {
             {/* Mensaje si no hay sesión */}
             {loginMessage && <p className="login-warning">{loginMessage}</p>}
 
-            {/* Formulario solo si hay sesión */}
-            {showForm && (
+            {/* Formulario solo si hay sesión y user.email existe */}
+            {showForm && user && user.email && (
               <ReviewForm 
                 productId={productId} 
-                user={user && user._id ? user : { ...user, _id: user.email }}
+                user={user}
                 onReviewSubmitted={handleReviewSubmitted}
               />
             )}

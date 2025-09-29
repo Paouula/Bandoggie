@@ -27,18 +27,26 @@ const ReviewForm = ({ productId, user, onReviewSubmitted }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!user || !user._id) {
+    // Validar usuario
+    if (!user || !user.email) {
       setMessage("❌ Usuario no identificado");
       return;
     }
 
+    // Validar comentario
     if (!comment.trim()) {
       setMessage("❌ El comentario es obligatorio");
       return;
     }
 
+    // Validar longitud mínima del comentario
+    if (comment.trim().length < 10) {
+      setMessage("❌ El comentario debe tener al menos 10 caracteres");
+      return;
+    }
+
     // Validar cantidad de imágenes si hay
-    if (designImages.length > 0 && (designImages.length < 3 || designImages.length > 5)) {
+    if (designImages.length > 0 && designImages.length < 3) {
       setMessage("⚠️ Debes subir entre 3 y 5 imágenes, o ninguna");
       return;
     }
@@ -47,12 +55,12 @@ const ReviewForm = ({ productId, user, onReviewSubmitted }) => {
     setMessage("Enviando reseña...");
     
     try {
-      // Preparar datos de la review - IMPORTANTE: designImages debe ser array de Files o vacío
+      // Preparar datos de la review - usar email
       const reviewData = {
         qualification,
         comment: comment.trim(),
         designImages: designImages, // Array de File objects o array vacío
-        idClient: user.email || user._id, // Enviar el email como idClient
+        email: user.email, // USAR email
         idProduct: productId
       };
 
@@ -61,11 +69,11 @@ const ReviewForm = ({ productId, user, onReviewSubmitted }) => {
         comment: comment.trim(),
         imageCount: designImages.length,
         imageFiles: designImages.map(f => f?.name),
-        idClient: user.email || user._id,
+        email: user.email,
         idProduct: productId
       });
 
-      // Enviar usando el hook - esto construirá el FormData automáticamente
+      // Enviar usando el hook
       const result = await handlePostReviews(reviewData);
       
       console.log("Respuesta del servidor:", result);
@@ -76,6 +84,10 @@ const ReviewForm = ({ productId, user, onReviewSubmitted }) => {
       setQualification(5);
       setComment("");
       setDesignImages([]);
+
+      // Resetear el input de archivos
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
 
       // Notificar al componente padre
       if (onReviewSubmitted) {
@@ -105,14 +117,14 @@ const ReviewForm = ({ productId, user, onReviewSubmitted }) => {
         >
           {[5, 4, 3, 2, 1].map((num) => (
             <option key={num} value={num}>
-              {num} estrellas
+              {num} estrella{num !== 1 ? 's' : ''}
             </option>
           ))}
         </select>
       </label>
 
       <label>
-        Comentario:
+        Comentario (mínimo 10 caracteres):
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -120,7 +132,9 @@ const ReviewForm = ({ productId, user, onReviewSubmitted }) => {
           disabled={isSubmitting}
           placeholder="Escribe tu experiencia con el producto..."
           minLength={10}
+          rows={4}
         />
+        <small>{comment.length} caracteres</small>
       </label>
 
       <label>
@@ -156,7 +170,15 @@ const ReviewForm = ({ productId, user, onReviewSubmitted }) => {
         {isSubmitting ? "Enviando..." : "Enviar reseña"}
       </button>
 
-      {message && <p className="review-message">{message}</p>}
+      {message && (
+        <p className={`review-message ${
+          message.includes('✅') ? 'success' : 
+          message.includes('❌') ? 'error' : 
+          'info'
+        }`}>
+          {message}
+        </p>
+      )}
     </form>
   );
 };
