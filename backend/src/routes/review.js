@@ -15,7 +15,6 @@ const router = Router();
 router.get('/product/:productId', reviewsController.getReviewsByProduct);
 
 // Todas las reseñas de un cliente específico
-router.get('/client/:clientId', reviewsController.getReviewsByClient);
 
 // Todas las reseñas con una calificación específica
 router.get('/qualification/:qualification', reviewsController.getReviewsByQualification);
