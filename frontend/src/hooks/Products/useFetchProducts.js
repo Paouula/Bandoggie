@@ -1,325 +1,225 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-//Importo las funciones globales para realizar el fetch
-import { API_FETCH_FORM, API_FETCH_JSON } from '../../config';
+import { API_FETCH_FORM, API_FETCH_JSON } from '../../config'; 
 
 // Función reutilizable para construir el FormData
 const buildFormData = (productData) => {
-    const {
-        nameProduct,
-        price,
-        description,
-        image,
-        designImages,
-        idHolidayProduct,
-        idCategory
-    } = productData;
+  const {
+    nameProduct,
+    price,
+    description,
+    image,
+    designImages,
+    idHolidayProduct,
+    idCategory,
+  } = productData;
 
-    const formData = new FormData();
-    formData.append('nameProduct', nameProduct);
-    formData.append('price', price);
-    formData.append('description', description);
+  const formData = new FormData();
+  formData.append('nameProduct', nameProduct);
+  formData.append('price', price);
+  formData.append('description', description);
 
-    if (image) {
-        formData.append('image', image);
-    }
+  if (image) {
+    formData.append('image', image);
+  }
 
-    if (Array.isArray(designImages)) {
-        designImages.forEach((file, index) => {
-            formData.append('designImages', file);
-        });
-    }
+  if (Array.isArray(designImages)) {
+    designImages.forEach((file) => {
+      formData.append('designImages', file);
+    });
+  }
 
-    formData.append('idHolidayProduct', idHolidayProduct);
-    formData.append('idCategory', idCategory);
+  formData.append('idHolidayProduct', idHolidayProduct);
+  formData.append('idCategory', idCategory);
 
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ':', pair[1]);
-    }
-
-    return formData;
+  return formData;
 };
 
-//Constante que contendrá los métodos
+// Hook principal
 const useFetchProducts = () => {
-    //Estados para productos y categorías
-    const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    //Declaro el endpoint
-    const endpoint = 'products';
-    const categoriesEndpoint = 'categories';
+  // Endpoints
+  const endpoint = 'products';
+  const categoriesEndpoint = 'categories';
 
-    //Obtiene todos los productos
-    const handleGetProducts = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            
-            const data = await API_FETCH_JSON(endpoint);
-            setProducts(data);
-            console.log("data de productos", data);
-            return data;
-        } catch (error) {
-            setError('Error al obtener los productos');
-            toast.error('Error al obtener los productos');
-            console.log(error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+  // --- Productos ---
+  const handleGetProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    //Obtiene todas las categorías
-    const handleGetCategories = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            
-            const data = await API_FETCH_JSON(categoriesEndpoint);
-            setCategories(data);
-            console.log("data de categorias", data);
-            return data;
-        } catch (error) {
-            setError('Error al obtener las categorías');
-            toast.error('Error al obtener las categorías');
-            console.log(error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+      const data = await API_FETCH_JSON(endpoint);
+      setProducts(data);
+      return data;
+    } catch (err) {
+      setError('Error al obtener los productos');
+      toast.error('Error al obtener los productos');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // Función alternativa usando fetch directo (como en el .jsx)
-    const getProducts = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch('https://bandoggie-production.up.railway.app/api/products');
+  const handlePostProducts = async (productData) => {
+    try {
+      setLoading(true);
+      setError(null);
 
-            if (!response.ok) {
-                toast.error("Error al traer los productos");
-                throw new Error('Error al traer los productos');
-            }
+      const formData = buildFormData(productData);
+      const data = await API_FETCH_FORM(endpoint, formData, { method: 'POST' });
 
-            const data = await response.json();
-            setProducts(data);
-            console.log("data de productos", data);
-            return data;
+      setProducts((prev) => [...prev, data]);
+      toast.success('Producto creado correctamente');
+      return data;
+    } catch (err) {
+      setError('Error al crear el producto');
+      toast.error('Error al crear el producto');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        } catch (error) {
-            setError(error.message);
-            console.log(error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handlePutProducts = async (id, productData) => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    // Función alternativa usando fetch directo para categorías
-    const getCategories = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch('http://localhost:4000/api/categories');
+      const formData = buildFormData(productData);
+      const data = await API_FETCH_FORM(`${endpoint}/${id}`, formData, { method: 'PUT' });
 
-            if (!response.ok) {
-                toast.error("Error al traer las categorias");
-                throw new Error('Error al traer las categorías');
-            }
+      setProducts((prev) =>
+        prev.map((p) => (p._id === id ? data : p))
+      );
+      toast.success('Producto actualizado correctamente');
+      return data;
+    } catch (err) {
+      setError('Error al actualizar el producto');
+      toast.error('Error al actualizar el producto');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            const data = await response.json();
-            setCategories(data);
-            console.log("data de categorias", data);
-            return data;
+  const handleDeleteProducts = async (id) => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        } catch (error) {
-            setError(error.message);
-            console.log(error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+      await API_FETCH_JSON(`${endpoint}/${id}`, { method: 'DELETE' });
 
-    //Crea un nuevo producto
-    const handlePostProducts = async (productData) => {
-        try {
-            setLoading(true);
-            setError(null);
-            
-            const formData = buildFormData(productData);
-            const data = await API_FETCH_FORM(endpoint, formData, {
-                method: 'POST',
-            });
+      setProducts((prev) => prev.filter((p) => p._id !== id));
+      toast.success('Producto eliminado correctamente');
+    } catch (err) {
+      setError('Error al eliminar el producto');
+      toast.error('Error al eliminar el producto');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            // Actualizar la lista de productos localmente
-            setProducts(prevProducts => [...prevProducts, data]);
-            
-            toast.success('Producto creado correctamente');
-            return data;
+  const handleGetProductById = async (id) => {
+    try {
+      setLoading(true);
+      return await API_FETCH_JSON(`${endpoint}/${id}`);
+    } catch (err) {
+      setError('Error al obtener el producto');
+      toast.error('Error al obtener el producto');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        } catch (error) {
-            setError('Error al crear el producto');
-            toast.error('Error al crear el producto');
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleGetProductsByCategory = async (categoryId) => {
+    try {
+      setLoading(true);
+      return await API_FETCH_JSON(`${endpoint}/category/${categoryId}`);
+    } catch (err) {
+      setError('Error al obtener productos por categoría');
+      toast.error('Error al obtener productos por categoría');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    //Actualiza un producto ya existente
-    const handlePutProducts = async (id, productData) => {
-        try {
-            setLoading(true);
-            setError(null);
-            
-            const formData = buildFormData(productData);
-            const data = await API_FETCH_FORM(`${endpoint}/${id}`, formData, {
-                method: 'PUT',
-            });
+  const handleSearchProducts = async (searchTerm) => {
+    try {
+      setLoading(true);
+      return await API_FETCH_JSON(`${endpoint}/search?q=${encodeURIComponent(searchTerm)}`);
+    } catch (err) {
+      setError('Error al buscar productos');
+      toast.error('Error al buscar productos');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            // Actualizar la lista de productos localmente
-            setProducts(prevProducts => 
-                prevProducts.map(product => 
-                    product._id === id ? data : product
-                )
-            );
+  // --- Categorías ---
+  const handleGetCategories = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-            toast.success('Producto actualizado correctamente');
-            return data;
-        } catch (error) {
-            setError('Error al actualizar el producto');
-            toast.error('Error al actualizar el producto');
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+      const data = await API_FETCH_JSON(categoriesEndpoint);
+      setCategories(data);
+      return data;
+    } catch (err) {
+      setError('Error al obtener las categorías');
+      toast.error('Error al obtener las categorías');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    //Elimina un producto
-    const handleDeleteProducts = async (id) => {
-        try {
-            setLoading(true);
-            setError(null);
-            
-            await API_FETCH_JSON(`${endpoint}/${id}`, {
-                method: 'DELETE',
-            });
+  // Recargar datos
+  const refreshData = async () => {
+    try {
+      await Promise.all([handleGetProducts(), handleGetCategories()]);
+    } catch (err) {
+      console.error('Error refreshing data:', err);
+    }
+  };
 
-            // Actualizar la lista de productos localmente
-            setProducts(prevProducts => 
-                prevProducts.filter(product => product._id !== id)
-            );
+  // Al montar el hook
+  useEffect(() => {
+    refreshData();
+  }, []);
 
-            toast.success('Producto eliminado correctamente');
-        } catch (error) {
-            setError('Error al eliminar el producto');
-            toast.error('Error al eliminar el producto');
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+  return {
+    products,
+    setProducts,
+    categories,
+    setCategories,
+    loading,
+    error,
 
-    //Obtener producto por ID
-    const handleGetProductById = async (id) => {
-        try {
-            setLoading(true);
-            setError(null);
-            
-            const data = await API_FETCH_JSON(`${endpoint}/${id}`);
-            return data;
-        } catch (error) {
-            setError('Error al obtener el producto');
-            toast.error('Error al obtener el producto');
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Productos
+    handleGetProducts,
+    handlePostProducts,
+    handlePutProducts,
+    handleDeleteProducts,
+    handleGetProductById,
+    handleGetProductsByCategory,
+    handleSearchProducts,
 
-    //Buscar productos por categoría
-    const handleGetProductsByCategory = async (categoryId) => {
-        try {
-            setLoading(true);
-            setError(null);
-            
-            const data = await API_FETCH_JSON(`${endpoint}/category/${categoryId}`);
-            return data;
-        } catch (error) {
-            setError('Error al obtener productos por categoría');
-            toast.error('Error al obtener productos por categoría');
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Categorías
+    handleGetCategories,
 
-    //Buscar productos por nombre
-    const handleSearchProducts = async (searchTerm) => {
-        try {
-            setLoading(true);
-            setError(null);
-            
-            const data = await API_FETCH_JSON(`${endpoint}/search?q=${encodeURIComponent(searchTerm)}`);
-            return data;
-        } catch (error) {
-            setError('Error al buscar productos');
-            toast.error('Error al buscar productos');
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    //Recargar datos
-    const refreshData = async () => {
-        try {
-            await Promise.all([
-                handleGetProducts(),
-                handleGetCategories()
-            ]);
-        } catch (error) {
-            console.error('Error refreshing data:', error);
-        }
-    };
-
-    // Cargar datos al inicializar el hook
-    useEffect(() => {
-        refreshData();
-    }, []);
-
-    return {
-        // Estados
-        products,
-        setProducts,
-        categories,
-        setCategories,
-        loading,
-        error,
-
-        // Funciones CRUD para productos
-        handlePostProducts,
-        handleGetProducts,
-        handlePutProducts,
-        handleDeleteProducts,
-        handleGetProductById,
-        handleGetProductsByCategory,
-        handleSearchProducts,
-
-        // Funciones para categorías
-        handleGetCategories,
-
-        // Funciones alternativas con fetch directo
-        getProducts,
-        getCategories,
-
-        // Utilidades
-        refreshData,
-        setError,
-        setLoading
-    };
+    // Utilidades
+    refreshData,
+    setError,
+    setLoading,
+  };
 };
 
 export default useFetchProducts;

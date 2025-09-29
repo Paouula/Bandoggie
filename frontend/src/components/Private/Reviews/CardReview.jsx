@@ -63,7 +63,7 @@ const CardReview = ({
         <div className="review-details">
           <div className="detail-item">
             <span className="detail-label">Usuario: </span>
-            <span className="detail-value">{review.idClient?.name}</span>
+            <span className="detail-value">{review.email}</span>
           </div>
           <div className="detail-item">
             <span className="detail-label">Puntuación: </span>
