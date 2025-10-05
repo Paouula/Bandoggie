@@ -54,6 +54,7 @@ passwordRecovery.requestCode = async (req, res) => {
       maxAge: 20 * 60 * 1000,
       httpOnly: true,
       sameSite: 'Lax',
+      secure: true,
     });
 
     // Mandamos el correo con el código para que el hombre pueda continuar
@@ -107,6 +108,7 @@ passwordRecovery.verifyCode = async (req, res) => {
       maxAge: 20 * 60 * 1000,
       httpOnly: true,
       sameSite: 'Lax',
+      secure: true,
     });
 
     return res.status(200).json({ message: 'Código verificado con éxito' });

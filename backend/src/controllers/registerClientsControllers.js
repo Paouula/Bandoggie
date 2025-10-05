@@ -90,7 +90,7 @@ registerController.register = async (req, res) => {
       maxAge: 2 * 60 * 60 * 1000,
       httpOnly: true,
       sameSite: "lax",
-      // secure: true, // en producción con HTTPS habilita esto
+      secure: true, 
     });
 
     // Mandamos correo con el código para que verifique
