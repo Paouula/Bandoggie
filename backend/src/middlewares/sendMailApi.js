@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import { config } from "../config.js";
  
 
- 
+// Función para enviar correo electrónico usando la API de Brevo -- Provicional
 const sendMailAPI = async function enviarCorreo(email) {
   const response = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
