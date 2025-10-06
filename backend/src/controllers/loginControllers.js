@@ -110,12 +110,13 @@ loginController.login = async (req, res) => {
     );
 
     // Guardamos token en una cookie httpOnly (no se puede leer desde JS del navegador)
-    res.cookie("authToken", token, { httpOnly: true, sameSite: "lax", secure: true });
+    res.cookie("authToken", token, {
+      httpOnly: true, sameSite: "lax", secure: true, sameSite: "none",
+    });
     return res.status(200).json({
       message: "Login exitoso",
       userType,
       user: buildUserResponse(userFound, userType),
-      secure: true,
     });
   } catch (err) {
     console.error("Error en login:", err);
@@ -182,7 +183,7 @@ loginController.updateProfile = async (req, res) => {
 // (esto es super util cuando quieres cerrar sesion desde el front)
 loginController.logout = (req, res) => {
   try {
-    res.clearCookie("authToken", { httpOnly: true, sameSite: "lax", secure: true });
+    res.clearCookie("authToken", { httpOnly: true, sameSite: "none", secure: true });
     return res.status(200).json({ message: "Logout exitoso" });
   } catch (err) {
     console.error("Error en logout:", err);

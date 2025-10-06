@@ -53,7 +53,7 @@ passwordRecovery.requestCode = async (req, res) => {
     res.cookie('tokenRecoveryCode', token, {
       maxAge: 20 * 60 * 1000,
       httpOnly: true,
-      sameSite: 'Lax',
+      sameSite: 'none',
       secure: true,
     });
 
@@ -107,7 +107,7 @@ passwordRecovery.verifyCode = async (req, res) => {
     res.cookie('tokenRecoveryCode', newToken, {
       maxAge: 20 * 60 * 1000,
       httpOnly: true,
-      sameSite: 'Lax',
+      sameSite: 'none',
       secure: true,
     });
 
