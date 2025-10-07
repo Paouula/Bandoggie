@@ -6,7 +6,7 @@ export const sendBankingMail = async (to, customerName, totalAmount, orderNumber
   try {
     if (!to || !customerName || !totalAmount) {
       throw new Error("Parámetros faltantes para enviar el correo.");
-    }
+    } //prueba
 
     const html = HTMLSimpleBankingEmail(customerName, totalAmount, orderNumber);
     const formattedAmount = parseFloat(totalAmount).toFixed(2);
