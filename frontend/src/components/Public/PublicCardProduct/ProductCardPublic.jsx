@@ -10,7 +10,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="product-card cursor-pointer" onClick={handleClick}>
+    <div className="product-card-public cursor-pointer" onClick={handleClick}>
       <div className="product-image">
         <img src={product.image} alt={product.nameProduct} />
       </div>

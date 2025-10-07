@@ -74,7 +74,7 @@
 /*coso*/
 
 /* Tarjeta de producto */
-.product-card {
+.product-card-public {
   border: 1px solid #e5e7eb !important;
   border-radius: 12px !important;
   background: white !important;
@@ -90,16 +90,16 @@
 }
 
 /* Forzar fondo blanco en todos los elementos hijos */
-.product-card,
-.product-card *:not(.product-image img),
-.product-card::before,
-.product-card::after {
+.product-card-public,
+.product-card-public *:not(.product-image img),
+.product-card-public::before,
+.product-card-public::after {
   background: white !important;
   background-color: white !important;
   background-image: none !important;
 }
 
-.product-card:hover {
+.product-card-public:hover {
   transform: translateY(-2px) !important;
   border-color: #d1d5db !important;
   background: white !important;
@@ -133,7 +133,7 @@
 
 /* Responsive para móviles pequeños */
 @media (max-width: 374px) {
-  .product-card {
+  .product-card-public {
     padding: 8px !important;
   }
   
@@ -151,7 +151,7 @@
 
 /* Responsive para móviles */
 @media (min-width: 375px) and (max-width: 480px) {
-  .product-card {
+  .product-card-public {
     padding: 10px !important;
   }
 
@@ -169,7 +169,7 @@
 
 /* Responsive para móviles grandes y tablets pequeños */
 @media (min-width: 481px) and (max-width: 640px) {
-  .product-card {
+  .product-card-public {
     padding: 12px !important;
   }
 
@@ -186,7 +186,7 @@
 
 /* Responsive para tablets */
 @media (min-width: 641px) and (max-width: 768px) {
-  .product-card {
+  .product-card-public {
     padding: 14px !important;
   }
 
@@ -203,7 +203,7 @@
 
 /* Responsive para tablets grandes */
 @media (min-width: 769px) and (max-width: 1023px) {
-  .product-card {
+  .product-card-public {
     padding: 16px !important;
   }
 
@@ -220,7 +220,7 @@
 
 /* Desktop */
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .product-card {
+  .product-card-public {
     padding: 16px !important;
   }
 
@@ -237,7 +237,7 @@
 
 /* Desktop grande */
 @media (min-width: 1280px) {
-  .product-card {
+  .product-card-public {
     padding: 18px !important;
   }
 
