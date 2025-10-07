@@ -1,113 +1,191 @@
-import { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
-import { API_FETCH_JSON } from '../../config.js';
+import React from 'react';
+import { Edit2, Save, X, User } from 'lucide-react';
 import './ProfileCard.css';
 
-// Hook para obtener y manejar los datos del usuario autenticado
-const useFetchUser = () => {
-    const [userInfo, setUserInfo] = useState({
-        name: '',
-        email: '',
-        birthDate: '',
-        phone: '',
-        password: '',
-        userType: null
-    });
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+const ProfileCard = ({
+  userInfo,
+  isEditing,
+  onInputChange,
+  onEditToggle,
+  onUpdateProfile,
+  isLoading,
+  isAuthenticated
+}) => {
+  const handleSave = async () => {
+    const success = await onUpdateProfile(userInfo);
+    if (success) {
+      onEditToggle();
+    }
+  };
 
-    // Función para obtener los datos del usuario autenticado
-    const fetchUserData = async () => {
-        try {
-            setIsLoading(true);
-            // Endpoint corregido según tu estructura de rutas
-            const data = await API_FETCH_JSON('login/auth/me', {
-                method: 'GET',
-                headers: { "Content-Type": "application/json" },
-                credentials: 'include' // Importante para enviar las cookies
-            });
+  if (!isAuthenticated || !userInfo) {
+    return (
+      <div className="profile-card">
+        <p>No autenticado</p>
+      </div>
+    );
+  }
 
-            console.log('User data received:', data); // Para debugging
+  return (
+    <div className="profile-card">
+      <div className="profile-header">
+        <div className="profile-image-container">
+          {userInfo.image ? (
+            <img 
+              src={userInfo.image} 
+              alt={userInfo.name || 'Usuario'} 
+              className="profile-image" 
+            />
+          ) : (
+            <div className="profile-image-placeholder">
+              <User size={40} />
+            </div>
+          )}
+        </div>
+        
+        <div className="profile-actions">
+          {!isEditing ? (
+            <button onClick={onEditToggle} className="btn-edit">
+              <Edit2 size={16} />
+              Editar
+            </button>
+          ) : (
+            <>
+              <button 
+                onClick={handleSave} 
+                className="btn-save" 
+                disabled={isLoading}
+              >
+                <Save size={16} />
+                {isLoading ? 'Guardando...' : 'Guardar'}
+              </button>
+              <button onClick={onEditToggle} className="btn-cancel">
+                <X size={16} />
+                Cancelar
+              </button>
+            </>
+          )}
+        </div>
+      </div>
 
-            if (data.user) {
-                setUserInfo(prevState => ({
-                    ...prevState,
-                    name: data.user.name || '',
-                    email: data.user.email || '',
-                    userType: data.user.userType || null,
-                    // Mantener campos adicionales si existen
-                    birthDate: data.user.birthDate || prevState.birthDate,
-                    phone: data.user.phone || prevState.phone
-                }));
-                setIsAuthenticated(true);
-            } else {
-                // Si no hay datos de usuario, no está autenticado
-                setIsAuthenticated(false);
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            setIsAuthenticated(false);
-            
-            // Solo mostrar error si no es un problema de autenticación
-            if (error.message && !error.message.includes('401') && !error.message.includes('No autenticado')) {
-                toast.error('Error al cargar datos del usuario');
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      <div className="profile-info">
+        <div className="info-field">
+          <label>Nombre</label>
+          {isEditing ? (
+            <input
+              type="text"
+              value={userInfo.name || ''}
+              onChange={(e) => onInputChange('name', e.target.value)}
+              placeholder="Ingresa tu nombre"
+            />
+          ) : (
+            <p>{userInfo.name || 'No especificado'}</p>
+          )}
+        </div>
 
-    // Función para actualizar datos del usuario
-    const updateUserData = async (updatedData) => {
-        try {
-            const endpoint = `users/${userInfo.userType}/${userInfo.id}`; // Ajustar según tu API
-            const data = await API_FETCH_JSON(endpoint, {
-                method: 'PUT',
-                headers: { "Content-Type": "application/json" },
-                body: updatedData
-            });
+        <div className="info-field">
+          <label>Email</label>
+          {isEditing ? (
+            <input
+              type="email"
+              value={userInfo.email || ''}
+              onChange={(e) => onInputChange('email', e.target.value)}
+              placeholder="correo@ejemplo.com"
+            />
+          ) : (
+            <p>{userInfo.email || 'No especificado'}</p>
+          )}
+        </div>
 
-            if (data.success) {
-                setUserInfo(prevState => ({
-                    ...prevState,
-                    ...updatedData
-                }));
-                toast.success('Datos actualizados correctamente');
-                return true;
-            }
-        } catch (error) {
-            console.error('Error updating user data:', error);
-            toast.error('Error al actualizar los datos');
-            return false;
-        }
-    };
+        <div className="info-field">
+          <label>Teléfono</label>
+          {isEditing ? (
+            <input
+              type="tel"
+              value={userInfo.phone || ''}
+              onChange={(e) => onInputChange('phone', e.target.value)}
+              placeholder="1234-5678"
+            />
+          ) : (
+            <p>{userInfo.phone || 'No especificado'}</p>
+          )}
+        </div>
 
-    // Función para manejar cambios en los campos del formulario
-    const handleInputChange = (field, value) => {
-        setUserInfo(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
+        <div className="info-field">
+          <label>Dirección</label>
+          {isEditing ? (
+            <input
+              type="text"
+              value={userInfo.address || ''}
+              onChange={(e) => onInputChange('address', e.target.value)}
+              placeholder="Tu dirección"
+            />
+          ) : (
+            <p>{userInfo.address || 'No especificado'}</p>
+          )}
+        </div>
 
-    // Cargar datos del usuario al montar el componente
-    useEffect(() => {
-        fetchUserData();
-    }, []);
+        {/* Campos específicos para clientes */}
+        {userInfo.userType === 'client' && (
+          <div className="info-field">
+            <label>Fecha de Nacimiento</label>
+            {isEditing ? (
+              <input
+                type="date"
+                value={userInfo.birthday || userInfo.birthDate || ''}
+                onChange={(e) => onInputChange('birthday', e.target.value)}
+              />
+            ) : (
+              <p>{userInfo.birthday || userInfo.birthDate || 'No especificado'}</p>
+            )}
+          </div>
+        )}
 
-    // Función para refrescar los datos (útil después del login)
-    const refreshUserData = () => {
-        fetchUserData();
-    };
+        {/* Campos específicos para veterinarios */}
+        {userInfo.userType === 'vet' && (
+          <>
+            <div className="info-field">
+              <label>Ubicación de Consultorio</label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={userInfo.locationVet || ''}
+                  onChange={(e) => onInputChange('locationVet', e.target.value)}
+                  placeholder="Ubicación del consultorio"
+                />
+              ) : (
+                <p>{userInfo.locationVet || 'No especificado'}</p>
+              )}
+            </div>
+            <div className="info-field">
+              <label>NIT</label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={userInfo.nitVet || ''}
+                  onChange={(e) => onInputChange('nitVet', e.target.value)}
+                  placeholder="NIT del consultorio"
+                />
+              ) : (
+                <p>{userInfo.nitVet || 'No especificado'}</p>
+              )}
+            </div>
+          </>
+        )}
 
-    return {
-        userInfo,
-        isLoading,
-        isAuthenticated,
-        handleInputChange,
-        updateUserData,
-        refreshUserData
-    };
+        <div className="info-field">
+          <label>Tipo de Usuario</label>
+          <div className="user-type-badge-container">
+            <span className={`user-type-badge ${userInfo.userType}`}>
+              {userInfo.userType === 'client' && '👤 Cliente'}
+              {userInfo.userType === 'employee' && '👔 Empleado'}
+              {userInfo.userType === 'vet' && '🩺 Veterinario'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default useFetchUser;
+export default ProfileCard;
