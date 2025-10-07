@@ -178,7 +178,6 @@ const UserProfile = () => {
       <div className="user-profile">
         <div className="auth-placeholder">
           <h2>Por favor, inicia sesión para ver tu perfil</h2>
-          <p>Necesitas estar autenticado para acceder a esta página.</p>
           <button 
             onClick={fetchUserData}
             style={{
