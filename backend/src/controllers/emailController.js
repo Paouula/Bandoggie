@@ -1,4 +1,4 @@
-import { sendMail, HTMLSimpleBankingEmail } from '../utils/bankingEmail.js';
+ import { sendMail, HTMLSimpleBankingEmail } from '../utils/bankingEmails.js';
 import validator from 'validator';
 
 // Crear el objeto emailController
