@@ -1,4 +1,4 @@
-import sendMailAPI from "./sendMailAPI.js"; 
+import sendMailAPI from "../middlewares/sendMailApi.js"; 
 import { config } from "../config.js";
 
 // FUNCIÓN PARA ENVIAR CORREO USANDO LA API DE BREVO
