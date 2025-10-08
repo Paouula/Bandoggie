@@ -25,13 +25,6 @@ const Banner = ({
 
   return (
     <div className="hero" style={heroStyles}>
-      {/* Flechas de navegación */}
-      <button className="hero-nav-button prev">
-        <ChevronLeft size={24} />
-      </button>
-      <button className="hero-nav-button next">
-        <ChevronRight size={24} />
-      </button>
       
       <div className="hero-content">
         <div className="hero-text">

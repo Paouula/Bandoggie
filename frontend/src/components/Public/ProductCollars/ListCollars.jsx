@@ -5,7 +5,7 @@ const ListCollars = ({ Collars }) => {
   console.log("Collars que llegan al componente:", Collars);
 
   return (
-    <div className="product-grid">
+    <div className="public-product-grid-container">
         {Array.isArray(Collars) && Collars.length > 0 ? (
             Collars.map((product) => (
             <ProductCard key={product._id} product={product} />
