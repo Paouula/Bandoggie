@@ -52,14 +52,16 @@ const buildUserResponse = (user, type) => {
 
 // -------------------------- LOGIN --------------------------
 loginController.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, emailVerified } = req.body;
 
   // Validaciones basicas de email y password (acá evitamos basura en la entrada)
   if (!email || !validator.isEmail(email))
     return res.status(400).json({ message: "Correo electrónico inválido o faltante" });
   if (!password || password.length < 8)
     return res.status(400).json({ message: "La contraseña es obligatoria y debe tener al menos 8 caracteres" });
-
+  if (emailVerified === false)
+    return res.status(400).json({ message: "Por favor, verifica tu correo electrónico antes de iniciar sesión" });
+  
   try {
     let userFound, userType;
     // Buscamos al usuario en cada colección (empleados, vets y clientes)
