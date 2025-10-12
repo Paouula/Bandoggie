@@ -8,16 +8,19 @@ import {
   Settings,
   Shield,
   Stethoscope,
-  ChevronRight
+  ChevronRight,
+  ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import ProfileCard from '../../../components/Profile/ProfileCard';
 import { API_FETCH_JSON } from '../../../config';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import './UserProfile.css';
 
 const UserProfile = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -121,6 +124,10 @@ const UserProfile = () => {
     return success;
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   useEffect(() => {
     if (user) {
       fetchUserDetails();
@@ -164,6 +171,12 @@ const UserProfile = () => {
 
   return (
     <div className="user-profile">
+      {/* Botón de regreso */}
+      <button onClick={handleGoBack} className="back-button">
+        <ArrowLeft className="back-icon" size={20} />
+        <span>Regresar</span>
+      </button>
+
       {/* Mensaje de bienvenida */}
       <div className="welcome-section">
         <h1 className="welcome-message">{getWelcomeMessage()}</h1>
