@@ -4,7 +4,6 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import fs from "fs";
-import cron from "node-cron";
 import path from "path";
 
 // Rutas de verificación y recuperación de usuarios
@@ -34,7 +33,6 @@ import ordersRoutes from "./src/routes/orders.js";
 import guestWholesalers from './src/routes/wholesalersPurchase.js';
 import guestClients from './src/routes/retailsPurchase.js';
 
-import { deleteUnverifiedUsers } from "./src/controllers/cleanupControllers.js";
 
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -46,10 +44,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
-cron.schedule("0 0 * * *", async () => {
-  console.log("Ejecutando limpieza diaria de usuarios no verificados...");
-  await deleteUnverifiedUsers();
-});
+
 
 // Rutas de verificación y recuperación de usuarios
 app.use('/api/register', registerRoutes);
