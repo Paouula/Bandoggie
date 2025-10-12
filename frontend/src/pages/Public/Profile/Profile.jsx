@@ -182,54 +182,60 @@ const UserProfile = () => {
         <h1 className="welcome-message">{getWelcomeMessage()}</h1>
       </div>
 
-      {/* Tarjeta de perfil */}
-      <div className="profile-container">
-        <ProfileCard
-          userInfo={userDetails || user}
-          isEditing={isEditing}
-          onInputChange={handleInputChange}
-          onEditToggle={handleEditToggle}
-          onUpdateProfile={handleUpdateProfile}
-          isLoading={isLoading}
-          isAuthenticated={!!user}
-        />
-      </div>
-
-      {/* Menú de opciones según el rol */}
-      <div className="menu-section">
-        <h2 className="menu-title">Opciones</h2>
-        <div className="menu-list">
-          {menuConfig[currentRole]?.map((item) => (
-            <button key={item.id} className="menu-item">
-              <div className="menu-item-content">
-                {item.icon}
-                <span className="menu-text">{item.text}</span>
-                {item.badge && (
-                  <span className="menu-badge">{item.badge}</span>
-                )}
-              </div>
-              {item.hasArrow && <ChevronRight className="menu-arrow" size={20} />}
-            </button>
-          ))}
+      {/* Layout horizontal: Perfil a la izquierda, contenido a la derecha */}
+      <div className="profile-and-content-wrapper">
+        {/* Tarjeta de perfil - Columna Izquierda */}
+        <div className="profile-container">
+          <ProfileCard
+            userInfo={userDetails || user}
+            isEditing={isEditing}
+            onInputChange={handleInputChange}
+            onEditToggle={handleEditToggle}
+            onUpdateProfile={handleUpdateProfile}
+            isLoading={isLoading}
+            isAuthenticated={!!user}
+          />
         </div>
-      </div>
 
-      {/* Información adicional */}
-      <div className="info-section">
-        <div className="info-card">
-          <h3>Tipo de cuenta</h3>
-          <p className="user-type-display">
-            {currentRole === 'client' && '👤 Cliente'}
-            {currentRole === 'employee' && '👔 Empleado'}
-            {currentRole === 'vet' && '🩺 Veterinario'}
-          </p>
-        </div>
-        
-        {/* Botón de cerrar sesión */}
-        <div className="logout-section">
-          <button onClick={logout} className="logout-button">
-            Cerrar sesión
-          </button>
+        {/* Contenido principal - Columna Derecha */}
+        <div className="content-wrapper">
+          {/* Menú de opciones según el rol */}
+          <div className="menu-section">
+            <h2 className="menu-title">Opciones</h2>
+            <div className="menu-list">
+              {menuConfig[currentRole]?.map((item) => (
+                <button key={item.id} className="menu-item">
+                  <div className="menu-item-content">
+                    {item.icon}
+                    <span className="menu-text">{item.text}</span>
+                    {item.badge && (
+                      <span className="menu-badge">{item.badge}</span>
+                    )}
+                  </div>
+                  {item.hasArrow && <ChevronRight className="menu-arrow" size={20} />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Información adicional */}
+          <div className="info-section">
+            <div className="info-card">
+              <h3>Tipo de cuenta</h3>
+              <p className="user-type-display">
+                {currentRole === 'client' && 'Cliente'}
+                {currentRole === 'employee' && 'Empleado'}
+                {currentRole === 'vet' && ' Veterinario'}
+              </p>
+            </div>
+            
+            {/* Botón de cerrar sesión */}
+            <div className="logout-section">
+              <button onClick={logout} className="logout-button">
+                Cerrar sesión
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
