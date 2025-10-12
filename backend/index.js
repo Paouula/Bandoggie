@@ -12,7 +12,7 @@ import "./database.js";
 //Importo el archivo config 
 import { config } from "./src/config.js";
 
-cron.schedule("15 21 * * *", async () => {
+cron.schedule("0 0 * * *", async () => {
   console.log("Ejecutando limpieza diaria de usuarios no verificados...");
   await deleteUnverifiedUsers();
 });

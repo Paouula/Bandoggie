@@ -585,24 +585,7 @@ const ShoppingCartApp = ({ onClose }) => {
 
   // Productos recomendados simulados
   const recommendedProducts = [
-    {
-      _id: 'rec1',
-      nameProduct: 'Collar Navideño',
-      price: 15.99,
-      image: null
-    },
-    {
-      _id: 'rec2', 
-      nameProduct: 'Bandana Especial',
-      price: 12.50,
-      image: null
-    },
-    {
-      _id: 'rec3',
-      nameProduct: 'Accesorio Premium',
-      price: 25.00,
-      image: null
-    }
+    
   ];
 
   // Componente de Resumen del Carrito

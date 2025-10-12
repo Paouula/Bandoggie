@@ -111,19 +111,7 @@ const ProfileCard = ({
           )}
         </div>
 
-        <div className="info-field">
-          <label>Dirección</label>
-          {isEditing ? (
-            <input
-              type="text"
-              value={userInfo.address || ''}
-              onChange={(e) => onInputChange('address', e.target.value)}
-              placeholder="Tu dirección"
-            />
-          ) : (
-            <p>{userInfo.address || 'No especificado'}</p>
-          )}
-        </div>
+        
 
         {/* Campos específicos para clientes */}
         {userInfo.userType === 'client' && (
