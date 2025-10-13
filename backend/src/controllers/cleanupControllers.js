@@ -1,4 +1,3 @@
-// controllers/cleanupController.js
 import clientsModel from "../models/client.js";
 import VetModel from "../models/Vets.js";
 

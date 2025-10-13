@@ -1,25 +1,33 @@
-// importar la libreria moongoose
-import mongoose, { connect } from "mongoose";
-// Importo mi archivo config con todas las variables
+//Import mongoose y config
+import mongoose from "mongoose";
 import { config } from "./src/config.js";
 
-// 2- Conecto la base de datos
-mongoose.connect(config.db.URI);
+export const connectDB = async () => {
+  // 2- Conecto la base de datos
+  try {
+    await mongoose.connect(config.db.URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
-// -------------- Comprobar que todo funcione --------------
+    // 3- Creo una constante que es igual a la conexion
+    const connection = mongoose.connection;
 
-// 3- Creo una constante que es igual a la conexion
-const connection = mongoose.connection;
+    connection.once("open", () => {
+      console.log("✅ DB is connected");
+    });
 
-connection.once("open", () => {
-  console.log("DB is connected");
-});
+    connection.on("disconnected", () => {
+      console.log("⚠️ DB is disconnected");
+    });
 
-connection.on("disconnected", () => {
-  console.log("Db is disconnected");
-});
+    connection.on("error", (error) => {
+      console.error("❌ Error found: " + error);
+    });
 
-// Veo si hay un error
-connection.on("error", (error) => {
-  console.log("error found" + error);
-});
+    return connection;
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    throw error;
+  }
+};
