@@ -5,10 +5,7 @@ import { config } from "./src/config.js";
 export const connectDB = async () => {
   // 2- Conecto la base de datos
   try {
-    await mongoose.connect(config.db.URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(config.db.URI);
 
     // 3- Creo una constante que es igual a la conexion
     const connection = mongoose.connection;
