@@ -10,7 +10,7 @@ async function main() {
     await connectDB();
 
     // Programar la tarea CRON (una vez la BD esté conectada)
-    cron.schedule("* * * * *", async () => {
+    cron.schedule("0 0 * * *", async () => {
       console.log(" Ejecutando limpieza diaria de usuarios no verificados...");
       await deleteUnverifiedUsers();
     });
