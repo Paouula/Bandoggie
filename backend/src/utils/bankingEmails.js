@@ -1,9 +1,13 @@
-import sendMailAPI from "../middlewares/sendMailApi.js"; 
-import { config } from "../config.js";
+import { gmailTransporter, config } from "../config.js";
 
-// FUNCIÓN PARA ENVIAR CORREO USANDO LA API DE BREVO
+// ✅ FUNCIÓN PARA ENVIAR CORREO DIRECTAMENTE CON GMAIL
 export const sendBankingMail = async (to, customerName, totalAmount, orderNumber = null) => {
   try {
+    console.log('📧 Preparando email bancario...');
+    console.log(`   Destinatario: ${to}`);
+    console.log(`   Cliente: ${customerName}`);
+    console.log(`   Monto: $${totalAmount}`);
+
     if (!to || !customerName || !totalAmount) {
       throw new Error("Parámetros faltantes para enviar el correo.");
     }
@@ -33,19 +37,34 @@ Gracias por tu compra en BanDoggie.
 Gracias por confiar en BanDoggie. 🐾
     `.trim();
 
-    const result = await sendMailAPI({
-      to,
+    // ✅ Enviar directamente con Gmail
+    const mailOptions = {
+      from: {
+        name: 'BanDoggie',
+        address: config.email.email_user
+      },
+      to: to,
       subject: "📩 Datos para Transferencia - BanDoggie",
-      htmlContent: html,
-      textContent: text,
-      senderName: "BanDoggie",
-      senderEmail: config.email.email_user, 
-      recipientName: customerName,
-    });
+      text: text,
+      html: html
+    };
 
-    return result;
+    console.log('📤 Enviando email...');
+    
+    const result = await gmailTransporter.sendMail(mailOptions);
+
+    console.log('✅ Email enviado exitosamente');
+    console.log(`   Message ID: ${result.messageId}`);
+    
+    return {
+      success: true,
+      messageId: result.messageId,
+      accepted: result.accepted,
+      response: result.response
+    };
+
   } catch (error) {
-    console.error("❌ Error al enviar el correo de datos bancarios:", error);
+    console.error("❌ Error al enviar el correo:", error.message);
     throw error;
   }
 };

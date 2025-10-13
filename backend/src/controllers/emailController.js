@@ -3,14 +3,17 @@ import validator from 'validator';
 
 const emailController = {};
 
+// ✅ ENVIAR EMAIL BANCARIO DIRECTO CON GMAIL
 emailController.sendSimpleBankingEmail = async (req, res) => {
   try {
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('📧 Iniciando envío de email bancario...');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('📥 Request body:', JSON.stringify(req.body, null, 2));
     
     const { customerName, email, totalAmount, orderNumber } = req.body;
 
-    // ✅ Validaciones mejoradas
+    // Validaciones
     if (!customerName || !email || totalAmount === undefined || totalAmount === null) {
       console.error('❌ Datos faltantes:', { customerName, email, totalAmount });
       return res.status(400).json({
@@ -46,8 +49,9 @@ emailController.sendSimpleBankingEmail = async (req, res) => {
     console.log('  - Cliente:', customerName);
     console.log('  - Monto:', `$${amount.toFixed(2)}`);
     console.log('  - Referencia:', shortReference);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    // ✅ Llamar a sendBankingMail con los parámetros correctos
+    // ✅ Llamar a sendBankingMail
     const info = await sendBankingMail(
       email,           // to
       customerName,    // customerName
@@ -55,11 +59,12 @@ emailController.sendSimpleBankingEmail = async (req, res) => {
       shortReference   // orderNumber
     );
 
-    console.log('✅ Email enviado exitosamente:', {
-      messageId: info.messageId,
-      to: email,
-      timestamp: new Date().toISOString()
-    });
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('✅ Email enviado exitosamente');
+    console.log('  - Message ID:', info.messageId);
+    console.log('  - Destinatario:', email);
+    console.log('  - Timestamp:', new Date().toISOString());
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     res.status(200).json({
       success: true,
@@ -70,18 +75,21 @@ emailController.sendSimpleBankingEmail = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error enviando email bancario:', error);
-    console.error('Stack trace:', error.stack);
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('❌ Error enviando email bancario');
+    console.error('  Error:', error.message);
+    console.error('  Stack:', error.stack);
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     
     let errorMessage = 'Error interno del servidor';
     let statusCode = 500;
 
-    // Manejo específico de errores
+    // Manejo específico de errores de Gmail
     if (error.code === 'EAUTH') {
-      errorMessage = 'Error de autenticación con el servicio de email';
+      errorMessage = 'Error de autenticación con Gmail';
       statusCode = 401;
     } else if (error.code === 'ECONNECTION' || error.code === 'ETIMEDOUT') {
-      errorMessage = 'Error de conexión con el servidor de email';
+      errorMessage = 'Error de conexión con Gmail';
       statusCode = 503;
     } else if (error.responseCode === 550) {
       errorMessage = 'Email del destinatario no válido o rechazado';
