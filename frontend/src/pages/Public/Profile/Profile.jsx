@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+//  AGREGADO: Importar useNavigate para la navegación entre páginas
+import { useNavigate } from 'react-router-dom';
 import {
   Package,
   MessageCircle,
@@ -18,6 +20,8 @@ import './UserProfile.css';
 
 const UserProfile = () => {
   const { user, logout } = useAuth();
+  //  AGREGADO: Hook para navegar programáticamente a otras rutas
+  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -44,6 +48,19 @@ const UserProfile = () => {
     ]
   };
 
+  // ✅ AGREGADO: Función para manejar los clics en las opciones del menú
+  // Navega a la página correspondiente según el texto del item clickeado
+  const handleMenuClick = (itemText) => {
+    // Si es "Tus pedidos" (cliente) o "Gestión de Pedidos" (empleado)
+    if (itemText === 'Tus pedidos' || itemText === 'Gestión de Pedidos') {
+      // Navegar a la página de historial de pedidos
+      navigate('/order-history');
+    } else {
+      // Para las demás opciones, mostrar un mensaje temporal
+      toast.info('Esta sección estará disponible próximamente');
+    }
+  };
+
   // Obtener detalles completos del usuario
   const fetchUserDetails = async () => {
     try {
@@ -55,11 +72,11 @@ const UserProfile = () => {
       });
 
       if (data?.user) {
-        console.log(' Detalles del usuario obtenidos:', data.user);
+        console.log('✅ Detalles del usuario obtenidos:', data.user);
         setUserDetails(data.user);
       }
     } catch (error) {
-      console.error(' Error al obtener detalles del usuario:', error);
+      console.error('❌ Error al obtener detalles del usuario:', error);
       toast.error('Error al cargar los datos del perfil');
     } finally {
       setIsLoading(false);
@@ -187,7 +204,13 @@ const UserProfile = () => {
         <h2 className="menu-title">Opciones</h2>
         <div className="menu-list">
           {menuConfig[currentRole]?.map((item) => (
-            <button key={item.id} className="menu-item">
+            <button 
+              key={item.id} 
+              className="menu-item"
+              // ✅ AGREGADO: onClick para manejar la navegación al hacer clic
+              // Llama a handleMenuClick pasando el texto del item para determinar a dónde navegar
+              onClick={() => handleMenuClick(item.text)}
+            >
               <div className="menu-item-content">
                 {item.icon}
                 <span className="menu-text">{item.text}</span>
@@ -207,7 +230,7 @@ const UserProfile = () => {
           <h3>Tipo de cuenta</h3>
           <p className="user-type-display">
             {currentRole === 'client' && '👤 Cliente'}
-            {currentRole === 'employee' && '👔 Empleado'}
+            {currentRole === 'employee' && '💼 Empleado'}
             {currentRole === 'vet' && '🩺 Veterinario'}
           </p>
         </div>

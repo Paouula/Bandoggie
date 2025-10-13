@@ -1,19 +1,17 @@
- import { sendBankingMail, HTMLSimpleBankingEmail } from '../utils/bankingEmails.js';
+import { sendBankingMail } from '../utils/bankingEmails.js';
 import validator from 'validator';
 
-// Crear el objeto emailController
 const emailController = {};
 
-// Método simplificado para envío de email bancario
 emailController.sendSimpleBankingEmail = async (req, res) => {
   try {
-    console.log('📧 Iniciando envío de email bancario simplificado...');
-    console.log('📥 Request body:', req.body);
+    console.log('📧 Iniciando envío de email bancario...');
+    console.log('📥 Request body:', JSON.stringify(req.body, null, 2));
     
     const { customerName, email, totalAmount, orderNumber } = req.body;
 
-    // Validaciones mejoradas
-    if (!customerName || !email || !totalAmount) {
+    // ✅ Validaciones mejoradas
+    if (!customerName || !email || totalAmount === undefined || totalAmount === null) {
       console.error('❌ Datos faltantes:', { customerName, email, totalAmount });
       return res.status(400).json({
         success: false,
@@ -30,7 +28,7 @@ emailController.sendSimpleBankingEmail = async (req, res) => {
       });
     }
 
-    // Validar totalAmount
+    // Validar monto
     const amount = parseFloat(totalAmount);
     if (isNaN(amount) || amount <= 0) {
       console.error('❌ Monto inválido:', totalAmount);
@@ -40,56 +38,21 @@ emailController.sendSimpleBankingEmail = async (req, res) => {
       });
     }
 
-    console.log('📤 Enviando email a:', email);
-    console.log('💰 Monto:', amount);
-    console.log('📋 Referencia:', orderNumber);
+    // Generar referencia si no existe
+    const shortReference = orderNumber || `ORD-${Date.now().toString().slice(-8)}`;
 
-    // Generar referencia corta si no existe
-    const shortReference = orderNumber || `REF${Date.now().toString().slice(-6)}`;
+    console.log('📤 Parámetros validados:');
+    console.log('  - Email destino:', email);
+    console.log('  - Cliente:', customerName);
+    console.log('  - Monto:', `$${amount.toFixed(2)}`);
+    console.log('  - Referencia:', shortReference);
 
-    // Texto plano del email (MEJORADO)
-    const textContent = `
-Hola ${customerName},
-
-¡Gracias por tu compra en BanDoggie!
-
-DATOS PARA TRANSFERENCIA BANCARIA:
-=====================================
-Banco: Banco Agrícola
-Tipo de cuenta: Cuenta de Ahorro
-Número de cuenta: 3680297372
-Titular: XIOMARA CASTILLO
-Monto a transferir: $${amount.toFixed(2)}
-
-Número de referencia: ${shortReference}
-
-INSTRUCCIONES:
-- Realiza la transferencia por el monto exacto
-- Conserva el comprobante de transferencia
-- Una vez realizada, nos comunicaremos contigo para coordinar la entrega
-- Tiempo de procesamiento: 24-48 horas hábiles
-
-¡Gracias por confiar en BanDoggie!
-
----
-© 2024 BanDoggie - Cuidamos a tu mejor amigo
-    `.trim();
-
-    // Generar HTML del email
-    console.log('🎨 Generando template HTML...');
-    const htmlContent = HTMLSimpleBankingEmail(customerName, amount, shortReference);
-    
-    console.log('📮 Configuración del email preparada');
-    console.log('📧 Destinatario:', email);
-    console.log('📝 Asunto: Datos para transferencia bancaria - BanDoggie');
-    console.log('🎨 HTML generado:', htmlContent.length, 'caracteres');
-
-    // Enviar el email usando la función importada
+    // ✅ Llamar a sendBankingMail con los parámetros correctos
     const info = await sendBankingMail(
-      email,
-      'Datos para transferencia bancaria - BanDoggie',
-      textContent,
-      htmlContent
+      email,           // to
+      customerName,    // customerName
+      amount,          // totalAmount
+      shortReference   // orderNumber
     );
 
     console.log('✅ Email enviado exitosamente:', {
@@ -108,32 +71,31 @@ INSTRUCCIONES:
 
   } catch (error) {
     console.error('❌ Error enviando email bancario:', error);
+    console.error('Stack trace:', error.stack);
     
     let errorMessage = 'Error interno del servidor';
     let statusCode = 500;
 
-    // Manejo específico de errores de nodemailer
+    // Manejo específico de errores
     if (error.code === 'EAUTH') {
-      errorMessage = 'Error de autenticación con Gmail. Verificar credenciales.';
+      errorMessage = 'Error de autenticación con el servicio de email';
       statusCode = 401;
-    } else if (error.code === 'ECONNECTION') {
-      errorMessage = 'Error de conexión con el servidor de Gmail';
+    } else if (error.code === 'ECONNECTION' || error.code === 'ETIMEDOUT') {
+      errorMessage = 'Error de conexión con el servidor de email';
       statusCode = 503;
     } else if (error.responseCode === 550) {
       errorMessage = 'Email del destinatario no válido o rechazado';
       statusCode = 400;
-    } else if (error.message && error.message.includes('HTMLSimpleBankingEmail')) {
-      errorMessage = 'Error en el template del email';
-      statusCode = 500;
+    } else if (error.message) {
+      errorMessage = error.message;
     }
 
     res.status(statusCode).json({
       success: false,
       error: errorMessage,
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 };
 
-// EXPORTACIÓN POR DEFECTO - ESTO ES CRUCIAL
 export default emailController;

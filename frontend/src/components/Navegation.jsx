@@ -194,7 +194,7 @@ function Navegation() {
         <Route path="/birthday" element={<Birthday />} />
         <Route path="/aboutus" element={<AboutUS />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/OrderHistory" element={<OrderHistory />} />
+        <Route path="/order-history" element={<OrderHistory />} />
         <Route path="/OrderInformation" element={<OrderInformation />} />
 
 
