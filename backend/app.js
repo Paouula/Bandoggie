@@ -13,10 +13,8 @@ import loginRoutes from './src/routes/login.js';
 import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
-
 import cartRoutes from './src/routes/carts.js';
 import resendVerifyCode from './src/routes/resendVerifyCode.js'
-
 import emailRoutes from './src/routes/email.js';
 
 
@@ -35,6 +33,7 @@ import ordersRoutes from "./src/routes/orders.js";
 import guestWholesalers from './src/routes/wholesalersPurchase.js';
 import guestClients from './src/routes/retailsPurchase.js';
 
+
 const corsOptions = {
     origin: 'http://localhost:5173',
     credentials: true,  
@@ -44,6 +43,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
+
+
 
 // Rutas de verificación y recuperación de usuarios
 app.use('/api/register', registerRoutes);

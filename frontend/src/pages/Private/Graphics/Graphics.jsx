@@ -1,76 +1,145 @@
-// Graphics.jsx - Componente principal
 import React, { useEffect, useState } from "react";
-import { BarChart3, LineChart, PieChart } from "lucide-react";
-import StatsCards from "../../../components/Private/Graphics/StatsCards.jsx";
-import ChartBarDefault from "../../../components/Private/Graphics/ChartBarDefault.jsx";
-import ChartLineLabel from "../../../components/Private/Graphics/ChartLineLabel.jsx";
-import ChartPieDevices from "../../../components/Private/Graphics/ChartPieDevices.jsx";
-import MetricsCard from "../../../components/Private/Graphics/MetricsCard.jsx";
-import LoadingSpinner from "../../../components/Private/Graphics/LoadingSpinner.jsx";
+import useFetchProducts from "../../../hooks/Products/useFetchProducts";
+import useFetchUsers from "../../../hooks/Clients/useFetchUsers";
+import useFetchEmployees from "../../../hooks/Employees/useFetchEmployees";
+import "./Graphics.css";
 
 const Graphics = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeChart, setActiveChart] = useState('overview');
+  const { products, loading: loadingProducts } = useFetchProducts();
+  const { handleGetClientes, handleGetVets } = useFetchUsers();
+  const { handleGetEmployees } = useFetchEmployees();
+
+  const [clients, setClients] = useState([]);
+  const [vets, setVets] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
+    loadData();
   }, []);
 
-  if (isLoading) {
-    return <LoadingSpinner />;
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      
+      // Obtener todos los datos en paralelo
+      const [clientsData, vetsData, employeesData] = await Promise.all([
+        handleGetClientes(),
+        handleGetVets(),
+        handleGetEmployees()
+      ]);
+
+      setClients(clientsData || []);
+      setVets(vetsData || []);
+      setEmployees(employeesData || []);
+    } catch (error) {
+      console.error("Error cargando datos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Calcular estadísticas
+  const stats = {
+    totalProducts: products.length,
+    wholesaleClients: clients.filter(c => c.client_type === 'wholesale' || c.client_type === 'mayorista').length,
+    retailClients: clients.filter(c => c.client_type === 'retail' || c.client_type === 'minorista').length,
+    employees: employees.length
+  };
+
+  const totalClients = stats.wholesaleClients + stats.retailClients;
+  const wholesalePercentage = totalClients > 0 
+    ? Math.round((stats.wholesaleClients / totalClients) * 100) 
+    : 0;
+  const retailPercentage = totalClients > 0 
+    ? Math.round((stats.retailClients / totalClients) * 100) 
+    : 0;
+
+  // Estado de carga
+  if (loading || loadingProducts) {
+    return (
+      <div className="dashboard-container">
+        <div className="dashboard-wrapper">
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Cargando estadísticas...</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  const chartTabs = [
-    { id: 'overview', label: 'Resumen', icon: BarChart3 },
-    { id: 'sales', label: 'Ventas', icon: LineChart },
-    { id: 'devices', label: 'Dispositivos', icon: PieChart },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="dashboard-container">
+      <div className="dashboard-wrapper">
+        
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard Analytics</h1>
-          <p className="text-gray-600">Resumen de métricas y rendimiento del negocio</p>
+        <div className="dashboard-header">
+          <h1 className="dashboard-title">Dashboard</h1>
+          <p className="dashboard-subtitle">Estadísticas generales</p>
+          <button className="refresh-button" onClick={loadData}>
+            🔄 Actualizar
+          </button>
         </div>
 
-        {/* Stats Cards */}
-        <StatsCards />
+        {/* Grid de cards - Primera fila */}
+        <div className="cards-row">
+          
+          {/* Card 1 - Total Productos */}
+          <div className="card card-orange">
+            <h2 className="card-title">Total Productos</h2>
+            <p className="card-subtitle">Inventario actual</p>
+            <h3 className="card-number">{stats.totalProducts}</h3>
+          </div>
 
-        {/* Chart Navigation */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-          <div className="flex flex-wrap gap-2">
-            {chartTabs.map((tab) => {
-              const IconComponent = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveChart(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                    activeChart === tab.id
-                      ? 'bg-blue-100 text-blue-700 shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  <IconComponent className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              );
-            })}
+          {/* Card 2 - Clientes Mayoristas */}
+          <div className="card card-green">
+            <h2 className="card-title">Mayoristas</h2>
+            <p className="card-subtitle">{wholesalePercentage}% del total</p>
+            <h3 className="card-number">{stats.wholesaleClients}</h3>
+          </div>
+
+          {/* Card 3 - Clientes Minoristas */}
+          <div className="card card-purple">
+            <h2 className="card-title">Minoristas</h2>
+            <p className="card-subtitle">{retailPercentage}% del total</p>
+            <h3 className="card-number">{stats.retailClients}</h3>
           </div>
         </div>
 
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ChartBarDefault />
-          <ChartLineLabel />
-          <ChartPieDevices />
-          <MetricsCard />
+        {/* Grid de cards - Segunda fila */}
+        <div className="cards-row">
+          
+          {/* Card 4 - Empleados */}
+          <div className="card card-blue">
+            <h2 className="card-title">Empleados</h2>
+            <p className="card-subtitle">Plantilla activa</p>
+            <h3 className="card-number">{stats.employees}</h3>
+          </div>
+
+          {/* Card 5 - Total Clientes */}
+          <div className="card card-pink">
+            <h2 className="card-title">Total Clientes</h2>
+            <p className="card-subtitle">Registrados</p>
+            <h3 className="card-number">{totalClients}</h3>
+          </div>
+
+          {/* Card 6 - Distribución */}
+          <div className="card card-yellow">
+            <h2 className="card-title">Distribución</h2>
+            <p className="card-subtitle">Tipos de clientes</p>
+            <div className="card-distribution">
+              <div className="distribution-item">
+                <span className="distribution-label">Mayoristas</span>
+                <span className="distribution-value">{wholesalePercentage}%</span>
+              </div>
+              <div className="distribution-item">
+                <span className="distribution-label">Minoristas</span>
+                <span className="distribution-value">{retailPercentage}%</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

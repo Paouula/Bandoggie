@@ -1,64 +1,108 @@
 import React, { useState } from "react"; 
-import useDataReviews from "./hook/useDataReviews.jsx";
+import useFetchReviews from "../../../../hooks/ReviewUser/useFetchReviews.js";
 import "./ReviewForm.css";
 
-const ReviewForm = ({ productId, user }) => {
+const ReviewForm = ({ productId, user, onReviewSubmitted }) => {
   const [qualification, setQualification] = useState(5);
   const [comment, setComment] = useState("");
   const [designImages, setDesignImages] = useState([]);
   const [message, setMessage] = useState("");
-  const { submitReview } = useDataReviews();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { handlePostReviews } = useFetchReviews();
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
+    
+    // Validar cantidad de imágenes (3 a 5)
+    if (files.length > 5) {
+      setMessage("⚠️ Máximo 5 imágenes permitidas");
+      return;
+    }
+    
     setDesignImages(files);
+    setMessage(""); // Limpiar mensaje
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!user || !user._id) return setMessage("Usuario no identificado");
-  
-  try {
-    // 1. Subir imágenes y obtener URLs (puedes usar Cloudinary o tu endpoint de uploads)
-    const uploadedImages = await Promise.all(
-      designImages.map(async (file) => {
-        const form = new FormData();
-        form.append("file", file);
-        form.append("upload_preset", "tu_preset");
-        const res = await fetch("https://api.cloudinary.com/v1_1/tu_cloud_name/image/upload", {
-          method: "POST",
-          body: form,
-        });
-        const data = await res.json();
-        return data.secure_url; // la URL de la imagen
-      })
-    );
+    e.preventDefault();
+    
+    // Validar usuario
+    if (!user || !user.email) {
+      setMessage("❌ Usuario no identificado");
+      return;
+    }
 
-    // 2. Armar objeto que el backend espera
-    const reviewData = {
-      qualification,
-      comment,
-      designImages: uploadedImages, // URLs
-      idClient: user._id,
-      idProduct: {
-        _id: productId,
-      },
-    };
+    // Validar comentario
+    if (!comment.trim()) {
+      setMessage("❌ El comentario es obligatorio");
+      return;
+    }
 
-    console.log("Enviando review:", reviewData);
+    // Validar longitud mínima del comentario
+    if (comment.trim().length < 10) {
+      setMessage("❌ El comentario debe tener al menos 10 caracteres");
+      return;
+    }
 
-    await submitReview(reviewData); // enviar JSON directamente
+    // Validar cantidad de imágenes si hay
+    if (designImages.length > 0 && designImages.length < 3) {
+      setMessage("⚠️ Debes subir entre 3 y 5 imágenes, o ninguna");
+      return;
+    }
 
-    setMessage("✅ Tu reseña ha sido enviada y está pendiente de aprobación.");
-    setQualification(5);
-    setComment("");
-    setDesignImages([]);
-  } catch (err) {
-    console.error(err);
-    setMessage("❌ Error al enviar la reseña. Intenta de nuevo.");
-  }
-};
+    setIsSubmitting(true);
+    setMessage("Enviando reseña...");
+    
+    try {
+      // Preparar datos de la review - usar email
+      const reviewData = {
+        qualification,
+        comment: comment.trim(),
+        designImages: designImages, // Array de File objects o array vacío
+        email: user.email, // USAR email
+        idProduct: productId
+      };
 
+      console.log("Enviando review con datos:", {
+        qualification,
+        comment: comment.trim(),
+        imageCount: designImages.length,
+        imageFiles: designImages.map(f => f?.name),
+        email: user.email,
+        idProduct: productId
+      });
+
+      // Enviar usando el hook
+      const result = await handlePostReviews(reviewData);
+      
+      console.log("Respuesta del servidor:", result);
+
+      setMessage("✅ Tu reseña ha sido enviada y está pendiente de aprobación.");
+      
+      // Limpiar formulario
+      setQualification(5);
+      setComment("");
+      setDesignImages([]);
+
+      // Resetear el input de archivos
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
+
+      // Notificar al componente padre
+      if (onReviewSubmitted) {
+        setTimeout(() => {
+          onReviewSubmitted();
+        }, 2000);
+      }
+
+    } catch (err) {
+      console.error("Error al enviar review:", err);
+      setMessage("❌ Error al enviar la reseña. Intenta de nuevo.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="review-form">
@@ -69,23 +113,28 @@ const ReviewForm = ({ productId, user }) => {
         <select
           value={qualification}
           onChange={(e) => setQualification(Number(e.target.value))}
+          disabled={isSubmitting}
         >
           {[5, 4, 3, 2, 1].map((num) => (
             <option key={num} value={num}>
-              {num} estrellas
+              {num} estrella{num !== 1 ? 's' : ''}
             </option>
           ))}
         </select>
       </label>
 
       <label>
-        Comentario:
+        Comentario (mínimo 10 caracteres):
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           required
+          disabled={isSubmitting}
           placeholder="Escribe tu experiencia con el producto..."
+          minLength={10}
+          rows={4}
         />
+        <small>{comment.length} caracteres</small>
       </label>
 
       <label>
@@ -95,7 +144,9 @@ const ReviewForm = ({ productId, user }) => {
           accept="image/*"
           multiple
           onChange={handleImageChange}
+          disabled={isSubmitting}
         />
+        <small>Puedes subir entre 3 y 5 imágenes, o ninguna</small>
       </label>
 
       {designImages.length > 0 && (
@@ -107,14 +158,27 @@ const ReviewForm = ({ productId, user }) => {
               alt={`preview-${idx}`}
             />
           ))}
+          <small>{designImages.length} imagen(es) seleccionada(s)</small>
         </div>
       )}
 
-      <button type="submit" className="btn-submit">
-        Enviar reseña
+      <button 
+        type="submit" 
+        className="btn-submit"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Enviando..." : "Enviar reseña"}
       </button>
 
-      {message && <p className="review-message">{message}</p>}
+      {message && (
+        <p className={`review-message ${
+          message.includes('✅') ? 'success' : 
+          message.includes('❌') ? 'error' : 
+          'info'
+        }`}>
+          {message}
+        </p>
+      )}
     </form>
   );
 };

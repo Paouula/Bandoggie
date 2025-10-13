@@ -1,38 +1,28 @@
-import nodemailer from "nodemailer";
-import { config } from "../config.js";
+import sendMailAPI from "../middlewares/sendMailApi.js";
 
-
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: config.email.email_user,
-        pass: config.email.email_pass
-    }
-});
-
-
+/**
+ * Envía un correo de recuperación de contraseña usando el middleware
+ */
 const sendMail = async (to, subject, text, html) => {
-    try {
-
-        const info = await transporter.sendMail({
-            from: '"Bandoggie" <ricardo.mayorga.ck@gmail.com>',
-            to,
-            subject,
-            text,
-            html
-        });
-        return info;
-    } catch (error) {
-        console.log("Error sending recovery mail:", error);
-        throw error;
-    }
+  try {
+    const info = await sendMailAPI({
+      to,
+      subject,
+      htmlContent: html,
+      textContent: text,
+    });
+    return info;
+  } catch (error) {
+    console.log("Error sending recovery mail:", error);
+    throw error;
+  }
 };
 
-
+/**
+ * Genera el HTML para el correo de recuperación de contraseña
+ */
 const HTMLRecoveryEmail = (code) => {
-    return `
+  return `
     <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -189,7 +179,6 @@ const HTMLRecoveryEmail = (code) => {
   </div>
 </body>
 </html>
-
     `;
 };
 

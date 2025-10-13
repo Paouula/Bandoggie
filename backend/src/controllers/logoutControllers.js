@@ -9,7 +9,7 @@ const logoutController = {};
 logoutController.logout = (req, res) => {
   res.clearCookie("authToken", {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     secure: true,
   });
   return res.status(200).json({ message: "Logout exitoso" });

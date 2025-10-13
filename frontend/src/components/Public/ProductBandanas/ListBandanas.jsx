@@ -5,7 +5,7 @@ const ListBandanas = ({ Bandanas }) => {
   console.log("Bandanas que llegan al componente:", Bandanas);
 
   return (
-    <div className="product-grid">
+    <div className="public-product-grid-container">
         {Array.isArray(Bandanas) && Bandanas.length > 0 ? (
             Bandanas.map((product) => (
             <ProductCard key={product._id} product={product} />

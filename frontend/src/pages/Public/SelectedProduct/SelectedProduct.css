@@ -182,21 +182,6 @@
   border-color: #6897cc;
 }
 
-.size-guide {
-  margin-top: 8px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.size-guide a {
-  color: #0056b3;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.size-guide a:hover {
-  color: #CB8E45;
-}
     
 .customization-toggle {
   display: flex;
@@ -409,7 +394,7 @@ input {
   background-color: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid #D9E9FB;
 }
 
 .size-guide-instructions h4 {
@@ -440,9 +425,9 @@ input {
   font-style: italic;
   color: #666;
   padding: 12px;
-  background-color: #e3f2fd;
+  background-color: #e6ecf1;
   border-radius: 6px;
-  border-left: 3px solid #2196f3;
+  border-left: 3px solid #D9E9FB;
 }
 
 /* Responsive */

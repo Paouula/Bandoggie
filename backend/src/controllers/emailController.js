@@ -1,4 +1,4 @@
-import { sendMail, HTMLSimpleBankingEmail } from '../utils/BankingEmail.js';
+ import { sendBankingMail, HTMLSimpleBankingEmail } from '../utils/bankingEmails.js';
 import validator from 'validator';
 
 // Crear el objeto emailController
@@ -85,7 +85,7 @@ INSTRUCCIONES:
     console.log('🎨 HTML generado:', htmlContent.length, 'caracteres');
 
     // Enviar el email usando la función importada
-    const info = await sendMail(
+    const info = await sendBankingMail(
       email,
       'Datos para transferencia bancaria - BanDoggie',
       textContent,

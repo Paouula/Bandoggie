@@ -64,3 +64,5 @@ const useFetchCartEmail = () => {
         sendBankingEmail
     };
 };
+
+export default useFetchCartEmail;

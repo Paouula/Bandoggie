@@ -347,7 +347,7 @@ const useFetchProfileCard = () => {
       window.removeEventListener('authSuccess', handleAuthSuccess);
       window.removeEventListener('authLogout', handleAuthLogout);
     };
-  }, [fetchUserData, clearAuthData]);
+  }, [fetchUserData, clearAuthData]); // ← AGREGUÉ ESTA LÍNEA
 
   return {
     userInfo,

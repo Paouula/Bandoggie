@@ -1,4 +1,4 @@
-const API_URL = "https://bandoggie-production.up.railway.app/api/"; // Base URL para todas las peticiones 
+const API_URL = "https://bandoggie-production.up.railway.app/api/"; // Base URL para todas las peticiones
 
 // Función para realizar peticiones JSON
 export const API_FETCH_JSON = async (endpoint, options = {}) => {

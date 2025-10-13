@@ -5,8 +5,7 @@ const NavigationHoliday = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Definir las rutas y sus nombres para el breadcrumb y navegación
-  const routeMap = {
+  const holidayRouteNames = {
     '/': 'Inicio',
     '/holidays': 'Navidad',
     '/halloween': 'Halloween',
@@ -16,48 +15,44 @@ const NavigationHoliday = () => {
     '/birthday': 'Cumpleaños'
   };
 
-  // Categorías principales de fiestas con iconos
-  const holidayCategories = [
+  const holidayMenuOptions = [
     { name: 'Navidad', route: '/holidays' },
-    { name: 'Halloween', route: '/halloween'},
+    { name: 'Halloween', route: '/halloween' },
     { name: 'San Valentín', route: '/valentine' },
-    { name: 'Días Patrios', route: '/patriotic'},
-    { name: 'Año Nuevo', route: '/newyear'},
-    { name: 'Cumpleaños', route: '/birthday'}
+    { name: 'Días Patrios', route: '/patriotic' },
+    { name: 'Año Nuevo', route: '/newyear' },
+    { name: 'Cumpleaños', route: '/birthday' }
   ];
 
-  // Generar breadcrumbs basado en la ruta actual
-  const generateBreadcrumbs = () => {
+  const getBreadcrumbItems = () => {
     const currentPath = location.pathname;
-    
-    // Solo mostrar breadcrumbs si estamos en una página Holiday
-    const holidayRoutes = ['/holidays', '/halloween', '/valentine', '/patriotic', '/newyear', '/birthday'];
-    
-    if (holidayRoutes.includes(currentPath)) {
-      return ['Inicio', routeMap[currentPath]];
+    const holidayPaths = Object.keys(holidayRouteNames).filter(path => path !== '/');
+
+    if (holidayPaths.includes(currentPath)) {
+      return ['Inicio', holidayRouteNames[currentPath]];
     }
-    
+
     return [];
   };
 
-  const breadcrumbs = generateBreadcrumbs();
-  const currentPage = routeMap[location.pathname] || '';
+  const breadcrumbItems = getBreadcrumbItems();
+  const currentHolidayPage = holidayRouteNames[location.pathname] || '';
 
-  // Función para manejar la navegación
-  const handleNavigate = (route) => {
-    console.log('Navegando a:', route); // Para debugging
+  const navigateToHolidayPage = (route) => {
     if (route !== location.pathname) {
       navigate(route);
     }
   };
 
-  const handleBreadcrumbClick = (item, index) => {
-    if (item === 'Inicio') {
+  const handleBreadcrumbNavigation = (label) => {
+    if (label === 'Inicio') {
       navigate('/');
     } else {
-      const routePath = Object.keys(routeMap).find(key => routeMap[key] === item);
-      if (routePath && routePath !== location.pathname) {
-        navigate(routePath);
+      const targetRoute = Object.keys(holidayRouteNames).find(
+        key => holidayRouteNames[key] === label
+      );
+      if (targetRoute && targetRoute !== location.pathname) {
+        navigate(targetRoute);
       }
     }
   };
@@ -65,154 +60,154 @@ const NavigationHoliday = () => {
   return (
     <>
       <style>{`
-        /* Header Styles */
         .header {
-          background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
-          padding: 16px;
-          
+          background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%) !important;
+          padding: 16px !important;
         }
 
-        /* Holiday Menu Navigation */
         .holiday-menu {
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 16px;
+          display: flex !important;
+          flex-wrap: wrap !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 8px !important;
+          max-width: 1200px !important;
+          margin: 0 auto !important;
+          padding: 0 16px !important;
         }
 
         .menu-item {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 8px 12px;
-          font-size: 14px;
-          color: #6b7280;
-          transition: color 0.2s ease;
-          cursor: pointer;
-          user-select: none;
-          border: none;
-          background: none;
-          text-decoration: none;
+          display: flex !important;
+          align-items: center !important;
+          gap: 6px !important;
+          padding: 8px 12px !important;
+          font-size: 14px !important;
+          color: #6b7280 !important;
+          transition: color 0.2s ease !important;
+          cursor: pointer !important;
+          user-select: none !important;
+          border: none !important;
+          background: none !important;
+          text-decoration: none !important;
         }
 
         .menu-item:hover {
-          color: #f97316;
+          color: #f97316 !important;
         }
 
         .menu-item.active {
-          color: #f97316;
-          font-weight: 500;
+          color: #f97316 !important;
+          font-weight: 500 !important;
         }
 
         .menu-icon {
-          font-size: 16px;
-          display: flex;
-          align-items: center;
+          font-size: 16px !important;
+          display: flex !important;
+          align-items: center !important;
         }
 
         .menu-text {
-          font-size: 14px;
-          font-weight: inherit;
+          font-size: 14px !important;
+          font-weight: inherit !important;
         }
 
         .menu-separator {
-          margin: 0 4px;
-          color: #9ca3af;
-          font-size: 12px;
+          margin: 0 4px !important;
+          color: #9ca3af !important;
+          font-size: 12px !important;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
           .header {
-            padding: 12px 8px;
+            padding: 12px 8px !important;
           }
 
-          .holiday-menu {
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            gap: 8px;
-            padding: 8px 12px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            margin: 0 8px;
-          }
+         .holiday-menu {
+      display: flex !important;
+      flex-wrap: nowrap !important;           /* ❗ Importante: evita que se dividan en varias filas */
+      overflow-x: auto !important;            /* ❗ Agrega scroll si no caben */
+      -webkit-overflow-scrolling: touch !important;
+      white-space: nowrap !important;         /* ❗ Fuerza todos los elementos en línea */
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      padding: 0 16px !important;
+      margin: 0 auto !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      max-width: 100% !important;
+    }
 
           .holiday-menu::-webkit-scrollbar {
-            display: none;
+            display: none !important;
           }
 
           .menu-item {
-            flex-shrink: 0;
-            padding: 8px 12px;
-            font-size: 13px;
-            white-space: nowrap;
+            flex-shrink: 0 !important;
+            padding: 8px 12px !important;
+            font-size: 13px !important;
+            white-space: nowrap !important;
           }
 
           .menu-text {
-            font-size: 13px;
+            font-size: 13px !important;
           }
 
           .menu-icon {
-            font-size: 14px;
+            font-size: 14px !important;
           }
 
           .menu-separator {
-            flex-shrink: 0;
+            flex-shrink: 0 !important;
           }
         }
 
         @media (max-width: 480px) {
           .header {
-            padding: 10px 4px;
+            padding: 10px 4px !important;
           }
 
           .holiday-menu {
-            padding: 8px 8px;
-            margin: 0 4px;
+            padding: 8px 8px !important;
+            margin: 0 4px !important;
           }
 
           .menu-item {
-            padding: 6px 10px;
-            gap: 4px;
+            padding: 6px 10px !important;
+            gap: 4px !important;
           }
 
           .menu-text {
-            font-size: 12px;
+            font-size: 12px !important;
           }
 
           .menu-icon {
-            font-size: 14px;
+            font-size: 14px !important;
           }
 
           .menu-separator {
-            margin: 0 2px;
-            font-size: 10px;
+            margin: 0 2px !important;
+            font-size: 10px !important;
           }
         }
       `}</style>
 
       <div className="header">
-        {/* Holiday Menu Navigation */}
         <div className="holiday-menu">
-          {holidayCategories.map((category, index) => {
-            const isActive = location.pathname === category.route;
-            
+          {holidayMenuOptions.map((menuOption, index) => {
+            const isActive = location.pathname === menuOption.route;
+
             return (
-              <React.Fragment key={category.name}>
+              <React.Fragment key={menuOption.name}>
                 <button
                   className={`menu-item ${isActive ? 'active' : ''}`}
-                  onClick={() => handleNavigate(category.route)}
+                  onClick={() => navigateToHolidayPage(menuOption.route)}
                   type="button"
                 >
-                  <span className="menu-icon">{category.icon}</span>
-                  <span className="menu-text">{category.name}</span>
+                  <span className="menu-icon">{menuOption.icon}</span>
+                  <span className="menu-text">{menuOption.name}</span>
                 </button>
-                {index < holidayCategories.length - 1 && (
+                {index < holidayMenuOptions.length - 1 && (
                   <span className="menu-separator">▸</span>
                 )}
               </React.Fragment>

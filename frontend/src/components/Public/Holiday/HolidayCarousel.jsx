@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HolidayCard from './HolidayCard';
-import NavigationButton from './NavigationButton';
 
 //Imagenes 
 import DogNavideño from '../../../img/MainPage/Dog.png';
@@ -11,6 +11,7 @@ import DogPascuas from '../../../img/MainPage/Dog5.png';
 import DogAñonuevo from '../../../img/MainPage/Dog6.png';
 
 const HolidayCarousel = () => {
+  const navigate = useNavigate();
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -49,9 +50,25 @@ const HolidayCarousel = () => {
   ];
 
   const handleCardClick = (holidayName) => {
-    console.log(`Navegando a: ${holidayName}`);
-    // Aquí irían las rutas a las páginas correspondientes
-    // Ejemplo: window.location.href = `/festividades/${holidayName.toLowerCase().replace(' ', '-')}`;
+    // Mapeo de nombres de festividades a rutas (basado en NavigationHoliday)
+    const pageRoutes = {
+      'Navidad': '/holidays',
+      'Halloween': '/halloween', 
+      'San Valentín': '/valentine',
+      'Días Patrios': '/patriotic',
+      'Año Nuevo': '/newyear',
+      'Cumpleaños': '/birthday'
+    };
+
+    const route = pageRoutes[holidayName];
+    
+    if (route) {
+      console.log(`Navegando a: ${holidayName} - Ruta: ${route}`);
+      navigate(route);
+    } else {
+      console.log(`No hay ruta definida para: ${holidayName}`);
+      // Opcional: mostrar mensaje al usuario o manejar el caso
+    }
   };
 
   const checkScrollButtons = () => {
@@ -142,23 +159,7 @@ const HolidayCarousel = () => {
         </div>
         {/* Contenedor principal con scroll horizontal */}
         <div style={carouselContainerStyle}>
-          {/* Botón izquierdo */}
-          <div style={leftButtonStyle}>
-            <NavigationButton 
-              direction="left" 
-              onClick={() => scroll('left')}
-              disabled={!canScrollLeft}
-            />
-          </div>
-
-          {/* Botón derecho */}
-          <div style={rightButtonStyle}>
-            <NavigationButton 
-              direction="right" 
-              onClick={() => scroll('right')}
-              disabled={!canScrollRight}
-            />
-          </div>
+         
 
           {/* Contenedor de scroll */}
           <div 

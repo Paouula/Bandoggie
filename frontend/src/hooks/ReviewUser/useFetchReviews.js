@@ -1,43 +1,40 @@
 import { toast } from 'react-hot-toast';
-//Importo las funciones globales para realizar el fetch
+// Importo las funciones globales para realizar el fetch
 import { API_FETCH_FORM, API_FETCH_JSON } from '../../config';
 
-
-// Funcion reutilizable para construir el FormData
-
+// Función reutilizable para construir el FormData
 const buildFormData = (reviewData) => {
   const {
     qualification,
     comment,
     designImages,
-    idClient,
+    email,
     idProduct
-  } = reviewData
+  } = reviewData;
 
   const formData = new FormData();
-  formData.append('qualification', qualification)
-  formData.append('comment', comment)
+  formData.append('qualification', qualification);
+  formData.append('comment', comment);
 
   if (Array.isArray(designImages)) {
-    designImages.forEach((file, index) => {
-      formData.append('designImages', file)
+    designImages.forEach((file) => {
+      formData.append('designImages', file);
     });
   }
 
-  formData.append('idClient', idClient)
-  formData.append('idProduct', idProduct)
+  formData.append('email', email); 
+  formData.append('idProduct', idProduct);
 
   for (let pair of formData.entries()) {
     console.log(pair[0] + ':', pair[1]);
   }
 
   return formData;
-
 };
 
-//Constante que contendra los metodos
+// Constante que contendrá los métodos
 const useFetchReviews = () => {
-  //Declaro el endpoint
+  // Declaro el endpoint
   const endpoint = 'reviews';
 
   // Obtener todas las reviews
@@ -51,7 +48,7 @@ const useFetchReviews = () => {
     }
   };
 
-  // Crea una nueva review
+  // Crear una nueva review
   const handlePostReviews = async (reviewData) => {
     try {
       const formData = buildFormData(reviewData);
@@ -68,13 +65,13 @@ const useFetchReviews = () => {
     }
   };
 
-  //Actualiza un review ya existente
+  // Actualizar una review existente
   const handlePutReviews = async (id, reviewData) => {
     try {
       const formData = buildFormData(reviewData);
       const data = await API_FETCH_FORM(`${endpoint}/${id}`, formData, {
         method: 'PUT',
-      })
+      });
 
       toast.success('Review actualizada correctamente');
       return data;
@@ -85,15 +82,14 @@ const useFetchReviews = () => {
     }
   };
 
-  //Elimina un review
+  // Eliminar una review
   const handleDeleteReviews = async (id) => {
     try {
       await API_FETCH_JSON(`${endpoint}/${id}`, {
         method: 'DELETE',
-      })
+      });
 
       toast.success('Review eliminada correctamente');
-
     } catch (error) {
       toast.error('Error al eliminar la review');
       throw error;
@@ -106,42 +102,48 @@ const useFetchReviews = () => {
       const data = await API_FETCH_JSON(`${endpoint}/verified`);
       return data;
     } catch (error) {
-      toast.error('Error al obtener las reviews');
+      toast.error('Error al obtener las reviews verificadas');
       throw error;
     }
-  }
+  };
 
   // Verificar una review
   const handleVerifyReviews = async (id) => {
     try {
       const data = await API_FETCH_JSON(`${endpoint}/${id}/verify`, {
         method: 'PUT',
-      })
+      });
       toast.success('Review verificada correctamente');
       return data;
-
     } catch (error) {
       toast.error('Error al verificar la review');
       throw error;
     }
-  }
+  };
 
   // Rechazar una review
   const handleRejectReviews = async (id) => {
     try {
       const data = await API_FETCH_JSON(`${endpoint}/${id}/reject`, {
         method: 'PUT',
-      })
+      });
       toast.success('Review rechazada correctamente');
       return data;
-
     } catch (error) {
-      toast.error('Error al verificar la review');
+      toast.error('Error al rechazar la review');
       throw error;
     }
-  }
+  };
 
-  return { handlePostReviews, handleGetReviews, handlePutReviews, handleDeleteReviews, handleGetVerifyReviews, handleVerifyReviews, handleRejectReviews };
+  return { 
+    handlePostReviews, 
+    handleGetReviews, 
+    handlePutReviews, 
+    handleDeleteReviews, 
+    handleGetVerifyReviews, 
+    handleVerifyReviews, 
+    handleRejectReviews 
+  };
 };
 
 export default useFetchReviews;
