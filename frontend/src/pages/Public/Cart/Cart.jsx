@@ -1309,15 +1309,19 @@ const ShoppingCartApp = ({ onClose }) => {
                 </div>
               </div>
 
-              <label className="cart-input-label">Teléfono de contacto *</label>
-              <input
-                className={`cart-text-input ${errors.telefono ? 'cart-input-error' : ''}`}
-                type="tel"
-                placeholder="Número de teléfono"
-                value={formData.telefono}
+             <label className="cart-input-label">Teléfono de contacto *</label>
+              <input 
+                className={`cart-text-input ${errors.telefono ? 'cart-input-error' : ''}`} 
+                type="tel" 
+                placeholder="0000-0000" 
+                value={formData.telefono} 
                 onChange={(e) => handleInputChange('telefono', e.target.value)}
+                maxLength="9"
               />
               {errors.telefono && <div className="cart-error-message">{errors.telefono}</div>}
+              <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                Formato: 8 dígitos (ej: 7777-7777)
+              </small>
 
               <div className="cart-note-container">
                 <div className="cart-note-text">
