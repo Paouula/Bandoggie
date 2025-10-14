@@ -10,7 +10,7 @@ const OrderHistory = () => {
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // 🔄 EFECTO PARA CARGAR ÓRDENES Y ESCUCHAR EVENTOS
+  // 📄 EFECTO PARA CARGAR ÓRDENES Y ESCUCHAR EVENTOS
   useEffect(() => {
     console.log('📦 OrderHistory montado, cargando órdenes...');
     fetchOrders();
@@ -30,9 +30,9 @@ const OrderHistory = () => {
     };
   }, [fetchOrders]);
 
-  // 🐛 EFECTO PARA DEBUG
+  // 🛠 EFECTO PARA DEBUG
   useEffect(() => {
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('═══════════════════════════════════════════════════════');
     console.log('📊 DEBUG - OrderHistory State');
     console.log('👤 Usuario actual:', user);
     console.log('📧 Email del usuario:', user?.email);
@@ -41,38 +41,36 @@ const OrderHistory = () => {
     if (orders.length > 0) {
       console.log('📋 Estructura de primera orden:', {
         _id: orders[0]._id,
-        idCart: orders[0].idCart,
         customerEmail: orders[0].customerEmail,
         customerName: orders[0].customerName,
-        PaymentMethod: orders[0].PaymentMethod
+        PaymentMethod: orders[0].PaymentMethod || orders[0].paymentMethod
       });
     }
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('═══════════════════════════════════════════════════════');
   }, [orders, user]);
 
-  // 🔘 FUNCIÓN PARA MANEJAR CLICK EN CARD
+  // 📘 FUNCIÓN PARA MANEJAR CLICK EN CARD
   const handleCardClick = (orderId) => {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
   };
 
   // 🔍 FILTRAR ÓRDENES DEL USUARIO ACTUAL (POR EMAIL)
   const userOrders = orders.filter(order => {
-    // Verificar que el usuario esté autenticado y tenga email
     if (!user || !user.email) {
       console.log('⚠️ No hay usuario autenticado o sin email');
       return false;
     }
     
-    // Opción 1: Comparar con customerEmail (datos de la orden)
-    const customerEmail = order.customerEmail?.toLowerCase();
     const userEmail = user.email.toLowerCase();
     
+    // Comparar con customerEmail (órdenes de invitados)
+    const customerEmail = order.customerEmail?.toLowerCase();
     if (customerEmail === userEmail) {
       console.log('✅ Match por customerEmail:', customerEmail);
       return true;
     }
     
-    // Opción 2: Comparar con email del cliente en idCart
+    // Comparar con email del cliente en idCart (órdenes con carrito)
     if (order.idCart && typeof order.idCart === 'object') {
       const client = order.idCart.idClient;
       if (typeof client === 'object' && client !== null) {
@@ -98,7 +96,7 @@ const OrderHistory = () => {
     // Buscar en diferentes campos
     const orderId = order._id?.toLowerCase() || '';
     const address = order.addressClient?.toLowerCase() || '';
-    const payment = order.PaymentMethod?.toLowerCase() || '';
+    const payment = (order.PaymentMethod || order.paymentMethod)?.toLowerCase() || '';
     const customerName = order.customerName?.toLowerCase() || '';
     
     // Buscar en productos del carrito si está poblado
@@ -107,6 +105,14 @@ const OrderHistory = () => {
       const products = order.idCart.products || [];
       productsMatch = products.some(p => {
         const productName = p.idProduct?.name?.toLowerCase() || '';
+        return productName.includes(search);
+      });
+    }
+    
+    // Buscar en productos de órdenes locales
+    if (order.products && Array.isArray(order.products)) {
+      productsMatch = order.products.some(p => {
+        const productName = p.name?.toLowerCase() || '';
         return productName.includes(search);
       });
     }
@@ -123,7 +129,7 @@ const OrderHistory = () => {
     setSearchTerm('');
   };
 
-  // 🔒 VERIFICAR AUTENTICACIÓN (OPCIONAL - puedes quitarlo si quieres que todos vean todas las órdenes)
+  // 🔒 VERIFICAR AUTENTICACIÓN
   if (!user) {
     return (
       <main className="main-container">
@@ -153,7 +159,7 @@ const OrderHistory = () => {
   }
 
   // ⏳ ESTADO DE CARGA
-  if (loading && orders.length === 0) {
+  if (loading && allOrders.length === 0) {
     return (
       <main className="main-container">
         <div className="loading-container">
@@ -167,13 +173,18 @@ const OrderHistory = () => {
   }
 
   // ⚠️ ESTADO DE ERROR
-  if (error && orders.length === 0) {
+  if (error && allOrders.length === 0) {
     return (
       <main className="main-container">
         <div className="no-orders">
           <div className="no-orders-icon">⚠️</div>
-          <h3>Error al cargar pedidos</h3>
+          <h3>Error al cargar pedidos del servidor</h3>
           <p>{error}</p>
+          {localOrders.length > 0 && (
+            <p style={{ marginTop: '1rem', color: '#059669' }}>
+              ✅ Se encontraron {localOrders.length} pedidos locales
+            </p>
+          )}
           <button 
             onClick={() => { 
               clearError(); 
@@ -200,10 +211,22 @@ const OrderHistory = () => {
 
   // 📊 Calcular estadísticas solo para órdenes del usuario
   const totalOrders = userOrders.length;
-  const pendingOrders = userOrders.filter(o => o.idCart?.status === 'Pending').length;
-  const paidOrders = userOrders.filter(o => o.idCart?.status === 'Paid').length;
-  const transferenciaOrders = userOrders.filter(o => o.PaymentMethod?.toLowerCase() === 'transferencia').length;
-  const efectivoOrders = userOrders.filter(o => o.PaymentMethod?.toLowerCase() === 'efectivo').length;
+  const pendingOrders = userOrders.filter(o => {
+    const status = o.idCart?.status || o.status;
+    return status === 'Pending' || status === 'pending';
+  }).length;
+  const paidOrders = userOrders.filter(o => {
+    const status = o.idCart?.status || o.status;
+    return status === 'Paid' || status === 'paid';
+  }).length;
+  const transferenciaOrders = userOrders.filter(o => {
+    const method = (o.PaymentMethod || o.paymentMethod)?.toLowerCase();
+    return method === 'transferencia';
+  }).length;
+  const efectivoOrders = userOrders.filter(o => {
+    const method = (o.PaymentMethod || o.paymentMethod)?.toLowerCase();
+    return method === 'efectivo';
+  }).length;
 
   // 🎨 RENDER PRINCIPAL
   return (
@@ -218,6 +241,16 @@ const OrderHistory = () => {
               : `Total de pedidos: ${totalOrders}`
             }
           </p>
+          {localOrders.length > 0 && (
+            <p style={{ 
+              fontSize: '0.9rem', 
+              color: '#059669', 
+              marginTop: '0.5rem',
+              fontWeight: '500'
+            }}>
+              💾 {localOrders.length} pedido{localOrders.length !== 1 ? 's' : ''} guardado{localOrders.length !== 1 ? 's' : ''} localmente
+            </p>
+          )}
         </div>
         
         {/* Botón de recarga manual */}
@@ -226,6 +259,7 @@ const OrderHistory = () => {
             console.log('🔄 Recarga manual iniciada');
             clearError();
             fetchOrders();
+            loadLocalOrders();
           }}
           style={{
             padding: '0.75rem 1.5rem',

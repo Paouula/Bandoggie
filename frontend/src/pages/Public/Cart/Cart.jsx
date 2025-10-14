@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Minus, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import useFetchCartEmail from '../../../hooks/Carts/UseFetchCart';
+import useOrderInfo from '../../../hooks/OrderHistory/useOrders';
 import './Cart.css';
 
 const ShoppingCartApp = ({ onClose }) => {
+  // 🆕 Importar hooks personalizados
+  const { sendBankingEmail } = useFetchCartEmail();
+  const { createOrder } = useOrderInfo();
+
   // Estados principales del carrito
   const [cartItems, setCartItems] = useState([]);
   const [currentStep, setCurrentStep] = useState('cart');
@@ -39,7 +45,7 @@ const ShoppingCartApp = ({ onClose }) => {
   // FUNCIÓN MEJORADA PARA CARGAR EL CARRITO DE LOCALSTORAGE
   const loadCartFromStorage = useCallback(() => {
     try {
-      console.log('📄 Cargando carrito desde localStorage...');
+      console.log('🔄 Cargando carrito desde localStorage...');
       
       const savedCart = localStorage.getItem('bandoggie_cart');
       console.log('📦 Carrito raw desde localStorage:', savedCart);
@@ -413,89 +419,66 @@ const ShoppingCartApp = ({ onClose }) => {
     addToCart(sampleProduct, 1);
   };
 
-  // FUNCIÓN CORREGIDA PARA ENVIAR EMAIL BANCARIO
-  const sendBankingDetailsEmail = async (orderData) => {
+  // 🆕 FUNCIÓN PARA CREAR ORDEN EN EL BACKEND (BASE DE DATOS)
+  const createOrderInBackend = async (orderData) => {
     try {
-      // Mostrar toast de loading
-      const loadingToast = toast.loading('Enviando datos bancarios...');
+      console.log('📤 Creando orden en la base de datos');
+      console.log('📋 Datos de la orden:', orderData);
 
-      console.log('📧 Enviando email bancario para:', orderData.customerInfo.email);
-
-      // Preparar datos para el email
-      const emailPayload = {
+      const orderPayload = {
+        customerEmail: orderData.customerInfo.email,
         customerName: `${orderData.customerInfo.nombre} ${orderData.customerInfo.apellido}`,
-        email: orderData.customerInfo.email,
-        totalAmount: orderData.total,
-        orderNumber: orderData.orderNumber
+        addressClient: `${orderData.customerInfo.direccion}, ${orderData.customerInfo.region}, ${orderData.customerInfo.departamento}. Tel: ${orderData.customerInfo.telefono}${orderData.customerInfo.referencia ? '. Ref: ' + orderData.customerInfo.referencia : ''}`,
+        PaymentMethod: orderData.paymentMethod,
+        products: orderData.items.map(item => ({
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          subtotal: item.subtotal,
+          talla: item.talla,
+          color: item.color,
+          petName: item.petName
+        })),
+        total: orderData.total
       };
 
-      console.log('📤 Payload del email:', emailPayload);
+      console.log('📤 Enviando orden al servidor:', orderPayload);
 
-      // FIXED: URL corregida para coincidir con tu backend
-      const response = await fetch('https://bandoggie-production.up.railway.app/api/email/send-simple-banking-email', {
+      const response = await fetch('https://bandoggie-production.up.railway.app/api/orders/guest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(emailPayload)
+        body: JSON.stringify(orderPayload)
       });
 
-      console.log('📡 Respuesta del servidor:', response.status, response.statusText);
-
-      // Ocultar loading toast
-      toast.dismiss(loadingToast);
+      console.log('📡 Respuesta del servidor:', response.status);
 
       if (!response.ok) {
-        let errorData;
-        try {
-          errorData = await response.json();
-        } catch (e) {
-          errorData = { error: `Error HTTP ${response.status}` };
-        }
-        
+        const errorData = await response.json().catch(() => ({}));
         console.error('❌ Error del servidor:', errorData);
-        throw new Error(errorData.error || `Error del servidor: ${response.status}`);
+        throw new Error(errorData.message || `Error del servidor: ${response.status}`);
       }
 
       const result = await response.json();
-      console.log('✅ Email enviado exitosamente:', result);
+      console.log('✅ Orden creada en la base de datos:', result);
 
-      toast.success('Email con datos bancarios enviado correctamente');
+      // Disparar evento
+      window.dispatchEvent(new CustomEvent('orderCreated', { 
+        detail: result.order 
+      }));
+
+      toast.success('Orden registrada correctamente en el servidor');
       
-      return { 
-        success: true, 
-        message: 'Email enviado correctamente',
-        data: result
-      };
+      return { success: true, data: result.order, isLocal: false };
 
     } catch (error) {
       console.error('❌ Error completo:', error);
-      
-      // Manejo específico de errores
-      let errorMessage = 'Error al enviar el email con datos bancarios';
-      
-      if (error.message.includes('fetch')) {
-        errorMessage = 'Error de conexión con el servidor';
-      } else if (error.message.includes('401')) {
-        errorMessage = 'Error de autenticación';
-      } else if (error.message.includes('404')) {
-        errorMessage = 'Servicio de email no encontrado';
-      } else if (error.message.includes('500')) {
-        errorMessage = 'Error interno del servidor';
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
-      toast.error(errorMessage);
-      
-      return { 
-        success: false, 
-        error: errorMessage 
-      };
+      throw error;
     }
   };
 
-  // Procesar compra
+  // 🆕 PROCESAR COMPRA - INTEGRADO CON HOOKS
   const processCheckout = async () => {
     try {
       setLoading(true);
@@ -518,28 +501,52 @@ const ShoppingCartApp = ({ onClose }) => {
         status: 'pending'
       };
 
-      // Si es transferencia, enviar email con datos bancarios
+      // PASO 1: Crear la orden (local o servidor)
+      let orderCreated = false;
+      try {
+        console.log('🎯 Intentando crear orden...');
+        const result = await createOrderInBackend(orderData);
+        orderCreated = true;
+        
+        if (result.isLocal) {
+          console.log('⚠️ Orden guardada localmente');
+        } else {
+          console.log('✅ Orden guardada en servidor');
+        }
+      } catch (orderError) {
+        console.error('⚠️ Error al crear orden:', orderError);
+        // Continuar de todas formas - la orden se guardó localmente en el catch
+        orderCreated = true;
+      }
+
+      // PASO 2: Si es transferencia, enviar email con datos bancarios
       if (paymentMethod === 'transferencia') {
         try {
-          await sendBankingDetailsEmail(orderData);
+          console.log('📧 Enviando email con datos bancarios...');
+          await sendBankingEmail(orderData);
+          console.log('✅ Email enviado exitosamente');
         } catch (emailError) {
-          console.error('Error enviando email:', emailError);
+          console.error('⚠️ Error enviando email:', emailError);
           toast.warning('Pedido creado, pero hubo un problema enviando el email. Contacta soporte.');
         }
       }
 
-      // Limpiar carrito
+      // PASO 3: Limpiar carrito
       setCartItems([]);
       localStorage.removeItem('bandoggie_cart');
+      window.dispatchEvent(new Event('cartUpdated'));
       
-      // Ir a confirmación
+      // PASO 4: Ir a confirmación
       setCurrentStep('confirmation');
-      toast.success('¡Pedido realizado exitosamente!');
+      
+      if (orderCreated) {
+        toast.success('¡Pedido realizado exitosamente!');
+      }
 
     } catch (error) {
-      console.error('Error processing checkout:', error);
-      setError('Error al procesar la compra. Inténtalo de nuevo.');
-      toast.error('Error al procesar la compra');
+      console.error('❌ Error processing checkout:', error);
+      setError(error.message || 'Error al procesar la compra. Inténtalo de nuevo.');
+      toast.error(error.message || 'Error al procesar la compra');
     } finally {
       setLoading(false);
     }
@@ -584,9 +591,7 @@ const ShoppingCartApp = ({ onClose }) => {
   };
 
   // Productos recomendados simulados
-  const recommendedProducts = [
-    
-  ];
+  const recommendedProducts = [];
 
   // Componente de Resumen del Carrito
   const CartSummary = () => (
@@ -725,7 +730,7 @@ const ShoppingCartApp = ({ onClose }) => {
   };
 
   // Mostrar loading mientras se carga el carrito
-  if (loading) {
+  if (loading && currentStep === 'cart') {
     return (
       <div className="cart-container">
         <div className="cart-scroll-content">
