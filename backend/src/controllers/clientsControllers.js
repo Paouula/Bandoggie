@@ -79,18 +79,9 @@ clientsControllers.put = async (req, res) => {
   const { name, email, phone, dateOfBirth, password } = req.body;
   const { id } = req.params;
 
-  // Validamos el id, que sea válido y no un disparate
+  // Validamos el id, que sea válido
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "ID de cliente inválido" });
-  }
-
-  // Validar correo y contraseña si viene
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: "Correo inválido" });
-  }
-  if (password && password.length < 8) {
-    return res.status(400).json({ message: "La contraseña es muy corta" });
   }
 
   try {
@@ -99,39 +90,38 @@ clientsControllers.put = async (req, res) => {
       return res.status(404).json({ message: "Cliente no encontrado" });
     }
 
-    let imgUrl = "";
+    // Preparar datos para actualizar (solo los que vienen en el body)
+    const updateData = {};
 
-    // Si hay imagen nueva, súbela y actualiza, si no usa la vieja
+    if (name !== undefined) updateData.name = name;
+    if (email !== undefined) updateData.email = email;
+    if (phone !== undefined) updateData.phone = phone;
+    if (dateOfBirth !== undefined) updateData.dateOfBirth = dateOfBirth;
+
+    // Si hay imagen nueva, súbela
     if (req.file) {
       try {
         const result = await cloudinary.uploader.upload(req.file.path, {
           folder: "public",
           allowed_formats: ["jpg", "png", "jpeg"],
         });
-        imgUrl = result.secure_url;
+        updateData.image = result.secure_url;
       } catch (error) {
         console.error("Error al subir imagen:", error);
         return res.status(500).json({ error: "Error al subir la imagen" });
       }
     }
 
-    // Si te dan contraseña, hazhea, si no deja la que ya había
-    const passwordHash = password
-      ? await bcryptjs.hash(password, 10)
-      : existingClient.password;
+    // Si hay contraseña, hashéala
+    if (password !== undefined) {
+      updateData.password = await bcryptjs.hash(password, 10);
+    }
 
     // Actualiza el cliente con los datos nuevos
     const updatedClient = await clientsModel.findByIdAndUpdate(
       id,
-      {
-        name,
-        email,
-        phone,
-        dateOfBirth,
-        password: passwordHash,
-        image: imgUrl || existingClient.image,
-      },
-      { new: true }
+      updateData,
+      { new: true, runValidators: true }
     );
 
     res.json({ message: "Cliente actualizado con éxito", updatedClient });

@@ -27,21 +27,9 @@ vetsControllers.put = async (req, res) => {
   const { id } = req.params;
   const { nameVet, email, password, locationVet, nitVet } = req.body;
 
+  // Validar ID
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "ID inválido" });
-  }
-
-  if (!nameVet || !email || !locationVet || !nitVet) {
-    return res.status(400).json({ message: "Faltan datos obligatorios para actualizar" });
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: "Correo inválido" });
-  }
-
-  if (password && password.length < 8) {
-    return res.status(400).json({ message: "La contraseña es muy corta" });
   }
 
   try {
@@ -50,36 +38,38 @@ vetsControllers.put = async (req, res) => {
       return res.status(404).json({ message: "Veterinario no encontrado" });
     }
 
-    let imageUrl = existingVet.image;
+    // Preparar datos para actualizar
+    const updateData = {};
 
-    // Si hay nueva imagen, se sube a Cloudinary
+    if (nameVet !== undefined) updateData.nameVet = nameVet;
+    if (email !== undefined) updateData.email = email;
+    if (locationVet !== undefined) updateData.locationVet = locationVet;
+    if (nitVet !== undefined) updateData.nitVet = nitVet;
+
+    // Si hay nueva imagen, súbela a Cloudinary
     if (req.file) {
       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "vets",
         allowed_formats: ["jpg", "png", "jpeg"],
       });
-      imageUrl = uploadResult.secure_url;
+      updateData.image = uploadResult.secure_url;
     }
 
-    const passwordHash = password
-      ? await bcryptjs.hash(password, 10)
-      : existingVet.password;
+    // Si hay contraseña, hashéala
+    if (password !== undefined) {
+      updateData.password = await bcryptjs.hash(password, 10);
+    }
 
+    // Actualizar veterinario
     const updatedVet = await VetModel.findByIdAndUpdate(
       id,
-      {
-        nameVet,
-        email,
-        password: passwordHash,
-        locationVet,
-        nitVet,
-        image: imageUrl,
-      },
-      { new: true }
+      updateData,
+      { new: true, runValidators: true }
     );
 
     res.json({ message: "Veterinario actualizado con éxito", updatedVet });
   } catch (error) {
+    console.error("Error al actualizar veterinario:", error);
     res.status(500).json({ message: "Error al actualizar veterinario", error });
   }
 };

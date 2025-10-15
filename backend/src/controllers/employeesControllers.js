@@ -131,34 +131,43 @@ employeesControllers.put = async (req, res) => {
       duiEmployees,
     } = req.body;
 
-    const idToUpdate = req.params.id; 
+    const idToUpdate = req.params.id;
 
-    const validationErrors = validateEmployeeFields(req.body, true);
-    if (validationErrors.length) {
-      return res.status(400).json({ message: validationErrors.join(", ") });
+    // Verificar que el empleado existe
+    const existingEmployee = await employeesModel.findById(idToUpdate);
+    if (!existingEmployee) {
+      return res.status(404).json({ message: "Empleado no encontrado" });
     }
 
-    const existing = await employeesModel.findOne({ email });
-    if (existing && existing._id.toString() !== idToUpdate) {
-      return res.status(400).json({ message: "El usuario ya existe" });
+    // Preparar datos para actualizar
+    const updateData = {};
+
+    if (nameEmployees !== undefined) updateData.nameEmployees = nameEmployees;
+    if (email !== undefined) updateData.email = email;
+    if (phoneEmployees !== undefined) updateData.phoneEmployees = phoneEmployees;
+    if (dateOfBirth !== undefined) updateData.dateOfBirth = dateOfBirth;
+    if (addressEmployees !== undefined) updateData.addressEmployees = addressEmployees;
+    if (hireDateEmployee !== undefined) updateData.hireDateEmployee = hireDateEmployee;
+    if (duiEmployees !== undefined) updateData.duiEmployees = duiEmployees;
+
+    // Si hay contraseña, hashéala
+    if (password !== undefined) {
+      updateData.password = await bcryptjs.hash(password, 10);
     }
 
-    const updateData = {
-      nameEmployees,
-      email,
-      phoneEmployees,
-      dateOfBirth,
-      addressEmployees,
-      hireDateEmployee,
-      duiEmployees,
-    };
+    // Actualizar empleado
+    const updatedEmployee = await employeesModel.findByIdAndUpdate(
+      idToUpdate,
+      updateData,
+      { new: true, runValidators: true }
+    );
 
-    if (password) updateData.password = await bcryptjs.hash(password, 10);
-
-    await employeesModel.findByIdAndUpdate(idToUpdate, updateData, { new: true });
-
-    res.status(200).json({ message: "Empleado actualizado correctamente" });
+    res.status(200).json({ 
+      message: "Empleado actualizado correctamente",
+      employee: updatedEmployee 
+    });
   } catch (error) {
+    console.error("Error al actualizar empleado:", error);
     res.status(500).json({ message: "Error al actualizar datos: " + error });
   }
 };
