@@ -25,7 +25,45 @@ const UserProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  const currentRole = user?.userType || userDetails?.userType || "client";
+  const currentRole = user?.userType || userDetails?.userType || 'client';
+
+  // ✅ Función para manejar clicks en el menú
+  const handleMenuClick = (menuId) => {
+    console.log('🔘 Menu clicked:', menuId);
+    
+    switch(menuId) {
+      case 1:
+        // Para clientes: "Tus pedidos" → ir a OrderHistory
+        if (currentRole === 'client') {
+          console.log('📦 Navegando a OrderHistory...');
+          navigate('/orderHistory');
+        }
+        // Para empleados: "Gestión de Pedidos"
+        else if (currentRole === 'employee') {
+          toast.info('Gestión de Pedidos - Próximamente');
+        }
+        // Para veterinarios: "Consultas"
+        else if (currentRole === 'vet') {
+          toast.info('Consultas - Próximamente');
+        }
+        break;
+        
+      case 2:
+        toast.info('Mensajes - Próximamente');
+        break;
+        
+      case 3:
+        toast.info('Reseñas - Próximamente');
+        break;
+        
+      case 4:
+        toast.info('Configuración - Próximamente');
+        break;
+        
+      default:
+        toast.info('Función próximamente disponible');
+    }
+  };
 
   const menuConfig = {
     client: [
@@ -96,12 +134,12 @@ const UserProfile = () => {
       });
 
       if (data?.user) {
-        console.log(" Detalles del usuario obtenidos:", data.user);
+        console.log(' Detalles del usuario obtenidos:', data.user);
         setUserDetails(data.user);
       }
     } catch (error) {
-      console.error(" Error al obtener detalles del usuario:", error);
-      toast.error("Error al cargar los datos del perfil");
+      console.error(' Error al obtener detalles del usuario:', error);
+      toast.error('Error al cargar los datos del perfil');
     } finally {
       setIsLoading(false);
     }
@@ -205,11 +243,8 @@ const UserProfile = () => {
       <div className="user-profile">
         <div className="auth-placeholder">
           <h2>Por favor, inicia sesión para ver tu perfil</h2>
-          <button
-            onClick={() => (window.location.href = "/mainPage")}
-            className="retry-button"
-          >
-            Ir al Inicio
+          <button onClick={() => window.location.href = '/mainPage'} className="retry-button">
+            Ir al Inicio            
           </button>
         </div>
       </div>
@@ -251,7 +286,11 @@ const UserProfile = () => {
             <h2 className="menu-title">Opciones</h2>
             <div className="menu-list">
               {menuConfig[currentRole]?.map((item) => (
-                <button key={item.id} className="menu-item">
+                <button 
+                  key={item.id} 
+                  className="menu-item"
+                  onClick={() => handleMenuClick(item.id)}
+                >
                   <div className="menu-item-content">
                     {item.icon}
                     <span className="menu-text">{item.text}</span>
@@ -272,9 +311,9 @@ const UserProfile = () => {
             <div className="info-card">
               <h3>Tipo de cuenta</h3>
               <p className="user-type-display">
-                {currentRole === "client" && "Cliente"}
-                {currentRole === "employee" && "Empleado"}
-                {currentRole === "vet" && " Veterinario"}
+                {currentRole === 'client' && 'Cliente'}
+                {currentRole === 'employee' && 'Empleado'}
+                {currentRole === 'vet' && ' Veterinario'}
               </p>
             </div>
 

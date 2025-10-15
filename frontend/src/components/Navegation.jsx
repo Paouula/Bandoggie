@@ -62,6 +62,7 @@ const EmployeeLayout = () => (
     <div className="admin-content">
       <Routes>
         <Route path="productos" element={<Productos />} />
+        <Route path="home" element={<Home />} />
         <Route path="reseñas" element={<Reseñas />} />
         <Route path="empleados" element={<Empleados />} />
         <Route path="clientes" element={<Clientes />} />

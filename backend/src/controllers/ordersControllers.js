@@ -405,4 +405,69 @@ ordersController.getOrdersStats = async (req, res) => {
   }
 };
 
+// CREATE GUEST ORDER - Crear orden sin carrito (para invitados)
+ordersController.createGuestOrder = async (req, res) => {
+  try {
+    const { 
+      customerEmail, 
+      customerName, 
+      addressClient, 
+      PaymentMethod,
+      products,
+      total 
+    } = req.body;
+
+    console.log('📦 Creando orden de invitado:', req.body);
+
+    // Validaciones
+    if (!customerEmail) {
+      return res.status(400).json({ message: "El email del cliente es requerido" });
+    }
+
+    if (!customerName) {
+      return res.status(400).json({ message: "El nombre del cliente es requerido" });
+    }
+
+    if (!addressClient || !addressClient.trim()) {
+      return res.status(400).json({ message: "La dirección del cliente es requerida" });
+    }
+
+    if (!PaymentMethod) {
+      return res.status(400).json({ message: "El método de pago es requerido" });
+    }
+
+    // Validar método de pago
+    const validPaymentMethods = ['transferencia', 'efectivo'];
+    if (!validPaymentMethods.includes(PaymentMethod.toLowerCase())) {
+      return res.status(400).json({ 
+        message: "Método de pago inválido. Solo se acepta 'transferencia' o 'efectivo'" 
+      });
+    }
+
+    // Crear la orden directamente (sin idCart)
+    const newOrder = new ordersModel({ 
+      customerEmail,
+      customerName,
+      addressClient: addressClient.trim(), 
+      paymentMethod: PaymentMethod.toLowerCase(),
+      isGuest: true // Marcar como orden de invitado
+    });
+    
+    await newOrder.save();
+
+    console.log('✅ Orden de invitado creada:', newOrder._id);
+
+    res.status(201).json({ 
+      message: "Orden creada exitosamente", 
+      order: newOrder 
+    });
+  } catch (error) {
+    console.error("❌ Error creating guest order:", error);
+    res.status(500).json({ 
+      message: "Error al crear la orden", 
+      error: error.message 
+    });
+  }
+};
+
 export default ordersController;

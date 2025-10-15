@@ -1,40 +1,38 @@
-/*
-    Campos:
-        idClients,
-        listProducts,
-        dateOrders,
-        idProduct,
-        addressClient,
-        subTotal,
-        total
-*/
+import mongoose from 'mongoose';
 
-import {Schema, model} from "mongoose";
-
-const OrdersSchema = new Schema({
-
-    idCart: {
-        type: Schema.Types.ObjectId,
-        ref: "Cart",
-        require: true
-    },
-
-    addressClient: {
-        type: String,
-        require: true
-    },
-
-    PaymentMethod: {
-        type: String,
-        require: true,
-        enum: ["transferencia", "efectivo"]
-    },
-
-
-    
+const orderSchema = new mongoose.Schema({
+  idCart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cart',
+    required: false // 🆕 Hacer opcional para órdenes de invitados
+  },
+  customerEmail: {
+    type: String,
+    required: true, // 🆕 Agregar campo obligatorio
+    trim: true,
+    lowercase: true
+  },
+  customerName: {
+    type: String,
+    required: true, // 🆕 Agregar campo obligatorio
+    trim: true
+  },
+  addressClient: {
+    type: String,
+    required: true
+  },
+  paymentMethod: {
+    type: String,
+    enum: ['transferencia', 'efectivo'],
+    required: true,
+    lowercase: true
+  },
+  isGuest: {
+    type: Boolean,
+    default: false // 🆕 Identificar órdenes de invitados
+  }
 }, {
-    timestamps: true,
-    strict: false
-})
+  timestamps: true
+});
 
-export default model("Orders", OrdersSchema)
+export default mongoose.model('Order', orderSchema);

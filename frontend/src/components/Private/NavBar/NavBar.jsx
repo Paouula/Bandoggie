@@ -57,6 +57,7 @@ function PrivateNavBar() {
 
         <div className={`navbar-nav-container ${isNavOpen ? 'navbar-nav-open' : ''}`}>
           <div className="navbar-nav-links">
+            <Link className="navbar-nav-link" to="/admin/home">Inicio</Link>
             <Link className="navbar-nav-link" to="/admin/productos">Productos</Link>
             <Link className="navbar-nav-link" to="/admin/reseñas">Reseñas</Link>
             <Link className="navbar-nav-link" to="/admin/empleados">Empleados</Link>
