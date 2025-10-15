@@ -8,6 +8,7 @@ import { useAuth } from "../../../Context/AuthContext.jsx";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 import "./SelectedProduct.css";
+import Input from "../../../components/Input/Input.jsx";
 
 const SelectedProduct = () => {
   const { id } = useParams();
@@ -164,176 +165,215 @@ const SelectedProduct = () => {
       : "5.0";
 
   return (
-    <div className="product-page">
-       <Toaster position="top-right" reverseOrder={false} />
-      {/* Breadcrumb */}
-      <div className="breadcrumb">
-        <Link to="/">Inicio</Link>
-        <ChevronRight size={16} />
-        <Link to={`/category/${product.idCategory?._id}`}>
-          {product.idCategory?.name}
-        </Link>
-        <ChevronRight size={16} />
-        <span className="breadcrumb-active">{product.nameProduct}</span>
+    <div className="product-page-selectedProduct">
+  <Toaster position="top-right" reverseOrder={false} />
+
+  {/* Breadcrumb */}
+  <div className="breadcrumb-selectedProduct">
+    <Link to="/">Inicio</Link>
+    <ChevronRight size={16} />
+    <Link to={`/category/${product.idCategory?._id}`}>
+      {product.idCategory?.name}
+    </Link>
+    <ChevronRight size={16} />
+    <span className="breadcrumb-active-selectedProduct">{product.nameProduct}</span>
+  </div>
+
+  <div className="product-container-selectedProduct">
+    {/* Imágenes */}
+    <div className="product-images-selectedProduct">
+      <div className="main-image-wrapper-selectedProduct">
+        <button
+          className="nav-arrow-selectedProduct nav-arrow-left-selectedProduct"
+          onClick={prevImage}
+          aria-label="Imagen anterior"
+        >
+          <ChevronLeft size={30} />
+        </button>
+
+        <img
+          src={allImages[selectedImage] || "/api/placeholder/400/400"}
+          alt={`${product.nameProduct} imagen ${selectedImage + 1}`}
+          className="main-image-selectedProduct"
+        />
+
+        <button
+          className="nav-arrow-selectedProduct nav-arrow-right-selectedProduct"
+          onClick={nextImage}
+          aria-label="Imagen siguiente"
+        >
+          <ChevronRightIcon size={30} />
+        </button>
       </div>
 
-      <div className="product-container">
-        {/* Imágenes */}
-        <div className="product-images">
-          <div className="main-image-wrapper">
-            <button className="nav-arrow left" onClick={prevImage} aria-label="Imagen anterior">
-              <ChevronLeft size={30} />
+      {/* Miniaturas */}
+      <div className="thumbnail-row-selectedProduct">
+        {allImages.map((img, index) => (
+          <button
+            key={index}
+            onClick={() => setSelectedImage(index)}
+            className={`thumbnail-selectedProduct ${
+              selectedImage === index ? "thumbnail-active-selectedProduct" : ""
+            }`}
+            aria-label={`Ver imagen ${index + 1}`}
+          >
+            <img src={img} alt={`Miniatura ${index + 1}`} />
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Info producto */}
+    <div className="product-info-selectedProduct">
+      <h1>{product.nameProduct}</h1>
+      <p className="price-selectedProduct">Desde ${product.price}</p>
+
+      <div className="rating-selectedProduct">
+        <span>{averageRating}</span>
+        <div className="stars">{renderStars(Math.round(averageRating))}</div>
+        <span>({totalReviews} evaluaciones)</span>
+      </div>
+
+      <p className="description-review-selectedProduct">{product.description}</p>
+
+      {/* Tallas */}
+      <div className="section-selectedProduct">
+        <h4>Talla</h4>
+        <div className="sizes-selectedProduct">
+          {sizes.map((size) => (
+            <button
+              key={size}
+              onClick={() => setSelectedSize(size)}
+              className={`size-selectedProduct ${
+                selectedSize === size ? "size-active-selectedProduct" : ""
+              }`}
+            >
+              {size}
             </button>
+          ))}
+        </div>
+        <p className="size-guide-selectedProduct">
+          <button
+            onClick={() => setShowSizeGuide(true)}
+            className="size-guide-button-selectedProduct"
+            type="button"
+          >
+            Guía de tallas
+          </button>
+        </p>
+      </div>
 
-            <img
-              src={allImages[selectedImage] || "/api/placeholder/400/400"}
-              alt={`${product.nameProduct} imagen ${selectedImage + 1}`}
-              className="main-image"
-            />
-
-            <button className="nav-arrow right" onClick={nextImage} aria-label="Imagen siguiente">
-              <ChevronRightIcon size={30} />
-            </button>
-          </div>
-
-          {/* Miniaturas */}
-          <div className="thumbnail-row">
-            {allImages.map((img, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedImage(index)}
-                className={`thumbnail ${selectedImage === index ? "thumbnail-active" : ""}`}
-                aria-label={`Ver imagen ${index + 1}`}
-              >
-                <img src={img} alt={`Miniatura ${index + 1}`} />
-              </button>
-            ))}
-          </div>
+      {/* Nombre mascota */}
+      <div className="section-selectedProduct">
+        <div className="customization-toggle-selectedProduct">
+          <span>Personalizar con nombre</span>
+          <input
+            type="checkbox"
+            checked={includeName}
+            onChange={() => setIncludeName(!includeName)}
+          />
         </div>
 
-        {/* Info producto */}
-        <div className="product-info">
-          <h1>{product.nameProduct}</h1>
-          <p className="price">Desde ${product.price}</p>
-          <div className="rating">
-            <span>{averageRating}</span>
-            <div className="stars">{renderStars(Math.round(averageRating))}</div>
-            <span>({totalReviews} evaluaciones)</span>
-          </div>
+        {includeName && (
+          <Input
+            type="text"
+            className="input-selectedProduct"
+            value={customerName}
+            onChange={(e) => setCustomerName(e.target.value)}
+            placeholder="Nombre de tu mascota"
+          />
+        )}
+      </div>
 
-          <p className="description-review">{product.description}</p>
+      {/* Acciones */}
+      <div className="actions-selectedProduct">
+        <div className="top-action-row-selectedProduct">
+          <select
+            className="quantity-reviews-selectedProduct"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
+              <option key={num}>{num}</option>
+            ))}
+          </select>
 
-          {/* Tallas */}
-          <div className="section">
-            <h4>Talla</h4>
-            <div className="sizes">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`size ${selectedSize === size ? "size-active" : ""}`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-            <p className="size-guide">
-              <button 
-                onClick={() => setShowSizeGuide(true)}
-                className="size-guide-button"
-                type="button"
-              >
-                Guía de tallas
-              </button>
+          <button
+            className="btn-selectedProduct add-to-cart-selectedProduct"
+            onClick={handleAddToCart}
+            disabled={!selectedSize || (includeName && !customerName.trim())}
+          >
+            Añadir al carrito
+          </button>
+        </div>
+
+        <button className="btn-selectedProduct buy-now-selectedProduct">
+          Comprar ahora
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {/* Modal de Guía de Tallas */}
+  {showSizeGuide && (
+    <div
+      className="size-guide-modal-overlay-selectedProduct"
+      onClick={() => setShowSizeGuide(false)}
+    >
+      <div
+        className="size-guide-modal-selectedProduct"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="size-guide-header-selectedProduct">
+          <h3>Guía de Tallas</h3>
+          <button
+            className="size-guide-close-selectedProduct"
+            onClick={() => setShowSizeGuide(false)}
+            aria-label="Cerrar guía de tallas"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        <div className="size-guide-content-selectedProduct">
+          <img
+            src="/src/img/SelectedProduct/size-guide.png"
+            alt="Guía de tallas para mascotas"
+            className="size-guide-image-selectedProduct"
+          />
+          <div className="size-guide-instructions-selectedProduct">
+            <h4>Cómo medir a tu mascota:</h4>
+            <ul>
+              <li>
+                <strong>Cuello:</strong> Mide alrededor del cuello donde
+                normalmente va el collar
+              </li>
+              <li>
+                <strong>Pecho:</strong> Mide la parte más ancha del pecho, justo
+                detrás de las patas delanteras
+              </li>
+              <li>
+                <strong>Espalda:</strong> Mide desde la base del cuello hasta la
+                base de la cola
+              </li>
+            </ul>
+            <p>
+              <em>Consejo:</em> Si tu mascota está entre dos tallas, elige la
+              talla más grande para mayor comodidad.
             </p>
           </div>
-
-          {/* Nombre mascota */}
-          <div className="section">
-            <div className="customization-toggle">
-              <span>Personalizar con nombre</span>
-              <input
-                type="checkbox"
-                checked={includeName}
-                onChange={() => setIncludeName(!includeName)}
-              />
-            </div>
-
-            {includeName && (
-              <input
-                type="text"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                placeholder="Nombre de tu mascota"
-              />
-            )}
-          </div>
-
-          {/* Acciones */}
-          <div className="actions">
-            <div className="top-action-row">
-              <select
-                className="quantity-reviews"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
-                  <option key={num}>{num}</option>
-                ))}
-              </select>
-              <button 
-                className="btn add-to-cart" 
-                onClick={handleAddToCart}
-                disabled={!selectedSize || (includeName && !customerName.trim())}
-              >
-                Añadir al carrito
-              </button>
-            </div>
-            <button className="btn buy-now">Comprar ahora</button>
-          </div>
         </div>
       </div>
-
-      {/* Modal de Guía de Tallas */}
-      {showSizeGuide && (
-        <div className="size-guide-modal-overlay" onClick={() => setShowSizeGuide(false)}>
-          <div className="size-guide-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="size-guide-header">
-              <h3>Guía de Tallas</h3>
-              <button 
-                className="size-guide-close"
-                onClick={() => setShowSizeGuide(false)}
-                aria-label="Cerrar guía de tallas"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <div className="size-guide-content">
-              <img 
-                src="/src/img/SelectedProduct/size-guide.png" // Cambia esta ruta por tu imagen de guía de tallas
-                alt="Guía de tallas para mascotas"
-                className="size-guide-image"
-              />
-              <div className="size-guide-instructions">
-                <h4>Cómo medir a tu mascota:</h4>
-                <ul>
-                  <li><strong>Cuello:</strong> Mide alrededor del cuello donde normalmente va el collar</li>
-                  <li><strong>Pecho:</strong> Mide la parte más ancha del pecho, justo detrás de las patas delanteras</li>
-                  <li><strong>Espalda:</strong> Mide desde la base del cuello hasta la base de la cola</li>
-                </ul>
-                <p><em>Consejo:</em> Si tu mascota está entre dos tallas, elige la talla más grande para mayor comodidad.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Reseñas */}
-      <Reviews reviews={reviews} productId={product._id} />
-
-      {/* Relacionados */}
-      <RelatedProducts products={relatedProducts} />
     </div>
+  )}
+
+  {/* Reseñas */}
+  <div className="reviews-selectedProduct">
+    <Reviews reviews={reviews} productId={product._id} />
+  </div>
+
+  {/* Relacionados */}
+  <RelatedProducts products={relatedProducts} />
+</div>
   );
 };
 
