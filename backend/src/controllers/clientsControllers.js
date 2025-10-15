@@ -84,11 +84,6 @@ clientsControllers.put = async (req, res) => {
     return res.status(400).json({ message: "ID de cliente inválido" });
   }
 
-  // Validar campos obligatorios para la actualización
-  if (!name || !email || !phone || !dateOfBirth) {
-    return res.status(400).json({ message: "Faltan datos obligatorios para actualizar" });
-  }
-
   // Validar correo y contraseña si viene
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {

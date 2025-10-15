@@ -1,6 +1,8 @@
 import React from "react";
 import { Edit2, Save, X, User } from "lucide-react";
 import "./ProfileCard.css";
+import InputDataPicker from "../InputDataPicker/InputDataPicker";
+import Input from "../Input/Input";
 
 const ProfileCard = ({
   userInfo,
@@ -15,6 +17,20 @@ const ProfileCard = ({
     const success = await onUpdateProfile(userInfo);
     if (success) {
       onEditToggle();
+    }
+  };
+
+  // Función auxiliar para manejar cambios en los inputs
+  const handleInputChange = (field, value) => {
+    onInputChange(field, value);
+  };
+
+  // Función auxiliar para manejar cambios en los DatePickers
+  const handleDateChange = (field, date) => {
+    if (date instanceof Date && !isNaN(date)) {
+      // Convertir a formato ISO string (YYYY-MM-DD)
+      const isoDate = date.toISOString().split('T')[0];
+      onInputChange(field, isoDate);
     }
   };
 
@@ -69,19 +85,21 @@ const ProfileCard = ({
       </div>
 
       <div className="profile-info">
+        {/* Campo Nombre */}
         <div className="info-field">
           <label>Nombre</label>
           {isEditing ? (
-            <input
+            <Input
               type="text"
+              id="name"
+              placeholder="Ingresa tu nombre"
               value={userInfo.name || userInfo.nameEmployees || ""}
               onChange={(e) =>
-                onInputChange(
+                handleInputChange(
                   userInfo.nameEmployees ? "nameEmployees" : "name",
                   e.target.value
                 )
               }
-              placeholder="Ingresa tu nombre"
             />
           ) : (
             <p>
@@ -90,35 +108,39 @@ const ProfileCard = ({
           )}
         </div>
 
+        {/* Campo Email */}
         <div className="info-field">
           <label>Email</label>
           {isEditing ? (
-            <input
+            <Input
               type="email"
-              value={userInfo.email || ""}
-              onChange={(e) => onInputChange("email", e.target.value)}
+              id="email"
               placeholder="correo@ejemplo.com"
+              value={userInfo.email || ""}
+              onChange={(e) => handleInputChange("email", e.target.value)}
             />
           ) : (
             <p>{userInfo.email || "No especificado"}</p>
           )}
         </div>
 
+        {/* Campo Teléfono (Empleados y Clientes) */}
         {(userInfo.userType === "employee" ||
           userInfo.userType === "client") && (
           <div className="info-field">
             <label>Teléfono</label>
             {isEditing ? (
-              <input
+              <Input
                 type="tel"
+                id="phone"
+                placeholder="1234-5678"
                 value={userInfo.phone || userInfo.phoneEmployees || ""}
                 onChange={(e) =>
-                  onInputChange(
+                  handleInputChange(
                     userInfo.phoneEmployees ? "phoneEmployees" : "phone",
                     e.target.value
                   )
                 }
-                placeholder="1234-5678"
               />
             ) : (
               <p>
@@ -128,98 +150,100 @@ const ProfileCard = ({
           </div>
         )}
 
-        {/* Campos específicos para clientes */}
+        {/* Campos específicos para CLIENTES */}
         {userInfo.userType === "client" && (
           <div className="info-field">
             <label>Fecha de Nacimiento</label>
             {isEditing ? (
-              <input
-                type="date"
+              <InputDataPicker
+                label="Selecciona tu fecha de nacimiento"
                 value={userInfo.birthday || userInfo.birthDate || ""}
-                onChange={(e) => onInputChange("birthday", e.target.value)}
+                onChange={(date) => handleDateChange("birthday", date)}
+                name="birthday"
               />
             ) : (
               <p>
-                {userInfo.birthday || userInfo.birthDate || "No especificado"}
+                {userInfo.birthday
+                  ? new Date(userInfo.birthday).toLocaleDateString("es-ES")
+                  : userInfo.birthDate
+                  ? new Date(userInfo.birthDate).toLocaleDateString("es-ES")
+                  : "No especificado"}
               </p>
             )}
           </div>
         )}
 
-        {/* Campos específicos para empleados */}
+        {/* Campos específicos para EMPLEADOS */}
         {userInfo.userType === "employee" && (
           <>
+            {/* Fecha de Nacimiento */}
             <div className="info-field">
               <label>Fecha de Nacimiento</label>
               {isEditing ? (
-                <input
-                  type="date"
-                  value={
-                    userInfo.dateOfBirth
-                      ? new Date(userInfo.dateOfBirth)
-                          .toISOString()
-                          .split("T")[0]
-                      : ""
-                  }
-                  onChange={(e) => onInputChange("dateOfBirth", e.target.value)}
+                <InputDataPicker
+                  label="Selecciona tu fecha de nacimiento"
+                  value={userInfo.dateOfBirth || ""}
+                  onChange={(date) => handleDateChange("dateOfBirth", date)}
+                  name="dateOfBirth"
                 />
               ) : (
                 <p>
                   {userInfo.dateOfBirth
-                    ? new Date(userInfo.dateOfBirth).toLocaleDateString()
+                    ? new Date(userInfo.dateOfBirth).toLocaleDateString("es-ES")
                     : "No especificado"}
                 </p>
               )}
             </div>
+
+            {/* Dirección */}
             <div className="info-field">
               <label>Dirección</label>
               {isEditing ? (
-                <input
+                <Input
                   type="text"
+                  id="addressEmployees"
+                  placeholder="Ingresa tu dirección"
                   value={userInfo.addressEmployees || ""}
                   onChange={(e) =>
-                    onInputChange("addressEmployees", e.target.value)
+                    handleInputChange("addressEmployees", e.target.value)
                   }
-                  placeholder="Dirección"
                 />
               ) : (
                 <p>{userInfo.addressEmployees || "No especificado"}</p>
               )}
             </div>
+
+            {/* Fecha de Contratación */}
             <div className="info-field">
               <label>Fecha de Contratación</label>
               {isEditing ? (
-                <input
-                  type="date"
-                  value={
-                    userInfo.hireDateEmployee
-                      ? new Date(userInfo.hireDateEmployee)
-                          .toISOString()
-                          .split("T")[0]
-                      : ""
-                  }
-                  onChange={(e) =>
-                    onInputChange("hireDateEmployee", e.target.value)
-                  }
+                <InputDataPicker
+                  label="Selecciona la fecha de contratación"
+                  value={userInfo.hireDateEmployee || ""}
+                  onChange={(date) => handleDateChange("hireDateEmployee", date)}
+                  name="hireDateEmployee"
                 />
               ) : (
                 <p>
                   {userInfo.hireDateEmployee
-                    ? new Date(userInfo.hireDateEmployee).toLocaleDateString()
+                    ? new Date(userInfo.hireDateEmployee).toLocaleDateString("es-ES")
                     : "No especificado"}
                 </p>
               )}
             </div>
+
+            {/* DUI */}
             <div className="info-field">
               <label>DUI</label>
               {isEditing ? (
-                <input
+                <Input
                   type="text"
+                  id="duiEmployees"
+                  placeholder="12345678-9"
                   value={userInfo.duiEmployees || ""}
                   onChange={(e) =>
-                    onInputChange("duiEmployees", e.target.value)
+                    handleInputChange("duiEmployees", e.target.value)
                   }
-                  placeholder="DUI"
                 />
               ) : (
                 <p>{userInfo.duiEmployees || "No especificado"}</p>
@@ -228,30 +252,37 @@ const ProfileCard = ({
           </>
         )}
 
-        {/* Campos específicos para veterinarios */}
+        {/* Campos específicos para VETERINARIOS */}
         {userInfo.userType === "vet" && (
           <>
+            {/* Ubicación del Consultorio */}
             <div className="info-field">
               <label>Ubicación de Consultorio</label>
               {isEditing ? (
-                <input
+                <Input
                   type="text"
-                  value={userInfo.locationVet || ""}
-                  onChange={(e) => onInputChange("locationVet", e.target.value)}
+                  id="locationVet"
                   placeholder="Ubicación del consultorio"
+                  value={userInfo.locationVet || ""}
+                  onChange={(e) =>
+                    handleInputChange("locationVet", e.target.value)
+                  }
                 />
               ) : (
                 <p>{userInfo.locationVet || "No especificado"}</p>
               )}
             </div>
+
+            {/* NIT */}
             <div className="info-field">
               <label>NIT</label>
               {isEditing ? (
-                <input
+                <Input
                   type="text"
+                  id="nitVet"
+                  placeholder="1234-567890-123-4"
                   value={userInfo.nitVet || ""}
-                  onChange={(e) => onInputChange("nitVet", e.target.value)}
-                  placeholder="NIT del consultorio"
+                  onChange={(e) => handleInputChange("nitVet", e.target.value)}
                 />
               ) : (
                 <p>{userInfo.nitVet || "No especificado"}</p>
@@ -260,6 +291,7 @@ const ProfileCard = ({
           </>
         )}
 
+        {/* Tipo de Usuario (Solo lectura) */}
         <div className="info-field">
           <label>Tipo de Usuario</label>
           <div className="user-type-badge-container">
