@@ -11,7 +11,7 @@ import {
   ChevronRight,
   ArrowLeft,
 } from "lucide-react";
-import { useAuth } from "../../../Context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 import ProfileCard from "../../../components/Profile/ProfileCard";
 import { API_FETCH_JSON } from "../../../config";
 import { toast } from "react-hot-toast";

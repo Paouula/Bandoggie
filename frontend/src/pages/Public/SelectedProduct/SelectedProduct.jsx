@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 import "./SelectedProduct.css";
 import Input from "../../../components/Input/Input.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const SelectedProduct = () => {
   const { id } = useParams();
@@ -20,17 +21,15 @@ const SelectedProduct = () => {
   const [customerName, setCustomerName] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
   const [includeName, setIncludeName] = useState(false);
-  const [showSizeGuide, setShowSizeGuide] = useState(false); // Nuevo estado para el modal
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
 
   const sizes = ["XS", "S", "M", "L", "XL"];
 
-  if (loading) return <p>Cargando producto...</p>;
+  if (loading) return <LoadingScreen message="Cargando producto..." />;
   if (!product) return <p>No se encontró el producto</p>;
 
-  // Función mejorada para agregar al carrito
   const handleAddToCart = () => {
     try {
-      // Validar campos requeridos
       if (!selectedSize) {
         toast.error('Por favor selecciona una talla');
         return;
@@ -41,7 +40,6 @@ const SelectedProduct = () => {
         return;
       }
 
-      // Crear el objeto del producto con la estructura exacta que espera ShoppingCartApp
       const productToAdd = {
         _id: product._id,
         id: product._id,
@@ -50,7 +48,7 @@ const SelectedProduct = () => {
         price: parseFloat(product.price) || 0,
         quantity: quantity,
         talla: selectedSize,
-        color: null, // Agregar si tienes selección de color
+        color: null,
         petName: includeName ? customerName.trim() : null,
         image: product.image,
         productInfo: {
@@ -58,13 +56,12 @@ const SelectedProduct = () => {
         }
       };
 
-      console.log('Producto a agregar:', productToAdd); // Debug
+      console.log('Producto a agregar:', productToAdd);
 
-      // Obtener carrito existente del localStorage
       let existingCart = [];
       try {
         const savedCart = localStorage.getItem('bandoggie_cart');
-        console.log('Carrito existente en localStorage:', savedCart); // Debug
+        console.log('Carrito existente en localStorage:', savedCart);
         
         if (savedCart && savedCart !== 'undefined' && savedCart !== 'null') {
           existingCart = JSON.parse(savedCart);
@@ -77,9 +74,8 @@ const SelectedProduct = () => {
         existingCart = [];
       }
 
-      console.log('Carrito parseado:', existingCart); // Debug
+      console.log('Carrito parseado:', existingCart);
 
-      // Verificar si el producto ya existe en el carrito (considerando talla y nombre de mascota)
       const existingItemIndex = existingCart.findIndex(item => 
         item._id === productToAdd._id && 
         item.talla === productToAdd.talla &&
@@ -88,7 +84,6 @@ const SelectedProduct = () => {
 
       let updatedCart;
       if (existingItemIndex !== -1) {
-        // Si el producto ya existe, actualizar cantidad
         updatedCart = [...existingCart];
         updatedCart[existingItemIndex].quantity += quantity;
         updatedCart[existingItemIndex].subtotal = 
@@ -96,7 +91,6 @@ const SelectedProduct = () => {
         
         toast.success(`Cantidad actualizada: ${updatedCart[existingItemIndex].quantity} unidades`);
       } else {
-        // Si no existe, agregar como nuevo item
         const newItem = {
           ...productToAdd,
           subtotal: productToAdd.price * quantity
@@ -106,15 +100,12 @@ const SelectedProduct = () => {
         toast.success(`${productToAdd.name} agregado al carrito`);
       }
 
-      console.log('Carrito actualizado:', updatedCart); // Debug
+      console.log('Carrito actualizado:', updatedCart);
 
-      // Guardar el carrito actualizado en localStorage
       localStorage.setItem('bandoggie_cart', JSON.stringify(updatedCart));
       
-      // Disparar evento para que el NavBar y otros componentes se actualicen
       window.dispatchEvent(new Event('cartUpdated'));
       
-      // También disparar un evento personalizado con más detalles si es necesario
       window.dispatchEvent(new CustomEvent('cartItemAdded', {
         detail: {
           product: productToAdd,
@@ -123,7 +114,7 @@ const SelectedProduct = () => {
         }
       }));
 
-      console.log('Eventos disparados'); // Debug
+      console.log('Eventos disparados');
 
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -131,7 +122,6 @@ const SelectedProduct = () => {
     }
   };
 
-  // Unimos todas las imágenes en un solo array
   const allImages = [
     product.image,
     ...(product.gallery || []),
@@ -147,7 +137,6 @@ const SelectedProduct = () => {
       />
     ));
 
-  // Navegación imágenes
   const prevImage = () => {
     setSelectedImage((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
   };
@@ -168,7 +157,6 @@ const SelectedProduct = () => {
     <div className="product-page-selectedProduct">
   <Toaster position="top-right" reverseOrder={false} />
 
-  {/* Breadcrumb */}
   <div className="breadcrumb-selectedProduct">
     <Link to="/">Inicio</Link>
     <ChevronRight size={16} />
@@ -180,7 +168,6 @@ const SelectedProduct = () => {
   </div>
 
   <div className="product-container-selectedProduct">
-    {/* Imágenes */}
     <div className="product-images-selectedProduct">
       <div className="main-image-wrapper-selectedProduct">
         <button
@@ -206,7 +193,6 @@ const SelectedProduct = () => {
         </button>
       </div>
 
-      {/* Miniaturas */}
       <div className="thumbnail-row-selectedProduct">
         {allImages.map((img, index) => (
           <button
@@ -223,7 +209,6 @@ const SelectedProduct = () => {
       </div>
     </div>
 
-    {/* Info producto */}
     <div className="product-info-selectedProduct">
       <h1>{product.nameProduct}</h1>
       <p className="price-selectedProduct">Desde ${product.price}</p>
@@ -236,7 +221,6 @@ const SelectedProduct = () => {
 
       <p className="description-review-selectedProduct">{product.description}</p>
 
-      {/* Tallas */}
       <div className="section-selectedProduct">
         <h4>Talla</h4>
         <div className="sizes-selectedProduct">
@@ -263,7 +247,6 @@ const SelectedProduct = () => {
         </p>
       </div>
 
-      {/* Nombre mascota */}
       <div className="section-selectedProduct">
         <div className="customization-toggle-selectedProduct">
           <span>Personalizar con nombre</span>
@@ -285,7 +268,6 @@ const SelectedProduct = () => {
         )}
       </div>
 
-      {/* Acciones */}
       <div className="actions-selectedProduct">
         <div className="top-action-row-selectedProduct">
           <select
@@ -314,7 +296,6 @@ const SelectedProduct = () => {
     </div>
   </div>
 
-  {/* Modal de Guía de Tallas */}
   {showSizeGuide && (
     <div
       className="size-guide-modal-overlay-selectedProduct"
@@ -366,12 +347,10 @@ const SelectedProduct = () => {
     </div>
   )}
 
-  {/* Reseñas */}
   <div className="reviews-selectedProduct">
     <Reviews reviews={reviews} productId={product._id} />
   </div>
 
-  {/* Relacionados */}
   <RelatedProducts products={relatedProducts} />
 </div>
   );

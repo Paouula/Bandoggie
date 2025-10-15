@@ -26,8 +26,8 @@ const buildUserResponse = (user, type) => {
     email: user.email,
     userType: type,
     image: user.image || "",
-    phone: user.phone || "",
-    address: user.address || "",
+    phone: user.phone || user.phoneEmployees || "",
+    address: user.address || user.addressEmployees || "",
   };
   switch (type) {
     case "client":
@@ -44,7 +44,16 @@ const buildUserResponse = (user, type) => {
         nitVet: user.nitVet || "",
       };
     case "employee":
-      return { ...base, name: user.name || "" };
+      return {
+        ...base,
+        name: user.nameEmployees || user.name || "",
+        nameEmployees: user.nameEmployees || "",
+        phoneEmployees: user.phoneEmployees || "",
+        dateOfBirth: toISODate(user.dateOfBirth),
+        addressEmployees: user.addressEmployees || "",
+        hireDateEmployee: toISODate(user.hireDateEmployee),
+        duiEmployees: user.duiEmployees || "",
+      };
     default:
       return base;
   }

@@ -13,7 +13,7 @@ function PrivateNavBar() {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -25,14 +25,9 @@ function PrivateNavBar() {
 
       {/* Sesión */}
       <div className="navbar-session-bar">
-        <span className="navbar-session-text">
-          Bienvenido, {user?.email}
-        </span>
+        <span className="navbar-session-text">Bienvenido, {user?.email}</span>
         <span className="navbar-divider">/</span>
-        <span 
-          className="navbar-session-link"
-          onClick={handleLogout}
-        >
+        <span className="navbar-session-link" onClick={handleLogout}>
           Cerrar sesión
         </span>
       </div>
@@ -46,7 +41,7 @@ function PrivateNavBar() {
         </Link>
 
         {/* Botón toggle responsive */}
-        <button 
+        <button
           className="navbar-toggle"
           onClick={() => setIsNavOpen(!isNavOpen)}
         >
@@ -55,33 +50,41 @@ function PrivateNavBar() {
           <span className="navbar-toggle-line"></span>
         </button>
 
-        <div className={`navbar-nav-container ${isNavOpen ? 'navbar-nav-open' : ''}`}>
+        <div
+          className={`navbar-nav-container ${
+            isNavOpen ? "navbar-nav-open" : ""
+          }`}
+        >
           <div className="navbar-nav-links">
-            <Link className="navbar-nav-link" to="/admin/home">Inicio</Link>
-            <Link className="navbar-nav-link" to="/admin/productos">Productos</Link>
-            <Link className="navbar-nav-link" to="/admin/reseñas">Reseñas</Link>
-            <Link className="navbar-nav-link" to="/admin/empleados">Empleados</Link>
-            <Link className="navbar-nav-link" to="/admin/clientes">Clientes</Link>
-           {<Link className="navbar-nav-link" to="/admin/graphics">Gráficas</Link>}
+            <Link className="navbar-nav-link" to="/admin/home">
+              Inicio
+            </Link>
+            <Link className="navbar-nav-link" to="/admin/productos">
+              Productos
+            </Link>
+            <Link className="navbar-nav-link" to="/admin/reseñas">
+              Reseñas
+            </Link>
+            <Link className="navbar-nav-link" to="/admin/empleados">
+              Empleados
+            </Link>
+            <Link className="navbar-nav-link" to="/admin/clientes">
+              Clientes
+            </Link>
+            {
+              <Link className="navbar-nav-link" to="/admin/graphics">
+                Gráficas
+              </Link>
+            }
           </div>
 
           <div className="navbar-right-section">
-            <div 
+            <div
               className="navbar-icon-wrapper"
-              onClick={() => setShowUserMenu(!showUserMenu)}
+              onClick={() => navigate("/profile")}
+              style={{ cursor: "pointer" }}
             >
               <img src={IC_cuenta} alt="Cuenta" className="navbar-icon" />
-              {showUserMenu && (
-                <div className="user-dropdown-menu">
-                  <div className="user-info">
-                    <p>{user?.email}</p>
-                    <small>{user?.userType}</small>
-                  </div>
-                  <hr />
-                  <button onClick={() => navigate('/profile')}>Mi Perfil</button>
-                  <button onClick={handleLogout}>Cerrar Sesión</button>
-                </div>
-              )}
             </div>
           </div>
         </div>

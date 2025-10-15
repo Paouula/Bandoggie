@@ -33,7 +33,7 @@ const ProfileCard = ({
           {userInfo.image ? (
             <img 
               src={userInfo.image} 
-              alt={userInfo.name || 'Usuario'} 
+              alt={userInfo.name || userInfo.nameEmployees || 'Usuario'} 
               className="profile-image" 
             />
           ) : (
@@ -74,12 +74,12 @@ const ProfileCard = ({
           {isEditing ? (
             <input
               type="text"
-              value={userInfo.name || ''}
-              onChange={(e) => onInputChange('name', e.target.value)}
+              value={userInfo.name || userInfo.nameEmployees || ''}
+              onChange={(e) => onInputChange(userInfo.nameEmployees ? 'nameEmployees' : 'name', e.target.value)}
               placeholder="Ingresa tu nombre"
             />
           ) : (
-            <p>{userInfo.name || 'No especificado'}</p>
+            <p>{userInfo.name || userInfo.nameEmployees || 'No especificado'}</p>
           )}
         </div>
 
@@ -102,16 +102,14 @@ const ProfileCard = ({
           {isEditing ? (
             <input
               type="tel"
-              value={userInfo.phone || ''}
-              onChange={(e) => onInputChange('phone', e.target.value)}
+              value={userInfo.phone || userInfo.phoneEmployees || ''}
+              onChange={(e) => onInputChange(userInfo.phoneEmployees ? 'phoneEmployees' : 'phone', e.target.value)}
               placeholder="1234-5678"
             />
           ) : (
-            <p>{userInfo.phone || 'No especificado'}</p>
+            <p>{userInfo.phone || userInfo.phoneEmployees || 'No especificado'}</p>
           )}
         </div>
-
-        
 
         {/* Campos específicos para clientes */}
         {userInfo.userType === 'client' && (
@@ -127,6 +125,62 @@ const ProfileCard = ({
               <p>{userInfo.birthday || userInfo.birthDate || 'No especificado'}</p>
             )}
           </div>
+        )}
+
+        {/* Campos específicos para empleados */}
+        {userInfo.userType === 'employee' && (
+          <>
+            <div className="info-field">
+              <label>Fecha de Nacimiento</label>
+              {isEditing ? (
+                <input
+                  type="date"
+                  value={userInfo.dateOfBirth ? new Date(userInfo.dateOfBirth).toISOString().split('T')[0] : ''}
+                  onChange={(e) => onInputChange('dateOfBirth', e.target.value)}
+                />
+              ) : (
+                <p>{userInfo.dateOfBirth ? new Date(userInfo.dateOfBirth).toLocaleDateString() : 'No especificado'}</p>
+              )}
+            </div>
+            <div className="info-field">
+              <label>Dirección</label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={userInfo.addressEmployees || ''}
+                  onChange={(e) => onInputChange('addressEmployees', e.target.value)}
+                  placeholder="Dirección"
+                />
+              ) : (
+                <p>{userInfo.addressEmployees || 'No especificado'}</p>
+              )}
+            </div>
+            <div className="info-field">
+              <label>Fecha de Contratación</label>
+              {isEditing ? (
+                <input
+                  type="date"
+                  value={userInfo.hireDateEmployee ? new Date(userInfo.hireDateEmployee).toISOString().split('T')[0] : ''}
+                  onChange={(e) => onInputChange('hireDateEmployee', e.target.value)}
+                />
+              ) : (
+                <p>{userInfo.hireDateEmployee ? new Date(userInfo.hireDateEmployee).toLocaleDateString() : 'No especificado'}</p>
+              )}
+            </div>
+            <div className="info-field">
+              <label>DUI</label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={userInfo.duiEmployees || ''}
+                  onChange={(e) => onInputChange('duiEmployees', e.target.value)}
+                  placeholder="DUI"
+                />
+              ) : (
+                <p>{userInfo.duiEmployees || 'No especificado'}</p>
+              )}
+            </div>
+          </>
         )}
 
         {/* Campos específicos para veterinarios */}
