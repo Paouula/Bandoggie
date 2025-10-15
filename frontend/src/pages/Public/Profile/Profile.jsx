@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
   Package,
-  MessageCircle,
   Star,
   Users,
   BarChart3,
-  Settings,
-  Shield,
-  Stethoscope,
   ChevronRight,
   ArrowLeft,
 } from "lucide-react";
@@ -19,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 
 const UserProfile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfile } = useAuth(); // ✅ Obtener updateProfile del contexto
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,22 +23,18 @@ const UserProfile = () => {
 
   const currentRole = user?.userType || userDetails?.userType || 'client';
 
-  // ✅ Función para manejar clicks en el menú
   const handleMenuClick = (menuId) => {
-    console.log('🔘 Menu clicked:', menuId);
+    console.log('📘 Menu clicked:', menuId);
     
     switch(menuId) {
       case 1:
-        // Para clientes: "Tus pedidos" → ir a OrderHistory
         if (currentRole === 'client') {
           console.log('📦 Navegando a OrderHistory...');
           navigate('/orderHistory');
         }
-        // Para empleados: "Gestión de Pedidos"
         else if (currentRole === 'employee') {
           toast.info('Gestión de Pedidos - Próximamente');
         }
-        // Para veterinarios: "Consultas"
         else if (currentRole === 'vet') {
           toast.info('Consultas - Próximamente');
         }
@@ -145,51 +137,7 @@ const UserProfile = () => {
     }
   };
 
-  // Actualizar perfil del usuario
-  const updateUserProfile = async (updatedData) => {
-    try {
-      // Filtrar datos vacíos
-      const dataToSend = {};
-      Object.keys(updatedData).forEach((key) => {
-        if (
-          updatedData[key] !== "" &&
-          updatedData[key] !== null &&
-          updatedData[key] !== undefined
-        ) {
-          dataToSend[key] = updatedData[key];
-        }
-      });
-
-      // Determinar el endpoint según el tipo de usuario
-      let endpoint = "";
-      if (currentRole === "client") {
-        endpoint = `users/client/${userDetails._id}`;
-      } else if (currentRole === "vet") {
-        endpoint = `users/vet/${userDetails._id}`;
-      } else if (currentRole === "employee") {
-        endpoint = `users/employee/${userDetails._id}`;
-      }
-
-      const response = await API_FETCH_JSON(endpoint, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: dataToSend,
-      });
-
-      if (response) {
-        toast.success("Perfil actualizado correctamente");
-        await fetchUserDetails(); // Recargar datos
-        return true;
-      }
-    } catch (error) {
-      console.error("Error al actualizar perfil:", error);
-      toast.error(error.message || "Error al actualizar el perfil");
-      return false;
-    }
-  };
-
-  // Manejar cambios en los inputs
+  //  Manejar cambios en los inputs
   const handleInputChange = (field, value) => {
     setUserDetails((prev) => ({
       ...prev,
@@ -199,9 +147,32 @@ const UserProfile = () => {
 
   const handleEditToggle = () => setIsEditing(!isEditing);
 
+  //  Usar updateProfile del contexto
   const handleUpdateProfile = async (updatedUserInfo) => {
-    const success = await updateUserProfile(updatedUserInfo);
-    return success;
+    try {
+      setIsLoading(true);
+      
+      // Llamar a updateProfile del contexto
+      const result = await updateProfile(
+        userDetails._id,
+        currentRole,
+        updatedUserInfo
+      );
+
+      if (result.success) {
+        // Recargar los detalles del usuario
+        await fetchUserDetails();
+        setIsEditing(false);
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error("Error al actualizar perfil:", error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoBack = () => {
@@ -216,18 +187,16 @@ const UserProfile = () => {
 
   const getWelcomeMessage = () => {
     if (!user) return "";
-    const name = userDetails?.name || user?.name || "";
+    const name = userDetails?.name || userDetails?.nameEmployees || userDetails?.nameVet || user?.name || "";
     const roleMessages = {
-      client: `¡Hola${
-        name ? `, ${name}` : ""
-      }! Bienvenido a tu perfil de cliente`,
+      client: `¡Hola${name ? `, ${name}` : ""}! Bienvenido a tu perfil de cliente`,
       employee: `¡Hola${name ? `, ${name}` : ""}! Panel de empleado`,
       vet: `¡Hola${name ? `, Dr. ${name}` : ""}! Panel veterinario`,
     };
     return roleMessages[currentRole] || `¡Hola${name ? `, ${name}` : ""}!`;
   };
 
-  if (isLoading) {
+  if (isLoading && !userDetails) {
     return (
       <div className="user-profile">
         <div className="loading-container">
@@ -313,7 +282,7 @@ const UserProfile = () => {
               <p className="user-type-display">
                 {currentRole === 'client' && 'Cliente'}
                 {currentRole === 'employee' && 'Empleado'}
-                {currentRole === 'vet' && ' Veterinario'}
+                {currentRole === 'vet' && '🩺 Veterinario'}
               </p>
             </div>
 

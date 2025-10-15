@@ -47,7 +47,6 @@ const buildUserResponse = (user, type) => {
       return {
         ...base,
         name: user.nameEmployees || user.name || "",
-        nameEmployees: user.nameEmployees || "",
         phoneEmployees: user.phoneEmployees || "",
         dateOfBirth: toISODate(user.dateOfBirth),
         addressEmployees: user.addressEmployees || "",
@@ -70,7 +69,7 @@ loginController.login = async (req, res) => {
     return res.status(400).json({ message: "La contraseña es obligatoria y debe tener al menos 8 caracteres" });
   if (emailVerified === false)
     return res.status(400).json({ message: "Por favor, verifica tu correo electrónico antes de iniciar sesión" });
-  
+
   try {
     let userFound, userType;
     // Buscamos al usuario en cada colección (empleados, vets y clientes)
@@ -153,41 +152,7 @@ loginController.getAuthenticatedUser = async (req, res) => {
   }
 };
 
-// -------------------------- UPDATE PROFILE --------------------------
-// Permite actualizar datos del perfil del usuario autenticado
-// Nota: acá solo dejamos cambiar lo basico (nombre, correo, etc) para evitar lios de seguridad
-loginController.updateProfile = async (req, res) => {
-  const token = req.cookies?.authToken;
-  if (!token) return res.status(401).json({ message: "No autenticado" });
 
-  try {
-    const { user: id, userType } = jsonwebtoken.verify(token, config.JWT.secret);
-    const { name, email, phone, address, birthday, dateOfBirth, locationVet, nitVet } = req.body;
-
-    const updateData = { email, phone, address };
-    if (userType === "client") updateData.dateOfBirth = birthday || dateOfBirth, updateData.name = name;
-    if (userType === "vet") Object.assign(updateData, { nameVet: name, name, locationVet, nitVet });
-    if (userType === "employee") updateData.name = name;
-
-    // Limpiamos campos vacios antes de guardar (truco para no mandar nulls innecesarios)
-    Object.keys(updateData).forEach(k => !updateData[k] && delete updateData[k]);
-    if (updateData.email && !validator.isEmail(updateData.email))
-      return res.status(400).json({ message: "Correo electrónico inválido" });
-
-    const user = await models[userType].findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select("-password");
-    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
-
-    return res.status(200).json({
-      message: "Perfil actualizado correctamente",
-      user: buildUserResponse(user, userType),
-    });
-  } catch (err) {
-    console.error("Error en updateProfile:", err);
-    if (err.name === "ValidationError") return res.status(400).json({ message: "Error de validación", details: err.message });
-    if (err.code === 11000) return res.status(400).json({ message: "El email ya está en uso" });
-    return res.status(500).json({ message: "Error al actualizar el perfil" });
-  }
-};
 
 // -------------------------- LOGOUT --------------------------
 // Simple: limpiamos la cookie y listo, el user queda deslogueado
@@ -201,5 +166,61 @@ loginController.logout = (req, res) => {
     return res.status(500).json({ message: "Error al cerrar sesión" });
   }
 };
+
+
+// -------------------------- UPDATE PROFILE --------------------------
+// Permite actualizar datos del perfil del usuario autenticado
+// Nota: acá solo dejamos cambiar lo basico (nombre, correo, etc) para evitar lios de seguridad
+
+loginController.updateProfile = async (req, res) => {
+  const token = req.cookies?.authToken;
+  if (!token) return res.status(401).json({ message: "No autenticado" });
+  try {
+    const { user: id, userType } = jsonwebtoken.verify(token, config.JWT.secret);
+
+    const { name, email, phone, address, birthday, dateOfBirth, locationVet, nitVet, duiEmployees } = req.body;
+
+    const updateData = { email, phone, address };
+
+    if (userType === "client") {
+      if (name) updateData.name = name;
+      if (birthday || dateOfBirth) updateData.dateOfBirth = birthday || dateOfBirth;
+    }
+
+    if (userType === "vet") {
+      if (name) updateData.nameVet = updateData.name = name;
+      if (locationVet) updateData.locationVet = locationVet;
+      if (nitVet) updateData.nitVet = nitVet;
+    }
+
+    if (userType === "employee") {
+      if (name) updateData.nameEmployees = updateData.name = name;
+      if (duiEmployees) updateData.duiEmployees = duiEmployees;
+    }
+
+    // Limpiamos campos vacíos
+    Object.keys(updateData).forEach((k) => updateData[k] === undefined && delete updateData[k]);
+
+    // Validación de email si se modificó
+    if (updateData.email && !validator.isEmail(updateData.email)) {
+      return res.status(400).json({ message: "Correo electrónico inválido" });
+    }
+
+    // Guardamos los cambios en la base de datos
+    const user = await models[userType].findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select("-password");
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    return res.status(200).json({
+      message: "Perfil actualizado correctamente",
+      user: buildUserResponse(user, userType),
+    });
+
+  } catch (error) {
+    console.error("Error en updateProfile:", err);
+    if (err.name === "ValidationError") return res.status(400).json({ message: "Error de validación", details: err.message });
+    if (err.code === 11000) return res.status(400).json({ message: "El email ya está en uso" });
+    return res.status(500).json({ message: "Error al actualizar el perfil" });
+  }
+}
 
 export default loginController;
