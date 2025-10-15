@@ -29,7 +29,7 @@ const ProfileCard = ({
   const handleDateChange = (field, date) => {
     if (date instanceof Date && !isNaN(date)) {
       // Convertir a formato ISO string (YYYY-MM-DD)
-      const isoDate = date.toISOString().split('T')[0];
+      const isoDate = date.toISOString().split("T")[0];
       onInputChange(field, isoDate);
     }
   };
@@ -216,20 +216,13 @@ const ProfileCard = ({
             {/* Fecha de Contratación */}
             <div className="info-field">
               <label>Fecha de Contratación</label>
-              {isEditing ? (
-                <InputDataPicker
-                  label="Selecciona la fecha de contratación"
-                  value={userInfo.hireDateEmployee || ""}
-                  onChange={(date) => handleDateChange("hireDateEmployee", date)}
-                  name="hireDateEmployee"
-                />
-              ) : (
-                <p>
-                  {userInfo.hireDateEmployee
-                    ? new Date(userInfo.hireDateEmployee).toLocaleDateString("es-ES")
-                    : "No especificado"}
-                </p>
-              )}
+              <p>
+                {userInfo.hireDateEmployee
+                  ? new Date(userInfo.hireDateEmployee).toLocaleDateString(
+                      "es-ES"
+                    )
+                  : "No especificado"}
+              </p>
             </div>
 
             {/* DUI */}
