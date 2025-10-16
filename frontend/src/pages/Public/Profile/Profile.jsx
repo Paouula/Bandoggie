@@ -196,29 +196,33 @@ const UserProfile = () => {
     return roleMessages[currentRole] || `¡Hola${name ? `, ${name}` : ""}!`;
   };
 
-  if (isLoading && !userDetails) {
-    return (
-      <div className="user-profile">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Cargando perfil...</p>
-        </div>
-      </div>
-    );
-  }
-
   if (!user) {
-    return (
-      <div className="user-profile">
-        <div className="auth-placeholder">
-          <h2>Por favor, inicia sesión para ver tu perfil</h2>
-          <button onClick={() => window.location.href = '/mainPage'} className="retry-button">
-            Ir al Inicio            
-          </button>
-        </div>
+  return (
+    <div className="user-profile">
+      <div className="auth-placeholder">
+        <h2>Por favor, inicia sesión para ver tu perfil</h2>
+        <button
+          onClick={() => window.location.href = '/mainPage'}
+          className="retry-button"
+        >
+          Ir al Inicio
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+if (isLoading && !userDetails) {
+  return (
+    <div className="user-profile">
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Cargando perfil...</p>
+      </div>
+    </div>
+  );
+}
+
 
   return (
     <div className="user-profile">

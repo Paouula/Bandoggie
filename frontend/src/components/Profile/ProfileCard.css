@@ -191,6 +191,7 @@
   .profile-actions {
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .btn-edit,
@@ -207,5 +208,114 @@
 
   .profile-image-placeholder {
     font-size: 24px;
+  }
+
+  .profile-card {
+    padding: 16px;
+  }
+
+  .info-field p,
+  .info-field input {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* Muy pequeñas pantallas (móviles de 320px a 480px) */
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 14px;
+    box-shadow: none;
+  }
+
+  .profile-header {
+    align-items: flex-start;
+  }
+
+  .profile-image,
+  .profile-image-placeholder {
+    width: 50px;
+    height: 50px;
+  }
+
+  .profile-image-placeholder {
+    font-size: 20px;
+  }
+
+  .btn-edit,
+  .btn-save,
+  .btn-cancel {
+    font-size: 13px;
+    padding: 8px 14px;
+    width: 100%;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .info-field label {
+    font-size: 12px;
+  }
+
+  .info-field p,
+  .info-field input {
+    font-size: 13px;
+  }
+}
+
+/* Pantallas grandes (laptops y monitores 1200px o más) */
+@media (min-width: 1200px) {
+  .profile-card {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .info-field p,
+  .info-field input {
+    font-size: 18px;
+  }
+
+  .btn-edit,
+  .btn-save,
+  .btn-cancel {
+    font-size: 15px;
+  }
+}
+
+/* Pantallas muy grandes (1440px o más) */
+@media (min-width: 1440px) {
+
+  .profile-card {
+    max-width: 1100px;
+  }
+
+   .profile-actions {
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .btn-edit,
+  .btn-save,
+  .btn-cancel {
+    font-size: 15px;
+    padding: 12px 20px;
+  }
+}
+
+/* Tablets y pantallas medianas (hasta 1024px) */
+@media (max-width: 1024px) {
+  .profile-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-edit,
+  .btn-save,
+  .btn-cancel {
+    flex: 1 1 45%;
   }
 }

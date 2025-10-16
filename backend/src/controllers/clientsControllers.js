@@ -24,10 +24,10 @@ clientsControllers.get = async (req, res) => {
 
 // Crea un cliente nuevo, pero ojo, valida antes de crear
 clientsControllers.post = async (req, res) => {
-  const { name, email, phone, dateOfBirth, password } = req.body;
+  const { name, email, phone, birthday, password } = req.body;
 
   // Validación rudimentaria, no vayas a mandar campos vacíos
-  if (!name || !email || !phone || !dateOfBirth || !password) {
+  if (!name || !email || !phone || !birthday || !password) {
     return res.status(400).json({ message: "Faltan datos obligatorios" });
   }
 
@@ -61,7 +61,7 @@ clientsControllers.post = async (req, res) => {
       name,
       email,
       phone,
-      dateOfBirth,
+      birthday,
       password: passwordHash,
       image: imgUrl,
     });
@@ -76,7 +76,7 @@ clientsControllers.post = async (req, res) => {
 
 // Aquí actualizamos cliente, pero con prudencia y cuidado
 clientsControllers.put = async (req, res) => {
-  const { name, email, phone, dateOfBirth, password } = req.body;
+  const { name, email, phone, birthday, password } = req.body;
   const { id } = req.params;
 
   // Validamos el id, que sea válido
@@ -96,7 +96,7 @@ clientsControllers.put = async (req, res) => {
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;
     if (phone !== undefined) updateData.phone = phone;
-    if (dateOfBirth !== undefined) updateData.dateOfBirth = dateOfBirth;
+    if (birthday !== undefined) updateData.birthday = birthday;
 
     // Si hay imagen nueva, súbela
     if (req.file) {

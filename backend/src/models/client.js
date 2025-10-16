@@ -3,7 +3,7 @@
         name,
         email,
         phone,
-        dateOfBirth,
+        birthday,
         password,
         image
 */

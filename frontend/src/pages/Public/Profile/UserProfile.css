@@ -2,7 +2,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
-  background: #ECF2F9;
+  background: transparent;
   min-height: 100vh;
   position: relative;
 }
@@ -134,6 +134,7 @@
   overflow: hidden;
   height: fit-content;
   position: sticky;
+  width: 470px;
   top: 20px;
 }
 
@@ -321,6 +322,11 @@
     grid-template-columns: 300px 1fr;
     gap: 20px;
   }
+
+  .profile-container {
+    max-width: 300px;
+    margin: 0 auto;
+  }
 }
 
 @media (max-width: 768px) {
@@ -328,7 +334,6 @@
     padding: 15px;
   }
 
-  /* Layout vertical para móviles */
   .profile-and-content-wrapper {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -337,6 +342,9 @@
   .profile-container {
     position: relative;
     top: 0;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   .back-button {
@@ -366,5 +374,99 @@
 
   .info-section {
     padding: 24px;
+  }
+}
+
+/* Pantallas muy pequeñas (teléfonos <480px) */
+@media (max-width: 480px) {
+  .user-profile {
+    padding: 10px;
+  }
+
+  .profile-container {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: none;
+  }
+
+  .back-button {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .welcome-message {
+    font-size: 20px;
+  }
+
+  .menu-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .menu-text {
+    font-size: 14px;
+  }
+
+  .menu-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .info-card h3 {
+    font-size: 12px;
+  }
+
+  .user-type-display {
+    font-size: 22px;
+  }
+
+  .logout-button {
+    font-size: 14px;
+    padding: 12px 24px;
+  }
+}
+
+/* Pantallas grandes (>=1200px) */
+@media (min-width: 1200px) {
+  .user-profile {
+    max-width: 1200px;
+  }
+
+  .profile-container {
+    max-width: 370px;
+  }
+
+  .welcome-message {
+    font-size: 36px;
+  }
+
+  .menu-text {
+    font-size: 17px;
+  }
+}
+
+/* Pantallas ultra anchas (>=1600px) */
+@media (min-width: 1600px) {
+  .user-profile {
+    max-width: 1600px;
+  }
+
+  .profile-and-content-wrapper {
+    grid-template-columns: 400px 1fr;
+    gap: 40px;
+  }
+
+  .profile-container {
+    max-width: 420px;
+  }
+
+  .menu-text {
+    font-size: 18px;
+  }
+
+  .welcome-message {
+    font-size: 40px;
   }
 }

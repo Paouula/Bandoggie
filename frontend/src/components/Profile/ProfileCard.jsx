@@ -20,18 +20,49 @@ const ProfileCard = ({
     }
   };
 
-  // Función auxiliar para manejar cambios en los inputs
   const handleInputChange = (field, value) => {
     onInputChange(field, value);
   };
 
-  // Función auxiliar para manejar cambios en los DatePickers
   const handleDateChange = (field, date) => {
     if (date instanceof Date && !isNaN(date)) {
-      // Convertir a formato ISO string (YYYY-MM-DD)
       const isoDate = date.toISOString().split("T")[0];
       onInputChange(field, isoDate);
     }
+  };
+
+  const getNameField = () => {
+    switch (userInfo.userType) {
+      case "employee":
+        return "nameEmployees";
+      case "vet":
+        return "nameVet";
+      case "client":
+      default:
+        return "name";
+    }
+  };
+
+  const getPhoneField = () => {
+    return userInfo.userType === "employee" ? "phoneEmployees" : "phone";
+  };
+
+  const getNameValue = () => {
+    switch (userInfo.userType) {
+      case "employee":
+        return userInfo.nameEmployees || userInfo.name || "";
+      case "vet":
+        return userInfo.nameVet || userInfo.name || "";
+      case "client":
+      default:
+        return userInfo.name || "";
+    }
+  };
+
+  const getPhoneValue = () => {
+    return userInfo.userType === "employee"
+      ? userInfo.phoneEmployees || ""
+      : userInfo.phone || "";
   };
 
   if (!isAuthenticated || !userInfo) {
@@ -49,7 +80,7 @@ const ProfileCard = ({
           {userInfo.image ? (
             <img
               src={userInfo.image}
-              alt={userInfo.name || userInfo.nameEmployees || "Usuario"}
+              alt={getNameValue() || "Usuario"}
               className="profile-image"
             />
           ) : (
@@ -85,7 +116,6 @@ const ProfileCard = ({
       </div>
 
       <div className="profile-info">
-        {/* Campo Nombre */}
         <div className="info-field">
           <label>Nombre</label>
           {isEditing ? (
@@ -93,22 +123,16 @@ const ProfileCard = ({
               type="text"
               id="name"
               placeholder="Ingresa tu nombre"
-              value={userInfo.name || userInfo.nameEmployees || ""}
+              value={getNameValue()}
               onChange={(e) =>
-                handleInputChange(
-                  userInfo.nameEmployees ? "nameEmployees" : "name",
-                  e.target.value
-                )
+                handleInputChange(getNameField(), e.target.value)
               }
             />
           ) : (
-            <p>
-              {userInfo.name || userInfo.nameEmployees || "No especificado"}
-            </p>
+            <p>{getNameValue() || "No especificado"}</p>
           )}
         </div>
 
-        {/* Campo Email */}
         <div className="info-field">
           <label>Email</label>
           {isEditing ? (
@@ -124,7 +148,6 @@ const ProfileCard = ({
           )}
         </div>
 
-        {/* Campo Teléfono (Empleados y Clientes) */}
         {(userInfo.userType === "employee" ||
           userInfo.userType === "client") && (
           <div className="info-field">
@@ -134,30 +157,24 @@ const ProfileCard = ({
                 type="tel"
                 id="phone"
                 placeholder="1234-5678"
-                value={userInfo.phone || userInfo.phoneEmployees || ""}
+                value={getPhoneValue()}
                 onChange={(e) =>
-                  handleInputChange(
-                    userInfo.phoneEmployees ? "phoneEmployees" : "phone",
-                    e.target.value
-                  )
+                  handleInputChange(getPhoneField(), e.target.value)
                 }
               />
             ) : (
-              <p>
-                {userInfo.phone || userInfo.phoneEmployees || "No especificado"}
-              </p>
+              <p>{getPhoneValue() || "No especificado"}</p>
             )}
           </div>
         )}
 
-        {/* Campos específicos para CLIENTES */}
         {userInfo.userType === "client" && (
           <div className="info-field">
             <label>Fecha de Nacimiento</label>
             {isEditing ? (
               <InputDataPicker
                 label="Selecciona tu fecha de nacimiento"
-                value={userInfo.birthday || userInfo.birthDate || ""}
+                value={userInfo.birthday || ""}
                 onChange={(date) => handleDateChange("birthday", date)}
                 name="birthday"
               />
@@ -165,18 +182,14 @@ const ProfileCard = ({
               <p>
                 {userInfo.birthday
                   ? new Date(userInfo.birthday).toLocaleDateString("es-ES")
-                  : userInfo.birthDate
-                  ? new Date(userInfo.birthDate).toLocaleDateString("es-ES")
                   : "No especificado"}
               </p>
             )}
           </div>
         )}
 
-        {/* Campos específicos para EMPLEADOS */}
         {userInfo.userType === "employee" && (
           <>
-            {/* Fecha de Nacimiento */}
             <div className="info-field">
               <label>Fecha de Nacimiento</label>
               {isEditing ? (
@@ -195,7 +208,6 @@ const ProfileCard = ({
               )}
             </div>
 
-            {/* Dirección */}
             <div className="info-field">
               <label>Dirección</label>
               {isEditing ? (
@@ -213,7 +225,6 @@ const ProfileCard = ({
               )}
             </div>
 
-            {/* Fecha de Contratación */}
             <div className="info-field">
               <label>Fecha de Contratación</label>
               <p>
@@ -225,7 +236,6 @@ const ProfileCard = ({
               </p>
             </div>
 
-            {/* DUI */}
             <div className="info-field">
               <label>DUI</label>
               {isEditing ? (
@@ -245,10 +255,8 @@ const ProfileCard = ({
           </>
         )}
 
-        {/* Campos específicos para VETERINARIOS */}
         {userInfo.userType === "vet" && (
           <>
-            {/* Ubicación del Consultorio */}
             <div className="info-field">
               <label>Ubicación de Consultorio</label>
               {isEditing ? (
@@ -266,7 +274,6 @@ const ProfileCard = ({
               )}
             </div>
 
-            {/* NIT */}
             <div className="info-field">
               <label>NIT</label>
               {isEditing ? (
@@ -284,7 +291,6 @@ const ProfileCard = ({
           </>
         )}
 
-        {/* Tipo de Usuario (Solo lectura) */}
         <div className="info-field">
           <label>Tipo de Usuario</label>
           <div className="user-type-badge-container">
