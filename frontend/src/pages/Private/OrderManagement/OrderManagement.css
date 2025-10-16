@@ -1,0 +1,146 @@
+/* Contenedor principal */
+.order-management-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Título principal */
+  .main-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 2rem;
+  }
+  
+  /* Sección de nueva tarea */
+  .nueva-tarea-section {
+    margin-bottom: 30px;
+  }
+  
+  .nueva-tarea-section h2 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  /* Grupo de input y botón */
+  .input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  /* Input de tarea */
+  .tarea-input {
+    flex: 1;
+    max-width: 400px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  .tarea-input:focus {
+    outline: none;
+    border-color: #5653e4;
+  }
+  
+  /* Botón registrar */
+  .btn-registrar {
+    padding: 10px 20px;
+    background-color: #5653e4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-registrar:hover {
+    background-color: #4542c7;
+  }
+  
+  .btn-registrar:active {
+    transform: scale(0.98);
+  }
+  
+  /* Grid de estados */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    width: 100%;
+  }
+  
+  /* Columna de estado */
+  .status-column {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 300px;
+    border: 3px solid;
+    transition: background-color 0.3s;
+  }
+  
+  .status-column:hover {
+    background-color: #efefef;
+  }
+  
+  /* Título del estado */
+  .status-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  
+  /* Tarjeta de tarea */
+  .tarea-card {
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .tarea-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .tarea-card:active {
+    cursor: grabbing;
+  }
+  
+  /* Nombre de la tarea */
+  .tarea-nombre {
+    margin: 0;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  /* Responsivo */
+  @media (max-width: 768px) {
+    .status-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .input-group {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .tarea-input {
+      max-width: 100%;
+    }
+  
+    .main-title {
+      font-size: 1.5rem;
+    }
+  }

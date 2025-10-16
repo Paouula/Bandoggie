@@ -51,6 +51,7 @@ import Reseñas from "../pages/Private/Reviews/Reviews.jsx";
 import Empleados from "../pages/Private/Employee/Employee.jsx";
 import Clientes from "../pages/Private/Clients/Clients.jsx";
 import Graphics from "../pages/Private/Graphics/Graphics.jsx";
+import OrderManagement from "../pages/Private/OrderManagement/OrderManagement.jsx"
 
 // Rutas protegidas
 import { PrivateRoute, EmployeeRoute } from "./PrivateRoute.jsx";
@@ -66,6 +67,7 @@ const EmployeeLayout = () => (
         <Route path="empleados" element={<Empleados />} />
         <Route path="clientes" element={<Clientes />} />
         <Route path="graphics" element={<Graphics />} />
+        <Route path="OrderManagement" element={<OrderManagement />} />
         <Route path="*" element={<Navigate to="/admin/productos" replace />} />
       </Routes>
     </div>
