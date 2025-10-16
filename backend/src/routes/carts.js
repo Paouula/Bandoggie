@@ -3,7 +3,7 @@ import CartController from "../controllers/cartController.js";
 
 const router = Router();
 
-// Estadísticas del carrito
+// Estadísticas del carritos
 router.get("/stats", CartController.getCartStats);
 
 // Obtener carrito por cliente

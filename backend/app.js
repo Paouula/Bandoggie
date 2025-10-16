@@ -33,7 +33,7 @@ import guestWholesalers from './src/routes/wholesalersPurchase.js';
 import guestClients from './src/routes/retailsPurchase.js';
 
 //Rutas de gestión de pedidos
-import internalOrderRoutes from './src/routes/orderManagementRoutes.js';
+import internalOrderRoutes from './src/routes/orderManagement.js';
 
 const corsOptions = {
     origin: 'http://localhost:5173',
