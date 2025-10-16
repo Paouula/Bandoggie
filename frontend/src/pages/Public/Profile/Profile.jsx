@@ -8,59 +8,57 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
+import { toast, Toaster} from "react-hot-toast";
 import ProfileCard from "../../../components/Profile/ProfileCard";
 import { API_FETCH_JSON } from "../../../config";
-import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 
 const UserProfile = () => {
   const { user, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
-  
+
   // Estado para los detalles del usuario mostrados en el formulario
   const [userDetails, setUserDetails] = useState(null);
-  
+
   // Estado para guardar una copia original de los datos
   // Esto nos permite comparar qué campos cambiaron y restaurar al cancelar
   const [originalUserDetails, setOriginalUserDetails] = useState(null);
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  const currentRole = user?.userType || userDetails?.userType || 'client';
+  const currentRole = user?.userType || userDetails?.userType || "client";
 
   const handleMenuClick = (menuId) => {
-    console.log('Menu clicked:', menuId);
-    
-    switch(menuId) {
+    console.log("Menu clicked:", menuId);
+
+    switch (menuId) {
       case 1:
-        if (currentRole === 'client') {
-          console.log(' Navegando a OrderHistory...');
-          navigate('/orderHistory');
-        }
-        else if (currentRole === 'employee') {
-          toast.info('Gestión de Pedidos - Próximamente');
-        }
-        else if (currentRole === 'vet') {
-          toast.info('Consultas - Próximamente');
+        if (currentRole === "client") {
+          console.log(" Navegando a OrderHistory...");
+          navigate("/orderHistory");
+        } else if (currentRole === "employee") {
+          toast.info("Gestión de Pedidos - Próximamente");
+        } else if (currentRole === "vet") {
+          toast.info("Consultas - Próximamente");
         }
         break;
-        
+
       case 2:
-        toast.info('Mensajes - Próximamente');
+        toast.info("Mensajes - Próximamente");
         break;
-        
+
       case 3:
-        toast.info('Reseñas - Próximamente');
+        toast.info("Reseñas - Próximamente");
         break;
-        
+
       case 4:
-        toast.info('Configuración - Próximamente');
+        toast.info("Configuración - Próximamente");
         break;
-        
+
       default:
-        toast.info('Función próximamente disponible');
+        toast.info("Función próximamente disponible");
     }
   };
 
@@ -133,17 +131,17 @@ const UserProfile = () => {
       });
 
       if (data?.user) {
-        console.log(' Detalles del usuario obtenidos:', data.user);
-        
+        console.log(" Detalles del usuario obtenidos:", data.user);
+
         // Guardamos los datos en ambos estados
         setUserDetails(data.user);
-        
+
         //  Guardamos una copia original para poder compararla después
         setOriginalUserDetails(data.user);
       }
     } catch (error) {
-      console.error(' Error al obtener detalles del usuario:', error);
-      toast.error('Error al cargar los datos del perfil');
+      console.error(" Error al obtener detalles del usuario:", error);
+      toast.error("Error al cargar los datos del perfil");
     } finally {
       setIsLoading(false);
     }
@@ -170,23 +168,25 @@ const UserProfile = () => {
   // y retorna SOLO los campos que cambiaron
   const getChangedFields = (current, original) => {
     const changes = {};
-    
+
     // Recorre todos los campos del objeto actual
-    Object.keys(current).forEach(key => {
+    Object.keys(current).forEach((key) => {
       const currentValue = current[key];
       const originalValue = original[key];
-      
+
       // Solo incluye el campo si:
       // 1. El valor cambió (currentValue !== originalValue)
       // 2. El valor tiene contenido (no es undefined, null o string vacío)
-      if (currentValue !== originalValue && 
-          currentValue !== undefined && 
-          currentValue !== null && 
-          currentValue !== '') {
+      if (
+        currentValue !== originalValue &&
+        currentValue !== undefined &&
+        currentValue !== null &&
+        currentValue !== ""
+      ) {
         changes[key] = currentValue;
       }
     });
-    
+
     return changes;
   };
 
@@ -195,9 +195,12 @@ const UserProfile = () => {
   const handleUpdateProfile = async (updatedUserInfo) => {
     try {
       setIsLoading(true);
-      
+
       // Obtiene SOLO los campos que cambiaron
-      const changedFields = getChangedFields(updatedUserInfo, originalUserDetails);
+      const changedFields = getChangedFields(
+        updatedUserInfo,
+        originalUserDetails
+      );
 
       // Si no hay cambios, no hace la petición
       if (Object.keys(changedFields).length === 0) {
@@ -205,15 +208,12 @@ const UserProfile = () => {
         return false;
       }
 
-      // Log para debugging - puedes ver qué campos se están enviando
-      console.log(' Campos que cambiaron:', changedFields);
-
       // Llama a la función updateProfile del contexto
       // pero ahora solo con los campos modificados
       const result = await updateProfile(
         userDetails._id,
         currentRole,
-        changedFields  //  Solo envía lo que cambió
+        changedFields //  Solo envía lo que cambió
       );
 
       if (result.success) {
@@ -223,7 +223,7 @@ const UserProfile = () => {
         setIsEditing(false);
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error("Error al actualizar perfil:", error);
@@ -246,9 +246,16 @@ const UserProfile = () => {
 
   const getWelcomeMessage = () => {
     if (!user) return "";
-    const name = userDetails?.name || userDetails?.nameEmployees || userDetails?.nameVet || user?.name || "";
+    const name =
+      userDetails?.name ||
+      userDetails?.nameEmployees ||
+      userDetails?.nameVet ||
+      user?.name ||
+      "";
     const roleMessages = {
-      client: `¡Hola${name ? `, ${name}` : ""}! Bienvenido a tu perfil de cliente`,
+      client: `¡Hola${
+        name ? `, ${name}` : ""
+      }! Bienvenido a tu perfil de cliente`,
       employee: `¡Hola${name ? `, ${name}` : ""}! Panel de empleado`,
       vet: `¡Hola${name ? `, Dr. ${name}` : ""}! Panel veterinario`,
     };
@@ -262,7 +269,7 @@ const UserProfile = () => {
         <div className="auth-placeholder">
           <h2>Por favor, inicia sesión para ver tu perfil</h2>
           <button
-            onClick={() => window.location.href = '/mainPage'}
+            onClick={() => (window.location.href = "/mainPage")}
             className="retry-button"
           >
             Ir al Inicio
@@ -287,6 +294,8 @@ const UserProfile = () => {
   return (
     <div className="user-profile">
       {/* Botón para regresar */}
+      <Toaster position="top-right" reverseOrder={false} />
+
       <button onClick={handleGoBack} className="back-button">
         <ArrowLeft className="back-icon" size={20} />
         <span>Regresar</span>
@@ -306,7 +315,7 @@ const UserProfile = () => {
             isEditing={isEditing}
             onInputChange={handleInputChange}
             onEditToggle={handleEditToggle}
-            onUpdateProfile={handleUpdateProfile}  // 🆕 Ahora solo envía cambios
+            onUpdateProfile={handleUpdateProfile} // 🆕 Ahora solo envía cambios
             isLoading={isLoading}
             isAuthenticated={!!user}
           />
@@ -319,8 +328,8 @@ const UserProfile = () => {
             <h2 className="menu-title">Opciones</h2>
             <div className="menu-list">
               {menuConfig[currentRole]?.map((item) => (
-                <button 
-                  key={item.id} 
+                <button
+                  key={item.id}
                   className="menu-item"
                   onClick={() => handleMenuClick(item.id)}
                 >
@@ -344,9 +353,9 @@ const UserProfile = () => {
             <div className="info-card">
               <h3>Tipo de cuenta</h3>
               <p className="user-type-display">
-                {currentRole === 'client' && 'Cliente'}
-                {currentRole === 'employee' && 'Empleado'}
-                {currentRole === 'vet' && '🩺 Veterinario'}
+                {currentRole === "client" && "Cliente"}
+                {currentRole === "employee" && "Empleado"}
+                {currentRole === "vet" && "🩺 Veterinario"}
               </p>
             </div>
 
