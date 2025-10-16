@@ -29,21 +29,21 @@ const UserProfile = () => {
 
   const menuConfig = {
     client: [
-      { id: 1, icon: <Package className="menu-icon icon-orders" />, text: 'Tus pedidos', badge: null, hasArrow: true },
-      { id: 2, icon: <MessageCircle className="menu-icon icon-messages" />, text: 'Mensajes', badge: 2, hasArrow: true },
-      { id: 3, icon: <Star className="menu-icon icon-reviews" />, text: 'Reseñas', badge: null, hasArrow: true }
+      { id: 1, icon: <Package className="profile-menu-icon profile-icon-orders" />, text: 'Tus pedidos', badge: null, hasArrow: true },
+      { id: 2, icon: <MessageCircle className="profile-menu-icon profile-icon-messages" />, text: 'Mensajes', badge: 2, hasArrow: true },
+      { id: 3, icon: <Star className="profile-menu-icon profile-icon-reviews" />, text: 'Reseñas', badge: null, hasArrow: true }
     ],
     employee: [
-      { id: 1, icon: <Package className="menu-icon icon-orders" />, text: 'Gestión de Pedidos', badge: 8, hasArrow: true },
-      { id: 2, icon: <Users className="menu-icon icon-clients" />, text: 'Clientes', badge: null, hasArrow: true },
-      { id: 3, icon: <BarChart3 className="menu-icon icon-analytics" />, text: 'Análisis', badge: null, hasArrow: true },
-      { id: 4, icon: <Settings className="menu-icon icon-settings" />, text: 'Configuración', badge: null, hasArrow: true }
+      { id: 1, icon: <Package className="profile-menu-icon profile-icon-orders" />, text: 'Gestión de Pedidos', badge: 8, hasArrow: true },
+      { id: 2, icon: <Users className="profile-menu-icon profile-icon-clients" />, text: 'Clientes', badge: null, hasArrow: true },
+      { id: 3, icon: <BarChart3 className="profile-menu-icon profile-icon-analytics" />, text: 'Análisis', badge: null, hasArrow: true },
+      { id: 4, icon: <Settings className="profile-menu-icon profile-icon-settings" />, text: 'Configuración', badge: null, hasArrow: true }
     ],
     vet: [
-      { id: 1, icon: <Stethoscope className="menu-icon icon-consultations" />, text: 'Consultas', badge: 5, hasArrow: true },
-      { id: 2, icon: <MessageCircle className="menu-icon icon-messages" />, text: 'Mensajes', badge: 3, hasArrow: true },
-      { id: 3, icon: <Star className="menu-icon icon-reviews" />, text: 'Reseñas', badge: null, hasArrow: true },
-      { id: 4, icon: <Shield className="menu-icon icon-certifications" />, text: 'Certificaciones', badge: null, hasArrow: true }
+      { id: 1, icon: <Stethoscope className="profile-menu-icon profile-icon-consultations" />, text: 'Consultas', badge: 5, hasArrow: true },
+      { id: 2, icon: <MessageCircle className="profile-menu-icon profile-icon-messages" />, text: 'Mensajes', badge: 3, hasArrow: true },
+      { id: 3, icon: <Star className="profile-menu-icon profile-icon-reviews" />, text: 'Reseñas', badge: null, hasArrow: true },
+      { id: 4, icon: <Shield className="profile-menu-icon profile-icon-certifications" />, text: 'Certificaciones', badge: null, hasArrow: true }
     ]
   };
 
@@ -147,9 +147,9 @@ const UserProfile = () => {
 
   if (isLoading) {
     return (
-      <div className="user-profile">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
+      <div className="profile-page">
+        <div className="profile-loading-container">
+          <div className="profile-loading-spinner"></div>
           <p>Cargando perfil...</p>
         </div>
       </div>
@@ -158,10 +158,10 @@ const UserProfile = () => {
 
   if (!user) {
     return (
-      <div className="user-profile">
-        <div className="auth-placeholder">
+      <div className="profile-page">
+        <div className="profile-auth-placeholder">
           <h2>Por favor, inicia sesión para ver tu perfil</h2>
-          <button onClick={() => window.location.href = '/mainPage'} className="retry-button">
+          <button onClick={() => window.location.href = '/mainPage'} className="profile-retry-button">
             Ir al Inicio            
           </button>
         </div>
@@ -170,22 +170,22 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="user-profile">
+    <div className="profile-page">
       {/* Botón de regreso */}
-      <button onClick={handleGoBack} className="back-button">
-        <ArrowLeft className="back-icon" size={20} />
+      <button onClick={handleGoBack} className="profile-back-button">
+        <ArrowLeft className="profile-back-icon" size={20} />
         <span>Regresar</span>
       </button>
 
       {/* Mensaje de bienvenida */}
-      <div className="welcome-section">
-        <h1 className="welcome-message">{getWelcomeMessage()}</h1>
+      <div className="profile-welcome-section">
+        <h1 className="profile-welcome-message">{getWelcomeMessage()}</h1>
       </div>
 
       {/* Layout horizontal: Perfil a la izquierda, contenido a la derecha */}
-      <div className="profile-and-content-wrapper">
+      <div className="profile-layout-wrapper">
         {/* Tarjeta de perfil - Columna Izquierda */}
-        <div className="profile-container">
+        <div className="profile-card-container">
           <ProfileCard
             userInfo={userDetails || user}
             isEditing={isEditing}
@@ -198,40 +198,40 @@ const UserProfile = () => {
         </div>
 
         {/* Contenido principal - Columna Derecha */}
-        <div className="content-wrapper">
+        <div className="profile-content-wrapper">
           {/* Menú de opciones según el rol */}
-          <div className="menu-section">
-            <h2 className="menu-title">Opciones</h2>
-            <div className="menu-list">
+          <div className="profile-menu-section">
+            <h2 className="profile-menu-title">Opciones</h2>
+            <div className="profile-menu-list">
               {menuConfig[currentRole]?.map((item) => (
-                <button key={item.id} className="menu-item">
-                  <div className="menu-item-content">
+                <button key={item.id} className="profile-menu-item">
+                  <div className="profile-menu-item-content">
                     {item.icon}
-                    <span className="menu-text">{item.text}</span>
+                    <span className="profile-menu-text">{item.text}</span>
                     {item.badge && (
-                      <span className="menu-badge">{item.badge}</span>
+                      <span className="profile-menu-badge">{item.badge}</span>
                     )}
                   </div>
-                  {item.hasArrow && <ChevronRight className="menu-arrow" size={20} />}
+                  {item.hasArrow && <ChevronRight className="profile-menu-arrow" size={20} />}
                 </button>
               ))}
             </div>
           </div>
 
           {/* Información adicional */}
-          <div className="info-section">
-            <div className="info-card">
+          <div className="profile-info-section">
+            <div className="profile-info-card">
               <h3>Tipo de cuenta</h3>
-              <p className="user-type-display">
+              <p className="profile-user-type">
                 {currentRole === 'client' && 'Cliente'}
                 {currentRole === 'employee' && 'Empleado'}
-                {currentRole === 'vet' && ' Veterinario'}
+                {currentRole === 'vet' && 'Veterinario'}
               </p>
             </div>
             
             {/* Botón de cerrar sesión */}
-            <div className="logout-section">
-              <button onClick={logout} className="logout-button">
+            <div className="profile-logout-section">
+              <button onClick={logout} className="profile-logout-button">
                 Cerrar sesión
               </button>
             </div>

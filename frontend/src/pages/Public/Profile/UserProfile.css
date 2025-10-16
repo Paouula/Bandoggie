@@ -1,4 +1,4 @@
-.user-profile {
+.profile-page {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
@@ -8,7 +8,7 @@
 }
 
 /* Back Button */
-.back-button {
+.profile-back-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -24,23 +24,23 @@
   margin-bottom: 24px;
 }
 
-.back-button:hover {
+.profile-back-button:hover {
   background: #F5A02D;
   color: white;
   border-color: #F5A02D;
   transform: translateX(-4px);
 }
 
-.back-icon {
+.profile-back-icon {
   transition: transform 0.2s ease;
 }
 
-.back-button:hover .back-icon {
+.profile-back-button:hover .profile-back-icon {
   transform: translateX(-2px);
 }
 
 /* Loading States */
-.loading-container {
+.profile-loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,7 +49,7 @@
   gap: 20px;
 }
 
-.loading-spinner {
+.profile-loading-spinner {
   width: 60px;
   height: 60px;
   border: 4px solid #e0e7ef;
@@ -63,14 +63,14 @@
   100% { transform: rotate(360deg); }
 }
 
-.loading-container p {
+.profile-loading-container p {
   color: #2c3e50;
   font-size: 18px;
   font-weight: 500;
 }
 
 /* Auth Placeholder */
-.auth-placeholder {
+.profile-auth-placeholder {
   text-align: center;
   padding: 80px 40px;
   background: white;
@@ -78,13 +78,13 @@
   border: 1px solid #e0e7ef;
 }
 
-.auth-placeholder h2 {
+.profile-auth-placeholder h2 {
   color: #2c3e50;
   margin-bottom: 30px;
   font-size: 24px;
 }
 
-.retry-button {
+.profile-retry-button {
   background: #F5A02D;
   color: white;
   border: none;
@@ -96,13 +96,13 @@
   transition: all 0.2s ease;
 }
 
-.retry-button:hover {
+.profile-retry-button:hover {
   background: #e89326;
   transform: translateY(-2px);
 }
 
 /* Welcome Section */
-.welcome-section {
+.profile-welcome-section {
   margin-bottom: 30px;
   background: white;
   padding: 32px;
@@ -110,7 +110,7 @@
   border: 1px solid #e0e7ef;
 }
 
-.welcome-message {
+.profile-welcome-message {
   font-size: 32px;
   font-weight: 800;
   color: #2c3e50;
@@ -119,7 +119,7 @@
 }
 
 /* Layout Horizontal para Desktop */
-.profile-and-content-wrapper {
+.profile-layout-wrapper {
   display: grid;
   grid-template-columns: 350px 1fr;
   gap: 30px;
@@ -127,7 +127,7 @@
 }
 
 /* Profile Container - Columna Izquierda */
-.profile-container {
+.profile-card-container {
   background: white;
   border-radius: 12px;
   border: 1px solid #e0e7ef;
@@ -138,21 +138,21 @@
 }
 
 /* Content Wrapper - Columna Derecha */
-.content-wrapper {
+.profile-content-wrapper {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
 /* Menu Section */
-.menu-section {
+.profile-menu-section {
   background: white;
   border-radius: 12px;
   padding: 32px;
   border: 1px solid #e0e7ef;
 }
 
-.menu-title {
+.profile-menu-title {
   font-size: 22px;
   font-weight: 700;
   color: #2c3e50;
@@ -160,13 +160,13 @@
   letter-spacing: -0.3px;
 }
 
-.menu-list {
+.profile-menu-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.menu-item {
+.profile-menu-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -180,39 +180,39 @@
   text-align: left;
 }
 
-.menu-item:hover {
+.profile-menu-item:hover {
   background: #F5A02D;
   border-color: #F5A02D;
   transform: translateX(6px);
 }
 
-.menu-item:hover .menu-text,
-.menu-item:hover .menu-icon,
-.menu-item:hover .menu-arrow {
+.profile-menu-item:hover .profile-menu-text,
+.profile-menu-item:hover .profile-menu-icon,
+.profile-menu-item:hover .profile-menu-arrow {
   color: white;
 }
 
-.menu-item-content {
+.profile-menu-item-content {
   display: flex;
   align-items: center;
   gap: 16px;
   flex: 1;
 }
 
-.menu-icon {
+.profile-menu-icon {
   width: 26px;
   height: 26px;
   transition: all 0.2s ease;
 }
 
-.menu-text {
+.profile-menu-text {
   font-size: 16px;
   font-weight: 600;
   color: #2c3e50;
   transition: all 0.2s ease;
 }
 
-.menu-badge {
+.profile-menu-badge {
   background: #F5A02D;
   color: white;
   padding: 4px 10px;
@@ -222,51 +222,51 @@
   margin-left: auto;
 }
 
-.menu-item:hover .menu-badge {
+.profile-menu-item:hover .profile-menu-badge {
   background: white;
   color: #F5A02D;
 }
 
-.menu-arrow {
+.profile-menu-arrow {
   color: #95a5a6;
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
-.menu-item:hover .menu-arrow {
+.profile-menu-item:hover .profile-menu-arrow {
   transform: translateX(3px);
 }
 
 /* Icon Colors */
-.icon-orders { color: #3498db; }
-.icon-messages { color: #9b59b6; }
-.icon-reviews { color: #F5A02D; }
-.icon-clients { color: #1abc9c; }
-.icon-analytics { color: #e74c3c; }
-.icon-settings { color: #95a5a6; }
-.icon-consultations { color: #2ecc71; }
-.icon-certifications { color: #34495e; }
+.profile-icon-orders { color: #3498db; }
+.profile-icon-messages { color: #9b59b6; }
+.profile-icon-reviews { color: #F5A02D; }
+.profile-icon-clients { color: #1abc9c; }
+.profile-icon-analytics { color: #e74c3c; }
+.profile-icon-settings { color: #95a5a6; }
+.profile-icon-consultations { color: #2ecc71; }
+.profile-icon-certifications { color: #34495e; }
 
-.menu-item:hover .icon-orders,
-.menu-item:hover .icon-messages,
-.menu-item:hover .icon-reviews,
-.menu-item:hover .icon-clients,
-.menu-item:hover .icon-analytics,
-.menu-item:hover .icon-settings,
-.menu-item:hover .icon-consultations,
-.menu-item:hover .icon-certifications {
+.profile-menu-item:hover .profile-icon-orders,
+.profile-menu-item:hover .profile-icon-messages,
+.profile-menu-item:hover .profile-icon-reviews,
+.profile-menu-item:hover .profile-icon-clients,
+.profile-menu-item:hover .profile-icon-analytics,
+.profile-menu-item:hover .profile-icon-settings,
+.profile-menu-item:hover .profile-icon-consultations,
+.profile-menu-item:hover .profile-icon-certifications {
   color: white;
 }
 
 /* Info Section */
-.info-section {
+.profile-info-section {
   background: white;
   border-radius: 12px;
   padding: 32px;
   border: 1px solid #e0e7ef;
 }
 
-.info-card {
+.profile-info-card {
   text-align: center;
   padding: 24px;
   background: #F8FAFB;
@@ -274,7 +274,7 @@
   border: 1px solid #e0e7ef;
 }
 
-.info-card h3 {
+.profile-info-card h3 {
   font-size: 14px;
   font-weight: 700;
   color: #7f8c8d;
@@ -283,7 +283,7 @@
   letter-spacing: 1.5px;
 }
 
-.user-type-display {
+.profile-user-type {
   font-size: 28px;
   font-weight: 800;
   color: #2c3e50;
@@ -291,12 +291,12 @@
 }
 
 /* Logout Section */
-.logout-section {
+.profile-logout-section {
   margin-top: 24px;
   text-align: center;
 }
 
-.logout-button {
+.profile-logout-button {
   background: #e74c3c;
   color: white;
   border: none;
@@ -310,61 +310,61 @@
   letter-spacing: 0.5px;
 }
 
-.logout-button:hover {
+.profile-logout-button:hover {
   background: #c0392b;
   transform: translateY(-2px);
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .profile-and-content-wrapper {
+  .profile-layout-wrapper {
     grid-template-columns: 300px 1fr;
     gap: 20px;
   }
 }
 
 @media (max-width: 768px) {
-  .user-profile {
+  .profile-page {
     padding: 15px;
   }
 
   /* Layout vertical para móviles */
-  .profile-and-content-wrapper {
+  .profile-layout-wrapper {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .profile-container {
+  .profile-card-container {
     position: relative;
     top: 0;
   }
 
-  .back-button {
+  .profile-back-button {
     padding: 10px 16px;
     font-size: 14px;
   }
 
-  .welcome-section {
+  .profile-welcome-section {
     padding: 24px;
   }
 
-  .welcome-message {
+  .profile-welcome-message {
     font-size: 24px;
   }
 
-  .menu-section {
+  .profile-menu-section {
     padding: 24px;
   }
 
-  .menu-item {
+  .profile-menu-item {
     padding: 16px;
   }
 
-  .menu-text {
+  .profile-menu-text {
     font-size: 15px;
   }
 
-  .info-section {
+  .profile-info-section {
     padding: 24px;
   }
 }
