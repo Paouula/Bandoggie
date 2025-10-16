@@ -31,6 +31,8 @@ vetsControllers.put = async (req, res) => {
     return res.status(400).json({ message: "ID inválido" });
   }
 
+
+
   try {
     const existingVet = await VetModel.findById(id);
     if (!existingVet) {
@@ -54,6 +56,11 @@ vetsControllers.put = async (req, res) => {
 
     if (password !== undefined) {
       updateData.password = await bcryptjs.hash(password, 10);
+    }
+
+    const existingNitVet = await VetModel.findOne({ nitVet, _id: { $ne: id } });
+    if (existingNitVet) {
+      return res.status(400).json({ message: "El NIT ya está en uso por otra veterinaria" });
     }
 
     const updatedVet = await VetModel.findByIdAndUpdate(
