@@ -1,10 +1,9 @@
 import employeesModel from "../models/Employees.js";
 import bcryptjs from "bcryptjs";
-import validator from "validator";
 
 const employeesControllers = {};
 
-// Aquí traemos a todos los empleados de la base de datos
+// Obtener todos los empleados
 employeesControllers.get = async (req, res) => {
   try {
     const employees = await employeesModel.find();
@@ -14,64 +13,7 @@ employeesControllers.get = async (req, res) => {
   }
 };
 
-// Esta función es la que se encarga de revisar si los datos vienen como deben
-const validateEmployeeFields = (data, isUpdate = false) => {
-  const errors = [];
-
-  // Que el nombre sea solo letras y espacios
-  if (!data.nameEmployees || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(data.nameEmployees)) {
-    errors.push("Nombre inválido");
-  }
-
-  // El correo debe estar presente y ser verdadero correo
-  if (!data.email || !validator.isEmail(data.email)) {
-    errors.push("Correo electrónico inválido");
-  }
-
-  // Teléfono con formato 1111-1111
-  if (!data.phoneEmployees || !/^\d{4}-\d{4}$/.test(data.phoneEmployees)) {
-    errors.push("Teléfono inválido (formato 1111-1111)");
-  }
-
-  // Fecha de nacimiento válida y que no sea un mocoso
-  if (!data.dateOfBirth || !validator.isDate(data.dateOfBirth)) {
-    errors.push("Fecha de nacimiento inválida");
-  } else {
-    const age =
-      new Date().getFullYear() - new Date(data.dateOfBirth).getFullYear();
-    if (age < 18) errors.push("El empleado debe ser mayor de edad");
-  }
-
-  // La dirección debe estar, y no andar con cosas vacías
-  if (!data.addressEmployees || data.addressEmployees.trim().length < 5) {
-    errors.push("Dirección obligatoria");
-  }
-
-  // La contraseña solo se revisa si es creación o si la envían para actualizar
-  if (!isUpdate || data.password) {
-    if (
-      !data.password ||
-      data.password.length < 8 ||
-      data.password.length > 30
-    ) {
-      errors.push("Contraseña entre 8 y 30 caracteres");
-    }
-  }
-
-  // Que la fecha de contratación sea válida
-  if (!data.hireDateEmployee || !validator.isDate(data.hireDateEmployee)) {
-    errors.push("Fecha de contratación inválida");
-  }
-
-  // El DUI debe tener su formato correcto
-  if (!data.duiEmployees || !/^\d{8}-\d{1}$/.test(data.duiEmployees)) {
-    errors.push("DUI inválido (formato 12345678-9)");
-  }
-
-  return errors;
-};
-
-// Aquí registramos al nuevo empleado, cuidando que todo venga en orden
+// Registrar nuevo empleado (con validaciones internas)
 employeesControllers.post = async (req, res) => {
   try {
     const {
@@ -85,20 +27,65 @@ employeesControllers.post = async (req, res) => {
       duiEmployees,
     } = req.body;
 
-    // Primero revisamos que todos los datos estén bien, sin error alguno
-    const validationErrors = validateEmployeeFields(req.body);
-    if (validationErrors.length) {
-      return res.status(400).json({ message: validationErrors.join(", ") });
+    const errors = [];
+
+    // Nombre (solo letras y espacios)
+    if (!nameEmployees || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(nameEmployees)) {
+      errors.push("Nombre inválido");
     }
 
-    // Comprobamos que ese correo no esté ya en nuestra lista
+    // Correo (estructura básica)
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.push("Correo electrónico inválido");
+    }
+
+    // Teléfono (formato 1111-1111)
+    if (!phoneEmployees || !/^\d{4}-\d{4}$/.test(phoneEmployees)) {
+      errors.push("Teléfono inválido (formato 1111-1111)");
+    }
+
+    // Fecha de nacimiento válida y mayor de edad
+    if (!dateOfBirth || isNaN(Date.parse(dateOfBirth))) {
+      errors.push("Fecha de nacimiento inválida");
+    } else {
+      const birthYear = new Date(dateOfBirth).getFullYear();
+      const currentYear = new Date().getFullYear();
+      if (currentYear - birthYear < 18) errors.push("El empleado debe ser mayor de edad");
+    }
+
+    // Dirección
+    if (!addressEmployees || addressEmployees.trim().length < 5) {
+      errors.push("Dirección obligatoria");
+    }
+
+    // Contraseña
+    if (!password || password.length < 8 || password.length > 30) {
+      errors.push("Contraseña entre 8 y 30 caracteres");
+    }
+
+    // Fecha de contratación
+    if (!hireDateEmployee || isNaN(Date.parse(hireDateEmployee))) {
+      errors.push("Fecha de contratación inválida");
+    }
+
+    // DUI
+    if (!duiEmployees || !/^\d{8}-\d{1}$/.test(duiEmployees)) {
+      errors.push("DUI inválido (formato 12345678-9)");
+    }
+
+    // Si hay errores, se detiene
+    if (errors.length > 0) {
+      return res.status(400).json({ message: errors.join(", ") });
+    }
+
+    // Verificar si el correo ya existe
     const exists = await employeesModel.findOne({ email });
     if (exists) return res.status(400).json({ message: "El usuario ya existe" });
 
-    // Encriptamos la contraseña para que no ande en claro por ahí
+    // Encriptar la contraseña
     const passwordHash = await bcryptjs.hash(password, 10);
 
-    // Ahora sí, creamos al empleado y lo guardamos en la base
+    // Crear empleado
     const newEmployee = new employeesModel({
       nameEmployees,
       email,
@@ -117,54 +104,54 @@ employeesControllers.post = async (req, res) => {
   }
 };
 
-// Para actualizar al empleado, pasamos por el mismo rigor en las pruebas
+// Actualizar empleado (solo valida que los campos no estén vacíos)
 employeesControllers.put = async (req, res) => {
   try {
-    const {
-      nameEmployees,
-      email,
-      phoneEmployees,
-      dateOfBirth,
-      addressEmployees,
-      password,
-      hireDateEmployee,
-      duiEmployees,
-    } = req.body;
+    const idToUpdate = req.params.id;
+    const body = req.body;
 
-    const idToUpdate = req.params.id; 
-
-    const validationErrors = validateEmployeeFields(req.body, true);
-    if (validationErrors.length) {
-      return res.status(400).json({ message: validationErrors.join(", ") });
+    // Verificar existencia
+    const existingEmployee = await employeesModel.findById(idToUpdate);
+    if (!existingEmployee) {
+      return res.status(404).json({ message: "Empleado no encontrado" });
     }
 
-    const existing = await employeesModel.findOne({ email });
-    if (existing && existing._id.toString() !== idToUpdate) {
-      return res.status(400).json({ message: "El usuario ya existe" });
+    const updateData = {};
+
+    // Validar que los campos enviados no estén vacíos o nulos
+    for (const [key, value] of Object.entries(body)) {
+      if (value !== undefined && value !== null && String(value).trim() !== "") {
+        updateData[key] = value;
+      }
     }
 
-    const updateData = {
-      nameEmployees,
-      email,
-      phoneEmployees,
-      dateOfBirth,
-      addressEmployees,
-      hireDateEmployee,
-      duiEmployees,
-    };
+    // Si hay contraseña, la encripta
+    if (body.password && body.password.trim() !== "") {
+      updateData.password = await bcryptjs.hash(body.password, 10);
+    }
 
-    if (password) updateData.password = await bcryptjs.hash(password, 10);
+    // Si no hay datos válidos que actualizar
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ message: "No se enviaron campos válidos para actualizar" });
+    }
 
-    await employeesModel.findByIdAndUpdate(idToUpdate, updateData, { new: true });
+    const updatedEmployee = await employeesModel.findByIdAndUpdate(
+      idToUpdate,
+      updateData,
+      { new: true }
+    );
 
-    res.status(200).json({ message: "Empleado actualizado correctamente" });
+    res.status(200).json({
+      message: "Empleado actualizado correctamente",
+      employee: updatedEmployee,
+    });
   } catch (error) {
+    console.error("Error al actualizar empleado:", error);
     res.status(500).json({ message: "Error al actualizar datos: " + error });
   }
 };
 
-
-// Y para eliminar un empleado, solo buscamos por id y lo borramos
+// Eliminar empleado
 employeesControllers.delete = async (req, res) => {
   try {
     await employeesModel.findByIdAndDelete(req.params.id);

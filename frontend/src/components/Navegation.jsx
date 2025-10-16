@@ -63,11 +63,13 @@ const EmployeeLayout = () => (
     <div className="admin-content">
       <Routes>
         <Route path="productos" element={<Productos />} />
+        <Route path="home" element={<Home />} />
         <Route path="reseñas" element={<Reseñas />} />
         <Route path="empleados" element={<Empleados />} />
         <Route path="clientes" element={<Clientes />} />
         <Route path="graphics" element={<Graphics />} />
         <Route path="OrderManagement" element={<OrderManagement />} />
+        <Route path="profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/admin/productos" replace />} />
       </Routes>
     </div>

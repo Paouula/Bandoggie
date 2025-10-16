@@ -26,8 +26,8 @@ const buildUserResponse = (user, type) => {
     email: user.email,
     userType: type,
     image: user.image || "",
-    phone: user.phone || "",
-    address: user.address || "",
+    phone: user.phone || user.phoneEmployees || "",
+    address: user.address || user.addressEmployees || "",
   };
   switch (type) {
     case "client":
@@ -44,7 +44,15 @@ const buildUserResponse = (user, type) => {
         nitVet: user.nitVet || "",
       };
     case "employee":
-      return { ...base, name: user.name || "" };
+      return {
+        ...base,
+        name: user.nameEmployees || user.name || "",
+        phoneEmployees: user.phoneEmployees || "",
+        dateOfBirth: toISODate(user.dateOfBirth),
+        addressEmployees: user.addressEmployees || "",
+        hireDateEmployee: toISODate(user.hireDateEmployee),
+        duiEmployees: user.duiEmployees || "",
+      };
     default:
       return base;
   }
@@ -52,13 +60,15 @@ const buildUserResponse = (user, type) => {
 
 // -------------------------- LOGIN --------------------------
 loginController.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, emailVerified } = req.body;
 
   // Validaciones basicas de email y password (acá evitamos basura en la entrada)
   if (!email || !validator.isEmail(email))
     return res.status(400).json({ message: "Correo electrónico inválido o faltante" });
   if (!password || password.length < 8)
     return res.status(400).json({ message: "La contraseña es obligatoria y debe tener al menos 8 caracteres" });
+  if (emailVerified === false)
+    return res.status(400).json({ message: "Por favor, verifica tu correo electrónico antes de iniciar sesión" });
 
   try {
     let userFound, userType;
@@ -110,7 +120,9 @@ loginController.login = async (req, res) => {
     );
 
     // Guardamos token en una cookie httpOnly (no se puede leer desde JS del navegador)
-    res.cookie("authToken", token, { httpOnly: true, sameSite: "lax", secure: false });
+    res.cookie("authToken", token, {
+      httpOnly: true, sameSite: "lax", secure: true, sameSite: "none",
+    });
     return res.status(200).json({
       message: "Login exitoso",
       userType,
@@ -140,52 +152,253 @@ loginController.getAuthenticatedUser = async (req, res) => {
   }
 };
 
-// -------------------------- UPDATE PROFILE --------------------------
-// Permite actualizar datos del perfil del usuario autenticado
-// Nota: acá solo dejamos cambiar lo basico (nombre, correo, etc) para evitar lios de seguridad
-loginController.updateProfile = async (req, res) => {
-  const token = req.cookies?.authToken;
-  if (!token) return res.status(401).json({ message: "No autenticado" });
 
-  try {
-    const { user: id, userType } = jsonwebtoken.verify(token, config.JWT.secret);
-    const { name, email, phone, address, birthday, dateOfBirth, locationVet, nitVet } = req.body;
-
-    const updateData = { email, phone, address };
-    if (userType === "client") updateData.dateOfBirth = birthday || dateOfBirth, updateData.name = name;
-    if (userType === "vet") Object.assign(updateData, { nameVet: name, name, locationVet, nitVet });
-    if (userType === "employee") updateData.name = name;
-
-    // Limpiamos campos vacios antes de guardar (truco para no mandar nulls innecesarios)
-    Object.keys(updateData).forEach(k => !updateData[k] && delete updateData[k]);
-    if (updateData.email && !validator.isEmail(updateData.email))
-      return res.status(400).json({ message: "Correo electrónico inválido" });
-
-    const user = await models[userType].findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select("-password");
-    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
-
-    return res.status(200).json({
-      message: "Perfil actualizado correctamente",
-      user: buildUserResponse(user, userType),
-    });
-  } catch (err) {
-    console.error("Error en updateProfile:", err);
-    if (err.name === "ValidationError") return res.status(400).json({ message: "Error de validación", details: err.message });
-    if (err.code === 11000) return res.status(400).json({ message: "El email ya está en uso" });
-    return res.status(500).json({ message: "Error al actualizar el perfil" });
-  }
-};
 
 // -------------------------- LOGOUT --------------------------
 // Simple: limpiamos la cookie y listo, el user queda deslogueado
 // (esto es super util cuando quieres cerrar sesion desde el front)
 loginController.logout = (req, res) => {
   try {
-    res.clearCookie("authToken", { httpOnly: true, sameSite: "lax", secure: false });
+    res.clearCookie("authToken", { httpOnly: true, sameSite: "none", secure: true });
     return res.status(200).json({ message: "Logout exitoso" });
   } catch (err) {
     console.error("Error en logout:", err);
     return res.status(500).json({ message: "Error al cerrar sesión" });
+  }
+};
+
+
+// -------------------------- UPDATE PROFILE --------------------------
+// Permite actualizar datos del perfil del usuario autenticado
+// Nota: acá solo dejamos cambiar lo basico (nombre, correo, etc) para evitar lios de seguridad
+
+loginController.updateProfile = async (req, res) => {
+  const token = req.cookies?.authToken;
+  if (!token) return res.status(401).json({ message: "No autenticado" });
+  
+  try {
+    const { user: id, userType } = jsonwebtoken.verify(token, config.JWT.secret);
+
+    const {
+      name,
+      email,
+      phone,
+      address,
+      password,
+      birthday,
+      dateOfBirth,
+      locationVet,
+      nitVet,
+      duiEmployees,
+      phoneEmployees,
+      addressEmployees,
+      hireDateEmployee
+    } = req.body;
+
+    
+    // Validación de email si se proporciona
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Correo inválido" });
+      }
+      
+      // Verificar que el email no esté en uso por otro usuario
+      const existingUser = await models[userType].findOne({ email });
+      if (existingUser && existingUser._id.toString() !== id) {
+        return res.status(400).json({ message: "El email ya está en uso" });
+      }
+    }
+
+    // Validación de contraseña si se proporciona
+    if (password) {
+      if (password.length < 8 || password.length > 30) {
+        return res.status(400).json({ message: "La contraseña debe tener entre 8 y 30 caracteres" });
+      }
+    }
+
+    // ========== VALIDACIONES Y ACTUALIZACIONES POR TIPO DE USUARIO ==========
+    
+    const updateData = {};
+    
+    // ---------- CLIENTE ----------
+    if (userType === "client") {
+      // Validar nombre si se proporciona
+      if (name) {
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(name)) {
+          return res.status(400).json({ message: "Nombre inválido (solo letras y espacios, 2-40 caracteres)" });
+        }
+        updateData.name = name;
+      }
+      
+      if (email) updateData.email = email;
+      
+      // Validar teléfono si se proporciona
+      if (phone) {
+        if (!/^\d{4}-\d{4}$/.test(phone)) {
+          return res.status(400).json({ message: "Teléfono inválido (formato 1111-1111)" });
+        }
+        updateData.phone = phone;
+      }
+      
+      // Validar fecha de nacimiento
+      if (birthday || dateOfBirth) {
+        const birthDate = birthday || dateOfBirth;
+        if (!validator.isDate(birthDate)) {
+          return res.status(400).json({ message: "Fecha de nacimiento inválida" });
+        }
+        updateData.dateOfBirth = birthDate;
+      }
+
+      // Contraseña hasheada si se proporciona
+      if (password) {
+        updateData.password = await bcryptjs.hash(password, 10);
+      }
+
+      // Manejar imagen si se subió
+      if (req.file) {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "public",
+          allowed_formats: ["jpg", "png", "jpeg"],
+        });
+        updateData.image = result.secure_url;
+      }
+    }
+
+    // ---------- VETERINARIO ----------
+    if (userType === "vet") {
+      // Validar nombre si se proporciona
+      if (name) {
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(name)) {
+          return res.status(400).json({ message: "Nombre inválido (solo letras y espacios, 2-40 caracteres)" });
+        }
+        updateData.nameVet = name;
+      }
+      
+      if (email) updateData.email = email;
+      
+      // Validar ubicación
+      if (locationVet) {
+        if (!locationVet.trim()) {
+          return res.status(400).json({ message: "Ubicación es obligatoria" });
+        }
+        updateData.locationVet = locationVet;
+      }
+      
+      // Validar NIT
+      if (nitVet) {
+        if (!/^\d{4}-\d{6}-\d{3}-\d{1}$/.test(nitVet)) {
+          return res.status(400).json({ message: "NIT inválido (formato 1234-567890-123-4)" });
+        }
+        updateData.nitVet = nitVet;
+      }
+
+      // Contraseña hasheada si se proporciona
+      if (password) {
+        updateData.password = await bcryptjs.hash(password, 10);
+      }
+
+      // Manejar imagen si se subió
+      if (req.file) {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "vets",
+          allowed_formats: ["jpg", "png", "jpeg"],
+        });
+        updateData.image = result.secure_url;
+      }
+    }
+
+    // ---------- EMPLEADO ----------
+    if (userType === "employee") {
+      // Validar nombre si se proporciona
+      if (name) {
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(name)) {
+          return res.status(400).json({ message: "Nombre inválido (solo letras y espacios, 2-40 caracteres)" });
+        }
+        updateData.nameEmployees = name;
+      }
+      
+      if (email) updateData.email = email;
+      
+      // Validar teléfono de empleado
+      if (phoneEmployees) {
+        if (!/^\d{4}-\d{4}$/.test(phoneEmployees)) {
+          return res.status(400).json({ message: "Teléfono inválido (formato 1111-1111)" });
+        }
+        updateData.phoneEmployees = phoneEmployees;
+      }
+      
+      // Validar fecha de nacimiento y edad
+      if (dateOfBirth) {
+        if (!validator.isDate(dateOfBirth)) {
+          return res.status(400).json({ message: "Fecha de nacimiento inválida" });
+        }
+        const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
+        if (age < 18) {
+          return res.status(400).json({ message: "El empleado debe ser mayor de edad" });
+        }
+        updateData.dateOfBirth = dateOfBirth;
+      }
+      
+      // Validar dirección
+      if (addressEmployees) {
+        if (addressEmployees.trim().length < 5) {
+          return res.status(400).json({ message: "Dirección debe tener al menos 5 caracteres" });
+        }
+        updateData.addressEmployees = addressEmployees;
+      }
+      
+      // Validar DUI
+      if (duiEmployees) {
+        if (!/^\d{8}-\d{1}$/.test(duiEmployees)) {
+          return res.status(400).json({ message: "DUI inválido (formato 12345678-9)" });
+        }
+        updateData.duiEmployees = duiEmployees;
+      }
+      
+      // Validar fecha de contratación
+      if (hireDateEmployee) {
+        if (!validator.isDate(hireDateEmployee)) {
+          return res.status(400).json({ message: "Fecha de contratación inválida" });
+        }
+        updateData.hireDateEmployee = hireDateEmployee;
+      }
+
+      // Contraseña hasheada si se proporciona
+      if (password) {
+        updateData.password = await bcryptjs.hash(password, 10);
+      }
+    }
+
+    // Si no hay datos para actualizar
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ message: "No hay datos para actualizar" });
+    }
+
+    // Guardamos los cambios en la base de datos
+    const user = await models[userType]
+      .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
+      .select("-password");
+      
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    return res.status(200).json({
+      message: "Perfil actualizado correctamente",
+      user: buildUserResponse(user, userType),
+    });
+
+  } catch (error) {
+    console.error("Error en updateProfile:", error);
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({ message: "Token inválido" });
+    }
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: "Error de validación", details: error.message });
+    }
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "El email ya está en uso" });
+    }
+    return res.status(500).json({ message: "Error al actualizar el perfil" });
   }
 };
 

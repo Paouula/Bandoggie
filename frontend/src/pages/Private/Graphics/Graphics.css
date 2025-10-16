@@ -1,0 +1,156 @@
+/* Graphics.css - Estilos para el Dashboard */
+
+/* Contenedor principal */
+.dashboard-container {
+    min-height: 100vh;
+    padding: 2rem;
+}
+  
+.dashboard-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+  
+/* Header */
+.dashboard-header {
+    margin-bottom: 2.5rem;
+}
+  
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+  
+.dashboard-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+}
+  
+/* Fila de cards */
+.cards-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+  
+/* Card base */
+.card {
+    border-radius: 1.5rem;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    min-height: 200px;
+
+    /* ✅ Centrar texto */
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* centra horizontal */
+    justify-content: center; /* centra vertical */
+    text-align: center;      /* centra el texto */
+}
+  
+.card:hover {
+    transform: translateY(-2px);
+}
+  
+/* Colores de las cards */
+.card-blue {
+    background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+}
+  
+.card-pink {
+    background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+}
+  
+.card-yellow {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+  
+.card-orange {
+    background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+}
+  
+/* Contenido de la card */
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+  
+.card-subtitle {
+    font-size: 0.875rem;
+    color: #374151;
+    margin-bottom: 1rem;
+}
+  
+.card-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-top: 0.5rem;
+}
+  
+/* Card de distribución */
+.card-distribution {
+    margin-top: 1rem;
+}
+  
+.distribution-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+  
+.distribution-item:last-child {
+    margin-bottom: 0;
+}
+  
+.distribution-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+  
+.distribution-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+  
+/* Responsive */
+@media (max-width: 1024px) {
+    .cards-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+}
+  
+@media (max-width: 640px) {
+    .dashboard-container {
+      padding: 1rem;
+    }
+  
+    .cards-row {
+      grid-template-columns: 1fr;
+    }
+  
+    .card {
+      padding: 1.5rem;
+    }
+  
+    .card-title {
+      font-size: 1.25rem;
+    }
+  
+    .card-number {
+      font-size: 2.5rem;
+    }
+  
+    .dashboard-title {
+      font-size: 1.5rem;
+    }
+}

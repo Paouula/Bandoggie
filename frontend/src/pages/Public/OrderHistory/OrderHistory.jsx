@@ -1,86 +1,205 @@
-// src/pages/Public/OrderHistory/OrderHistory.jsx
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../../context/AuthContext';
+import useOrderInfo from '../../../hooks/OrderHistory/useOrders';
 import OrderCard from '../../../components/OrderCard/OrderCard';
-import useOrders from '../../../hooks/OrderHistory/useOrders'; // CORRECCIÓN: Orders con mayúscula
 import './OrderHistory.css';
 
 const OrderHistory = () => {
-  const [filter, setFilter] = useState('all');
+  const { user } = useAuth();
+  const { orders, loading, error, fetchOrders, clearError } = useOrderInfo();
+  const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Usar el hook personalizado
-  const {
-    orders,
-    loading,
-    error,
-    fetchOrders,
-    filterOrders,
-    clearError
-  } = useOrders();
-
-  // Cargar órdenes al montar el componente
+  // 📄 EFECTO PARA CARGAR ÓRDENES Y ESCUCHAR EVENTOS
   useEffect(() => {
-    fetchOrders().catch(err => {
-      console.error('Error loading orders:', err);
-    });
+    console.log('📦 OrderHistory montado, cargando órdenes...');
+    fetchOrders();
+    
+    // Escuchar evento cuando se crea una nueva orden
+    const handleOrderCreated = () => {
+      console.log('🔔 Evento orderCreated detectado, recargando...');
+      setTimeout(() => {
+        fetchOrders();
+      }, 1500);
+    };
+    
+    window.addEventListener('orderCreated', handleOrderCreated);
+    
+    return () => {
+      window.removeEventListener('orderCreated', handleOrderCreated);
+    };
   }, [fetchOrders]);
 
-  // Filtrar órdenes según criterios
-  const filteredOrders = filterOrders(orders, filter, searchTerm);
+  // 🛠 EFECTO PARA DEBUG
+  useEffect(() => {
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('📊 DEBUG - OrderHistory State');
+    console.log('👤 Usuario actual:', user);
+    console.log('📧 Email del usuario:', user?.email);
+    console.log('📦 Total órdenes cargadas:', orders.length);
+    
+    if (orders.length > 0) {
+      console.log('📋 Estructura de primera orden:', {
+        _id: orders[0]._id,
+        customerEmail: orders[0].customerEmail,
+        customerName: orders[0].customerName,
+        PaymentMethod: orders[0].PaymentMethod || orders[0].paymentMethod
+      });
+    }
+    console.log('═══════════════════════════════════════════════════════');
+  }, [orders, user]);
 
-  const handleFilterChange = (newFilter) => {
-    setFilter(newFilter);
+  // 📘 FUNCIÓN PARA MANEJAR CLICK EN CARD
+  const handleCardClick = (orderId) => {
+    setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  // 🔍 FILTRAR ÓRDENES DEL USUARIO ACTUAL (POR EMAIL)
+  const userOrders = orders.filter(order => {
+    if (!user || !user.email) {
+      console.log('⚠️ No hay usuario autenticado o sin email');
+      return false;
+    }
+    
+    const userEmail = user.email.toLowerCase();
+    
+    // Comparar con customerEmail (órdenes de invitados)
+    const customerEmail = order.customerEmail?.toLowerCase();
+    if (customerEmail === userEmail) {
+      console.log('✅ Match por customerEmail:', customerEmail);
+      return true;
+    }
+    
+    // Comparar con email del cliente en idCart (órdenes con carrito)
+    if (order.idCart && typeof order.idCart === 'object') {
+      const client = order.idCart.idClient;
+      if (typeof client === 'object' && client !== null) {
+        const clientEmail = client.email?.toLowerCase();
+        if (clientEmail === userEmail) {
+          console.log('✅ Match por idCart.idClient.email:', clientEmail);
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  });
+
+  console.log('📊 Órdenes filtradas para el usuario:', userOrders.length);
+
+  // 🔍 APLICAR BÚSQUEDA SOBRE LAS ÓRDENES DEL USUARIO
+  const filteredOrders = userOrders.filter(order => {
+    if (!searchTerm) return true;
+    
+    const search = searchTerm.toLowerCase();
+    
+    // Buscar en diferentes campos
+    const orderId = order._id?.toLowerCase() || '';
+    const address = order.addressClient?.toLowerCase() || '';
+    const payment = (order.PaymentMethod || order.paymentMethod)?.toLowerCase() || '';
+    const customerName = order.customerName?.toLowerCase() || '';
+    
+    // Buscar en productos del carrito si está poblado
+    let productsMatch = false;
+    if (order.idCart && typeof order.idCart === 'object') {
+      const products = order.idCart.products || [];
+      productsMatch = products.some(p => {
+        const productName = p.idProduct?.name?.toLowerCase() || '';
+        return productName.includes(search);
+      });
+    }
+    
+    // Buscar en productos de órdenes locales
+    if (order.products && Array.isArray(order.products)) {
+      productsMatch = order.products.some(p => {
+        const productName = p.name?.toLowerCase() || '';
+        return productName.includes(search);
+      });
+    }
+    
+    return orderId.includes(search) || 
+           address.includes(search) || 
+           payment.includes(search) ||
+           customerName.includes(search) ||
+           productsMatch;
+  });
+
+  // 🧹 FUNCIÓN PARA LIMPIAR BÚSQUEDA
+  const handleClearSearch = () => {
+    setSearchTerm('');
   };
 
-  const handleSearch = () => {
-    // Búsqueda ya se maneja en tiempo real con filteredOrders
-  };
-
-  const handleRetry = () => {
-    clearError();
-    fetchOrders();
-  };
-
-  // Calcular estadísticas basadas en todas las órdenes cargadas
-  const stats = {
-    total: orders.length,
-    completed: orders.filter(o => o.status === 'Completado').length,
-    pending: orders.filter(o => o.status === 'Pendiente').length,
-    shipped: orders.filter(o => o.status === 'Enviado').length
-  };
-
-  if (loading && orders.length === 0) {
+  // 🔒 VERIFICAR AUTENTICACIÓN
+  if (!user) {
     return (
       <main className="main-container">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Cargando historial de pedidos...</p>
+        <div className="no-orders">
+          <div className="no-orders-icon">🔒</div>
+          <h3>Acceso Restringido</h3>
+          <p>Por favor, inicia sesión para ver el historial de pedidos</p>
+          <button 
+            onClick={() => window.location.href = '/mainPage'} 
+            className="retry-btn"
+            style={{
+              marginTop: '1rem',
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#667eea',
+              color: 'white',
+              border: 'none',
+              borderRadius: '25px',
+              cursor: 'pointer',
+              fontWeight: '600'
+            }}
+          >
+            Ir al Inicio
+          </button>
         </div>
       </main>
     );
   }
 
-  if (error && orders.length === 0) {
+  // ⏳ ESTADO DE CARGA
+  if (loading && allOrders.length === 0) {
+    return (
+      <main className="main-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p style={{ color: '#333', marginTop: '1rem' }}>
+            Cargando historial de pedidos...
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  // ⚠️ ESTADO DE ERROR
+  if (error && allOrders.length === 0) {
     return (
       <main className="main-container">
         <div className="no-orders">
           <div className="no-orders-icon">⚠️</div>
-          <h3>Error al cargar pedidos</h3>
+          <h3>Error al cargar pedidos del servidor</h3>
           <p>{error}</p>
+          {localOrders.length > 0 && (
+            <p style={{ marginTop: '1rem', color: '#059669' }}>
+              ✅ Se encontraron {localOrders.length} pedidos locales
+            </p>
+          )}
           <button 
-            onClick={handleRetry}
+            onClick={() => { 
+              clearError(); 
+              fetchOrders(); 
+            }} 
+            className="retry-btn"
             style={{
               marginTop: '1rem',
-              padding: '0.8rem 1.5rem',
-              background: '#667eea',
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#667eea',
               color: 'white',
               border: 'none',
               borderRadius: '25px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              fontWeight: '600'
             }}
           >
             Reintentar
@@ -90,47 +209,175 @@ const OrderHistory = () => {
     );
   }
 
+  // 📊 Calcular estadísticas solo para órdenes del usuario
+  const totalOrders = userOrders.length;
+  const pendingOrders = userOrders.filter(o => {
+    const status = o.idCart?.status || o.status;
+    return status === 'Pending' || status === 'pending';
+  }).length;
+  const paidOrders = userOrders.filter(o => {
+    const status = o.idCart?.status || o.status;
+    return status === 'Paid' || status === 'paid';
+  }).length;
+  const transferenciaOrders = userOrders.filter(o => {
+    const method = (o.PaymentMethod || o.paymentMethod)?.toLowerCase();
+    return method === 'transferencia';
+  }).length;
+  const efectivoOrders = userOrders.filter(o => {
+    const method = (o.PaymentMethod || o.paymentMethod)?.toLowerCase();
+    return method === 'efectivo';
+  }).length;
+
+  // 🎨 RENDER PRINCIPAL
   return (
     <main className="main-container">
+      {/* Header con estadísticas */}
       <div className="page-header">
-        <h1 className="page-title">Historial de Pedidos</h1>
-        <p className="page-subtitle">
-          Gestiona y revisa todos los pedidos realizados
-        </p>
+        <div>
+          <h1 className="page-title">Historial de Pedidos</h1>
+          <p className="page-subtitle">
+            {totalOrders === 0 
+              ? 'No hay pedidos aún'
+              : `Total de pedidos: ${totalOrders}`
+            }
+          </p>
+          {localOrders.length > 0 && (
+            <p style={{ 
+              fontSize: '0.9rem', 
+              color: '#059669', 
+              marginTop: '0.5rem',
+              fontWeight: '500'
+            }}>
+              💾 {localOrders.length} pedido{localOrders.length !== 1 ? 's' : ''} guardado{localOrders.length !== 1 ? 's' : ''} localmente
+            </p>
+          )}
+        </div>
+        
+        {/* Botón de recarga manual */}
+        <button
+          onClick={() => {
+            console.log('🔄 Recarga manual iniciada');
+            clearError();
+            fetchOrders();
+            loadLocalOrders();
+          }}
+          style={{
+            padding: '0.75rem 1.5rem',
+            backgroundColor: '#667eea',
+            color: 'white',
+            border: 'none',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          🔄 Actualizar
+        </button>
       </div>
 
-<div 
-  className="filters-section" 
-  style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}
->
-  <div className="filter-tabs" style={{ display: 'flex', gap: '10px' }}>
-    <button 
-      className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
-      onClick={() => handleFilterChange('all')}
-    >
-      Todos
-    </button>
-    <button 
-      className={`filter-tab ${filter === 'completado' ? 'active' : ''}`}
-      onClick={() => handleFilterChange('completado')}
-    >
-      Completados
-    </button>
-    <button 
-      className={`filter-tab ${filter === 'pendiente' ? 'active' : ''}`}
-      onClick={() => handleFilterChange('pendiente')}
-    >
-      Pendientes
-    </button>
-    <button 
-      className={`filter-tab ${filter === 'enviado' ? 'active' : ''}`}
-      onClick={() => handleFilterChange('enviado')}
-    >
-      Enviados
-    </button>
-  </div>
-</div>
+      {/* Estadísticas en cards */}
+      {totalOrders > 0 && (
+        <div className="orders-stats">
+          <div className="stat-card">
+            <div className="stat-number">{totalOrders}</div>
+            <div className="stat-label">Total Pedidos</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{pendingOrders}</div>
+            <div className="stat-label">Pendientes</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{paidOrders}</div>
+            <div className="stat-label">Pagados</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{transferenciaOrders}</div>
+            <div className="stat-label">Transferencia</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{efectivoOrders}</div>
+            <div className="stat-label">Efectivo</div>
+          </div>
+        </div>
+      )}
 
+      {/* Barra de búsqueda */}
+      {totalOrders > 0 && (
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ 
+            position: 'relative', 
+            maxWidth: '600px', 
+            margin: '0 auto'
+          }}>
+            <input
+              type="text"
+              placeholder="Buscar por ID, nombre, dirección o producto..."
+              className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '1rem 3rem 1rem 1rem',
+                border: '2px solid #e1e1e1',
+                borderRadius: '25px',
+                fontSize: '0.95rem',
+                outline: 'none'
+              }}
+            />
+            {searchTerm && (
+              <button 
+                onClick={handleClearSearch}
+                title="Limpiar búsqueda"
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: '#dc3545',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '30px',
+                  height: '30px',
+                  cursor: 'pointer',
+                  color: 'white',
+                  fontSize: '1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                ✕
+              </button>
+            )}
+            <div style={{
+              position: 'absolute',
+              right: searchTerm ? '50px' : '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              fontSize: '1.2rem',
+              pointerEvents: 'none'
+            }}>
+              🔍
+            </div>
+          </div>
+          {searchTerm && (
+            <p style={{ 
+              textAlign: 'center', 
+              marginTop: '0.75rem',
+              color: '#666',
+              fontSize: '0.9rem'
+            }}>
+              Mostrando {filteredOrders.length} de {userOrders.length} pedidos
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Lista de órdenes */}
       <div className="orders-container">
         {filteredOrders.length === 0 ? (
           <div className="no-orders">
@@ -139,32 +386,43 @@ const OrderHistory = () => {
             <p>
               {searchTerm 
                 ? `No hay pedidos que coincidan con "${searchTerm}"`
-                : filter === 'all' 
+                : totalOrders === 0
                   ? 'No tienes pedidos registrados aún'
-                  : `No hay pedidos con estado "${filter}"`
+                  : 'No se encontraron pedidos'
               }
             </p>
+            {searchTerm && (
+              <button 
+                onClick={handleClearSearch} 
+                style={{
+                  marginTop: '1rem',
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: '#667eea',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '25px',
+                  cursor: 'pointer',
+                  fontWeight: '600'
+                }}
+              >
+                Limpiar búsqueda
+              </button>
+            )}
           </div>
         ) : (
-          filteredOrders.map(order => (
-            <OrderCard key={order.id} order={order} />
-          ))
+          <>
+            {/* Renderizar las cards */}
+            {filteredOrders.map(order => (
+              <OrderCard 
+                key={order._id} 
+                order={order}
+                onClick={() => handleCardClick(order._id)}
+                isExpanded={expandedOrderId === order._id}
+              />
+            ))}
+          </>
         )}
       </div>
-
-      {filteredOrders.length > 0 && (
-        <div className="pagination">
-          <button className="pagination-btn" disabled>
-            ← Anterior
-          </button>
-          <span className="pagination-info">
-            Mostrando {filteredOrders.length} de {orders.length} pedidos
-          </span>
-          <button className="pagination-btn" disabled>
-            Siguiente →
-          </button>
-        </div>
-      )}
     </main>
   );
 };

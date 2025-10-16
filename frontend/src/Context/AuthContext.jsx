@@ -116,23 +116,23 @@ export const AuthProvider = ({ children }) => {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-    .then((data) => {
-    if (data?.user) {
-      console.log("Usuario autentificado:", data.user);
-      setUser(data.user);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      .then((data) => {
+        if (data?.user) {
+          console.log("Usuario autentificado:", data.user);
+          setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-      // limpiar verificationInfo si había
-      if (storedVerificationInfo) {
-        clearVerificationInfo();
-      }
-    } else {
-      throw new Error("No autenticado (sin user en la respuesta)");
-    }
-  })
-  .catch((err) => {
-    console.error("Usuario no autentificado:", err);
-  })
+          // limpiar verificationInfo si había
+          if (storedVerificationInfo) {
+            clearVerificationInfo();
+          }
+        } else {
+          throw new Error("No autenticado (sin user en la respuesta)");
+        }
+      })
+      .catch((err) => {
+        console.error("Usuario no autentificado:", err);
+      })
       .finally(() => {
         setLoadingUser(false);
       });
@@ -184,6 +184,67 @@ export const AuthProvider = ({ children }) => {
       });
   }, []);
 
+
+
+ const updateProfile = async (userId, userType, updatedData) => {
+    try {
+      // Filtrar datos vacíos
+      const dataToSend = {};
+      Object.keys(updatedData).forEach((key) => {
+        if (
+          updatedData[key] !== "" &&
+          updatedData[key] !== null &&
+          updatedData[key] !== undefined
+        ) {
+          dataToSend[key] = updatedData[key];
+        }
+      });
+
+      // Determinar el endpoint según el tipo de usuario
+      let endpoint = "";
+      if (userType === "client") {
+        endpoint = `clients/${userId}`;
+      } else if (userType === "vet") {
+        endpoint = `vets/${userId}`;
+      } else if (userType === "employee") {
+        endpoint = `employees/${userId}`;
+      } else {
+        throw new Error("Tipo de usuario inválido");
+      }
+
+      const data = await API_FETCH_JSON(endpoint, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: dataToSend,
+      });
+
+      if (data) {
+        //  Actualizar el estado del usuario en el contexto
+        setUser(prevUser => ({
+          ...prevUser,
+          ...dataToSend
+        }));
+        
+        // Actualizar localStorage
+        const updatedUserData = { ...user, ...dataToSend };
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+        
+        toast.success("Perfil actualizado correctamente");
+        return { success: true, data };
+      } else {
+        toast.error("No se pudo actualizar el perfil");
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error al actualizar el perfil:", error);
+      toast.error(error.message || "Error al actualizar el perfil");
+      return { success: false, error: error.message };
+    }
+  };
+
+
+
   // Muestrar los cambios en verificationInfo
   useEffect(() => {}, [verificationInfo]);
 
@@ -213,6 +274,7 @@ export const AuthProvider = ({ children }) => {
         setVerificationInfo,
         updateVerificationInfo,
         clearVerificationInfo,
+        updateProfile
       }}
     >
       {children}

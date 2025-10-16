@@ -5,7 +5,7 @@ import ListOrders from "../../../components/Private/MainPage/ListOrderMainPage.j
 import BannerMainPage from '../../../img/BannerPrivate/MainPageBanner.png';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
 import LineaDivisora from '../../../components/LineaDivisora.jsx';
-//import axios from "axios";
+import axios from "axios";
 
 const OrdersPage = () => {
   const [carts, setCarts] = useState([]);
@@ -14,7 +14,7 @@ const OrdersPage = () => {
   useEffect(() => {
     const fetchCarts = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/cart"); 
+        const res = await axios.get("https://bandoggie-production.up.railway.app/api/cart"); 
         setCarts(res.data);
       } catch (err) {
         console.error("Error al traer los carts:", err);

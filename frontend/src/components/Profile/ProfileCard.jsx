@@ -1,113 +1,309 @@
-import { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
-import { API_FETCH_JSON } from '../../config.js';
-import './ProfileCard.css';
+import React from "react";
+import { Edit2, Save, X, User } from "lucide-react";
+import "./ProfileCard.css";
+import InputDataPicker from "../InputDataPicker/InputDataPicker";
+import Input from "../Input/Input";
 
-// Hook para obtener y manejar los datos del usuario autenticado
-const useFetchUser = () => {
-    const [userInfo, setUserInfo] = useState({
-        name: '',
-        email: '',
-        birthDate: '',
-        phone: '',
-        password: '',
-        userType: null
-    });
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+const ProfileCard = ({
+  userInfo,
+  isEditing,
+  onInputChange,
+  onEditToggle,
+  onUpdateProfile,
+  isLoading,
+  isAuthenticated,
+}) => {
+  const handleSave = async () => {
+    const success = await onUpdateProfile(userInfo);
+    if (success) {
+      onEditToggle();
+    }
+  };
 
-    // Función para obtener los datos del usuario autenticado
-    const fetchUserData = async () => {
-        try {
-            setIsLoading(true);
-            // Endpoint corregido según tu estructura de rutas
-            const data = await API_FETCH_JSON('login/auth/me', {
-                method: 'GET',
-                headers: { "Content-Type": "application/json" },
-                credentials: 'include' // Importante para enviar las cookies
-            });
+  const handleInputChange = (field, value) => {
+    onInputChange(field, value);
+  };
 
-            console.log('User data received:', data); // Para debugging
+  const handleDateChange = (field, date) => {
+    if (date instanceof Date && !isNaN(date)) {
+      const isoDate = date.toISOString().split("T")[0];
+      onInputChange(field, isoDate);
+    }
+  };
 
-            if (data.user) {
-                setUserInfo(prevState => ({
-                    ...prevState,
-                    name: data.user.name || '',
-                    email: data.user.email || '',
-                    userType: data.user.userType || null,
-                    // Mantener campos adicionales si existen
-                    birthDate: data.user.birthDate || prevState.birthDate,
-                    phone: data.user.phone || prevState.phone
-                }));
-                setIsAuthenticated(true);
-            } else {
-                // Si no hay datos de usuario, no está autenticado
-                setIsAuthenticated(false);
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            setIsAuthenticated(false);
-            
-            // Solo mostrar error si no es un problema de autenticación
-            if (error.message && !error.message.includes('401') && !error.message.includes('No autenticado')) {
-                toast.error('Error al cargar datos del usuario');
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const getNameField = () => {
+    switch (userInfo.userType) {
+      case "employee":
+        return "nameEmployees";
+      case "vet":
+        return "nameVet";
+      case "client":
+      default:
+        return "name";
+    }
+  };
 
-    // Función para actualizar datos del usuario
-    const updateUserData = async (updatedData) => {
-        try {
-            const endpoint = `users/${userInfo.userType}/${userInfo.id}`; // Ajustar según tu API
-            const data = await API_FETCH_JSON(endpoint, {
-                method: 'PUT',
-                headers: { "Content-Type": "application/json" },
-                body: updatedData
-            });
+  const getPhoneField = () => {
+    return userInfo.userType === "employee" ? "phoneEmployees" : "phone";
+  };
 
-            if (data.success) {
-                setUserInfo(prevState => ({
-                    ...prevState,
-                    ...updatedData
-                }));
-                toast.success('Datos actualizados correctamente');
-                return true;
-            }
-        } catch (error) {
-            console.error('Error updating user data:', error);
-            toast.error('Error al actualizar los datos');
-            return false;
-        }
-    };
+  const getNameValue = () => {
+    switch (userInfo.userType) {
+      case "employee":
+        return userInfo.nameEmployees || userInfo.name || "";
+      case "vet":
+        return userInfo.nameVet || userInfo.name || "";
+      case "client":
+      default:
+        return userInfo.name || "";
+    }
+  };
 
-    // Función para manejar cambios en los campos del formulario
-    const handleInputChange = (field, value) => {
-        setUserInfo(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
+  const getPhoneValue = () => {
+    return userInfo.userType === "employee"
+      ? userInfo.phoneEmployees || ""
+      : userInfo.phone || "";
+  };
 
-    // Cargar datos del usuario al montar el componente
-    useEffect(() => {
-        fetchUserData();
-    }, []);
+  if (!isAuthenticated || !userInfo) {
+    return (
+      <div className="profile-card">
+        <p>No autenticado</p>
+      </div>
+    );
+  }
 
-    // Función para refrescar los datos (útil después del login)
-    const refreshUserData = () => {
-        fetchUserData();
-    };
+  return (
+    <div className="profile-card">
+      <div className="profile-header">
+        <div className="profile-image-container">
+          {userInfo.image ? (
+            <img
+              src={userInfo.image}
+              alt={getNameValue() || "Usuario"}
+              className="profile-image"
+            />
+          ) : (
+            <div className="profile-image-placeholder">
+              <User size={40} />
+            </div>
+          )}
+        </div>
 
-    return {
-        userInfo,
-        isLoading,
-        isAuthenticated,
-        handleInputChange,
-        updateUserData,
-        refreshUserData
-    };
+        <div className="profile-actions">
+          {!isEditing ? (
+            <button onClick={onEditToggle} className="btn-edit">
+              <Edit2 size={16} />
+              Editar
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={handleSave}
+                className="btn-save"
+                disabled={isLoading}
+              >
+                <Save size={16} />
+                {isLoading ? "Guardando..." : "Guardar"}
+              </button>
+              <button onClick={onEditToggle} className="btn-cancel">
+                <X size={16} />
+                Cancelar
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="profile-info">
+        <div className="info-field">
+          <label>Nombre</label>
+          {isEditing ? (
+            <Input
+              type="text"
+              id="name"
+              placeholder="Ingresa tu nombre"
+              value={getNameValue()}
+              onChange={(e) =>
+                handleInputChange(getNameField(), e.target.value)
+              }
+            />
+          ) : (
+            <p>{getNameValue() || "No especificado"}</p>
+          )}
+        </div>
+
+        <div className="info-field">
+          <label>Email</label>
+          {isEditing ? (
+            <Input
+              type="email"
+              id="email"
+              placeholder="correo@ejemplo.com"
+              value={userInfo.email || ""}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+            />
+          ) : (
+            <p>{userInfo.email || "No especificado"}</p>
+          )}
+        </div>
+
+        {(userInfo.userType === "employee" ||
+          userInfo.userType === "client") && (
+          <div className="info-field">
+            <label>Teléfono</label>
+            {isEditing ? (
+              <Input
+                type="tel"
+                id="phone"
+                placeholder="1234-5678"
+                value={getPhoneValue()}
+                onChange={(e) =>
+                  handleInputChange(getPhoneField(), e.target.value)
+                }
+              />
+            ) : (
+              <p>{getPhoneValue() || "No especificado"}</p>
+            )}
+          </div>
+        )}
+
+        {userInfo.userType === "client" && (
+          <div className="info-field">
+            <label>Fecha de Nacimiento</label>
+            {isEditing ? (
+              <InputDataPicker
+                label="Selecciona tu fecha de nacimiento"
+                value={userInfo.birthday || ""}
+                onChange={(date) => handleDateChange("birthday", date)}
+                name="birthday"
+              />
+            ) : (
+              <p>
+                {userInfo.birthday
+                  ? new Date(userInfo.birthday).toLocaleDateString("es-ES")
+                  : "No especificado"}
+              </p>
+            )}
+          </div>
+        )}
+
+        {userInfo.userType === "employee" && (
+          <>
+            <div className="info-field">
+              <label>Fecha de Nacimiento</label>
+              {isEditing ? (
+                <InputDataPicker
+                  label="Selecciona tu fecha de nacimiento"
+                  value={userInfo.dateOfBirth || ""}
+                  onChange={(date) => handleDateChange("dateOfBirth", date)}
+                  name="dateOfBirth"
+                />
+              ) : (
+                <p>
+                  {userInfo.dateOfBirth
+                    ? new Date(userInfo.dateOfBirth).toLocaleDateString("es-ES")
+                    : "No especificado"}
+                </p>
+              )}
+            </div>
+
+            <div className="info-field">
+              <label>Dirección</label>
+              {isEditing ? (
+                <Input
+                  type="text"
+                  id="addressEmployees"
+                  placeholder="Ingresa tu dirección"
+                  value={userInfo.addressEmployees || ""}
+                  onChange={(e) =>
+                    handleInputChange("addressEmployees", e.target.value)
+                  }
+                />
+              ) : (
+                <p>{userInfo.addressEmployees || "No especificado"}</p>
+              )}
+            </div>
+
+            <div className="info-field">
+              <label>Fecha de Contratación</label>
+              <p>
+                {userInfo.hireDateEmployee
+                  ? new Date(userInfo.hireDateEmployee).toLocaleDateString(
+                      "es-ES"
+                    )
+                  : "No especificado"}
+              </p>
+            </div>
+
+            <div className="info-field">
+              <label>DUI</label>
+              {isEditing ? (
+                <Input
+                  type="text"
+                  id="duiEmployees"
+                  placeholder="12345678-9"
+                  value={userInfo.duiEmployees || ""}
+                  onChange={(e) =>
+                    handleInputChange("duiEmployees", e.target.value)
+                  }
+                />
+              ) : (
+                <p>{userInfo.duiEmployees || "No especificado"}</p>
+              )}
+            </div>
+          </>
+        )}
+
+        {userInfo.userType === "vet" && (
+          <>
+            <div className="info-field">
+              <label>Ubicación de Consultorio</label>
+              {isEditing ? (
+                <Input
+                  type="text"
+                  id="locationVet"
+                  placeholder="Ubicación del consultorio"
+                  value={userInfo.locationVet || ""}
+                  onChange={(e) =>
+                    handleInputChange("locationVet", e.target.value)
+                  }
+                />
+              ) : (
+                <p>{userInfo.locationVet || "No especificado"}</p>
+              )}
+            </div>
+
+            <div className="info-field">
+              <label>NIT</label>
+              {isEditing ? (
+                <Input
+                  type="text"
+                  id="nitVet"
+                  placeholder="1234-567890-123-4"
+                  value={userInfo.nitVet || ""}
+                  onChange={(e) => handleInputChange("nitVet", e.target.value)}
+                />
+              ) : (
+                <p>{userInfo.nitVet || "No especificado"}</p>
+              )}
+            </div>
+          </>
+        )}
+
+        <div className="info-field">
+          <label>Tipo de Usuario</label>
+          <div className="user-type-badge-container">
+            <span className={`user-type-badge ${userInfo.userType}`}>
+              {userInfo.userType === "client" && "👤 Cliente"}
+              {userInfo.userType === "employee" && "👔 Empleado"}
+              {userInfo.userType === "vet" && "🩺 Veterinario"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default useFetchUser;
+export default ProfileCard;

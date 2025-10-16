@@ -1,7 +1,7 @@
 /* Grid contenedor - Responsive optimizado */
-.product-grid {
+.public-product-grid-container {
   display: grid !important; 
-  grid-template-columns: repeat(2, 1fr) !important; /* 2 columnas por defecto (móvil) */
+  grid-template-columns: repeat(2, 1fr) !important;
   gap: 12px !important;
   padding: 12px !important;
   max-width: 1280px !important;
@@ -10,7 +10,7 @@
 
 /* Móviles pequeños (hasta 374px) */
 @media (max-width: 374px) {
-  .product-grid {
+  .public-product-grid-container {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
     padding: 8px !important;
@@ -19,7 +19,7 @@
 
 /* Móviles (375px - 480px) */
 @media (min-width: 375px) and (max-width: 480px) {
-  .product-grid {
+  .public-product-grid-container {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
     padding: 12px !important;
@@ -28,7 +28,7 @@
 
 /* Móviles grandes y tablets pequeños (481px - 640px) */
 @media (min-width: 481px) and (max-width: 640px) {
-  .product-grid {
+  .public-product-grid-container {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 16px !important;
     padding: 16px !important;
@@ -37,7 +37,7 @@
 
 /* Tablets (641px - 768px) */
 @media (min-width: 641px) and (max-width: 768px) {
-  .product-grid {
+  .public-product-grid-container {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 18px !important;
     padding: 18px !important;
@@ -46,7 +46,7 @@
 
 /* Tablets grandes (769px - 1023px) */
 @media (min-width: 769px) and (max-width: 1023px) {
-  .product-grid {
+  .public-product-grid-container {
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 20px !important;
     padding: 20px !important;
@@ -55,7 +55,7 @@
 
 /* Desktop (1024px - 1279px) */
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .product-grid {
+  .public-product-grid-container {
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 22px !important;
     padding: 22px !important;
@@ -64,17 +64,15 @@
 
 /* Desktop grande (1280px+) */
 @media (min-width: 1280px) {
-  .product-grid {
+  .public-product-grid-container {
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 24px !important;
     padding: 24px !important;
   }
 }
 
-/*coso*/
-
 /* Tarjeta de producto */
-.product-card {
+.public-product-card-wrapper {
   border: 1px solid #e5e7eb !important;
   border-radius: 12px !important;
   background: white !important;
@@ -90,16 +88,16 @@
 }
 
 /* Forzar fondo blanco en todos los elementos hijos */
-.product-card,
-.product-card *:not(.product-image img),
-.product-card::before,
-.product-card::after {
+.public-product-card-wrapper,
+.public-product-card-wrapper *:not(.public-product-image-container img),
+.public-product-card-wrapper::before,
+.public-product-card-wrapper::after {
   background: white !important;
   background-color: white !important;
   background-image: none !important;
 }
 
-.product-card:hover {
+.public-product-card-wrapper:hover {
   transform: translateY(-2px) !important;
   border-color: #d1d5db !important;
   background: white !important;
@@ -107,7 +105,7 @@
   background-image: none !important;
 }
 
-.product-image {
+.public-product-image-container {
   width: 100% !important;
   display: flex !important;
   justify-content: center !important;
@@ -122,7 +120,7 @@
   min-height: 100px !important;
 }
 
-.product-image img {
+.public-product-image-container img {
   width: 100% !important;
   max-width: 80px !important;
   height: 80px !important;
@@ -133,17 +131,17 @@
 
 /* Responsive para móviles pequeños */
 @media (max-width: 374px) {
-  .product-card {
+  .public-product-card-wrapper {
     padding: 8px !important;
   }
   
-  .product-image {
+  .public-product-image-container {
     padding: 6px !important;
     min-height: 80px !important;
     margin-bottom: 8px !important;
   }
 
-  .product-image img {
+  .public-product-image-container img {
     max-width: 60px !important;
     height: 60px !important;
   }
@@ -151,17 +149,17 @@
 
 /* Responsive para móviles */
 @media (min-width: 375px) and (max-width: 480px) {
-  .product-card {
+  .public-product-card-wrapper {
     padding: 10px !important;
   }
 
-  .product-image {
+  .public-product-image-container {
     padding: 8px !important;
     min-height: 90px !important;
     margin-bottom: 10px !important;
   }
 
-  .product-image img {
+  .public-product-image-container img {
     max-width: 70px !important;
     height: 70px !important;
   }
@@ -169,16 +167,16 @@
 
 /* Responsive para móviles grandes y tablets pequeños */
 @media (min-width: 481px) and (max-width: 640px) {
-  .product-card {
+  .public-product-card-wrapper {
     padding: 12px !important;
   }
 
-  .product-image {
+  .public-product-image-container {
     padding: 8px !important;
     min-height: 100px !important;
   }
 
-  .product-image img {
+  .public-product-image-container img {
     max-width: 80px !important;
     height: 80px !important;
   }
@@ -186,16 +184,16 @@
 
 /* Responsive para tablets */
 @media (min-width: 641px) and (max-width: 768px) {
-  .product-card {
+  .public-product-card-wrapper {
     padding: 14px !important;
   }
 
-  .product-image {
+  .public-product-image-container {
     padding: 10px !important;
     min-height: 120px !important;
   }
 
-  .product-image img {
+  .public-product-image-container img {
     max-width: 90px !important;
     height: 90px !important;
   }
@@ -203,16 +201,16 @@
 
 /* Responsive para tablets grandes */
 @media (min-width: 769px) and (max-width: 1023px) {
-  .product-card {
+  .public-product-card-wrapper {
     padding: 16px !important;
   }
 
-  .product-image {
+  .public-product-image-container {
     padding: 10px !important;
     min-height: 140px !important;
   }
 
-  .product-image img {
+  .public-product-image-container img {
     max-width: 110px !important;
     height: 110px !important;
   }
@@ -220,16 +218,16 @@
 
 /* Desktop */
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .product-card {
+  .public-product-card-wrapper {
     padding: 16px !important;
   }
 
-  .product-image {
+  .public-product-image-container {
     padding: 12px !important;
     min-height: 160px !important;
   }
 
-  .product-image img {
+  .public-product-image-container img {
     max-width: 120px !important;
     height: 120px !important;
   }
@@ -237,29 +235,29 @@
 
 /* Desktop grande */
 @media (min-width: 1280px) {
-  .product-card {
+  .public-product-card-wrapper {
     padding: 18px !important;
   }
 
-  .product-image {
+  .public-product-image-container {
     padding: 12px !important;
     min-height: 180px !important;
   }
   
-  .product-image img {
+  .public-product-image-container img {
     max-width: 140px !important;
     height: 140px !important;
   }
 }
 
-.product-info {
+.public-product-info-wrapper {
   padding: 0 !important;
   text-align: left !important;
   display: flex !important;
   flex-direction: column !important;
 }
 
-.product-name {
+.public-product-name-text {
   font-size: 0.75rem !important;
   font-weight: 500 !important;
   color: #374151 !important;
@@ -272,7 +270,7 @@
   order: 1 !important;
 }
 
-.product-price {
+.public-product-price-text {
   font-size: 0.85rem !important;
   font-weight: 700 !important;
   color: #111827 !important;
@@ -281,72 +279,72 @@
 
 /* Responsive para textos en móviles pequeños */
 @media (max-width: 374px) {
-  .product-name {
+  .public-product-name-text {
     font-size: 0.7rem !important;
     margin-bottom: 4px !important;
     -webkit-line-clamp: 1 !important;
   }
 
-  .product-price {
+  .public-product-price-text {
     font-size: 0.8rem !important;
   }
 }
 
 /* Responsive para móviles */
 @media (min-width: 375px) and (max-width: 480px) {
-  .product-name {
+  .public-product-name-text {
     font-size: 0.75rem !important;
     margin-bottom: 5px !important;
   }
 
-  .product-price {
+  .public-product-price-text {
     font-size: 0.85rem !important;
   }
 }
 
 /* Responsive para tablets pequeños */
 @media (min-width: 481px) and (max-width: 640px) {
-  .product-name {
+  .public-product-name-text {
     font-size: 0.8rem !important;
     margin-bottom: 6px !important;
   }
 
-  .product-price {
+  .public-product-price-text {
     font-size: 0.9rem !important;
   }
 }
 
 /* Responsive para tablets */
 @media (min-width: 641px) and (max-width: 768px) {
-  .product-name {
+  .public-product-name-text {
     font-size: 0.85rem !important;
     margin-bottom: 8px !important;
   }
 
-  .product-price {
+  .public-product-price-text {
     font-size: 0.95rem !important;
   }
 }
 
 /* Responsive para tablets grandes y desktop */
 @media (min-width: 769px) {
-  .product-name {
+  .public-product-name-text {
     font-size: 0.9rem !important;
     margin-bottom: 8px !important;
   }
 
-  .product-price {
+  .public-product-price-text {
     font-size: 1rem !important;
   }
 }
 
 /* Desktop grande - textos un poco más grandes */
 @media (min-width: 1280px) {
-  .product-name {
+  .public-product-name-text {
     font-size: 0.95rem !important;
   }
 
-  .product-price {
+  .public-product-price-text {
     font-size: 1.1rem !important;
   }
 }

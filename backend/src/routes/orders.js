@@ -3,6 +3,9 @@ import ordersController from '../controllers/ordersControllers.js';
 
 const router = Router();
 
+// 🆕 RUTA PARA ÓRDENES DE INVITADOS (DEBE IR ANTES DE LAS RUTAS CON PARÁMETROS)
+router.post('/guest', ordersController.createGuestOrder);  // POST /api/orders/guest - Crear orden de invitado
+
 // Estadísticas y filtros (IMPORTANTE: estas rutas deben ir ANTES de las rutas con parámetros)
 router.get('/stats', ordersController.getOrdersStats);                         // GET /api/Orders/stats
 router.get('/payment/:paymentMethod', ordersController.getOrdersByPaymentMethod); // GET /api/Orders/payment/:paymentMethod

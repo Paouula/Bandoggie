@@ -13,12 +13,9 @@ import loginRoutes from './src/routes/login.js';
 import checkVerificationRoutes from './src/routes/checkVerification.js';
 import logoutRoutes from './src/routes/logout.js';
 import passwordRecoveryRoutes from './src/routes/passwordRecovery.js';
-
 import cartRoutes from './src/routes/carts.js';
 import resendVerifyCode from './src/routes/resendVerifyCode.js'
-
 import emailRoutes from './src/routes/email.js';
-
 
 // Rutas de CRUDs
 import holidayRoutes from './src/routes/holidays.js';
@@ -35,9 +32,12 @@ import ordersRoutes from "./src/routes/orders.js";
 import guestWholesalers from './src/routes/wholesalersPurchase.js';
 import guestClients from './src/routes/retailsPurchase.js';
 
+//Rutas de gestión de pedidos
+import internalOrderRoutes from './src/routes/orderManagementRoutes.js';
+
 const corsOptions = {
     origin: 'http://localhost:5173',
-    credentials: true,  
+    credentials: true,
 };
 
 const app = express();
@@ -52,15 +52,12 @@ app.use('/api/logout', logoutRoutes);
 app.use('/api/passwordRecovery', passwordRecoveryRoutes);
 app.use('/api/registerVet', registerVetRoutes);
 app.use('/api/auth/pending-verification', checkVerificationRoutes);
-
 app.use('/api/resend-code', resendVerifyCode);
-
 app.use('/api/email', emailRoutes);
 
-
-// Rutas de CRUDs y Graficas
+// Rutas de CRUDs y Gráficas
 app.use('/api/clients', clientsRoutes);
-app.use('/api/vets', vetsRoutes)
+app.use('/api/vets', vetsRoutes);
 app.use('/api/employees', employeesRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/holiday', holidayRoutes);
@@ -73,17 +70,16 @@ app.use('/api/categories', categoriesRoutes);
 app.use('/api/guestWholesalers', guestWholesalers);
 app.use('/api/guestClients', guestClients);
 
-// Rutas Gráficas
-//app.use('/api/sales', salesRoutes);
+// Carrito
+app.use('/api/cart', cartRoutes);
 
-//documrentación swagger
+// 🆕 Ruta para gestión de órdenes internas
+app.use('/api/internal-orders', internalOrderRoutes);
+
+// Documentación Swagger
 const swaggerDocument = JSON.parse(
     fs.readFileSync(path.resolve("./ricaldone-81c-Bandoggie-1.0.0-resolved.json"), "utf8")
 );
-
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// Carrito
-app.use('/api/cart', cartRoutes);
 
 export default app;
