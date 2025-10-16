@@ -15,21 +15,28 @@ import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 
 const UserProfile = () => {
-  const { user, logout, updateProfile } = useAuth(); // ✅ Obtener updateProfile del contexto
+  const { user, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
+  
+  // Estado para los detalles del usuario mostrados en el formulario
   const [userDetails, setUserDetails] = useState(null);
+  
+  // Estado para guardar una copia original de los datos
+  // Esto nos permite comparar qué campos cambiaron y restaurar al cancelar
+  const [originalUserDetails, setOriginalUserDetails] = useState(null);
+  
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
   const currentRole = user?.userType || userDetails?.userType || 'client';
 
   const handleMenuClick = (menuId) => {
-    console.log('📘 Menu clicked:', menuId);
+    console.log('Menu clicked:', menuId);
     
     switch(menuId) {
       case 1:
         if (currentRole === 'client') {
-          console.log('📦 Navegando a OrderHistory...');
+          console.log(' Navegando a OrderHistory...');
           navigate('/orderHistory');
         }
         else if (currentRole === 'employee') {
@@ -115,7 +122,7 @@ const UserProfile = () => {
     ],
   };
 
-  // Obtener detalles completos del usuario
+  // Obtiene los detalles completos del usuario desde el backend
   const fetchUserDetails = async () => {
     try {
       setIsLoading(true);
@@ -127,7 +134,12 @@ const UserProfile = () => {
 
       if (data?.user) {
         console.log(' Detalles del usuario obtenidos:', data.user);
+        
+        // Guardamos los datos en ambos estados
         setUserDetails(data.user);
+        
+        //  Guardamos una copia original para poder compararla después
+        setOriginalUserDetails(data.user);
       }
     } catch (error) {
       console.error(' Error al obtener detalles del usuario:', error);
@@ -137,7 +149,7 @@ const UserProfile = () => {
     }
   };
 
-  //  Manejar cambios en los inputs
+  // Maneja los cambios en tiempo real de los campos del formulario
   const handleInputChange = (field, value) => {
     setUserDetails((prev) => ({
       ...prev,
@@ -145,23 +157,69 @@ const UserProfile = () => {
     }));
   };
 
-  const handleEditToggle = () => setIsEditing(!isEditing);
+  // Maneja el toggle del modo edición
+  const handleEditToggle = () => {
+    // Si está cancelando la edición, restaura los datos originales
+    if (isEditing) {
+      setUserDetails(originalUserDetails);
+    }
+    setIsEditing(!isEditing);
+  };
 
-  //  Usar updateProfile del contexto
+  // Función que compara el estado actual con el original
+  // y retorna SOLO los campos que cambiaron
+  const getChangedFields = (current, original) => {
+    const changes = {};
+    
+    // Recorre todos los campos del objeto actual
+    Object.keys(current).forEach(key => {
+      const currentValue = current[key];
+      const originalValue = original[key];
+      
+      // Solo incluye el campo si:
+      // 1. El valor cambió (currentValue !== originalValue)
+      // 2. El valor tiene contenido (no es undefined, null o string vacío)
+      if (currentValue !== originalValue && 
+          currentValue !== undefined && 
+          currentValue !== null && 
+          currentValue !== '') {
+        changes[key] = currentValue;
+      }
+    });
+    
+    return changes;
+  };
+
+  //  Función mejorada para actualizar el perfil
+  // Ahora solo envía los campos que realmente cambiaron
   const handleUpdateProfile = async (updatedUserInfo) => {
     try {
       setIsLoading(true);
       
-      // Llamar a updateProfile del contexto
+      // Obtiene SOLO los campos que cambiaron
+      const changedFields = getChangedFields(updatedUserInfo, originalUserDetails);
+
+      // Si no hay cambios, no hace la petición
+      if (Object.keys(changedFields).length === 0) {
+        toast.info("No hay cambios para guardar");
+        return false;
+      }
+
+      // Log para debugging - puedes ver qué campos se están enviando
+      console.log(' Campos que cambiaron:', changedFields);
+
+      // Llama a la función updateProfile del contexto
+      // pero ahora solo con los campos modificados
       const result = await updateProfile(
         userDetails._id,
         currentRole,
-        updatedUserInfo
+        changedFields  //  Solo envía lo que cambió
       );
 
       if (result.success) {
-        // Recargar los detalles del usuario
+        // Recarga los datos del usuario para tener la versión actualizada
         await fetchUserDetails();
+        // Sale del modo edición
         setIsEditing(false);
         return true;
       }
@@ -179,6 +237,7 @@ const UserProfile = () => {
     navigate(-1);
   };
 
+  // Carga los detalles del usuario cuando el componente monta
   useEffect(() => {
     if (user) {
       fetchUserDetails();
@@ -196,65 +255,66 @@ const UserProfile = () => {
     return roleMessages[currentRole] || `¡Hola${name ? `, ${name}` : ""}!`;
   };
 
+  // Pantalla de no autenticado
   if (!user) {
-  return (
-    <div className="user-profile">
-      <div className="auth-placeholder">
-        <h2>Por favor, inicia sesión para ver tu perfil</h2>
-        <button
-          onClick={() => window.location.href = '/mainPage'}
-          className="retry-button"
-        >
-          Ir al Inicio
-        </button>
+    return (
+      <div className="user-profile">
+        <div className="auth-placeholder">
+          <h2>Por favor, inicia sesión para ver tu perfil</h2>
+          <button
+            onClick={() => window.location.href = '/mainPage'}
+            className="retry-button"
+          >
+            Ir al Inicio
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-if (isLoading && !userDetails) {
-  return (
-    <div className="user-profile">
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Cargando perfil...</p>
+  // Pantalla de carga inicial
+  if (isLoading && !userDetails) {
+    return (
+      <div className="user-profile">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando perfil...</p>
+        </div>
       </div>
-    </div>
-  );
-}
-
+    );
+  }
 
   return (
     <div className="user-profile">
-      {/* Botón de regreso */}
+      {/* Botón para regresar */}
       <button onClick={handleGoBack} className="back-button">
         <ArrowLeft className="back-icon" size={20} />
         <span>Regresar</span>
       </button>
 
-      {/* Mensaje de bienvenida */}
+      {/* Mensaje de bienvenida personalizado */}
       <div className="welcome-section">
         <h1 className="welcome-message">{getWelcomeMessage()}</h1>
       </div>
 
-      {/* Layout horizontal: Perfil a la izquierda, contenido a la derecha */}
+      {/* Layout principal con dos columnas */}
       <div className="profile-and-content-wrapper">
-        {/* Tarjeta de perfil - Columna Izquierda */}
+        {/* Columna izquierda: Tarjeta de perfil */}
         <div className="profile-container">
           <ProfileCard
             userInfo={userDetails || user}
             isEditing={isEditing}
             onInputChange={handleInputChange}
             onEditToggle={handleEditToggle}
-            onUpdateProfile={handleUpdateProfile}
+            onUpdateProfile={handleUpdateProfile}  // 🆕 Ahora solo envía cambios
             isLoading={isLoading}
             isAuthenticated={!!user}
           />
         </div>
 
-        {/* Contenido principal - Columna Derecha */}
+        {/* Columna derecha: Menú y opciones */}
         <div className="content-wrapper">
-          {/* Menú de opciones según el rol */}
+          {/* Menú de opciones según el tipo de usuario */}
           <div className="menu-section">
             <h2 className="menu-title">Opciones</h2>
             <div className="menu-list">

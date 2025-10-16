@@ -27,7 +27,6 @@ vetsControllers.put = async (req, res) => {
   const { id } = req.params;
   const { nameVet, email, password, locationVet, nitVet } = req.body;
 
-  // Validar ID
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "ID inválido" });
   }
@@ -38,7 +37,6 @@ vetsControllers.put = async (req, res) => {
       return res.status(404).json({ message: "Veterinario no encontrado" });
     }
 
-    // Preparar datos para actualizar
     const updateData = {};
 
     if (nameVet !== undefined) updateData.nameVet = nameVet;
@@ -46,7 +44,6 @@ vetsControllers.put = async (req, res) => {
     if (locationVet !== undefined) updateData.locationVet = locationVet;
     if (nitVet !== undefined) updateData.nitVet = nitVet;
 
-    // Si hay nueva imagen, súbela a Cloudinary
     if (req.file) {
       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "vets",
@@ -55,16 +52,14 @@ vetsControllers.put = async (req, res) => {
       updateData.image = uploadResult.secure_url;
     }
 
-    // Si hay contraseña, hashéala
     if (password !== undefined) {
       updateData.password = await bcryptjs.hash(password, 10);
     }
 
-    // Actualizar veterinario
     const updatedVet = await VetModel.findByIdAndUpdate(
       id,
       updateData,
-      { new: true, runValidators: true }
+      { new: true, runValidators: false }
     );
 
     res.json({ message: "Veterinario actualizado con éxito", updatedVet });
