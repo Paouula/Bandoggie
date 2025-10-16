@@ -6,54 +6,49 @@ import {
   BarChart3,
   ChevronRight,
   ArrowLeft,
+  MessageCircle,
+  Settings,
+  Shield,
+  Stethoscope,
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
+import { toast, Toaster } from "react-hot-toast";
 import ProfileCard from "../../../components/Profile/ProfileCard";
 import { API_FETCH_JSON } from "../../../config";
-import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 
 const UserProfile = () => {
-  const { user, logout, updateProfile } = useAuth(); // ✅ Obtener updateProfile del contexto
+  const { user, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
+
   const [userDetails, setUserDetails] = useState(null);
+  const [originalUserDetails, setOriginalUserDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  const currentRole = user?.userType || userDetails?.userType || 'client';
+  const currentRole = user?.userType || userDetails?.userType || "client";
 
   const handleMenuClick = (menuId) => {
-    console.log('📘 Menu clicked:', menuId);
-    
-    switch(menuId) {
+    switch (menuId) {
       case 1:
-        if (currentRole === 'client') {
-          console.log('📦 Navegando a OrderHistory...');
-          navigate('/orderHistory');
-        }
-        else if (currentRole === 'employee') {
-          toast.info('Gestión de Pedidos - Próximamente');
-        }
-        else if (currentRole === 'vet') {
-          toast.info('Consultas - Próximamente');
-        }
+        if (currentRole === "client") navigate("/orderHistory");
+        else if (currentRole === "employee")
+          toast.info("Gestión de Pedidos - Próximamente");
+        else if (currentRole === "vet")
+          toast.info("Consultas - Próximamente");
         break;
-        
       case 2:
-        toast.info('Mensajes - Próximamente');
+        toast.info("Mensajes - Próximamente");
         break;
-        
       case 3:
-        toast.info('Reseñas - Próximamente');
+        toast.info("Reseñas - Próximamente");
         break;
-        
       case 4:
-        toast.info('Configuración - Próximamente');
+        toast.info("Configuración - Próximamente");
         break;
-        
       default:
-        toast.info('Función próximamente disponible');
+        toast.info("Función próximamente disponible");
     }
   };
 
@@ -61,14 +56,21 @@ const UserProfile = () => {
     client: [
       {
         id: 1,
-        icon: <Package className="menu-icon icon-orders" />,
+        icon: <Package className="profile-menu-icon profile-icon-orders" />,
         text: "Tus pedidos",
         badge: null,
         hasArrow: true,
       },
       {
+        id: 2,
+        icon: <MessageCircle className="profile-menu-icon profile-icon-messages" />,
+        text: "Mensajes",
+        badge: 2,
+        hasArrow: true,
+      },
+      {
         id: 3,
-        icon: <Star className="menu-icon icon-reviews" />,
+        icon: <Star className="profile-menu-icon profile-icon-reviews" />,
         text: "Reseñas",
         badge: null,
         hasArrow: true,
@@ -77,22 +79,29 @@ const UserProfile = () => {
     employee: [
       {
         id: 1,
-        icon: <Package className="menu-icon icon-orders" />,
+        icon: <Package className="profile-menu-icon profile-icon-orders" />,
         text: "Gestión de Pedidos",
         badge: 8,
         hasArrow: true,
       },
       {
         id: 2,
-        icon: <Users className="menu-icon icon-clients" />,
+        icon: <Users className="profile-menu-icon profile-icon-clients" />,
         text: "Clientes",
         badge: null,
         hasArrow: true,
       },
       {
         id: 3,
-        icon: <BarChart3 className="menu-icon icon-analytics" />,
+        icon: <BarChart3 className="profile-menu-icon profile-icon-analytics" />,
         text: "Análisis",
+        badge: null,
+        hasArrow: true,
+      },
+      {
+        id: 4,
+        icon: <Settings className="profile-menu-icon profile-icon-settings" />,
+        text: "Configuración",
         badge: null,
         hasArrow: true,
       },
@@ -100,22 +109,35 @@ const UserProfile = () => {
     vet: [
       {
         id: 1,
-        icon: <Package className="menu-icon icon-orders" />,
-        text: "Tus pedidos",
-        badge: null,
+        icon: <Stethoscope className="profile-menu-icon profile-icon-consultations" />,
+        text: "Consultas",
+        badge: 5,
+        hasArrow: true,
+      },
+      {
+        id: 2,
+        icon: <MessageCircle className="profile-menu-icon profile-icon-messages" />,
+        text: "Mensajes",
+        badge: 3,
         hasArrow: true,
       },
       {
         id: 3,
-        icon: <Star className="menu-icon icon-reviews" />,
+        icon: <Star className="profile-menu-icon profile-icon-reviews" />,
         text: "Reseñas",
+        badge: null,
+        hasArrow: true,
+      },
+      {
+        id: 4,
+        icon: <Shield className="profile-menu-icon profile-icon-certifications" />,
+        text: "Certificaciones",
         badge: null,
         hasArrow: true,
       },
     ],
   };
 
-  // Obtener detalles completos del usuario
   const fetchUserDetails = async () => {
     try {
       setIsLoading(true);
@@ -126,18 +148,17 @@ const UserProfile = () => {
       });
 
       if (data?.user) {
-        console.log(' Detalles del usuario obtenidos:', data.user);
         setUserDetails(data.user);
+        setOriginalUserDetails(data.user);
       }
     } catch (error) {
-      console.error(' Error al obtener detalles del usuario:', error);
-      toast.error('Error al cargar los datos del perfil');
+      console.error("Error al obtener detalles del usuario:", error);
+      toast.error("Error al cargar los datos del perfil");
     } finally {
       setIsLoading(false);
     }
   };
 
-  //  Manejar cambios en los inputs
   const handleInputChange = (field, value) => {
     setUserDetails((prev) => ({
       ...prev,
@@ -145,27 +166,52 @@ const UserProfile = () => {
     }));
   };
 
-  const handleEditToggle = () => setIsEditing(!isEditing);
+  const handleEditToggle = () => {
+    if (isEditing) setUserDetails(originalUserDetails);
+    setIsEditing(!isEditing);
+  };
 
-  //  Usar updateProfile del contexto
+  const getChangedFields = (current, original) => {
+    const changes = {};
+    Object.keys(current).forEach((key) => {
+      const currentValue = current[key];
+      const originalValue = original[key];
+      if (
+        currentValue !== originalValue &&
+        currentValue !== undefined &&
+        currentValue !== null &&
+        currentValue !== ""
+      ) {
+        changes[key] = currentValue;
+      }
+    });
+    return changes;
+  };
+
   const handleUpdateProfile = async (updatedUserInfo) => {
     try {
       setIsLoading(true);
-      
-      // Llamar a updateProfile del contexto
+      const changedFields = getChangedFields(
+        updatedUserInfo,
+        originalUserDetails
+      );
+
+      if (Object.keys(changedFields).length === 0) {
+        toast.info("No hay cambios para guardar");
+        return false;
+      }
+
       const result = await updateProfile(
         userDetails._id,
         currentRole,
-        updatedUserInfo
+        changedFields
       );
 
       if (result.success) {
-        // Recargar los detalles del usuario
         await fetchUserDetails();
         setIsEditing(false);
         return true;
       }
-      
       return false;
     } catch (error) {
       console.error("Error al actualizar perfil:", error);
@@ -175,19 +221,20 @@ const UserProfile = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
+  const handleGoBack = () => navigate(-1);
 
   useEffect(() => {
-    if (user) {
-      fetchUserDetails();
-    }
+    if (user) fetchUserDetails();
   }, [user]);
 
   const getWelcomeMessage = () => {
     if (!user) return "";
-    const name = userDetails?.name || userDetails?.nameEmployees || userDetails?.nameVet || user?.name || "";
+    const name =
+      userDetails?.name ||
+      userDetails?.nameEmployees ||
+      userDetails?.nameVet ||
+      user?.name ||
+      "";
     const roleMessages = {
       client: `¡Hola${name ? `, ${name}` : ""}! Bienvenido a tu perfil de cliente`,
       employee: `¡Hola${name ? `, ${name}` : ""}! Panel de empleado`,
@@ -197,50 +244,47 @@ const UserProfile = () => {
   };
 
   if (!user) {
-  return (
-    <div className="user-profile">
-      <div className="auth-placeholder">
-        <h2>Por favor, inicia sesión para ver tu perfil</h2>
-        <button
-          onClick={() => window.location.href = '/mainPage'}
-          className="retry-button"
-        >
-          Ir al Inicio
-        </button>
+    return (
+      <div className="profile-page">
+        <div className="profile-auth-placeholder">
+          <h2>Por favor, inicia sesión para ver tu perfil</h2>
+          <button
+            onClick={() => (window.location.href = "/mainPage")}
+            className="profile-retry-button"
+          >
+            Ir al Inicio
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-if (isLoading && !userDetails) {
-  return (
-    <div className="user-profile">
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Cargando perfil...</p>
+  if (isLoading && !userDetails) {
+    return (
+      <div className="profile-page">
+        <div className="profile-loading-container">
+          <div className="profile-loading-spinner"></div>
+          <p>Cargando perfil...</p>
+        </div>
       </div>
-    </div>
-  );
-}
-
+    );
+  }
 
   return (
-    <div className="user-profile">
-      {/* Botón de regreso */}
-      <button onClick={handleGoBack} className="back-button">
-        <ArrowLeft className="back-icon" size={20} />
+    <div className="profile-page">
+      <Toaster position="top-right" reverseOrder={false} />
+
+      <button onClick={handleGoBack} className="profile-back-button">
+        <ArrowLeft className="profile-back-icon" size={20} />
         <span>Regresar</span>
       </button>
 
-      {/* Mensaje de bienvenida */}
-      <div className="welcome-section">
-        <h1 className="welcome-message">{getWelcomeMessage()}</h1>
+      <div className="profile-welcome-section">
+        <h1 className="profile-welcome-message">{getWelcomeMessage()}</h1>
       </div>
 
-      {/* Layout horizontal: Perfil a la izquierda, contenido a la derecha */}
-      <div className="profile-and-content-wrapper">
-        {/* Tarjeta de perfil - Columna Izquierda */}
-        <div className="profile-container">
+      <div className="profile-layout-wrapper">
+        <div className="profile-card-container">
           <ProfileCard
             userInfo={userDetails || user}
             isEditing={isEditing}
@@ -252,47 +296,43 @@ if (isLoading && !userDetails) {
           />
         </div>
 
-        {/* Contenido principal - Columna Derecha */}
-        <div className="content-wrapper">
-          {/* Menú de opciones según el rol */}
-          <div className="menu-section">
-            <h2 className="menu-title">Opciones</h2>
-            <div className="menu-list">
+        <div className="profile-content-wrapper">
+          <div className="profile-menu-section">
+            <h2 className="profile-menu-title">Opciones</h2>
+            <div className="profile-menu-list">
               {menuConfig[currentRole]?.map((item) => (
-                <button 
-                  key={item.id} 
-                  className="menu-item"
+                <button
+                  key={item.id}
+                  className="profile-menu-item"
                   onClick={() => handleMenuClick(item.id)}
                 >
-                  <div className="menu-item-content">
+                  <div className="profile-menu-item-content">
                     {item.icon}
-                    <span className="menu-text">{item.text}</span>
+                    <span className="profile-menu-text">{item.text}</span>
                     {item.badge && (
-                      <span className="menu-badge">{item.badge}</span>
+                      <span className="profile-menu-badge">{item.badge}</span>
                     )}
                   </div>
                   {item.hasArrow && (
-                    <ChevronRight className="menu-arrow" size={20} />
+                    <ChevronRight className="profile-menu-arrow" size={20} />
                   )}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Información adicional */}
-          <div className="info-section">
-            <div className="info-card">
+          <div className="profile-info-section">
+            <div className="profile-info-card">
               <h3>Tipo de cuenta</h3>
-              <p className="user-type-display">
-                {currentRole === 'client' && 'Cliente'}
-                {currentRole === 'employee' && 'Empleado'}
-                {currentRole === 'vet' && '🩺 Veterinario'}
+              <p className="profile-user-type">
+                {currentRole === "client" && "Cliente"}
+                {currentRole === "employee" && "Empleado"}
+                {currentRole === "vet" && "Veterinario"}
               </p>
             </div>
 
-            {/* Botón de cerrar sesión */}
-            <div className="logout-section">
-              <button onClick={logout} className="logout-button">
+            <div className="profile-logout-section">
+              <button onClick={logout} className="profile-logout-button">
                 Cerrar sesión
               </button>
             </div>

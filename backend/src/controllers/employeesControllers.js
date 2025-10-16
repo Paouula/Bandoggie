@@ -104,13 +104,13 @@ employeesControllers.post = async (req, res) => {
   }
 };
 
-// Actualizar empleado (solo valida que los campos no estén vacíos)
+
+//Actualizar empleado
 employeesControllers.put = async (req, res) => {
   try {
     const idToUpdate = req.params.id;
     const body = req.body;
 
-    // Verificar existencia
     const existingEmployee = await employeesModel.findById(idToUpdate);
     if (!existingEmployee) {
       return res.status(404).json({ message: "Empleado no encontrado" });
@@ -118,19 +118,16 @@ employeesControllers.put = async (req, res) => {
 
     const updateData = {};
 
-    // Validar que los campos enviados no estén vacíos o nulos
     for (const [key, value] of Object.entries(body)) {
       if (value !== undefined && value !== null && String(value).trim() !== "") {
         updateData[key] = value;
       }
     }
 
-    // Si hay contraseña, la encripta
     if (body.password && body.password.trim() !== "") {
       updateData.password = await bcryptjs.hash(body.password, 10);
     }
 
-    // Si no hay datos válidos que actualizar
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ message: "No se enviaron campos válidos para actualizar" });
     }

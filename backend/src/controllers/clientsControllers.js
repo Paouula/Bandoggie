@@ -79,7 +79,6 @@ clientsControllers.put = async (req, res) => {
   const { name, email, phone, birthday, password } = req.body;
   const { id } = req.params;
 
-  // Validamos el id, que sea válido
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "ID de cliente inválido" });
   }
@@ -90,7 +89,6 @@ clientsControllers.put = async (req, res) => {
       return res.status(404).json({ message: "Cliente no encontrado" });
     }
 
-    // Preparar datos para actualizar (solo los que vienen en el body)
     const updateData = {};
 
     if (name !== undefined) updateData.name = name;
@@ -98,7 +96,6 @@ clientsControllers.put = async (req, res) => {
     if (phone !== undefined) updateData.phone = phone;
     if (birthday !== undefined) updateData.birthday = birthday;
 
-    // Si hay imagen nueva, súbela
     if (req.file) {
       try {
         const result = await cloudinary.uploader.upload(req.file.path, {
@@ -112,16 +109,14 @@ clientsControllers.put = async (req, res) => {
       }
     }
 
-    // Si hay contraseña, hashéala
     if (password !== undefined) {
       updateData.password = await bcryptjs.hash(password, 10);
     }
 
-    // Actualiza el cliente con los datos nuevos
     const updatedClient = await clientsModel.findByIdAndUpdate(
       id,
       updateData,
-      { new: true, runValidators: true }
+      { new: true, runValidators: false }
     );
 
     res.json({ message: "Cliente actualizado con éxito", updatedClient });
@@ -130,7 +125,6 @@ clientsControllers.put = async (req, res) => {
     res.status(500).json({ message: "Error actualizando cliente", error });
   }
 };
-
 // Borra con cuidado, pero si te lo piden, borra el cliente
 clientsControllers.delete = async (req, res) => {
   const { id } = req.params;

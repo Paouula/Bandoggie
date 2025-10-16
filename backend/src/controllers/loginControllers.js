@@ -172,15 +172,21 @@ loginController.logout = (req, res) => {
 // Permite actualizar datos del perfil del usuario autenticado
 // Nota: acá solo dejamos cambiar lo basico (nombre, correo, etc) para evitar lios de seguridad
 
+// -------------------------- UPDATE PROFILE --------------------------
+// Permite actualizar datos del perfil del usuario autenticado
+// Ahora incluye todas las validaciones de los controladores individuales
+
 loginController.updateProfile = async (req, res) => {
   const token = req.cookies?.authToken;
   if (!token) return res.status(401).json({ message: "No autenticado" });
-  
+
   try {
     const { user: id, userType } = jsonwebtoken.verify(token, config.JWT.secret);
 
     const {
       name,
+      nameEmployees,
+      nameVet,
       email,
       phone,
       address,
@@ -195,14 +201,15 @@ loginController.updateProfile = async (req, res) => {
       hireDateEmployee
     } = req.body;
 
-    
+    // ========== VALIDACIONES COMUNES ==========
+
     // Validación de email si se proporciona
     if (email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         return res.status(400).json({ message: "Correo inválido" });
       }
-      
+
       // Verificar que el email no esté en uso por otro usuario
       const existingUser = await models[userType].findOne({ email });
       if (existingUser && existingUser._id.toString() !== id) {
@@ -218,9 +225,9 @@ loginController.updateProfile = async (req, res) => {
     }
 
     // ========== VALIDACIONES Y ACTUALIZACIONES POR TIPO DE USUARIO ==========
-    
+
     const updateData = {};
-    
+
     // ---------- CLIENTE ----------
     if (userType === "client") {
       // Validar nombre si se proporciona
@@ -230,9 +237,9 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.name = name;
       }
-      
+
       if (email) updateData.email = email;
-      
+
       // Validar teléfono si se proporciona
       if (phone) {
         if (!/^\d{4}-\d{4}$/.test(phone)) {
@@ -240,7 +247,7 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.phone = phone;
       }
-      
+
       // Validar fecha de nacimiento
       if (birthday || dateOfBirth) {
         const birthDate = birthday || dateOfBirth;
@@ -274,9 +281,9 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.nameVet = name;
       }
-      
+
       if (email) updateData.email = email;
-      
+
       // Validar ubicación
       if (locationVet) {
         if (!locationVet.trim()) {
@@ -284,7 +291,7 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.locationVet = locationVet;
       }
-      
+
       // Validar NIT
       if (nitVet) {
         if (!/^\d{4}-\d{6}-\d{3}-\d{1}$/.test(nitVet)) {
@@ -317,9 +324,9 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.nameEmployees = name;
       }
-      
+
       if (email) updateData.email = email;
-      
+
       // Validar teléfono de empleado
       if (phoneEmployees) {
         if (!/^\d{4}-\d{4}$/.test(phoneEmployees)) {
@@ -327,7 +334,7 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.phoneEmployees = phoneEmployees;
       }
-      
+
       // Validar fecha de nacimiento y edad
       if (dateOfBirth) {
         if (!validator.isDate(dateOfBirth)) {
@@ -339,7 +346,7 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.dateOfBirth = dateOfBirth;
       }
-      
+
       // Validar dirección
       if (addressEmployees) {
         if (addressEmployees.trim().length < 5) {
@@ -347,7 +354,7 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.addressEmployees = addressEmployees;
       }
-      
+
       // Validar DUI
       if (duiEmployees) {
         if (!/^\d{8}-\d{1}$/.test(duiEmployees)) {
@@ -355,7 +362,7 @@ loginController.updateProfile = async (req, res) => {
         }
         updateData.duiEmployees = duiEmployees;
       }
-      
+
       // Validar fecha de contratación
       if (hireDateEmployee) {
         if (!validator.isDate(hireDateEmployee)) {
@@ -379,7 +386,7 @@ loginController.updateProfile = async (req, res) => {
     const user = await models[userType]
       .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
       .select("-password");
-      
+
     if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
 
     return res.status(200).json({
