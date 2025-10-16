@@ -181,81 +181,74 @@ loginController.updateProfile = async (req, res) => {
 
     const {
       name,
+      nameEmployees,
+      nameVet,
       email,
       phone,
+      phoneEmployees,
       address,
+      addressEmployees,
       password,
       birthday,
       dateOfBirth,
       locationVet,
       nitVet,
       duiEmployees,
-      phoneEmployees,
-      addressEmployees,
       hireDateEmployee
     } = req.body;
 
-    
-    // Validación de email si se proporciona
-    if (email) {
+    const updateData = {};
+
+    if (email && email.trim()) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
+      if (!emailRegex.test(email.trim())) {
         return res.status(400).json({ message: "Correo inválido" });
       }
       
-      // Verificar que el email no esté en uso por otro usuario
-      const existingUser = await models[userType].findOne({ email });
+      const existingUser = await models[userType].findOne({ email: email.trim() });
       if (existingUser && existingUser._id.toString() !== id) {
         return res.status(400).json({ message: "El email ya está en uso" });
       }
+      
+      updateData.email = email.trim();
     }
 
-    // Validación de contraseña si se proporciona
-    if (password) {
+    if (password && password.trim()) {
       if (password.length < 8 || password.length > 30) {
         return res.status(400).json({ message: "La contraseña debe tener entre 8 y 30 caracteres" });
       }
+      updateData.password = await bcryptjs.hash(password, 10);
     }
 
-    // ========== VALIDACIONES Y ACTUALIZACIONES POR TIPO DE USUARIO ==========
-    
-    const updateData = {};
-    
-    // ---------- CLIENTE ----------
     if (userType === "client") {
-      // Validar nombre si se proporciona
-      if (name) {
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(name)) {
-          return res.status(400).json({ message: "Nombre inválido (solo letras y espacios, 2-40 caracteres)" });
+      if (name && name.trim()) {
+        if (name.trim().length < 2 || name.trim().length > 40) {
+          return res.status(400).json({ message: "Nombre debe tener entre 2 y 40 caracteres" });
         }
-        updateData.name = name;
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(name.trim())) {
+          return res.status(400).json({ message: "Nombre solo puede contener letras y espacios" });
+        }
+        updateData.name = name.trim();
       }
       
-      if (email) updateData.email = email;
-      
-      // Validar teléfono si se proporciona
-      if (phone) {
-        if (!/^\d{4}-\d{4}$/.test(phone)) {
-          return res.status(400).json({ message: "Teléfono inválido (formato 1111-1111)" });
+      if (phone && phone.trim()) {
+        const cleanPhone = phone.trim();
+        if (!/^\d{4}-\d{4}$/.test(cleanPhone)) {
+          return res.status(400).json({ message: "Teléfono inválido (formato: 1234-5678)" });
         }
-        updateData.phone = phone;
+        updateData.phone = cleanPhone;
       }
       
-      // Validar fecha de nacimiento
-      if (birthday || dateOfBirth) {
-        const birthDate = birthday || dateOfBirth;
-        if (!validator.isDate(birthDate)) {
+      const birthDate = birthday || dateOfBirth;
+      if (birthDate && birthDate.trim()) {
+        const date = new Date(birthDate);
+        if (isNaN(date.getTime())) {
           return res.status(400).json({ message: "Fecha de nacimiento inválida" });
         }
-        updateData.dateOfBirth = birthDate;
+        updateData.dateOfBirth = date.toISOString().split('T')[0];
+        updateData.birthday = date.toISOString().split('T')[0];
       }
 
-      // Contraseña hasheada si se proporciona
-      if (password) {
-        updateData.password = await bcryptjs.hash(password, 10);
-      }
-
-      // Manejar imagen si se subió
       if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.path, {
           folder: "public",
@@ -265,40 +258,34 @@ loginController.updateProfile = async (req, res) => {
       }
     }
 
-    // ---------- VETERINARIO ----------
     if (userType === "vet") {
-      // Validar nombre si se proporciona
-      if (name) {
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(name)) {
-          return res.status(400).json({ message: "Nombre inválido (solo letras y espacios, 2-40 caracteres)" });
+      const vetName = nameVet || name;
+      if (vetName && vetName.trim()) {
+        if (vetName.trim().length < 2 || vetName.trim().length > 40) {
+          return res.status(400).json({ message: "Nombre debe tener entre 2 y 40 caracteres" });
         }
-        updateData.nameVet = name;
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(vetName.trim())) {
+          return res.status(400).json({ message: "Nombre solo puede contener letras y espacios" });
+        }
+        updateData.nameVet = vetName.trim();
+        updateData.name = vetName.trim();
       }
       
-      if (email) updateData.email = email;
-      
-      // Validar ubicación
-      if (locationVet) {
-        if (!locationVet.trim()) {
-          return res.status(400).json({ message: "Ubicación es obligatoria" });
+      if (locationVet && locationVet.trim()) {
+        if (locationVet.trim().length < 3) {
+          return res.status(400).json({ message: "Ubicación debe tener al menos 3 caracteres" });
         }
-        updateData.locationVet = locationVet;
+        updateData.locationVet = locationVet.trim();
       }
       
-      // Validar NIT
-      if (nitVet) {
-        if (!/^\d{4}-\d{6}-\d{3}-\d{1}$/.test(nitVet)) {
-          return res.status(400).json({ message: "NIT inválido (formato 1234-567890-123-4)" });
+      if (nitVet && nitVet.trim()) {
+        const cleanNit = nitVet.trim();
+        if (!/^\d{4}-\d{6}-\d{3}-\d{1}$/.test(cleanNit)) {
+          return res.status(400).json({ message: "NIT inválido (formato: 1234-567890-123-4)" });
         }
-        updateData.nitVet = nitVet;
+        updateData.nitVet = cleanNit;
       }
 
-      // Contraseña hasheada si se proporciona
-      if (password) {
-        updateData.password = await bcryptjs.hash(password, 10);
-      }
-
-      // Manejar imagen si se subió
       if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.path, {
           folder: "vets",
@@ -308,79 +295,91 @@ loginController.updateProfile = async (req, res) => {
       }
     }
 
-    // ---------- EMPLEADO ----------
     if (userType === "employee") {
-      // Validar nombre si se proporciona
-      if (name) {
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,40}$/.test(name)) {
-          return res.status(400).json({ message: "Nombre inválido (solo letras y espacios, 2-40 caracteres)" });
+      const empName = nameEmployees || name;
+      if (empName && empName.trim()) {
+        if (empName.trim().length < 2 || empName.trim().length > 40) {
+          return res.status(400).json({ message: "Nombre debe tener entre 2 y 40 caracteres" });
         }
-        updateData.nameEmployees = name;
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(empName.trim())) {
+          return res.status(400).json({ message: "Nombre solo puede contener letras y espacios" });
+        }
+        updateData.nameEmployees = empName.trim();
+        updateData.name = empName.trim();
       }
       
-      if (email) updateData.email = email;
-      
-      // Validar teléfono de empleado
-      if (phoneEmployees) {
-        if (!/^\d{4}-\d{4}$/.test(phoneEmployees)) {
-          return res.status(400).json({ message: "Teléfono inválido (formato 1111-1111)" });
+      const empPhone = phoneEmployees || phone;
+      if (empPhone && empPhone.trim()) {
+        const cleanPhone = empPhone.trim();
+        if (!/^\d{4}-\d{4}$/.test(cleanPhone)) {
+          return res.status(400).json({ message: "Teléfono inválido (formato: 1234-5678)" });
         }
-        updateData.phoneEmployees = phoneEmployees;
+        updateData.phoneEmployees = cleanPhone;
+        updateData.phone = cleanPhone;
       }
       
-      // Validar fecha de nacimiento y edad
-      if (dateOfBirth) {
-        if (!validator.isDate(dateOfBirth)) {
+      if (dateOfBirth && dateOfBirth.trim()) {
+        const date = new Date(dateOfBirth);
+        if (isNaN(date.getTime())) {
           return res.status(400).json({ message: "Fecha de nacimiento inválida" });
         }
-        const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
-        if (age < 18) {
+        
+        const age = new Date().getFullYear() - date.getFullYear();
+        const monthDiff = new Date().getMonth() - date.getMonth();
+        const dayDiff = new Date().getDate() - date.getDate();
+        
+        if (age < 18 || (age === 18 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)))) {
           return res.status(400).json({ message: "El empleado debe ser mayor de edad" });
         }
-        updateData.dateOfBirth = dateOfBirth;
+        
+        updateData.dateOfBirth = date.toISOString().split('T')[0];
       }
       
-      // Validar dirección
-      if (addressEmployees) {
-        if (addressEmployees.trim().length < 5) {
+      const empAddress = addressEmployees || address;
+      if (empAddress && empAddress.trim()) {
+        if (empAddress.trim().length < 5) {
           return res.status(400).json({ message: "Dirección debe tener al menos 5 caracteres" });
         }
-        updateData.addressEmployees = addressEmployees;
+        updateData.addressEmployees = empAddress.trim();
+        updateData.address = empAddress.trim();
       }
       
-      // Validar DUI
-      if (duiEmployees) {
-        if (!/^\d{8}-\d{1}$/.test(duiEmployees)) {
-          return res.status(400).json({ message: "DUI inválido (formato 12345678-9)" });
+      if (duiEmployees && duiEmployees.trim()) {
+        const cleanDui = duiEmployees.trim();
+        if (!/^\d{8}-\d{1}$/.test(cleanDui)) {
+          return res.status(400).json({ message: "DUI inválido (formato: 12345678-9)" });
         }
-        updateData.duiEmployees = duiEmployees;
+        updateData.duiEmployees = cleanDui;
       }
       
-      // Validar fecha de contratación
-      if (hireDateEmployee) {
-        if (!validator.isDate(hireDateEmployee)) {
+      if (hireDateEmployee && hireDateEmployee.trim()) {
+        const date = new Date(hireDateEmployee);
+        if (isNaN(date.getTime())) {
           return res.status(400).json({ message: "Fecha de contratación inválida" });
         }
-        updateData.hireDateEmployee = hireDateEmployee;
-      }
-
-      // Contraseña hasheada si se proporciona
-      if (password) {
-        updateData.password = await bcryptjs.hash(password, 10);
+        updateData.hireDateEmployee = date.toISOString().split('T')[0];
       }
     }
 
-    // Si no hay datos para actualizar
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ message: "No hay datos para actualizar" });
     }
 
-    // Guardamos los cambios en la base de datos
     const user = await models[userType]
-      .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
+      .findByIdAndUpdate(
+        id, 
+        { $set: updateData }, 
+        { 
+          new: true, 
+          runValidators: true,
+          context: 'query'
+        }
+      )
       .select("-password");
       
-    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
 
     return res.status(200).json({
       message: "Perfil actualizado correctamente",
@@ -389,16 +388,30 @@ loginController.updateProfile = async (req, res) => {
 
   } catch (error) {
     console.error("Error en updateProfile:", error);
+    
     if (error.name === "JsonWebTokenError") {
       return res.status(401).json({ message: "Token inválido" });
     }
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token expirado" });
+    }
     if (error.name === "ValidationError") {
-      return res.status(400).json({ message: "Error de validación", details: error.message });
+      return res.status(400).json({ 
+        message: "Error de validación", 
+        details: error.message 
+      });
     }
     if (error.code === 11000) {
-      return res.status(400).json({ message: "El email ya está en uso" });
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({ 
+        message: `El ${field === 'email' ? 'email' : field} ya está en uso` 
+      });
     }
-    return res.status(500).json({ message: "Error al actualizar el perfil" });
+    
+    return res.status(500).json({ 
+      message: "Error al actualizar el perfil",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
