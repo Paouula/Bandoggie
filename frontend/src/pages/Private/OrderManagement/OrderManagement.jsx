@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import './OrderManagement.css';
+import useFetchOrderManagement from '../../../hooks/OrderManagement/useFetchOrderMangagemnet';
 
 // Componente StatusTareas
 const StatusTareas = ({ tareas, status, color, handleDrop, handleDragOver, handleDragStart }) => {
   const statusNames = {
     todo: 'Pendiente',
     indev: 'En Proceso',
-    done: 'Completado'
+    done: 'Completado',
   };
 
-  const tareasFiltradas = tareas.filter(tarea => tarea.estado === status);
+  const tareasFiltradas = tareas.filter((tarea) => tarea.estado === status);
 
   return (
     <div
@@ -18,11 +19,11 @@ const StatusTareas = ({ tareas, status, color, handleDrop, handleDragOver, handl
       onDragOver={handleDragOver}
       style={{ borderColor: color }}
     >
-      <h3 className="status-title" style={{ color: color }}>
+      <h3 className="status-title" style={{ color }}>
         {statusNames[status]} ({tareasFiltradas.length})
       </h3>
-      
-      {tareasFiltradas.map(tarea => (
+
+      {tareasFiltradas.map((tarea) => (
         <div
           key={tarea.id}
           className="tarea-card"
@@ -40,21 +41,9 @@ const StatusTareas = ({ tareas, status, color, handleDrop, handleDragOver, handl
 // Componente Principal OrderManagement
 function OrderManagement() {
   const [tareas, setTareas] = useState([
-    {
-      id: 1,
-      nombre: 'Aprender React',
-      estado: 'todo',
-    },
-    {
-      id: 2,
-      nombre: 'Aprender Angular',
-      estado: 'todo',
-    },
-    {
-      id: 3,
-      nombre: 'Aprender Vue',
-      estado: 'indev',
-    },
+    { id: 1, nombre: 'Realizar 5 bandanas de estampando navideño', estado: 'todo' },
+    { id: 2, nombre: 'Realizar un collar talla S de color rosa', estado: 'todo' },
+    { id: 3, nombre: 'Realizar una bandana floreada talla XL', estado: 'indev' },
   ]);
 
   const [nuevaTarea, setNuevaTarea] = useState('');
@@ -66,11 +55,7 @@ function OrderManagement() {
     }
     setTareas([
       ...tareas,
-      {
-        id: tareas.length + 1,
-        nombre: nuevaTarea,
-        estado: 'todo',
-      },
+      { id: tareas.length + 1, nombre: nuevaTarea, estado: 'todo' },
     ]);
     setNuevaTarea('');
   };
@@ -94,10 +79,10 @@ function OrderManagement() {
 
   return (
     <div className="order-management-container">
-      <h1 className="main-title">Sistema de Gestión de Tareas</h1>
+      <h1 className="main-title">Sistema de Gestión de Pedidos</h1>
 
       <div className="nueva-tarea-section">
-        <h2>Nueva Tarea:</h2>
+        <h2>Nueva Pedido:</h2>
         <div className="input-group">
           <input
             type="text"
@@ -105,18 +90,16 @@ function OrderManagement() {
             value={nuevaTarea}
             onChange={(e) => setNuevaTarea(e.target.value)}
             placeholder="Escribe el nombre de la tarea"
+            onKeyPress={(e) => e.key === 'Enter' && registrarTarea()}
           />
-          <button
-            onClick={() => registrarTarea()}
-            className="btn-registrar"
-          >
-            Registrar Tarea
+          <button onClick={registrarTarea} className="btn-registrar">
+            Registrar Pedido
           </button>
         </div>
       </div>
 
       <div>
-        <h2>Estado de Tareas:</h2>
+        <h2>Estado de Pedidos:</h2>
         <div className="status-grid">
           <StatusTareas
             tareas={tareas}
