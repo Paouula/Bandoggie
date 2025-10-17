@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../Context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 import "./NavBar.css";
 import IC_cuenta from "../../../img/NavBar/user.png";
 import LogoBandoggie from "../../../img/NavBar/LogoBandoggie.png";

@@ -11,7 +11,7 @@ import Paginacion from "../../../components/Pagination.jsx";
 import RegisterEmployee from "../../../components/Private/Employees/RegisterEmployees.jsx";
 import useFetchEmployees from "../../../hooks/Employees/useFetchEmployees.js";
 import { Toaster, toast } from "react-hot-toast";
-import { useAuth } from "../../../Context/AuthContext.jsx";
+import { useAuth } from "../../../context/AuthContext";
 import Modal from "../../../components/Modal/Modal.jsx";
 import Button from "../../../components/Button/Button.jsx";
 

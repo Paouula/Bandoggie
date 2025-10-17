@@ -6,7 +6,7 @@ import useFetchResend from "../../hooks/Register/useFetchResendVerifyCode.js";
 import Button from "../Button/Button.jsx";
 import logo from "../../img/LogoBandoggie.png";
 import "../../assets/styles/Register.css";
-import { useAuth } from "../../Context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext";
 import VerificationCodeInput from "../VerificationCodeInput/VerificationCodeInput.jsx";
 
 const VerificationCodeModal = ({ onClose, openLogin, email, role }) => {

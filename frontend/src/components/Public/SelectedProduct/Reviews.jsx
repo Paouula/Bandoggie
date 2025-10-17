@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { User, Star, Plus, Minus } from "lucide-react";
 import ReviewForm from "../../../components/Public/SelectedProduct/ReviewsForm/ReviewForm.jsx";
-import { useAuth } from "../../../Context/AuthContext.jsx";
+import { useAuth } from "../../../context/AuthContext";
 import useFetchReviews from "../../../hooks/ReviewUser/useFetchReviews.js";
 import "./Reviews.css";
 
