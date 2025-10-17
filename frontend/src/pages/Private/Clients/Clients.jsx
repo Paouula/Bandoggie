@@ -118,22 +118,9 @@ const ClientsPage = () => {
         {/* Filtros y búsqueda */}
         <div className="headerControls">
           <div className="controlsLeft">
-            <div className="filterControl">
-              <Filter className="icon" />
-              <span className="filterText">Filtrar</span>
-              <span className="separator">|</span>
-              <select
-                className="select"
-                value={filterBy}
-                onChange={(e) => setFilterBy(e.target.value)}
-              >
-                <option>Por defecto</option>
-                <option>Alfabético</option>
-                <option>Más reciente</option>
-              </select>
-            </div>
+            
             <div className="viewModeControl">
-              <span className="filterText">Ver:</span>
+              <span className="filterText">Filtrar:</span>
               <select
                 className="select"
                 value={viewMode}

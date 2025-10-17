@@ -159,31 +159,7 @@ const Reviewslisting = () => {
         </div>
 
         <div className="reviews-content">
-          <div className="header">
-            <div className="filter-section">
-              <button className="filter-btn">
-                <FilterIcon size={18} />
-                Filtrar
-              </button>
-              <select className="sort-select">
-                <option>Ordenar por: Por defecto</option>
-                <option>Precio: Menor a mayor</option>
-                <option>Precio: Mayor a menor</option>
-                <option>Más recientes</option>
-                <option>Mejor valorados</option>
-              </select>
-            </div>
-
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Buscar..."
-                className="search-input"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          
 
           <ListReviews
             reviews={reviews}
