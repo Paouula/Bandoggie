@@ -6,6 +6,7 @@ import ListBirthdayProducts from '../../../components/Public/Holiday/BirthdayHli
 import './BirthdayHoliday.css';
 // Imagen del banner
 import DogBirthday from '../../../img/BirthdayHoliday/DogBirthday.png';
+import { Toaster } from 'react-hot-toast';
 
 const BirthdayPetStore = () => {
 
@@ -16,6 +17,7 @@ const BirthdayPetStore = () => {
 
   return (
     <div className="birthday-store">
+      <Toaster position="top-right" />
       <Navigation breadcrumbs={breadcrumbs} />
 
       <BannerHoliday 

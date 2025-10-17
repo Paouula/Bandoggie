@@ -4,6 +4,8 @@ import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx'
 import useDataValentinesProducts from '../../../components/Public/Holiday/ValentinesHoliday/hooks/useDataValentinesProducts.jsx';
 import ListValentinesProducts from '../../../components/Public/Holiday/ValentinesHoliday/hooks/ListValentinesProducts.jsx';
 import './ValentineHoliday.css';
+import { Toaster } from 'react-hot-toast';
+
 // Imagen del banner
 import DogValentine from '../../../img/ValentineHoliday/DogValentine.png';
 
@@ -15,6 +17,7 @@ const ValentinePetStore = () => {
 
   return (
     <div className="valentine-store">
+      <Toaster position="top-right" />
       <Navigation breadcrumbs={breadcrumbs} />
       
       <BannerHoliday 

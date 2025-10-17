@@ -4,6 +4,8 @@ import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx'
 import useDataPatrioticProducts from '../../../components/Public/Holiday/PatrioticHoliday/hooks/useDataPatrioticProducts.jsx';
 import ListPatrioticProducts from '../../../components/Public/Holiday/PatrioticHoliday/hooks/ListPatrioticcProducts.jsx';
 import './PatrioticHoliday.css';
+import { Toaster } from 'react-hot-toast';
+
 
 // Imágenes de productos 
 import ProductPH from '../../../img/PatrioticHoliday/ProductPH.png';
@@ -21,6 +23,7 @@ const PatrioticPetStore = () => {
 
   return (
     <div className="patriotic-store">
+      <Toaster position="top-right" />
       <Navigation breadcrumbs={breadcrumbs} />
       
       <BannerHoliday

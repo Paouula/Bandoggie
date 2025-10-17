@@ -6,6 +6,7 @@ import BannerMainPage from '../../../img/BannerPrivate/MainPageBanner.png';
 import BannerPrivate from '../../../components/Private/BannerPrivate/BannerPrivate.jsx';
 import LineaDivisora from '../../../components/LineaDivisora.jsx';
 import axios from "axios";
+import { Toaster } from 'react-hot-toast';
 
 const OrdersPage = () => {
   const [carts, setCarts] = useState([]);
@@ -34,6 +35,7 @@ const OrdersPage = () => {
 
   return (
      <>
+      <Toaster position="top-right" />
       <BannerPrivate
         title="¡Bienvenida!"
         subtitle="¿Qué deseas hacer hoy?"

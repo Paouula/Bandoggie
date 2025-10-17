@@ -3,6 +3,7 @@ import useFetchProducts from "../../../hooks/Products/useFetchProducts";
 import useFetchUsers from "../../../hooks/Clients/useFetchUsers";
 import useFetchEmployees from "../../../hooks/Employees/useFetchEmployees";
 import "./Graphics.css";
+import { Toaster } from "react-hot-toast";
 
 const Graphics = () => {
   const { products, loading: loadingProducts } = useFetchProducts();
@@ -71,6 +72,7 @@ const Graphics = () => {
 
   return (
     <div className="dashboard-container">
+            <Toaster position="top-right" />
       <div className="dashboard-wrapper">
         
         {/* Header */}

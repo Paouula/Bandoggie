@@ -6,6 +6,7 @@ import ListNewYearProducts from '../../../components/Public/Holiday/NewYearHolid
 import './NewYearHoliday.css';
 // Imagen del banner
 import DogNewYear from '../../../img/NewYearHoliday/DogNewYear.png';
+import { Toaster } from 'react-hot-toast';
 
 const NewYearPetStore = () => {
 
@@ -16,6 +17,7 @@ const NewYearPetStore = () => {
 
   return (
     <div className="newyear-store">
+      <Toaster position="top-right" />
       <Navigation breadcrumbs={breadcrumbs} />
       
       <BannerHoliday 

@@ -2,6 +2,7 @@ import React from 'react';
 import './MainPage.css';
 import { useNavigate } from "react-router-dom";
 import BannerMainPage from '../../../img/MainPage/BannerMainPage.png';
+import { Toaster } from 'react-hot-toast';
 
 
 //Componentes
@@ -49,6 +50,7 @@ const navegarAccesorios = () => {
 
   return ( 
     <div>
+      <Toaster position="top-right" />
       {/* Sección del Banner */}
       <div className="conteiner-banner">
         <div className="banner-text">

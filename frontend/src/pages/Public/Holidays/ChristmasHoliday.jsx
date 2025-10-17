@@ -4,6 +4,8 @@ import NavigationHoliday from '../../../components/Public/NavegationHoliday.jsx'
 import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx';
 import ListChristmasProducts from '../../../components/Public/Holiday/ChristmasHoliday/ListChristmasProducts.jsx';  
 import useDataChristmasProducts from '../../../components/Public/Holiday/ChristmasHoliday/hooks/useDataChristmasProducts.jsx'; 
+import { Toaster } from 'react-hot-toast';
+
 
 const ChristmasPetStore = () => {
 
@@ -29,6 +31,7 @@ const ChristmasPetStore = () => {
 
   return (
     <div className="christmas-store">
+      <Toaster position="top-right" />
       {/* Componente de nav */}
       <NavigationHoliday 
         breadcrumbs={breadcrumbs}

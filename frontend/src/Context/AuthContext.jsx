@@ -45,23 +45,56 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async () => {
-    try {
-      API_FETCH_JSON(`${endpoint[1]}`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (error) {
-      console.error("Error en logout:", error);
-    }
+ const logout = async (auto = false) => {
+  try {
+    await API_FETCH_JSON(`${endpoint[1]}`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Error en logout:", error);
+  }
 
-    localStorage.removeItem("user");
-    localStorage.removeItem("verificationInfo");
-    setUser(null);
-    setVerificationInfo({ email: "", role: "" });
-    setPendingVerification(false);
+  localStorage.removeItem("user");
+  localStorage.removeItem("verificationInfo");
+  setUser(null);
+  setVerificationInfo({ email: "", role: "" });
+  setPendingVerification(false);
+
+  if (auto) {
+    toast('Sesión cerrada por inactividad', { icon: '⏳' });
+  } else {
+    toast.success('Has cerrado sesión correctamente');
+  }
+};
+
+
+ useEffect(() => {
+  let inactivityTimer;
+
+  const resetInactivityTimer = () => {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+      logout(true); // ← indica que fue por inactividad
+    }, 5 * 60 * 1000);
   };
+
+  ['mousemove', 'keydown', 'scroll', 'click'].forEach(event => {
+    window.addEventListener(event, resetInactivityTimer);
+  });
+
+  resetInactivityTimer();
+
+  return () => {
+    clearTimeout(inactivityTimer);
+    ['mousemove', 'keydown', 'scroll', 'click'].forEach(event => {
+      window.removeEventListener(event, resetInactivityTimer);
+    });
+  };
+}, []);
+
+
 
   //  Función para actualizar verificationInfo de forma persistente
   const updateVerificationInfo = (info) => {

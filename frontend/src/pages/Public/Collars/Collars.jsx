@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import ListCollars from "../../../components/Public/ProductCollars/ListCollars.jsx";
 import useDataCollars from "../../../components/Public/ProductCollars/hooks/useDataCollars.jsx";
 import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
+import { Toaster } from 'react-hot-toast';
+
 
 const Collars = () => {
 
@@ -11,10 +13,13 @@ const Collars = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="christmas-store">
+    <>
+      <Toaster position="top-right" />
+     <div className="christmas-store">
         
         <ListCollars Collars={Collars} />
       </div>
+    </>
   );
 };
 

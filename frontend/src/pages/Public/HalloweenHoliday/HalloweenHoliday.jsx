@@ -4,6 +4,8 @@ import BannerHoliday from '../../../components/Public/Holiday/BannerHoliday.jsx'
 import useDataHalloweenProducts from '../../../components/Public/Holiday/HalloweenHoliday/hooks/useDataHalloweenProducts.jsx';
 import ListHalloweenProducts from '../../../components/Public/Holiday/HalloweenHoliday/ListHalloweenHoliday.jsx';
 import './HalloweenHoliday.css';
+import { Toaster } from 'react-hot-toast';
+
 // Img Banner
 import DogHalloween from '../../../img/HalloweenHoliday/DogHalloween.png';
 
@@ -15,6 +17,7 @@ const HalloweenPetStore = () => {
 
   return (
     <div className="halloween-store">
+      <Toaster position="top-right" />
       <Navigation breadcrumbs={breadcrumbs} />
       
       <BannerHoliday 

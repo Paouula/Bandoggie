@@ -3,6 +3,8 @@ import { useAuth } from '../../../Context/AuthContext';
 import useOrderInfo from '../../../hooks/OrderHistory/useOrders';
 import OrderCard from '../../../components/OrderCard/OrderCard';
 import './OrderHistory.css';
+import { Toaster } from 'react-hot-toast';
+
 
 const OrderHistory = () => {
   const { user } = useAuth();
@@ -231,6 +233,7 @@ const OrderHistory = () => {
   // 🎨 RENDER PRINCIPAL
   return (
     <main className="main-container">
+      <Toaster position="top-right" />
       {/* Header con estadísticas */}
       <div className="page-header">
         <div>
