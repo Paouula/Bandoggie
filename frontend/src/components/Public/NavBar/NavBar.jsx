@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "./Navbar.css";
+import "./NavBar.css";
 import IC_cuenta from "../../../img/NavBar/user.png";
 import IC_carrito from "../../../img/NavBar/ShoppingCart.png";
 import LogoBandoggie from "../../../img/NavBar/LogoBandoggie.png";
