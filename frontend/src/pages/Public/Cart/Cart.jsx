@@ -891,21 +891,7 @@ const ShoppingCartApp = ({ onClose }) => {
               )}
               
               <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                <button 
-                  onClick={addSampleProduct}
-                  style={{
-                    padding: '12px 24px',
-                    backgroundColor: '#3b82f6',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    marginBottom: '10px'
-                  }}
-                >
-                  + Agregar Producto de Ejemplo
-                </button>
+                
               </div>
               
               <div className="cart-button-container">
