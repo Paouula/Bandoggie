@@ -77,7 +77,7 @@ function PrivateNavBar() {
             </Link>
             {
               <Link className="navbar-nav-link" to="/admin/graphics">
-                Gráficas
+                Estadisticas
               </Link>
             }
 
