@@ -36,7 +36,7 @@ import guestClients from './src/routes/retailsPurchase.js';
 import internalOrderRoutes from './src/routes/orderManagement.js';
 
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:5174',
     credentials: true,
 };
 
