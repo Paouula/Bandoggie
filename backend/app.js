@@ -35,21 +35,11 @@ import guestClients from './src/routes/retailsPurchase.js';
 //Rutas de gestión de pedidos
 import internalOrderRoutes from './src/routes/orderManagement.js';
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://bandoggie-eo407yb3e-paouulas-projects.vercel.app"
-];
-
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS: Origin not allowed"));
-    }
-  },
-  credentials: true,
+    origin: 'http://localhost:5173',
+    credentials: true,
 };
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
