@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Order from "../models/Order.js";
+import Order from "../models/orders.js";
 import Cart from "../models/Cart.js";
 import OrderManagement from "../models/OrderManagement.js";
 
