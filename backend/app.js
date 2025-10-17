@@ -36,7 +36,7 @@ import guestClients from './src/routes/retailsPurchase.js';
 import internalOrderRoutes from './src/routes/orderManagement.js';
 
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: 'https://bandoggie-eo407yb3e-paouulas-projects.vercel.app',
     credentials: true,
 };
 

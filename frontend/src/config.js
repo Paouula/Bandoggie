@@ -1,6 +1,4 @@
 const API_URL = import.meta.env.VITE_API_URL;
-console.log("API_URL:", import.meta.env.VITE_API_URL);
-
 
 // Función para realizar peticiones JSON
 export const API_FETCH_JSON = async (endpoint, options = {}) => {
