@@ -53,7 +53,7 @@ const UserProfile = () => {
   };
 
   const menuConfig = {
-    client: [
+    /*client: [
       {
         id: 1,
         icon: <Package className="profile-menu-icon profile-icon-orders" />,
@@ -135,7 +135,7 @@ const UserProfile = () => {
         badge: null,
         hasArrow: true,
       },
-    ],
+    ],*/
   };
 
   const fetchUserDetails = async () => {
@@ -297,7 +297,7 @@ const UserProfile = () => {
         </div>
 
         <div className="profile-content-wrapper">
-          <div className="profile-menu-section">
+          {/*<div className="profile-menu-section">
             <h2 className="profile-menu-title">Opciones</h2>
             <div className="profile-menu-list">
               {menuConfig[currentRole]?.map((item) => (
@@ -319,7 +319,7 @@ const UserProfile = () => {
                 </button>
               ))}
             </div>
-          </div>
+          </div>*/}
 
           <div className="profile-info-section">
             <div className="profile-info-card">

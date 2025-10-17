@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Buttom() {
+const Button = ({onClick}) => {
   const buttonStyle = {
     backgroundColor: 'white',
     color: '#000000', // negro fuerte
@@ -26,11 +26,12 @@ function Buttom() {
       style={isHovering ? { ...buttonStyle, ...hoverStyle } : buttonStyle}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      onClick={onClick}
     >
       Ver más
     </button>
   );
 }
 
-export default Buttom;
+export default Button;
 

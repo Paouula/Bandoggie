@@ -149,12 +149,8 @@ const navegarAccesorios = () => {
         </div>
       </div>
 
-      {/* Sección Carrusel de Festividades */}
-      <HolidayCarousel />
 
       </div>
-
-
 
   );
 

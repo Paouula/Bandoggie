@@ -288,10 +288,6 @@ const SelectedProduct = () => {
             Añadir al carrito
           </button>
         </div>
-
-        <button className="btn-selectedProduct buy-now-selectedProduct">
-          Comprar ahora
-        </button>
       </div>
     </div>
   </div>
