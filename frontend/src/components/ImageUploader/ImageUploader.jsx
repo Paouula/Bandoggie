@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import './imageUploader.css';
+import './ImageUploader.css';
 import Button from '../Button/Button.jsx';
 
 const ImageUploader = ({
