@@ -11,10 +11,10 @@ import {
   Shield,
   Stethoscope,
 } from "lucide-react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext.jsx";
 import { toast, Toaster } from "react-hot-toast";
 import ProfileCard from "../../../components/Profile/ProfileCard";
-import { API_FETCH_JSON } from "../../../config";
+import { API_FETCH_JSON } from "../../../config.jsx";
 import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 
