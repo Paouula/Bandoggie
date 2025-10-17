@@ -1,146 +1,285 @@
+/* Importar fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
 /* Contenedor principal */
 .order-management-container {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  /* Título principal */
-  .main-title {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #333;
-    font-size: 2rem;
-  }
-  
-  /* Sección de nueva tarea */
-  .nueva-tarea-section {
-    margin-bottom: 30px;
-  }
-  
-  .nueva-tarea-section h2 {
-    margin-bottom: 15px;
-    color: #333;
-  }
-  
-  /* Grupo de input y botón */
-  .input-group {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  /* Input de tarea */
-  .tarea-input {
-    flex: 1;
-    max-width: 400px;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    transition: border-color 0.3s;
-  }
-  
-  .tarea-input:focus {
-    outline: none;
-    border-color: #5653e4;
-  }
-  
-  /* Botón registrar */
-  .btn-registrar {
-    padding: 10px 20px;
-    background-color: #5653e4;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background-color 0.3s;
-  }
-  
-  .btn-registrar:hover {
-    background-color: #4542c7;
-  }
-  
-  .btn-registrar:active {
-    transform: scale(0.98);
-  }
-  
-  /* Grid de estados */
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 40px auto;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Título principal */
+.main-title {
+  text-align: right;
+  margin-bottom: 20px;
+  color: #365A7D;
+  font-size: 1.8rem;
+  font-family: 'Baloo Bhaijaan 2', cursive;
+  font-weight: 600;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #B3CCEA;
+}
+
+/* Sección de nueva tarea */
+.nueva-tarea-section {
+  margin-bottom: 40px;
+}
+
+.nueva-tarea-section h2 {
+  margin-bottom: 15px;
+  color: #365A7D;
+  font-family: 'Baloo Bhaijaan 2', cursive;
+  font-weight: 600;
+}
+
+/* Grupo de input y botón */
+.input-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Input de tarea */
+.tarea-input {
+  flex: 1;
+  max-width: 400px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid #B3CCEA;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #ffffff;
+}
+
+.tarea-input:focus {
+  outline: none;
+  border-color: #365A7D;
+  box-shadow: 0 0 0 3px rgba(54, 90, 125, 0.1);
+}
+
+/* Botón registrar */
+.btn-registrar {
+  padding: 12px 28px;
+  background-color: #365A7D;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(54, 90, 125, 0.2);
+}
+
+.btn-registrar:hover {
+  background-color: #2a4760;
+  box-shadow: 0 3px 6px rgba(54, 90, 125, 0.3);
+}
+
+.btn-registrar:active {
+  transform: scale(0.98);
+}
+
+/* Grid de estados */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+/* Columna de estado */
+.status-column {
+  background-color: #fffbeb;
+  padding: 20px;
+  border-radius: 12px;
+  min-height: 300px;
+  border: 2px solid #B3CCEA;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.status-column:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Título del estado */
+.status-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Baloo Bhaijaan 2', cursive;
+  color: #365A7D;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tarjeta de tarea */
+.tarea-card {
+  background-color: #ffffff;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  cursor: grab;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: none;
+  border-left: 4px solid;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.tarea-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.tarea-card:active {
+  cursor: grabbing;
+}
+
+/* Nombre de la tarea */
+.tarea-nombre {
+  margin: 0;
+  font-weight: 500;
+  font-size: 14px;
+  color: #365A7D;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+/* Botón "Ver más" */
+.btn-ver-mas {
+  margin-top: 12px;
+  padding: 8px 20px;
+  background-color: #365A7D;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(54, 90, 125, 0.2);
+  display: inline-block;
+}
+
+.btn-ver-mas:hover {
+  background-color: #2a4760;
+}
+
+.btn-ver-mas:active {
+  transform: scale(0.98);
+}
+
+/* Colores pastel por estado */
+.status-column.recien-llegado {
+  background-color: #FFDBEF;
+  border-color: #FFDBEF;
+}
+
+.status-column.recien-llegado:hover {
+  background-color: #ffc8e0;
+}
+
+.status-column.recien-llegado .tarea-card {
+  border-left-color: #ff99b3;
+}
+
+.status-column.recien-llegado .tarea-nombre {
+  color: #c2185b;
+}
+
+.status-column.en-proceso {
+  background-color: #fff3d8;
+  border-color: #fff3d8;
+}
+
+.status-column.en-proceso:hover {
+  background-color: #ffeabf;
+}
+
+.status-column.en-proceso .tarea-card {
+  border-left-color: #f8c471;
+}
+
+/* Última card (realizado) en celeste pastel */
+.status-column.realizado {
+  background-color: #DBEBFF;
+  border-color: #DBEBFF;
+}
+
+.status-column.realizado:hover {
+  background-color: #c8e0ff;
+}
+
+.status-column.realizado .tarea-card {
+  border-left-color: #365A7D;
+}
+
+/* Estilos adicionales por color dinámico */
+.status-column[style*="border-color: rgb(176, 176, 176)"] {
+  background-color: #FFDBEF;
+  border: 2px solid #FFDBEF !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.status-column[style*="border-color: rgb(86, 83, 228)"] {
+  background-color: #fff3d8;
+  border: 2px solid #fff3d8 !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.status-column[style*="border-color: rgb(82, 158, 44)"] {
+  background-color: #DBEBFF;
+  border: 2px solid #DBEBFF !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Responsivo */
+@media (max-width: 968px) {
   .status-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  /* Columna de estado */
-  .status-column {
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 8px;
-    min-height: 300px;
-    border: 3px solid;
-    transition: background-color 0.3s;
+
+  .order-management-container {
+    padding: 30px 15px;
+    margin: 30px auto;
   }
-  
-  .status-column:hover {
-    background-color: #efefef;
+}
+
+@media (max-width: 768px) {
+  .status-grid {
+    grid-template-columns: 1fr;
   }
-  
-  /* Título del estado */
-  .status-title {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-    font-weight: 600;
+
+  .input-group {
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  /* Tarjeta de tarea */
-  .tarea-card {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    cursor: grab;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid;
-    transition: transform 0.2s, box-shadow 0.2s;
+
+  .tarea-input {
+    max-width: 100%;
   }
-  
-  .tarea-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  .main-title {
+    font-size: 1.5rem;
+    text-align: center;
   }
-  
-  .tarea-card:active {
-    cursor: grabbing;
+
+  .order-management-container {
+    padding: 20px 15px;
+    margin: 20px auto;
   }
-  
-  /* Nombre de la tarea */
-  .tarea-nombre {
-    margin: 0;
-    font-weight: 500;
-    color: #333;
-  }
-  
-  /* Responsivo */
-  @media (max-width: 768px) {
-    .status-grid {
-      grid-template-columns: 1fr;
-    }
-  
-    .input-group {
-      flex-direction: column;
-      align-items: stretch;
-    }
-  
-    .tarea-input {
-      max-width: 100%;
-    }
-  
-    .main-title {
-      font-size: 1.5rem;
-    }
-  }
+}
