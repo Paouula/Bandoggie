@@ -7,7 +7,7 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../Context/AuthContext.jsx";
 
 // NavBars
 import Nav from "../components/Public/NavBar/NavBar.jsx";

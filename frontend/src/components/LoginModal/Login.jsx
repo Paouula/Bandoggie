@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../Context/AuthContext.jsx";
 import { RxCross1 } from "react-icons/rx";
 
 

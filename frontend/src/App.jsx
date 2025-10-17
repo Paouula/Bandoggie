@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 
 // Proveedor de autenticación
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./Context/AuthContext.jsx";
 
 // Archivo principal de navegación
 import Navegation from "./components/Navegation.jsx";

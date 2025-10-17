@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import useProductData from "../../../components/Public/SelectedProduct/hooks/useProductData.jsx";
 import Reviews from "../../../components/Public/SelectedProduct/Reviews.jsx";
 import RelatedProducts from "../../../components/Public/SelectedProduct/RelatedProduct.jsx";
-import { useAuth } from "../../../context/AuthContext"; 
+import { useAuth } from "../../../Context/AuthContext.jsx"; 
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 import "./SelectedProduct.css";

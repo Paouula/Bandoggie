@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../../Context/AuthContext';
 import useOrderInfo from '../../../hooks/OrderHistory/useOrders';
 import OrderCard from '../../../components/OrderCard/OrderCard';
 import './OrderHistory.css';

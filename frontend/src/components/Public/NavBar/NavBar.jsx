@@ -4,7 +4,7 @@ import "./NavBar.css";
 import IC_cuenta from "../../../img/NavBar/user.png";
 import IC_carrito from "../../../img/NavBar/ShoppingCart.png";
 import LogoBandoggie from "../../../img/NavBar/LogoBandoggie.png";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../Context/AuthContext.jsx";
 
 // Importa tus modales
 import LoginModal from "../../LoginModal/Login.jsx";
