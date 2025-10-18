@@ -527,7 +527,7 @@ const ShoppingCartApp = ({ onClose }) => {
           console.log('✅ Email enviado exitosamente');
         } catch (emailError) {
           console.error('⚠️ Error enviando email:', emailError);
-          toast.warning('Pedido creado, pero hubo un problema enviando el email. Contacta soporte.');
+          toast('Pedido creado, pero hubo un problema enviando el email. Contacta soporte.');
         }
       }
 
