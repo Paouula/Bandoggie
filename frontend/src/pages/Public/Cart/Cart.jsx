@@ -182,29 +182,36 @@ const ShoppingCartApp = ({ onClose }) => {
   }, [cartItems]);
 
   // Guardar carrito en localStorage cuando cambie (pero solo si no estamos cargando)
-  useEffect(() => {
-    if (loading) return; // No guardar mientras estamos cargando
-    
-    try {
-      if (cartItems.length > 0) {
-        const cartToSave = JSON.stringify(cartItems);
-        localStorage.setItem('bandoggie_cart', cartToSave);
-        console.log('💾 Carrito guardado en localStorage:', cartToSave);
-        
-        // Disparar evento para que NavBar se actualice
+
+useEffect(() => {
+  if (loading) return;
+
+  try {
+    if (cartItems.length > 0) {
+      const cartToSave = JSON.stringify(cartItems);
+      localStorage.setItem('bandoggie_cart', cartToSave);
+      console.log('💾 Carrito guardado en localStorage:', cartToSave);
+
+      if (!suppressEvent) {
         window.dispatchEvent(new Event('cartUpdated'));
-      } else {
-        // Solo limpiar si explícitamente se vació el carrito y no estamos cargando
-        if (!loading) {
-          localStorage.removeItem('bandoggie_cart');
-          console.log('🗑️ Carrito limpiado del localStorage');
+        setSuppressEvent(true); // evita volver a disparar
+      }
+    } else {
+      if (!loading) {
+        localStorage.removeItem('bandoggie_cart');
+        console.log('🗑️ Carrito limpiado del localStorage');
+
+        if (!suppressEvent) {
           window.dispatchEvent(new Event('cartUpdated'));
+          setSuppressEvent(true);
         }
       }
-    } catch (error) {
-      console.error('❌ Error saving cart to localStorage:', error);
     }
-  }, [cartItems, loading]);
+  } catch (error) {
+    console.error('❌ Error saving cart to localStorage:', error);
+  }
+}, [cartItems, loading]);
+
 
   // Funciones de validación
   const validateEmail = (email) => {
@@ -527,7 +534,7 @@ const ShoppingCartApp = ({ onClose }) => {
           console.log('✅ Email enviado exitosamente');
         } catch (emailError) {
           console.error('⚠️ Error enviando email:', emailError);
-          toast.warning('Pedido creado, pero hubo un problema enviando el email. Contacta soporte.');
+          toast('Pedido creado, pero hubo un problema enviando el email. Contacta soporte.');
         }
       }
 

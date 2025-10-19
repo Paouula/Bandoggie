@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 // Hook específico para emails bancarios SIN TOKEN
 const useFetchCartEmail = () => {
     // Endpoint para enviar email bancario
-    const endpoint = 'cart/send-simple-banking-email';
+    const endpoint = 'email/send-simple-banking-email';
 
     // Enviar email bancario simplificado usando API_FETCH_JSON
     const sendBankingEmail = async (orderData) => {
