@@ -316,7 +316,9 @@ const Products = () => {
           }
         >
           <form className="form-edit-generic">
+            <label htmlFor="nameProduct">Nombre del producto</label>
             <Input
+              id="nameProduct"
               {...register("nameProduct", {
                 required: "El nombre del producto es obligatorio",
               })}
@@ -326,7 +328,9 @@ const Products = () => {
               <span className="form-error">{errors.nameProduct.message}</span>
             )}
 
+            <label htmlFor="price">Precio</label>
             <Input
+              id="price"
               type="number"
               step="0.01"
               {...register("price", {
@@ -355,7 +359,9 @@ const Products = () => {
               <span className="form-error">{errors.price.message}</span>
             )}
 
+            <label htmlFor="description">Descripción</label>
             <TextArea
+              id="description"
               {...register("description", {
                 required: "La descripción es obligatoria",
                 maxLength: {
@@ -377,6 +383,7 @@ const Products = () => {
               <span className="form-error">{errors.description.message}</span>
             )}
 
+            <label>Imagen principal</label>
             <ImageUploader
               onImageSelect={(file) => {
                 setImage(file);
@@ -391,6 +398,7 @@ const Products = () => {
               </span>
             )}
 
+            <label>Imágenes de diseño (mín. 3)</label>
             <MultiImageUploader
               onImagesSelect={(files) => {
                 setCreateDesignImages(files);
@@ -405,6 +413,7 @@ const Products = () => {
               </span>
             )}
 
+            <label htmlFor="idCategory">Categoría</label>
             <InputSelect
               id="idCategory"
               options={categories.map((cat) => ({
@@ -418,8 +427,8 @@ const Products = () => {
               error={errors.idCategory}
             />
 
+            <label htmlFor="idHolidayProduct">Festividad</label>
             <InputSelect
-            
               id="idHolidayProduct"
               options={holidays.map((hol) => ({
                 value: hol._id,
@@ -430,7 +439,6 @@ const Products = () => {
               })}
               defaultOptionLabel="Selecciona una festividad"
               error={errors.idHolidayProduct}
-              
             />
           </form>
         </Modal>
@@ -441,10 +449,14 @@ const Products = () => {
         <Modal
           title="Editar producto"
           onClose={handleCloseModal}
-          actions={<Button onClick={handleSubmit(onEditProduct)}>Guardar</Button>}
+          actions={
+            <Button onClick={handleSubmit(onEditProduct)}>Guardar</Button>
+          }
         >
           <form className="form-edit-generic">
+            <label htmlFor="nameProduct">Nombre del producto</label>
             <Input
+              id="nameProduct"
               {...register("nameProduct", {
                 required: "El nombre del producto es obligatorio",
               })}
@@ -454,7 +466,9 @@ const Products = () => {
               <span className="form-error">{errors.nameProduct.message}</span>
             )}
 
+            <label htmlFor="price">Precio</label>
             <Input
+              id="price"
               type="number"
               step="0.01"
               {...register("price", {
@@ -470,7 +484,9 @@ const Products = () => {
               <span className="form-error">{errors.price.message}</span>
             )}
 
+            <label htmlFor="description">Descripción</label>
             <TextArea
+              id="description"
               {...register("description", {
                 required: "La descripción es obligatoria",
                 maxLength: {
@@ -492,6 +508,7 @@ const Products = () => {
               <span className="form-error">{errors.description.message}</span>
             )}
 
+            <label>Imagen principal</label>
             <ImageUploader
               initialPreview={selectedProduct?.image}
               onImageSelect={(file) => {
@@ -501,6 +518,7 @@ const Products = () => {
               accept="image/*"
             />
 
+            <label>Imágenes de diseño</label>
             <MultiImageUploader
               initialImages={selectedProduct?.designImages || []}
               onChange={(files) => {
@@ -510,6 +528,7 @@ const Products = () => {
               accept="image/*"
             />
 
+            <label htmlFor="idCategory">Categoría</label>
             <InputSelect
               id="idCategory"
               options={categories.map((cat) => ({
@@ -522,6 +541,7 @@ const Products = () => {
               defaultOptionLabel="Selecciona una categoría"
             />
 
+            <label htmlFor="idHolidayProduct">Festividad</label>
             <InputSelect
               id="idHolidayProduct"
               options={holidays.map((hol) => ({
@@ -557,6 +577,7 @@ const Products = () => {
       )}
 
       {/* Modal para crear categoría */}
+      {/* Modal para crear categoría */}
       {showCreateCategoryModal && (
         <Modal
           title="Crear nueva categoría"
@@ -568,7 +589,9 @@ const Products = () => {
           }
         >
           <form className="form-create-category">
+            <label htmlFor="nameCategory">Nombre de la categoría</label>
             <Input
+              id="nameCategory"
               {...formCategory.register("nameCategory", {
                 required: "El nombre de la categoría es obligatorio",
                 maxLength: {
@@ -599,7 +622,9 @@ const Products = () => {
           }
         >
           <form className="form-create-holiday">
+            <label htmlFor="nameHoliday">Nombre de la festividad</label>
             <Input
+              id="nameHoliday"
               {...formHoliday.register("nameHoliday", {
                 required: "El nombre de la festividad es obligatorio",
                 maxLength: {
